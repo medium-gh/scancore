@@ -68,6 +68,7 @@ signals:
     void manifestChanged();
     void updateAvailable(const QString &version, const QString &url);
     void activateRequested();
+    void androidBackRequested();
 
 private:
     void scheduleLibraryCheck();

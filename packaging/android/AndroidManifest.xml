@@ -20,12 +20,12 @@
         android:hardwareAccelerated="true"
         android:label="SCANCORE"
         android:icon="@mipmap/ic_launcher"
-        android:enableOnBackInvokedCallback="false"
+        android:enableOnBackInvokedCallback="true"
         android:usesCleartextTraffic="false"
         android:allowBackup="true"
         android:fullBackupOnly="false">
         <activity
-            android:name="org.qtproject.qt.android.bindings.QtActivity"
+            android:name="com.mediumdev.scancore.ScanCoreActivity"
             android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density"
             android:label="SCANCORE"
             android:launchMode="singleTop"

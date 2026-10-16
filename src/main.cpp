@@ -14,6 +14,7 @@
 #ifdef Q_OS_ANDROID
 #include <QGuiApplication>
 #include <QtWebView/QtWebView>
+#include <jni.h>
 #else
 #include <QApplication>
 #include <QMenu>
@@ -25,7 +26,6 @@
 #include <QIcon>
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
-#include <QQuickWindow>
 #include <QStandardPaths>
 
 #ifdef SCANCORE_HAVE_WEBENGINE
@@ -33,6 +33,16 @@
 #endif
 
 using namespace sc;
+
+#ifdef Q_OS_ANDROID
+extern "C" JNIEXPORT jboolean JNICALL
+Java_com_mediumdev_scancore_ScanCoreActivity_dispatchBack(JNIEnv *, jclass) {
+    auto *appState = App::instance();
+    return QMetaObject::invokeMethod(appState, [appState] { emit appState->androidBackRequested(); },
+                                     Qt::QueuedConnection)
+               ? JNI_TRUE : JNI_FALSE;
+}
+#endif
 
 namespace {
 
@@ -149,6 +159,10 @@ int main(int argc, char *argv[]) {
     engine.loadFromModule("ScanCore", "Main");
     if (engine.rootObjects().isEmpty())
         return 1;
+    auto *root = engine.rootObjects().first();
+    QObject::connect(appState, &App::androidBackRequested, root, [root] {
+        QMetaObject::invokeMethod(root, "handleAndroidBack", Qt::DirectConnection);
+    });
     // The window decides whether closing hides to the tray; once it is gone
     // there is nothing left to show.
     QObject::connect(engine.rootObjects().first(), &QObject::destroyed, &app, &Application::quit);
