@@ -619,7 +619,7 @@ QVariantMap Account::call(const QByteArray &method, const QString &path, const Q
         if (message.isEmpty())
             message = json.value("problem").toObject().value("message").toString();
         if (response.status == 401)
-            message = QStringLiteral("Sign in to %1 to do that.").arg(siteName());
+            message = QStringLiteral("Your %1 session ended. Sign in again.").arg(siteName());
         if (response.status == 429)
             message = QStringLiteral("Too many attempts. Wait a few minutes and try again.");
         throw Error(message.isEmpty() ? QStringLiteral("%1 responded with HTTP %2.").arg(siteName()).arg(response.status)
@@ -630,7 +630,15 @@ QVariantMap Account::call(const QByteArray &method, const QString &path, const Q
 }
 
 Task *Account::request(const QString &method, const QString &path, const QVariantMap &body) {
-    return Task::run([method = method.toUpper().toUtf8(), path, body]() -> QVariant { return call(method, path, body); });
+    auto *task = Task::run([method = method.toUpper().toUtf8(), path, body]() -> QVariant { return call(method, path, body); });
+    // Signed in here but not on the site (a password reset or sign-out
+    // elsewhere ended the session): show it signed out instead of letting
+    // every post fail.
+    connect(task, &Task::changed, this, [this, task] {
+        if (!task->loading() && !task->ok() && task->status() == 401 && signedIn())
+            setUser({});
+    });
+    return task;
 }
 
 QVariantList Account::passwordChecks(const QString &password) const {
@@ -656,15 +664,24 @@ QString Account::usernameProblem(const QString &username) const {
 }
 
 void Account::signOut() {
-    runInBackground([] {
-        try {
-            Http::postJson(QUrl(siteUrl() + QStringLiteral("/api/auth/logout")), "{}", {{"Accept", "application/json"}});
-        } catch (const Error &) {
-        }
-        for (const auto &cookie : CookieJar::shared().cookiesForUrl(QUrl(siteUrl())))
-            CookieJar::shared().deleteCookie(cookie);
-        CookieJar::shared().save();
-    });
+    // The session's cookies go now and the site is told with them in the
+    // background: deleting them only once it answered also deleted the next
+    // sign-in's when it came first (posts then failed as signed out).
+    const QUrl site(siteUrl());
+    QStringList session;
+    for (const auto &cookie : CookieJar::shared().cookiesForUrl(site)) {
+        session << QString::fromUtf8(cookie.name() + '=' + cookie.value());
+        CookieJar::shared().deleteCookie(cookie);
+    }
+    CookieJar::shared().save();
+    if (!session.isEmpty())
+        runInBackground([site, cookie = session.join(QStringLiteral("; ")).toUtf8()] {
+            try {
+                Http::postJson(QUrl(site.toString() + QStringLiteral("/api/auth/logout")), "{}",
+                               {{"Accept", "application/json"}, {"Cookie", cookie}});
+            } catch (const Error &) {
+            }
+        });
     setUser({});
     Database::setPref(QStringLiteral("account.lastSync"), 0);
     // A different account starts from scratch, uploading this device's history.

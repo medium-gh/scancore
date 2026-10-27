@@ -20,7 +20,20 @@ Column {
     property string state: "loading"
     property string problem
     property int rating: 5
+    // The star under the pointer while choosing (0: none), shown as the
+    // rating it would give.
+    property int hoveredStar: 0
     property var saveTask: null
+    // One review per person per title: yours, when you wrote one, is
+    // edited rather than added to.
+    readonly property var mine: {
+        const name = Account.user ? Account.user.username : ""
+        return name ? items.find(r => r.user && r.user.username === name) || null : null
+    }
+    onMineChanged: if (mine) {
+        rating = mine.rating
+        reviewBox.text = mine.body
+    }
 
     spacing: 14
 
@@ -67,7 +80,7 @@ Column {
         const input = { seriesName: thread.seriesName, mediaType: thread.mediaType, rating: rating, body: body.trim() }
         if (thread.seriesId) input.seriesId = thread.seriesId
         saveTask = Account.request("POST", "/api/reviews", input)
-        saveTask.finished.connect(() => { reviewBox.text = ""; Router.toast(qsTr("Review saved"), "success"); reviews.refresh() })
+        saveTask.finished.connect(() => { Router.toast(reviews.mine ? qsTr("Review updated") : qsTr("Review saved"), "success"); reviews.refresh() })
         saveTask.failed.connect((message) => Router.toast(message, "error"))
     }
 
@@ -93,9 +106,10 @@ Column {
                     model: 5
                     Icon {
                         required property int index
-                        name: "star"
+                        readonly property bool lit: index < Math.round(reviews.average)
+                        name: lit ? "star-filled" : "star"
                         size: 15
-                        color: index < Math.round(reviews.average) ? Theme.text : Theme.textFaint
+                        color: lit ? Theme.starColor : Theme.textFaint
                     }
                 }
             }
@@ -117,7 +131,7 @@ Column {
             Text {
                 anchors.verticalCenter: parent.verticalCenter
                 rightPadding: 6
-                text: qsTr("Your rating")
+                text: reviews.mine ? qsTr("Your review") : qsTr("Your rating")
                 color: Theme.textMuted
                 font.family: Theme.fontSans
                 font.pixelSize: Theme.textSm
@@ -125,13 +139,19 @@ Column {
             Repeater {
                 model: 5
                 IconButton {
+                    id: starButton
                     required property int index
+                    readonly property bool lit: index < (reviews.hoveredStar || reviews.rating)
                     diameter: 30
-                    iconSize: 17
-                    iconName: "star"
-                    active: index < reviews.rating
+                    iconSize: 18
+                    iconName: lit ? "star-filled" : "star"
+                    iconColor: lit ? Theme.starColor : Theme.textFaint
                     tip: (index + 1) + (index === 0 ? qsTr(" star") : qsTr(" stars"))
+                    scale: pressed ? 0.88 : lit && reviews.hoveredStar === index + 1 ? 1.12 : 1
+                    Behavior on scale { NumberAnimation { duration: Motion.fast; easing.type: Easing.OutBack } }
+                    onHoveredChanged: reviews.hoveredStar = hovered ? index + 1 : (reviews.hoveredStar === index + 1 ? 0 : reviews.hoveredStar)
                     onClicked: reviews.rating = index + 1
+                    Accessible.checked: index < reviews.rating
                 }
             }
         }
@@ -157,8 +177,9 @@ Column {
         ScButton {
             compact: true
             variant: "primary"
-            text: qsTr("Save review")
+            text: reviews.mine ? qsTr("Update review") : qsTr("Save review")
             enabled: reviewBox.text.trim().length >= 10 && !(reviews.saveTask && reviews.saveTask.loading)
+                && !(reviews.mine && reviews.mine.rating === reviews.rating && reviews.mine.body === reviewBox.text.trim())
             loading: !!reviews.saveTask && reviews.saveTask.loading
             onClicked: reviews.save(reviewBox.text)
         }
@@ -226,9 +247,10 @@ Column {
                             model: 5
                             Icon {
                                 required property int index
-                                name: "star"
+                                readonly property bool lit: index < card.modelData.rating
+                                name: lit ? "star-filled" : "star"
                                 size: 12
-                                color: index < card.modelData.rating ? Theme.text : Theme.textFaint
+                                color: lit ? Theme.starColor : Theme.textFaint
                             }
                         }
                     }

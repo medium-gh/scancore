@@ -64,6 +64,8 @@ QtObject {
     readonly property color danger: dark ? "#f87171" : "#dc2626"
     readonly property color success: dark ? "#4ade80" : "#16a34a"
     readonly property color warning: dark ? "#fbbf24" : "#d97706"
+    // Filled rating stars (reviews): amber, black on e-ink.
+    readonly property color starColor: eink ? "#000000" : dark ? "#fbbf24" : "#f59e0b"
 
     // Accent options; "mono" matches the website.
     readonly property var accents: ({
