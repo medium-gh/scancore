@@ -129,6 +129,10 @@ public:
     Q_INVOKABLE sc::Task *updateAll();
 
     Q_INVOKABLE void setSourceEnabled(const QString &key, bool enabled);
+    // Pinned sources come first wherever sources are listed (App::
+    // pinnedFirst); an extension's pin is all of its sources'.
+    Q_INVOKABLE void setPinned(const QString &key, bool pinned);
+    Q_INVOKABLE void setExtensionPinned(const QString &id, bool pinned);
     // A source's own settings, as its extension describes them: [{key,
     // title, summary, type (switch, list, multiselect, text, info), entries,
     // values, value, enabled}]

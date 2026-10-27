@@ -40,7 +40,7 @@ Item {
         defaults: ["recent", "continue", "saved", "trending", "popular", "top", "newest", "completed", "lightnovels"]
     }
     Component.onCompleted: if (source === "local") run("")
-    readonly property var allSources: { App.dependOn(Extensions.novelPackInstalled); return Novels.sources() }
+    readonly property var allSources: { App.dependOn(Extensions.novelPackInstalled, Extensions.revision); return Novels.sources() }
     // Each source's entry in the running search, by key, for the chips.
     readonly property var providerMap: {
         const map = {}

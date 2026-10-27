@@ -59,6 +59,7 @@ QVariantList Novels::sources() const {
                                {"canBrowse", s->canBrowse()},
                                {"browseLatest", s->hasLatestListing()},
                                {"extension", s->key().contains(QLatin1Char(':'))}});
+    App::pinnedFirst(out);
     return out;
 }
 

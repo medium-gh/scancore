@@ -152,7 +152,7 @@ Item {
         for (const p of (page.found && page.found.providers) || []) map[p.source] = p
         return map
     }
-    readonly property var sources: Comics.sources().filter(s => s.enabled && (!s.nsfw || App.settings.showNsfwSources))
+    readonly property var sources: { App.dependOn(Extensions.revision); return Comics.sources().filter(s => s.enabled && (!s.nsfw || App.settings.showNsfwSources)) }
 
     SmoothFlickable {
         id: flick

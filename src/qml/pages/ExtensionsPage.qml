@@ -554,6 +554,14 @@ Item {
                         variant: "primary"
                         onClicked: page.install(row.item)
                     }
+                    // Pinned: its sources come first in Comics, Anime, Novels
+                    // and their search, and it comes first here.
+                    IconButton {
+                        iconName: "pin"
+                        active: row.item.pinned === true
+                        tip: row.item.pinned ? qsTr("Unpin") : qsTr("Pin: its sources come first")
+                        onClicked: Extensions.setExtensionPinned(row.item.id, row.item.pinned !== true)
+                    }
                     IconButton {
                         iconName: row.open ? "chevron-up" : "chevron-down"
                         tip: row.open ? qsTr("Hide sources") : qsTr("Show sources")
@@ -629,6 +637,13 @@ Item {
                             iconName: "shield-check"
                             tip: qsTr("Open the site (browser check, sign in)")
                             onClicked: Router.openSiteCheck(sourceRow.modelData.baseUrl + "/")
+                        }
+                        IconButton {
+                            visible: (row.item.sourceCount || 0) > 1
+                            iconName: "pin"
+                            active: sourceRow.modelData.pinned === true
+                            tip: sourceRow.modelData.pinned ? qsTr("Unpin") : qsTr("Pin: it comes first")
+                            onClicked: Extensions.setPinned(sourceRow.modelData.key, sourceRow.modelData.pinned !== true)
                         }
                         IconButton {
                             iconName: "compass"

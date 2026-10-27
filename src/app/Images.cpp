@@ -267,6 +267,8 @@ QList<QImage> tilesOf(QImage image) {
 
 } // namespace
 
+QImage decodeImage(const QByteArray &data) { return decode(data, {}); }
+
 QString RemoteImageProvider::encode(const QString &url, const QString &referer) {
     return QStringLiteral("image://remote/%1~%2").arg(b64(url), b64(referer));
 }

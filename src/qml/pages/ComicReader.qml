@@ -1,5 +1,7 @@
+import QtCore
 import QtQuick
 import QtQuick.Controls.Basic
+import QtQuick.Dialogs
 import QtQuick.Window
 import Scancore
 
@@ -179,6 +181,86 @@ Rectangle {
         controlsShown = false
     }
     function moveMagnifier(x, y) { if (magnifying && !longPressAtCentre) magnifyAt = Qt.point(x, y) }
+
+    // ---------------------------------------------------------- this page
+    // Copy, save or share a page: a right click on it, a long press when the
+    // long press does not zoom, or More → This page.
+    // {url, referer, chapter, number} of a chapter's page, or null.
+    function pageRef(chapter, panel) {
+        const c = stripChapters[chapter]
+        const list = c ? c.panels : chapter === index ? panels : []
+        const p = panel >= 0 ? list[panel] : null
+        return p && p.url ? { url: p.url, referer: c ? (c.referer || referer) : referer, chapter: chapter, number: panel + 1 } : null
+    }
+    // The page under (x, y) of the strip or the paged view.
+    function pageUnder(item, x, y) {
+        if (item === strip) {
+            const i = strip.indexAt(x + strip.contentX, y + strip.contentY)
+            const row = i >= 0 ? stripModel.get(i) : null
+            return row && row.panel >= 0 ? pageRef(row.chapter, row.panel) : null
+        }
+        const shown = pageView.shown
+        if (shown.length > 1) {
+            const q = secondImage.mapFromItem(item, x, y)
+            if (q.x >= 0 && q.x <= secondImage.width) return pageRef(index, shown[1])
+        }
+        return pageRef(index, shown[0])
+    }
+    function pageInView() { return mode === "paged" ? pageRef(index, pageView.shown[0]) : pageRef(index, currentPanel) }
+    function pageMenu(anchor, x, y, page) {
+        if (!page) return
+        magnifying = false
+        const list = [{ text: qsTr("Copy image"), icon: "copy", run: () => pageDo("copy", page) },
+                      { text: qsTr("Save image…"), icon: "download", run: () => pageDo("save", page) }]
+        if (App.platform === "android") list.push({ text: qsTr("Share…"), icon: "share-2", run: () => pageDo("share", page) })
+        pageActions.openAt(anchor, x, y, list)
+    }
+    property var pageTask: null
+    property string pageAction: ""
+    property var pageTarget: null
+    function pageDo(action, page) {
+        pageAction = action
+        pageTarget = page
+        pageTask = App.pageFile(page.url, page.referer)
+    }
+    function pageName(page, suffix) {
+        const chapter = (chapters[page.chapter] || {})
+        const parts = [series.title || "", chapter.number ? qsTr("Chapter %1").arg(chapter.number) : (chapter.title || ""), qsTr("page %1").arg(page.number)]
+        return parts.filter(t => t).join(" - ").replace(/[\\/:*?"<>|]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 150) + "." + suffix
+    }
+    Connections {
+        target: reader.pageTask
+        function onFinished(file) {
+            if (reader.pageAction === "copy") {
+                const ok = App.copyImageFile(file.path, file.mime)
+                Router.toast(ok ? qsTr("Page copied") : qsTr("The page could not be copied"), ok ? "success" : "error")
+            } else if (reader.pageAction === "share") {
+                if (!App.shareFile(file.path, file.mime, reader.pageName(reader.pageTarget, file.suffix)))
+                    Router.toast(qsTr("The page could not be shared"), "error")
+            } else {
+                pageSave.file = file
+                pageSave.nameFilters = [qsTr("Picture (*.%1)").arg(file.suffix)]
+                pageSave.defaultSuffix = file.suffix
+                const name = reader.pageName(reader.pageTarget, file.suffix)
+                const folder = String(pageSave.currentFolder || "")
+                pageSave.selectedFile = folder ? folder + "/" + encodeURIComponent(name) : name
+                pageSave.open()
+            }
+        }
+        function onFailed(error) { Router.toast(error, "error") }
+    }
+    ActionMenu { id: pageActions }
+    FileDialog {
+        id: pageSave
+        property var file: null
+        fileMode: FileDialog.SaveFile
+        // Computers: the Pictures folder to start with.
+        currentFolder: App.platform === "android" ? "" : StandardPaths.writableLocation(StandardPaths.PicturesLocation)
+        onAccepted: {
+            const ok = App.saveFileTo(file.path, selectedFile)
+            Router.toast(ok ? qsTr("Page saved") : qsTr("The page could not be saved"), ok ? "success" : "error")
+        }
+    }
     readonly property bool volumeKeys: App.platform === "android" && opt("readerVolumeKeys", false) === true
     readonly property var tapZoneOptions: [{ value: "sides", label: qsTr("Tap zones: left and right") }, { value: "lshape", label: qsTr("Tap zones: L shape") },
         { value: "kindle", label: qsTr("Tap zones: Kindle") }, { value: "edge", label: qsTr("Tap zones: edges") }, { value: "off", label: qsTr("Tap zones: off") }]
@@ -600,7 +682,17 @@ Rectangle {
                 }
             }
             onDoubleTapped: if (App.platform !== "android") reader.toggleControls()
-            onLongPressed: reader.startMagnifier(strip, point.position.x, point.position.y)
+            onLongPressed: {
+                if (reader.longPressZoom) reader.startMagnifier(strip, point.position.x, point.position.y)
+                else reader.pageMenu(strip, point.position.x, point.position.y, reader.pageUnder(strip, point.position.x, point.position.y))
+            }
+        }
+        // Right click: this page's menu (mice only; touch taps also fire a
+        // right-button handler).
+        TapHandler {
+            acceptedButtons: Qt.RightButton
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+            onTapped: (point) => reader.pageMenu(strip, point.position.x, point.position.y, reader.pageUnder(strip, point.position.x, point.position.y))
         }
         // Follows the finger while magnifying, and lets go with it.
         PointHandler {
@@ -1085,7 +1177,17 @@ Rectangle {
                 if (reader.doubleTapZoom && (pageView.zoomed || reader.tapZone(mouse.x, mouse.y, width, height) === "menu"))
                     pageView.toggleZoom(mouse.x, mouse.y)
             }
-            onPressAndHold: (mouse) => { if (!pageView.zoomed && !swipe.active && !pinch.active) reader.startMagnifier(pageView, mouse.x, mouse.y) }
+            onPressAndHold: (mouse) => {
+                if (swipe.active || pinch.active) return
+                if (!reader.longPressZoom) reader.pageMenu(pageView, mouse.x, mouse.y, reader.pageUnder(pageView, mouse.x, mouse.y))
+                else if (!pageView.zoomed) reader.startMagnifier(pageView, mouse.x, mouse.y)
+            }
+            // Right click: this page's menu (mice only).
+            TapHandler {
+                acceptedButtons: Qt.RightButton
+                acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                onTapped: (point) => reader.pageMenu(pageView, point.position.x, point.position.y, reader.pageUnder(pageView, point.position.x, point.position.y))
+            }
             onPositionChanged: (mouse) => reader.moveMagnifier(mouse.x, mouse.y)
             onReleased: reader.magnifying = false
             onCanceled: reader.magnifying = false
@@ -1403,7 +1505,7 @@ Rectangle {
             readonly property int spares: (canReact ? 1 : 0) + (online ? 1 : 0) + (canHandOff ? 1 : 0) + 1
             readonly property int core: 6 + (translateTo.visible ? 1 : 0) + (newWindow.visible ? 1 : 0) + (splitButton.visible ? 1 : 0)
             readonly property real room: reader.width - 36 - 34 - 12
-            readonly property bool crowded: (core + spares) * (button + spacing) > room
+            readonly property bool crowded: (core + spares + (Theme.touch ? 1 : 0)) * (button + spacing) > room
             // Pages are on the progress bar at the left edge; chapters here.
             // Computers: on in a window of its own (where it left off).
             IconButton {
@@ -1537,13 +1639,17 @@ Rectangle {
             IconButton {
                 id: moreActions
                 diameter: topActions.button
-                visible: topActions.crowded
+                // Touch screens always have it: This page… is in it.
+                visible: topActions.crowded || Theme.touch
                 iconName: "ellipsis"
                 iconColor: "white"
                 tip: qsTr("More")
                 onClicked: {
                     reader.showControls()
                     const list = []
+                    const page = reader.pageInView()
+                    if (page) list.push({ text: qsTr("This page…"), icon: "image", run: () => reader.pageMenu(moreActions, moreActions.width, moreActions.height, page) })
+                    if (topActions.crowded) {
                     if (topActions.canReact)
                         list.push({ text: qsTr("React to this page"), icon: "heart", run: () => reactPopup.open() })
                     if (topActions.online)
@@ -1554,6 +1660,7 @@ Rectangle {
                                         run: () => continueOn.send(device) })
                     list.push({ text: fullScreen.fullScreen ? qsTr("Leave full screen") : qsTr("Full screen"),
                                 icon: fullScreen.fullScreen ? "minimize" : "maximize", run: () => fullScreen.toggle() })
+                    }
                     moreMenu.openAt(moreActions, moreActions.width, moreActions.height, list)
                 }
                 ActionMenu { id: moreMenu }

@@ -11,9 +11,9 @@ SettingsPane {
     property var refreshTask: null
     // Built-in comic sources only (extensions' have their own page), and
     // every key for the sources gone from under saved series.
-    readonly property var allComicSources: Comics.builtinSources()
+    readonly property var allComicSources: { App.dependOn(Extensions.revision); return Comics.builtinSources() }
     readonly property var comicKeys: Comics.sourceKeys()
-    readonly property var allNovelSources: { App.dependOn(Extensions.novelPackInstalled); return Novels.sources() }
+    readonly property var allNovelSources: { App.dependOn(Extensions.novelPackInstalled, Extensions.revision); return Novels.sources() }
     // Built-in sources only: extensions have their own page (above), and a
     // row each for hundreds of extension sources made this page crawl.
     readonly property var comicSources: savedFirst(allComicSources.filter(s => !s.extension), comicCounts)
@@ -29,7 +29,7 @@ SettingsPane {
     // Sources with saved series first, then those switched on, otherwise in
     // the registry's order (the sort here is not stable, hence the index).
     function savedFirst(list, counts) {
-        const rank = (s) => ((counts[s.key] || 0) > 0 ? 0 : 2) + (s.enabled ? 0 : 1)
+        const rank = (s) => (s.pinned ? -4 : 0) + ((counts[s.key] || 0) > 0 ? 0 : 2) + (s.enabled ? 0 : 1)
         return list.map((s, i) => ({ s: s, i: i, r: rank(s) }))
             .sort((a, b) => a.r - b.r || a.i - b.i)
             .map(x => x.s)
@@ -108,6 +108,12 @@ SettingsPane {
                 onClicked: Router.openSiteCheck(modelData.base + "/")
             }
             IconButton { visible: modelData.key !== "local"; iconName: "external-link"; tip: qsTr("Open site"); onClicked: App.openUrl(modelData.base) }
+            IconButton {
+                iconName: "pin"
+                active: modelData.pinned === true
+                tip: modelData.pinned ? qsTr("Unpin") : qsTr("Pin: it comes first")
+                onClicked: Extensions.setPinned(modelData.key, modelData.pinned !== true)
+            }
         }
     }
 

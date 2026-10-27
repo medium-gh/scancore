@@ -663,8 +663,16 @@ Task *Extensions::refreshRepositories() {
 
 namespace {
 
+QStringList pinnedKeys() { return App::instance()->settings().value(QStringLiteral("pinnedSources")).toStringList(); }
+
+void savePinned(QStringList keys) {
+    keys.removeDuplicates();
+    App::instance()->setSetting(QStringLiteral("pinnedSources"), keys);
+}
+
 QVariantMap sourceMap(const ext::SourceEntry &s, const QString &language) {
     return QVariantMap{{"key", s.key},
+                       {"pinned", pinnedKeys().contains(s.key)},
                        {"name", s.name},
                        {"lang", s.lang},
                        {"languageName", extensionLanguage(s.lang)},
@@ -689,12 +697,24 @@ QVariantList Extensions::installedRows(const QString &kind, bool brief, const QS
     for (const auto &s : ext::Manager::sources(kindOf(kind)))
         byExtension[ext::kindName(s.kind) + QLatin1Char(':') + s.pkg].append(s);
     QVariantList out;
+    // Pinned: any of its sources is.
+    const auto pinnedList = pinnedKeys();
+    const QSet<QString> pinned(pinnedList.begin(), pinnedList.end());
+    QSet<QString> pinnedExtensions;
+    for (auto it = byExtension.cbegin(); it != byExtension.cend(); ++it)
+        for (const auto &s : it.value())
+            if (pinned.contains(s.key))
+                pinnedExtensions.insert(it.key());
+    const auto idOf = [](const ext::Installed &i) { return ext::kindName(i.package.kind) + QLatin1Char(':') + i.package.pkg; };
     auto list = ext::Manager::installed(kindOf(kind));
-    std::sort(list.begin(), list.end(), [](const ext::Installed &a, const ext::Installed &b) {
-        // Updates and extensions waiting for trust first.
+    std::sort(list.begin(), list.end(), [&](const ext::Installed &a, const ext::Installed &b) {
+        // Updates and extensions waiting for trust first, then pinned ones.
         const bool aNeeds = a.update || !a.trusted, bNeeds = b.update || !b.trusted;
         if (aNeeds != bNeeds)
             return aNeeds;
+        const bool aPinned = pinnedExtensions.contains(idOf(a)), bPinned = pinnedExtensions.contains(idOf(b));
+        if (aPinned != bPinned)
+            return aPinned;
         return QString::localeAwareCompare(a.package.name, b.package.name) < 0;
     });
     for (const auto &i : list) {
@@ -706,6 +726,7 @@ QVariantList Extensions::installedRows(const QString &kind, bool brief, const QS
         if (map.value(QStringLiteral("problem")).toString().isEmpty() && i.lib != ext::LibSupport::Supported)
             map.insert(QStringLiteral("problem"), libProblemText(i.package));
         const auto own = byExtension.value(map.value(QStringLiteral("id")).toString());
+        map.insert(QStringLiteral("pinned"), pinnedExtensions.contains(map.value(QStringLiteral("id")).toString()));
         if (brief) {
             int broken = 0;
             QStringList text;
@@ -871,6 +892,27 @@ Task *Extensions::updateAll() {
 }
 
 void Extensions::setSourceEnabled(const QString &key, bool enabled) { ext::Manager::setSourceEnabled(key, enabled); }
+
+void Extensions::setPinned(const QString &key, bool pinned) {
+    auto keys = pinnedKeys();
+    keys.removeAll(key);
+    if (pinned)
+        keys.append(key);
+    savePinned(keys);
+    notifyExtensionsChanged();
+}
+
+void Extensions::setExtensionPinned(const QString &id, bool pinned) {
+    auto keys = pinnedKeys();
+    for (const auto &s : ext::Manager::sources(kindOf(id.section(QLatin1Char(':'), 0, 0))))
+        if (ext::kindName(s.kind) + QLatin1Char(':') + s.pkg == id) {
+            keys.removeAll(s.key);
+            if (pinned)
+                keys.append(s.key);
+        }
+    savePinned(keys);
+    notifyExtensionsChanged();
+}
 
 Task *Extensions::sourceSettings(const QString &key) {
     return Task::run([key]() -> QVariant {

@@ -161,7 +161,7 @@ SettingsPane {
         SettingRow {
             iconName: "zoom-in"
             title: qsTr("Long press to zoom")
-            description: qsTr("Hold a finger or the mouse on the page to see it twice as big until you let go, for small dialogue and notes in the margins.")
+            description: qsTr("Hold a finger or the mouse on the page to see it twice as big until you let go, for small dialogue and notes in the margins. When off, holding a page opens its menu: copy, save or share it.")
             Toggle { checked: App.settings.readerLongPressZoom !== false; onToggled: App.setSetting("readerLongPressZoom", checked) }
         }
         SettingRow {

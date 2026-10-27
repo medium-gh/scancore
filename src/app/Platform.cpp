@@ -265,6 +265,18 @@ bool shareFile(const QString &path, const QString &mime, const QString &subject)
 #endif
 }
 
+bool copyFile(const QString &path, const QString &mime) {
+#ifdef Q_OS_ANDROID
+    return QJniObject::callStaticMethod<jboolean>(kShareClass, "copy", "(Landroid/app/Activity;Ljava/lang/String;Ljava/lang/String;)Z",
+                                                  QNativeInterface::QAndroidApplication::context().object(),
+                                                  QJniObject::fromString(path).object<jstring>(), QJniObject::fromString(mime).object<jstring>());
+#else
+    Q_UNUSED(path)
+    Q_UNUSED(mime)
+    return false;
+#endif
+}
+
 void holdMulticast(bool on) {
 #ifdef Q_OS_ANDROID
     QJniObject::callStaticMethod<void>(kMulticastClass, "hold", "(Landroid/content/Context;Z)V",

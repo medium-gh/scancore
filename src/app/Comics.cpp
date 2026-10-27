@@ -109,6 +109,7 @@ QVariantList Comics::sources() const {
     QVariantList out;
     for (const auto &source : Registry::all())
         out.append(sourceRow(source));
+    App::pinnedFirst(out);
     return out;
 }
 
@@ -117,6 +118,7 @@ QVariantList Comics::builtinSources() const {
     for (const auto &source : Registry::all())
         if (!source->key().contains(QLatin1Char(':')))
             out.append(sourceRow(source));
+    App::pinnedFirst(out);
     return out;
 }
 

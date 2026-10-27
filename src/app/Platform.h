@@ -52,6 +52,8 @@ void setVolumeKeyPressed(std::function<void(bool down)> pressed);
 bool shareText(const QString &text, const QString &subject);
 // Android: the share sheet for a file in the app's storage.
 bool shareFile(const QString &path, const QString &mime, const QString &subject);
+// Android: a file SCANCORE made onto the clipboard, for other apps to paste.
+bool copyFile(const QString &path, const QString &mime);
 
 // Lets multicast packets in on Wi-Fi (Android drops them otherwise), while
 // looking for cast devices.

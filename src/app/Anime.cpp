@@ -955,6 +955,7 @@ QVariantList Anime::sources() const {
                                {"canBrowse", true},
                                {"browseLatest", true},
                                {"extension", !source->isServer()}});
+    App::pinnedFirst(out);
     return out;
 }
 

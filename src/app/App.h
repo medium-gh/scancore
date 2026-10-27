@@ -41,6 +41,9 @@ public:
     QString version() const;
     QString platform() const;
     QVariantMap settings() const { return m_settings; }
+    // Sources the user pinned (setting pinnedSources: their keys) go first
+    // in a list of sources, marked "pinned"; the rest keep their order.
+    static void pinnedFirst(QVariantList &sources);
     // Incognito mode (setting "incognito"): no progress, history, activity,
     // tracker updates or Discord status.
     bool incognito() const { return m_settings.value(QStringLiteral("incognito")).toBool(); }
@@ -124,6 +127,16 @@ public:
     Q_INVOKABLE void removeCrashReport(const QString &file);
     Q_INVOKABLE QString diagnostics() const;
     Q_INVOKABLE bool shareText(const QString &text, const QString &subject) const;
+    // A comic page as a file of its own, to copy, save or share:
+    // {path, suffix, mime}. Its own bytes (a JPEG stays one), or a PNG for
+    // AVIF, which few other apps open.
+    Q_INVOKABLE sc::Task *pageFile(const QString &url, const QString &referer) const;
+    // That file: the picture onto the clipboard, a copy where the user
+    // picked (a path or Android's content:// address), or the share sheet
+    // (Android).
+    Q_INVOKABLE bool copyImageFile(const QString &path, const QString &mime) const;
+    Q_INVOKABLE bool saveFileTo(const QString &path, const QUrl &target) const;
+    Q_INVOKABLE bool shareFile(const QString &path, const QString &mime, const QString &subject) const;
     // A new GitHub issue for a report, its first part filled in.
     Q_INVOKABLE QString reportIssueUrl(const QString &text) const;
     Q_INVOKABLE void notify(const QString &title, const QString &body);

@@ -11,6 +11,10 @@
 
 namespace sc {
 
+// An image file's picture at its own size, AVIF included (worker threads).
+// Throws when it cannot be read.
+QImage decodeImage(const QByteArray &data);
+
 // image://remote/<url>~<referer> — covers and thumbnails, decoded at the
 // requested size on a background thread through the disk cache.
 class RemoteImageProvider : public QQuickAsyncImageProvider {

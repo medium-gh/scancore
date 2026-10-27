@@ -30,6 +30,9 @@
 #include <QUrlQuery>
 #include <QNetworkInformation>
 #include <QClipboard>
+#include <QSaveFile>
+#include <QImageReader>
+#include <QBuffer>
 #include <QDateTime>
 #include <QHash>
 #include <QDesktopServices>
@@ -339,6 +342,19 @@ QVariantMap App::startAction() const {
 
 QVariant App::plain(const QVariant &value) {
     return value.metaType() == QMetaType::fromType<QJSValue>() ? value.value<QJSValue>().toVariant() : value;
+}
+
+void App::pinnedFirst(QVariantList &sources) {
+    const auto keys = instance()->m_settings.value(QStringLiteral("pinnedSources")).toStringList();
+    if (keys.isEmpty())
+        return;
+    const QSet<QString> pinned(keys.begin(), keys.end());
+    for (auto &value : sources) {
+        auto row = value.toMap();
+        row.insert(QStringLiteral("pinned"), pinned.contains(row.value(QStringLiteral("key")).toString()));
+        value = row;
+    }
+    std::stable_partition(sources.begin(), sources.end(), [](const QVariant &v) { return v.toMap().value(QStringLiteral("pinned")).toBool(); });
 }
 
 void App::setSetting(const QString &key, const QVariant &input) {
@@ -801,6 +817,73 @@ void App::markCrashReportSeen(const QString &file) { crashlog::markSeen(file); }
 void App::removeCrashReport(const QString &file) { crashlog::remove(file); }
 QString App::diagnostics() const { return crashlog::diagnostics(); }
 bool App::shareText(const QString &text, const QString &subject) const { return platform::shareText(text, subject); }
+
+Task *App::pageFile(const QString &url, const QString &referer) const {
+    return Task::run([url, referer]() -> QVariant {
+        auto bytes = ImageCache::fetch(url, referer);
+        if (bytes.isEmpty())
+            throw Error(tr("The page did not load."));
+        QBuffer buffer(&bytes);
+        buffer.open(QIODevice::ReadOnly);
+        auto format = QString::fromLatin1(QImageReader::imageFormat(&buffer)).toLower();
+        static const QHash<QString, QString> mimes{{"jpeg", "image/jpeg"}, {"jpg", "image/jpeg"}, {"png", "image/png"},
+                                                   {"webp", "image/webp"}, {"gif", "image/gif"}};
+        if (!mimes.contains(format)) {
+            QBuffer png;
+            png.open(QIODevice::WriteOnly);
+            if (!decodeImage(bytes).save(&png, "PNG"))
+                throw Error(tr("This page's picture could not be read."));
+            bytes = png.data();
+            format = QStringLiteral("png");
+        }
+        const auto suffix = format == QLatin1String("jpeg") ? QStringLiteral("jpg") : format;
+        // Under the app's files, which Android's share sheet and clipboard
+        // can hand to other apps. Pages shared earlier than an hour ago go.
+        const QDir dir(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QStringLiteral("/shared"));
+        dir.mkpath(QStringLiteral("."));
+        const auto now = QDateTime::currentDateTime();
+        for (const auto &old : dir.entryInfoList({QStringLiteral("page-*")}, QDir::Files))
+            if (old.lastModified().secsTo(now) > 3600)
+                QFile::remove(old.absoluteFilePath());
+        const auto path = dir.filePath(QStringLiteral("page-%1.%2").arg(now.toMSecsSinceEpoch()).arg(suffix));
+        QSaveFile file(path);
+        if (!file.open(QIODevice::WriteOnly) || file.write(bytes) != bytes.size() || !file.commit())
+            throw Error(tr("The page could not be saved for copying."));
+        return QVariantMap{{"path", path}, {"suffix", suffix}, {"mime", mimes.value(format)}};
+    });
+}
+
+bool App::copyImageFile(const QString &path, const QString &mime) const {
+#ifdef Q_OS_ANDROID
+    return platform::copyFile(path, mime);
+#else
+    Q_UNUSED(mime)
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly))
+        return false;
+    try {
+        const auto image = decodeImage(file.readAll());
+        QGuiApplication::clipboard()->setImage(image);
+        return true;
+    } catch (const Error &) {
+        return false;
+    }
+#endif
+}
+
+bool App::saveFileTo(const QString &path, const QUrl &target) const {
+    QFile in(path);
+    // A content:// address on Android, a path elsewhere.
+    QFile out(target.isLocalFile() ? target.toLocalFile() : target.toString());
+    if (!in.open(QIODevice::ReadOnly) || !out.open(QIODevice::WriteOnly | QIODevice::Truncate))
+        return false;
+    const auto bytes = in.readAll();
+    return out.write(bytes) == bytes.size();
+}
+
+bool App::shareFile(const QString &path, const QString &mime, const QString &subject) const {
+    return platform::shareFile(path, mime, subject);
+}
 
 QString App::reportIssueUrl(const QString &text) const {
     // GitHub takes links of about 8 KB: the report's start (what happened
