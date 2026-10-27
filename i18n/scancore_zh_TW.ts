@@ -2376,6 +2376,54 @@
             <source>Leave full screen</source>
             <translation>結束全螢幕</translation>
         </message>
+        <message>
+            <source>Chapter %1</source>
+            <translation>第%1章</translation>
+        </message>
+        <message>
+            <source>Copy image</source>
+            <translation>複製圖片</translation>
+        </message>
+        <message>
+            <source>page %1</source>
+            <translation>第%1頁</translation>
+        </message>
+        <message>
+            <source>Page copied</source>
+            <translation>已複製頁面</translation>
+        </message>
+        <message>
+            <source>Page saved</source>
+            <translation>已儲存頁面</translation>
+        </message>
+        <message>
+            <source>Picture (*.%1)</source>
+            <translation>圖片 (*.%1)</translation>
+        </message>
+        <message>
+            <source>Save image…</source>
+            <translation>儲存圖片…</translation>
+        </message>
+        <message>
+            <source>Share…</source>
+            <translation>分享…</translation>
+        </message>
+        <message>
+            <source>The page could not be copied</source>
+            <translation>無法複製頁面</translation>
+        </message>
+        <message>
+            <source>The page could not be saved</source>
+            <translation>無法儲存頁面</translation>
+        </message>
+        <message>
+            <source>The page could not be shared</source>
+            <translation>無法分享頁面</translation>
+        </message>
+        <message>
+            <source>This page…</source>
+            <translation>此頁…</translation>
+        </message>
     </context>
     <context>
         <name>ComicsPage</name>
@@ -3825,6 +3873,18 @@
         <message>
             <source>Show all %1 sources</source>
             <translation>顯示全部 %1 個來源</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>固定：排在最前</translation>
+        </message>
+        <message>
+            <source>Pin: its sources come first</source>
+            <translation>固定：它的來源排在最前</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>取消固定</translation>
         </message>
     </context>
     <context>
@@ -8864,6 +8924,10 @@
             <source>Translate on this device</source>
             <translation>在本裝置上翻譯</translation>
         </message>
+        <message>
+            <source>Hold a finger or the mouse on the page to see it twice as big until you let go, for small dialogue and notes in the margins. When off, holding a page opens its menu: copy, save or share it.</source>
+            <translation>在頁面上按住手指或滑鼠，放開前頁面放大兩倍，適合小字對白和頁邊註解。關閉時，長按頁面會開啟它的選單：複製、儲存或分享。</translation>
+        </message>
     </context>
     <context>
         <name>RecentSearches</name>
@@ -10790,6 +10854,14 @@
         <message>
             <source>SCANCORE runs Mihon, Tachiyomi, Aniyomi, CloudStream, Echo and LNReader extensions from repositories you add. It has no repository of its own.</source>
             <translation>SCANCORE 執行你新增的儲存庫中的 Mihon、Tachiyomi、Aniyomi、CloudStream、Echo 和 LNReader 擴充功能。它沒有自己的儲存庫。</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>固定：排在最前</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>取消固定</translation>
         </message>
     </context>
     <context>

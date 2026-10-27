@@ -2376,6 +2376,54 @@
             <source>Leave full screen</source>
             <translation>फ़ुल स्क्रीन से बाहर निकलें</translation>
         </message>
+        <message>
+            <source>Chapter %1</source>
+            <translation>अध्याय %1</translation>
+        </message>
+        <message>
+            <source>Copy image</source>
+            <translation>तस्वीर कॉपी करें</translation>
+        </message>
+        <message>
+            <source>page %1</source>
+            <translation>पेज %1</translation>
+        </message>
+        <message>
+            <source>Page copied</source>
+            <translation>पेज कॉपी हुआ</translation>
+        </message>
+        <message>
+            <source>Page saved</source>
+            <translation>पेज सहेजा गया</translation>
+        </message>
+        <message>
+            <source>Picture (*.%1)</source>
+            <translation>तस्वीर (*.%1)</translation>
+        </message>
+        <message>
+            <source>Save image…</source>
+            <translation>तस्वीर सहेजें…</translation>
+        </message>
+        <message>
+            <source>Share…</source>
+            <translation>शेयर करें…</translation>
+        </message>
+        <message>
+            <source>The page could not be copied</source>
+            <translation>पेज कॉपी नहीं हो सका</translation>
+        </message>
+        <message>
+            <source>The page could not be saved</source>
+            <translation>पेज सहेजा नहीं जा सका</translation>
+        </message>
+        <message>
+            <source>The page could not be shared</source>
+            <translation>पेज शेयर नहीं हो सका</translation>
+        </message>
+        <message>
+            <source>This page…</source>
+            <translation>यह पेज…</translation>
+        </message>
     </context>
     <context>
         <name>ComicsPage</name>
@@ -3817,6 +3865,18 @@
         <message>
             <source>Show all %1 sources</source>
             <translation>सभी %1 स्रोत दिखाएँ</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>पिन करें: यह सबसे पहले आएगा</translation>
+        </message>
+        <message>
+            <source>Pin: its sources come first</source>
+            <translation>पिन करें: इसके सोर्स सबसे पहले आएँगे</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>अनपिन करें</translation>
         </message>
     </context>
     <context>
@@ -8856,6 +8916,10 @@
             <source>Translate on this device</source>
             <translation>इसी डिवाइस पर अनुवाद करें</translation>
         </message>
+        <message>
+            <source>Hold a finger or the mouse on the page to see it twice as big until you let go, for small dialogue and notes in the margins. When off, holding a page opens its menu: copy, save or share it.</source>
+            <translation>पेज पर उँगली या माउस दबाए रखें, छोड़ने तक वह दोगुना बड़ा दिखेगा — छोटे संवाद और हाशिये के नोट्स के लिए। बंद होने पर पेज को दबाए रखने से उसका मेन्यू खुलता है: कॉपी करें, सहेजें या शेयर करें।</translation>
+        </message>
     </context>
     <context>
         <name>RecentSearches</name>
@@ -10775,6 +10839,14 @@
         <message>
             <source>SCANCORE runs Mihon, Tachiyomi, Aniyomi, CloudStream, Echo and LNReader extensions from repositories you add. It has no repository of its own.</source>
             <translation>SCANCORE आपकी जोड़ी रिपॉज़िटरी से Mihon, Tachiyomi, Aniyomi, CloudStream, Echo और LNReader एक्सटेंशन चलाता है। इसकी अपनी कोई रिपॉज़िटरी नहीं है।</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>पिन करें: यह सबसे पहले आएगा</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>अनपिन करें</translation>
         </message>
     </context>
     <context>

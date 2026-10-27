@@ -2376,6 +2376,54 @@
             <source>Leave full screen</source>
             <translation>Thoát toàn màn hình</translation>
         </message>
+        <message>
+            <source>Chapter %1</source>
+            <translation>Chương %1</translation>
+        </message>
+        <message>
+            <source>Copy image</source>
+            <translation>Sao chép ảnh</translation>
+        </message>
+        <message>
+            <source>page %1</source>
+            <translation>trang %1</translation>
+        </message>
+        <message>
+            <source>Page copied</source>
+            <translation>Đã sao chép trang</translation>
+        </message>
+        <message>
+            <source>Page saved</source>
+            <translation>Đã lưu trang</translation>
+        </message>
+        <message>
+            <source>Picture (*.%1)</source>
+            <translation>Ảnh (*.%1)</translation>
+        </message>
+        <message>
+            <source>Save image…</source>
+            <translation>Lưu ảnh…</translation>
+        </message>
+        <message>
+            <source>Share…</source>
+            <translation>Chia sẻ…</translation>
+        </message>
+        <message>
+            <source>The page could not be copied</source>
+            <translation>Không sao chép được trang</translation>
+        </message>
+        <message>
+            <source>The page could not be saved</source>
+            <translation>Không lưu được trang</translation>
+        </message>
+        <message>
+            <source>The page could not be shared</source>
+            <translation>Không chia sẻ được trang</translation>
+        </message>
+        <message>
+            <source>This page…</source>
+            <translation>Trang này…</translation>
+        </message>
     </context>
     <context>
         <name>ComicsPage</name>
@@ -3825,6 +3873,18 @@
         <message>
             <source>Show all %1 sources</source>
             <translation>Hiện tất cả %1 nguồn</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>Ghim: hiện lên đầu</translation>
+        </message>
+        <message>
+            <source>Pin: its sources come first</source>
+            <translation>Ghim: các nguồn của nó hiện lên đầu</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>Bỏ ghim</translation>
         </message>
     </context>
     <context>
@@ -8864,6 +8924,10 @@
             <source>Translate on this device</source>
             <translation>Dịch trên thiết bị này</translation>
         </message>
+        <message>
+            <source>Hold a finger or the mouse on the page to see it twice as big until you let go, for small dialogue and notes in the margins. When off, holding a page opens its menu: copy, save or share it.</source>
+            <translation>Giữ ngón tay hoặc chuột trên trang để thấy nó to gấp đôi cho tới khi thả, dành cho thoại nhỏ và ghi chú lề. Khi tắt, giữ lâu trên trang sẽ mở menu của trang: sao chép, lưu hoặc chia sẻ.</translation>
+        </message>
     </context>
     <context>
         <name>RecentSearches</name>
@@ -10790,6 +10854,14 @@
         <message>
             <source>SCANCORE runs Mihon, Tachiyomi, Aniyomi, CloudStream, Echo and LNReader extensions from repositories you add. It has no repository of its own.</source>
             <translation>SCANCORE chạy các tiện ích Mihon, Tachiyomi, Aniyomi, CloudStream, Echo và LNReader từ các kho bạn thêm. Nó không có kho riêng.</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>Ghim: hiện lên đầu</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>Bỏ ghim</translation>
         </message>
     </context>
     <context>

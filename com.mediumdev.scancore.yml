@@ -166,7 +166,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/medium-gh/scancore.git
-        tag: v2.16.2
+        tag: v2.16.3
       - type: git
         url: https://github.com/lexbor/lexbor.git
         tag: v2.7.0

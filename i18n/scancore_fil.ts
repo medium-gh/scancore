@@ -2376,6 +2376,54 @@
             <source>Leave full screen</source>
             <translation>Lumabas sa full screen</translation>
         </message>
+        <message>
+            <source>Chapter %1</source>
+            <translation>Kabanata %1</translation>
+        </message>
+        <message>
+            <source>Copy image</source>
+            <translation>Kopyahin ang larawan</translation>
+        </message>
+        <message>
+            <source>page %1</source>
+            <translation>pahina %1</translation>
+        </message>
+        <message>
+            <source>Page copied</source>
+            <translation>Nakopya ang pahina</translation>
+        </message>
+        <message>
+            <source>Page saved</source>
+            <translation>Na-save ang pahina</translation>
+        </message>
+        <message>
+            <source>Picture (*.%1)</source>
+            <translation>Larawan (*.%1)</translation>
+        </message>
+        <message>
+            <source>Save image…</source>
+            <translation>I-save ang larawan…</translation>
+        </message>
+        <message>
+            <source>Share…</source>
+            <translation>Ibahagi…</translation>
+        </message>
+        <message>
+            <source>The page could not be copied</source>
+            <translation>Hindi nakopya ang pahina</translation>
+        </message>
+        <message>
+            <source>The page could not be saved</source>
+            <translation>Hindi na-save ang pahina</translation>
+        </message>
+        <message>
+            <source>The page could not be shared</source>
+            <translation>Hindi naibahagi ang pahina</translation>
+        </message>
+        <message>
+            <source>This page…</source>
+            <translation>Ang pahinang ito…</translation>
+        </message>
     </context>
     <context>
         <name>ComicsPage</name>
@@ -3817,6 +3865,18 @@
         <message>
             <source>Show all %1 sources</source>
             <translation>Ipakita ang lahat ng %1 source</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>I-pin: mauuna ito</translation>
+        </message>
+        <message>
+            <source>Pin: its sources come first</source>
+            <translation>I-pin: mauuna ang mga source nito</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>I-unpin</translation>
         </message>
     </context>
     <context>
@@ -8856,6 +8916,10 @@
             <source>Translate on this device</source>
             <translation>Isalin sa device na ito</translation>
         </message>
+        <message>
+            <source>Hold a finger or the mouse on the page to see it twice as big until you let go, for small dialogue and notes in the margins. When off, holding a page opens its menu: copy, save or share it.</source>
+            <translation>Pindutin nang matagal ang pahina gamit ang daliri o mouse para makita itong doble ang laki hanggang bitawan mo, para sa maliliit na usapan at tala sa gilid. Kapag naka-off, ang matagal na pagpindot sa pahina ay magbubukas ng menu nito: kopyahin, i-save o ibahagi.</translation>
+        </message>
     </context>
     <context>
         <name>RecentSearches</name>
@@ -10775,6 +10839,14 @@
         <message>
             <source>SCANCORE runs Mihon, Tachiyomi, Aniyomi, CloudStream, Echo and LNReader extensions from repositories you add. It has no repository of its own.</source>
             <translation>Nagpapatakbo ang SCANCORE ng mga extension ng Mihon, Tachiyomi, Aniyomi, CloudStream, Echo at LNReader mula sa mga repository na idinagdag mo. Wala itong sariling repository.</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>I-pin: mauuna ito</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>I-unpin</translation>
         </message>
     </context>
     <context>

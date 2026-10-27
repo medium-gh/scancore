@@ -2376,6 +2376,54 @@
             <source>Leave full screen</source>
             <translation>全画面を終了</translation>
         </message>
+        <message>
+            <source>Chapter %1</source>
+            <translation>第%1話</translation>
+        </message>
+        <message>
+            <source>Copy image</source>
+            <translation>画像をコピー</translation>
+        </message>
+        <message>
+            <source>page %1</source>
+            <translation>%1ページ</translation>
+        </message>
+        <message>
+            <source>Page copied</source>
+            <translation>ページをコピーしました</translation>
+        </message>
+        <message>
+            <source>Page saved</source>
+            <translation>ページを保存しました</translation>
+        </message>
+        <message>
+            <source>Picture (*.%1)</source>
+            <translation>画像 (*.%1)</translation>
+        </message>
+        <message>
+            <source>Save image…</source>
+            <translation>画像を保存…</translation>
+        </message>
+        <message>
+            <source>Share…</source>
+            <translation>共有…</translation>
+        </message>
+        <message>
+            <source>The page could not be copied</source>
+            <translation>ページをコピーできませんでした</translation>
+        </message>
+        <message>
+            <source>The page could not be saved</source>
+            <translation>ページを保存できませんでした</translation>
+        </message>
+        <message>
+            <source>The page could not be shared</source>
+            <translation>ページを共有できませんでした</translation>
+        </message>
+        <message>
+            <source>This page…</source>
+            <translation>このページ…</translation>
+        </message>
     </context>
     <context>
         <name>ComicsPage</name>
@@ -3825,6 +3873,18 @@
         <message>
             <source>Show all %1 sources</source>
             <translation>%1 個のソースをすべて表示</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>固定：最初に表示</translation>
+        </message>
+        <message>
+            <source>Pin: its sources come first</source>
+            <translation>固定：ソースを最初に表示</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>固定解除</translation>
         </message>
     </context>
     <context>
@@ -8864,6 +8924,10 @@
             <source>Translate on this device</source>
             <translation>この端末で翻訳</translation>
         </message>
+        <message>
+            <source>Hold a finger or the mouse on the page to see it twice as big until you let go, for small dialogue and notes in the margins. When off, holding a page opens its menu: copy, save or share it.</source>
+            <translation>ページを指やマウスで押したままにすると、離すまで2倍に拡大します。小さなセリフや欄外のメモに。オフのときは、ページを長押しするとメニューが開きます（コピー・保存・共有）。</translation>
+        </message>
     </context>
     <context>
         <name>RecentSearches</name>
@@ -10790,6 +10854,14 @@
         <message>
             <source>SCANCORE runs Mihon, Tachiyomi, Aniyomi, CloudStream, Echo and LNReader extensions from repositories you add. It has no repository of its own.</source>
             <translation>SCANCORE は追加したリポジトリの Mihon、Tachiyomi、Aniyomi、CloudStream、Echo、LNReader の拡張機能を動かします。独自のリポジトリはありません。</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>固定：最初に表示</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>固定解除</translation>
         </message>
     </context>
     <context>

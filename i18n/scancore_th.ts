@@ -2376,6 +2376,54 @@
             <source>Leave full screen</source>
             <translation>ออกจากโหมดเต็มจอ</translation>
         </message>
+        <message>
+            <source>Chapter %1</source>
+            <translation>ตอนที่ %1</translation>
+        </message>
+        <message>
+            <source>Copy image</source>
+            <translation>คัดลอกรูปภาพ</translation>
+        </message>
+        <message>
+            <source>page %1</source>
+            <translation>หน้า %1</translation>
+        </message>
+        <message>
+            <source>Page copied</source>
+            <translation>คัดลอกหน้าแล้ว</translation>
+        </message>
+        <message>
+            <source>Page saved</source>
+            <translation>บันทึกหน้าแล้ว</translation>
+        </message>
+        <message>
+            <source>Picture (*.%1)</source>
+            <translation>รูปภาพ (*.%1)</translation>
+        </message>
+        <message>
+            <source>Save image…</source>
+            <translation>บันทึกรูปภาพ…</translation>
+        </message>
+        <message>
+            <source>Share…</source>
+            <translation>แชร์…</translation>
+        </message>
+        <message>
+            <source>The page could not be copied</source>
+            <translation>คัดลอกหน้าไม่ได้</translation>
+        </message>
+        <message>
+            <source>The page could not be saved</source>
+            <translation>บันทึกหน้าไม่ได้</translation>
+        </message>
+        <message>
+            <source>The page could not be shared</source>
+            <translation>แชร์หน้าไม่ได้</translation>
+        </message>
+        <message>
+            <source>This page…</source>
+            <translation>หน้านี้…</translation>
+        </message>
     </context>
     <context>
         <name>ComicsPage</name>
@@ -3817,6 +3865,18 @@
         <message>
             <source>Show all %1 sources</source>
             <translation>แสดงแหล่งทั้งหมด %1 แหล่ง</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>ปักหมุด: แสดงเป็นอันดับแรก</translation>
+        </message>
+        <message>
+            <source>Pin: its sources come first</source>
+            <translation>ปักหมุด: แหล่งที่มาของมันแสดงเป็นอันดับแรก</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>เลิกปักหมุด</translation>
         </message>
     </context>
     <context>
@@ -8856,6 +8916,10 @@
             <source>Translate on this device</source>
             <translation>แปลบนอุปกรณ์นี้</translation>
         </message>
+        <message>
+            <source>Hold a finger or the mouse on the page to see it twice as big until you let go, for small dialogue and notes in the margins. When off, holding a page opens its menu: copy, save or share it.</source>
+            <translation>กดนิ้วหรือเมาส์ค้างไว้บนหน้าเพื่อดูใหญ่ขึ้นสองเท่าจนกว่าจะปล่อย สำหรับบทพูดตัวเล็กและโน้ตข้างหน้า เมื่อปิด การกดค้างที่หน้าจะเปิดเมนูของหน้านั้น: คัดลอก บันทึก หรือแชร์</translation>
+        </message>
     </context>
     <context>
         <name>RecentSearches</name>
@@ -10775,6 +10839,14 @@
         <message>
             <source>SCANCORE runs Mihon, Tachiyomi, Aniyomi, CloudStream, Echo and LNReader extensions from repositories you add. It has no repository of its own.</source>
             <translation>SCANCORE รันส่วนขยาย Mihon, Tachiyomi, Aniyomi, CloudStream, Echo และ LNReader จากคลังที่คุณเพิ่ม ไม่มีคลังของตัวเอง</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>ปักหมุด: แสดงเป็นอันดับแรก</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>เลิกปักหมุด</translation>
         </message>
     </context>
     <context>

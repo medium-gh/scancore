@@ -2376,6 +2376,54 @@
             <source>Leave full screen</source>
             <translation>Sair da tela cheia</translation>
         </message>
+        <message>
+            <source>Chapter %1</source>
+            <translation>Capítulo %1</translation>
+        </message>
+        <message>
+            <source>Copy image</source>
+            <translation>Copiar imagem</translation>
+        </message>
+        <message>
+            <source>page %1</source>
+            <translation>página %1</translation>
+        </message>
+        <message>
+            <source>Page copied</source>
+            <translation>Página copiada</translation>
+        </message>
+        <message>
+            <source>Page saved</source>
+            <translation>Página salva</translation>
+        </message>
+        <message>
+            <source>Picture (*.%1)</source>
+            <translation>Imagem (*.%1)</translation>
+        </message>
+        <message>
+            <source>Save image…</source>
+            <translation>Salvar imagem…</translation>
+        </message>
+        <message>
+            <source>Share…</source>
+            <translation>Compartilhar…</translation>
+        </message>
+        <message>
+            <source>The page could not be copied</source>
+            <translation>Não foi possível copiar a página</translation>
+        </message>
+        <message>
+            <source>The page could not be saved</source>
+            <translation>Não foi possível salvar a página</translation>
+        </message>
+        <message>
+            <source>The page could not be shared</source>
+            <translation>Não foi possível compartilhar a página</translation>
+        </message>
+        <message>
+            <source>This page…</source>
+            <translation>Esta página…</translation>
+        </message>
     </context>
     <context>
         <name>ComicsPage</name>
@@ -3825,6 +3873,18 @@
         <message>
             <source>Show all %1 sources</source>
             <translation>Mostrar todas as %1 fontes</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>Fixar: aparece primeiro</translation>
+        </message>
+        <message>
+            <source>Pin: its sources come first</source>
+            <translation>Fixar: suas fontes aparecem primeiro</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>Desafixar</translation>
         </message>
     </context>
     <context>
@@ -8864,6 +8924,10 @@
             <source>Translate on this device</source>
             <translation>Traduzir neste dispositivo</translation>
         </message>
+        <message>
+            <source>Hold a finger or the mouse on the page to see it twice as big until you let go, for small dialogue and notes in the margins. When off, holding a page opens its menu: copy, save or share it.</source>
+            <translation>Segure um dedo ou o mouse na página para vê-la duas vezes maior até soltar, para diálogos pequenos e notas na margem. Desligado, segurar uma página abre o menu dela: copiar, salvar ou compartilhar.</translation>
+        </message>
     </context>
     <context>
         <name>RecentSearches</name>
@@ -10790,6 +10854,14 @@
         <message>
             <source>SCANCORE runs Mihon, Tachiyomi, Aniyomi, CloudStream, Echo and LNReader extensions from repositories you add. It has no repository of its own.</source>
             <translation>O SCANCORE roda extensões do Mihon, Tachiyomi, Aniyomi, CloudStream, Echo e LNReader dos repositórios que você adicionar. Ele não tem repositório próprio.</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>Fixar: aparece primeiro</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>Desafixar</translation>
         </message>
     </context>
     <context>

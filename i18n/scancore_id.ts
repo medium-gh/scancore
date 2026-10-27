@@ -2376,6 +2376,54 @@
             <source>Leave full screen</source>
             <translation>Keluar dari layar penuh</translation>
         </message>
+        <message>
+            <source>Chapter %1</source>
+            <translation>Bab %1</translation>
+        </message>
+        <message>
+            <source>Copy image</source>
+            <translation>Salin gambar</translation>
+        </message>
+        <message>
+            <source>page %1</source>
+            <translation>halaman %1</translation>
+        </message>
+        <message>
+            <source>Page copied</source>
+            <translation>Halaman disalin</translation>
+        </message>
+        <message>
+            <source>Page saved</source>
+            <translation>Halaman disimpan</translation>
+        </message>
+        <message>
+            <source>Picture (*.%1)</source>
+            <translation>Gambar (*.%1)</translation>
+        </message>
+        <message>
+            <source>Save image…</source>
+            <translation>Simpan gambar…</translation>
+        </message>
+        <message>
+            <source>Share…</source>
+            <translation>Bagikan…</translation>
+        </message>
+        <message>
+            <source>The page could not be copied</source>
+            <translation>Halaman tidak bisa disalin</translation>
+        </message>
+        <message>
+            <source>The page could not be saved</source>
+            <translation>Halaman tidak bisa disimpan</translation>
+        </message>
+        <message>
+            <source>The page could not be shared</source>
+            <translation>Halaman tidak bisa dibagikan</translation>
+        </message>
+        <message>
+            <source>This page…</source>
+            <translation>Halaman ini…</translation>
+        </message>
     </context>
     <context>
         <name>ComicsPage</name>
@@ -3825,6 +3873,18 @@
         <message>
             <source>Show all %1 sources</source>
             <translation>Tampilkan semua %1 sumber</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>Sematkan: tampil paling awal</translation>
+        </message>
+        <message>
+            <source>Pin: its sources come first</source>
+            <translation>Sematkan: sumbernya tampil paling awal</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>Lepas sematan</translation>
         </message>
     </context>
     <context>
@@ -8864,6 +8924,10 @@
             <source>Translate on this device</source>
             <translation>Terjemahkan di perangkat ini</translation>
         </message>
+        <message>
+            <source>Hold a finger or the mouse on the page to see it twice as big until you let go, for small dialogue and notes in the margins. When off, holding a page opens its menu: copy, save or share it.</source>
+            <translation>Tahan jari atau mouse di halaman untuk melihatnya dua kali lebih besar sampai dilepas, untuk dialog kecil dan catatan di pinggir. Jika mati, menahan halaman membuka menunya: salin, simpan, atau bagikan.</translation>
+        </message>
     </context>
     <context>
         <name>RecentSearches</name>
@@ -10790,6 +10854,14 @@
         <message>
             <source>SCANCORE runs Mihon, Tachiyomi, Aniyomi, CloudStream, Echo and LNReader extensions from repositories you add. It has no repository of its own.</source>
             <translation>SCANCORE menjalankan ekstensi Mihon, Tachiyomi, Aniyomi, CloudStream, Echo, dan LNReader dari repositori yang Anda tambahkan. SCANCORE tidak punya repositori sendiri.</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>Sematkan: tampil paling awal</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>Lepas sematan</translation>
         </message>
     </context>
     <context>

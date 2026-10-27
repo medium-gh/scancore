@@ -2376,6 +2376,54 @@
             <source>Leave full screen</source>
             <translation>Tam ekrandan çık</translation>
         </message>
+        <message>
+            <source>Chapter %1</source>
+            <translation>Bölüm %1</translation>
+        </message>
+        <message>
+            <source>Copy image</source>
+            <translation>Resmi kopyala</translation>
+        </message>
+        <message>
+            <source>page %1</source>
+            <translation>sayfa %1</translation>
+        </message>
+        <message>
+            <source>Page copied</source>
+            <translation>Sayfa kopyalandı</translation>
+        </message>
+        <message>
+            <source>Page saved</source>
+            <translation>Sayfa kaydedildi</translation>
+        </message>
+        <message>
+            <source>Picture (*.%1)</source>
+            <translation>Resim (*.%1)</translation>
+        </message>
+        <message>
+            <source>Save image…</source>
+            <translation>Resmi kaydet…</translation>
+        </message>
+        <message>
+            <source>Share…</source>
+            <translation>Paylaş…</translation>
+        </message>
+        <message>
+            <source>The page could not be copied</source>
+            <translation>Sayfa kopyalanamadı</translation>
+        </message>
+        <message>
+            <source>The page could not be saved</source>
+            <translation>Sayfa kaydedilemedi</translation>
+        </message>
+        <message>
+            <source>The page could not be shared</source>
+            <translation>Sayfa paylaşılamadı</translation>
+        </message>
+        <message>
+            <source>This page…</source>
+            <translation>Bu sayfa…</translation>
+        </message>
     </context>
     <context>
         <name>ComicsPage</name>
@@ -3825,6 +3873,18 @@
         <message>
             <source>Show all %1 sources</source>
             <translation>%1 kaynağın tümünü göster</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>Sabitle: en başta görünür</translation>
+        </message>
+        <message>
+            <source>Pin: its sources come first</source>
+            <translation>Sabitle: kaynakları en başta görünür</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>Sabitlemeyi kaldır</translation>
         </message>
     </context>
     <context>
@@ -8864,6 +8924,10 @@
             <source>Translate on this device</source>
             <translation>Bu cihazda çevir</translation>
         </message>
+        <message>
+            <source>Hold a finger or the mouse on the page to see it twice as big until you let go, for small dialogue and notes in the margins. When off, holding a page opens its menu: copy, save or share it.</source>
+            <translation>Sayfaya bir parmak ya da fareyle basılı tutun, bırakana kadar iki kat büyük görünür: küçük konuşmalar ve kenar notları için. Kapalıyken bir sayfaya basılı tutmak menüsünü açar: kopyala, kaydet veya paylaş.</translation>
+        </message>
     </context>
     <context>
         <name>RecentSearches</name>
@@ -10790,6 +10854,14 @@
         <message>
             <source>SCANCORE runs Mihon, Tachiyomi, Aniyomi, CloudStream, Echo and LNReader extensions from repositories you add. It has no repository of its own.</source>
             <translation>SCANCORE, eklediğin depolardan Mihon, Tachiyomi, Aniyomi, CloudStream, Echo ve LNReader eklentilerini çalıştırır. Kendi deposu yoktur.</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>Sabitle: en başta görünür</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>Sabitlemeyi kaldır</translation>
         </message>
     </context>
     <context>

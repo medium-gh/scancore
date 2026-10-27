@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.16.3" date="2026-10-27">
+      <description>
+        <p>Copy, save or share a comic page from the reader, and pin the extensions and sources you use most so they come first.</p>
+      </description>
+    </release>
     <release version="2.16.2" date="2026-10-27">
       <description>
         <p>Anime fixes: Continue lists every show you are still watching, anime opened from the Library load their page again, covers that AniList replaced come back, and a long list of servers in the player folds into one menu.</p>

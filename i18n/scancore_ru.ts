@@ -2376,6 +2376,54 @@
             <source>Leave full screen</source>
             <translation>Выйти из полноэкранного режима</translation>
         </message>
+        <message>
+            <source>Chapter %1</source>
+            <translation>Глава %1</translation>
+        </message>
+        <message>
+            <source>Copy image</source>
+            <translation>Копировать изображение</translation>
+        </message>
+        <message>
+            <source>page %1</source>
+            <translation>страница %1</translation>
+        </message>
+        <message>
+            <source>Page copied</source>
+            <translation>Страница скопирована</translation>
+        </message>
+        <message>
+            <source>Page saved</source>
+            <translation>Страница сохранена</translation>
+        </message>
+        <message>
+            <source>Picture (*.%1)</source>
+            <translation>Изображение (*.%1)</translation>
+        </message>
+        <message>
+            <source>Save image…</source>
+            <translation>Сохранить изображение…</translation>
+        </message>
+        <message>
+            <source>Share…</source>
+            <translation>Поделиться…</translation>
+        </message>
+        <message>
+            <source>The page could not be copied</source>
+            <translation>Не удалось скопировать страницу</translation>
+        </message>
+        <message>
+            <source>The page could not be saved</source>
+            <translation>Не удалось сохранить страницу</translation>
+        </message>
+        <message>
+            <source>The page could not be shared</source>
+            <translation>Не удалось поделиться страницей</translation>
+        </message>
+        <message>
+            <source>This page…</source>
+            <translation>Эта страница…</translation>
+        </message>
     </context>
     <context>
         <name>ComicsPage</name>
@@ -3825,6 +3873,18 @@
         <message>
             <source>Show all %1 sources</source>
             <translation>Показать все источники (%1)</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>Закрепить: будет первым</translation>
+        </message>
+        <message>
+            <source>Pin: its sources come first</source>
+            <translation>Закрепить: его источники будут первыми</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>Открепить</translation>
         </message>
     </context>
     <context>
@@ -8864,6 +8924,10 @@
             <source>Translate on this device</source>
             <translation>Переводить на этом устройстве</translation>
         </message>
+        <message>
+            <source>Hold a finger or the mouse on the page to see it twice as big until you let go, for small dialogue and notes in the margins. When off, holding a page opens its menu: copy, save or share it.</source>
+            <translation>Удерживайте палец или мышь на странице — она будет вдвое больше, пока не отпустите: для мелких реплик и заметок на полях. Если выключено, удержание страницы открывает её меню: скопировать, сохранить или поделиться.</translation>
+        </message>
     </context>
     <context>
         <name>RecentSearches</name>
@@ -10790,6 +10854,14 @@
         <message>
             <source>SCANCORE runs Mihon, Tachiyomi, Aniyomi, CloudStream, Echo and LNReader extensions from repositories you add. It has no repository of its own.</source>
             <translation>SCANCORE запускает расширения Mihon, Tachiyomi, Aniyomi, CloudStream, Echo и LNReader из добавленных вами репозиториев. Собственного репозитория у него нет.</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>Закрепить: будет первым</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>Открепить</translation>
         </message>
     </context>
     <context>

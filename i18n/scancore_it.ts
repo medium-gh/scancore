@@ -2376,6 +2376,54 @@
             <source>Leave full screen</source>
             <translation>Esci da schermo intero</translation>
         </message>
+        <message>
+            <source>Chapter %1</source>
+            <translation>Capitolo %1</translation>
+        </message>
+        <message>
+            <source>Copy image</source>
+            <translation>Copia immagine</translation>
+        </message>
+        <message>
+            <source>page %1</source>
+            <translation>pagina %1</translation>
+        </message>
+        <message>
+            <source>Page copied</source>
+            <translation>Pagina copiata</translation>
+        </message>
+        <message>
+            <source>Page saved</source>
+            <translation>Pagina salvata</translation>
+        </message>
+        <message>
+            <source>Picture (*.%1)</source>
+            <translation>Immagine (*.%1)</translation>
+        </message>
+        <message>
+            <source>Save image…</source>
+            <translation>Salva immagine…</translation>
+        </message>
+        <message>
+            <source>Share…</source>
+            <translation>Condividi…</translation>
+        </message>
+        <message>
+            <source>The page could not be copied</source>
+            <translation>Impossibile copiare la pagina</translation>
+        </message>
+        <message>
+            <source>The page could not be saved</source>
+            <translation>Impossibile salvare la pagina</translation>
+        </message>
+        <message>
+            <source>The page could not be shared</source>
+            <translation>Impossibile condividere la pagina</translation>
+        </message>
+        <message>
+            <source>This page…</source>
+            <translation>Questa pagina…</translation>
+        </message>
     </context>
     <context>
         <name>ComicsPage</name>
@@ -3825,6 +3873,18 @@
         <message>
             <source>Show all %1 sources</source>
             <translation>Mostra tutte le %1 fonti</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>Fissa: compare per prima</translation>
+        </message>
+        <message>
+            <source>Pin: its sources come first</source>
+            <translation>Fissa: le sue fonti compaiono per prime</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>Sgancia</translation>
         </message>
     </context>
     <context>
@@ -8864,6 +8924,10 @@
             <source>Translate on this device</source>
             <translation>Traduci su questo dispositivo</translation>
         </message>
+        <message>
+            <source>Hold a finger or the mouse on the page to see it twice as big until you let go, for small dialogue and notes in the margins. When off, holding a page opens its menu: copy, save or share it.</source>
+            <translation>Tieni un dito o il mouse sulla pagina per vederla grande il doppio finché non lasci: per dialoghi piccoli e note a margine. Se disattivato, tenere premuta una pagina apre il suo menu: copiala, salvala o condividila.</translation>
+        </message>
     </context>
     <context>
         <name>RecentSearches</name>
@@ -10790,6 +10854,14 @@
         <message>
             <source>SCANCORE runs Mihon, Tachiyomi, Aniyomi, CloudStream, Echo and LNReader extensions from repositories you add. It has no repository of its own.</source>
             <translation>SCANCORE esegue estensioni di Mihon, Tachiyomi, Aniyomi, CloudStream, Echo e LNReader dai repository che aggiungi. Non ha un repository proprio.</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>Fissa: compare per prima</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>Sgancia</translation>
         </message>
     </context>
     <context>

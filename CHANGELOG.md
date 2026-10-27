@@ -2,6 +2,14 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.3 — 2026-10-27
+
+Copy a page, and pin your sources.
+
+- **This page**: copy a comic page as a picture, save it, or share it on Android. Right-click the page on a computer; on a phone, use More → This page…, or hold the page when Settings → Reading → Long press to zoom is off. A saved page keeps its own file (a JPEG stays a JPEG), named after the series, chapter and page.
+- **Pinned sources**: pin an extension on the Extensions page, one of its sources, or a built-in source in Settings → Sources. Pinned ones come first in the source chips on Comics and Novels, in Anime's sources and in Settings, and pinned extensions come first on the Extensions page.
+- Long menus (an episode's servers, for one) scroll inside the window instead of running off it.
+
 ## 2.16.2 — 2026-10-27
 
 Anime fixes.

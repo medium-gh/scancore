@@ -2376,6 +2376,54 @@
             <source>Leave full screen</source>
             <translation>전체 화면 종료</translation>
         </message>
+        <message>
+            <source>Chapter %1</source>
+            <translation>%1화</translation>
+        </message>
+        <message>
+            <source>Copy image</source>
+            <translation>이미지 복사</translation>
+        </message>
+        <message>
+            <source>page %1</source>
+            <translation>%1페이지</translation>
+        </message>
+        <message>
+            <source>Page copied</source>
+            <translation>페이지를 복사했습니다</translation>
+        </message>
+        <message>
+            <source>Page saved</source>
+            <translation>페이지를 저장했습니다</translation>
+        </message>
+        <message>
+            <source>Picture (*.%1)</source>
+            <translation>이미지 (*.%1)</translation>
+        </message>
+        <message>
+            <source>Save image…</source>
+            <translation>이미지 저장…</translation>
+        </message>
+        <message>
+            <source>Share…</source>
+            <translation>공유…</translation>
+        </message>
+        <message>
+            <source>The page could not be copied</source>
+            <translation>페이지를 복사하지 못했습니다</translation>
+        </message>
+        <message>
+            <source>The page could not be saved</source>
+            <translation>페이지를 저장하지 못했습니다</translation>
+        </message>
+        <message>
+            <source>The page could not be shared</source>
+            <translation>페이지를 공유하지 못했습니다</translation>
+        </message>
+        <message>
+            <source>This page…</source>
+            <translation>이 페이지…</translation>
+        </message>
     </context>
     <context>
         <name>ComicsPage</name>
@@ -3825,6 +3873,18 @@
         <message>
             <source>Show all %1 sources</source>
             <translation>소스 %1개 모두 보기</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>고정: 맨 앞에 표시</translation>
+        </message>
+        <message>
+            <source>Pin: its sources come first</source>
+            <translation>고정: 소스를 맨 앞에 표시</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>고정 해제</translation>
         </message>
     </context>
     <context>
@@ -8864,6 +8924,10 @@
             <source>Translate on this device</source>
             <translation>이 기기에서 번역</translation>
         </message>
+        <message>
+            <source>Hold a finger or the mouse on the page to see it twice as big until you let go, for small dialogue and notes in the margins. When off, holding a page opens its menu: copy, save or share it.</source>
+            <translation>페이지를 손가락이나 마우스로 누르고 있으면 뗄 때까지 두 배로 크게 보입니다. 작은 대사와 여백 메모에 좋습니다. 끄면 페이지를 길게 누를 때 메뉴가 열립니다: 복사, 저장 또는 공유.</translation>
+        </message>
     </context>
     <context>
         <name>RecentSearches</name>
@@ -10790,6 +10854,14 @@
         <message>
             <source>SCANCORE runs Mihon, Tachiyomi, Aniyomi, CloudStream, Echo and LNReader extensions from repositories you add. It has no repository of its own.</source>
             <translation>SCANCORE는 추가한 저장소의 Mihon, Tachiyomi, Aniyomi, CloudStream, Echo, LNReader 확장 프로그램을 실행합니다. 자체 저장소는 없습니다.</translation>
+        </message>
+        <message>
+            <source>Pin: it comes first</source>
+            <translation>고정: 맨 앞에 표시</translation>
+        </message>
+        <message>
+            <source>Unpin</source>
+            <translation>고정 해제</translation>
         </message>
     </context>
     <context>
