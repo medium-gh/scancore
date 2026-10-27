@@ -1,0 +1,3 @@
+• Forgot password? Get a 6-digit code by email and set a new password in the app
+• Passwords from known data breaches are refused
+• A smoother sign-in form

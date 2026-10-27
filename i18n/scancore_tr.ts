@@ -1608,6 +1608,114 @@
             <source>Your password is sent only there and is never stored by this app.</source>
             <translation>Parolan yalnızca oraya gönderilir ve bu uygulama tarafından asla saklanmaz.</translation>
         </message>
+        <message>
+            <source>That reset has expired. Ask for a new email.</source>
+            <translation>Bu sıfırlamanın süresi doldu. Yeni bir e-posta iste.</translation>
+        </message>
+        <message>
+            <source>Check your email</source>
+            <translation>E-postanı kontrol et</translation>
+        </message>
+        <message>
+            <source>Choose a new password</source>
+            <translation>Yeni bir parola seç</translation>
+        </message>
+        <message>
+            <source>Password updated</source>
+            <translation>Parola güncellendi</translation>
+        </message>
+        <message>
+            <source>Reset your password</source>
+            <translation>Parolanı sıfırla</translation>
+        </message>
+        <message>
+            <source>If an account uses %1, we sent it a 6-digit code. Enter it here, or open the link in the same email on any device.</source>
+            <translation>%1 adresini kullanan bir hesap varsa, ona 6 haneli bir kod gönderdik. Kodu buraya gir ya da aynı e-postadaki bağlantıyı herhangi bir cihazda aç.</translation>
+        </message>
+        <message>
+            <source>Use at least 8 characters. Every device signs out once it&apos;s saved.</source>
+            <translation>En az 8 karakter kullan. Kaydedildiğinde tüm cihazların oturumu kapanır.</translation>
+        </message>
+        <message>
+            <source>Your new password is set, and every device was signed out. Sign in with it now.</source>
+            <translation>Yeni parolan ayarlandı ve tüm cihazların oturumu kapatıldı. Şimdi yeni parolanla oturum aç.</translation>
+        </message>
+        <message>
+            <source>Enter the email on your account. We&apos;ll send a code to enter here, and a link that works on any device.</source>
+            <translation>Hesabının e-postasını gir. Buraya girmen için bir kod ve her cihazda çalışan bir bağlantı göndereceğiz.</translation>
+        </message>
+        <message>
+            <source>Forgot password?</source>
+            <translation>Parolanı mı unuttun?</translation>
+        </message>
+        <message>
+            <source>At least 8 characters</source>
+            <translation>En az 8 karakter</translation>
+        </message>
+        <message>
+            <source>Code from the email</source>
+            <translation>E-postadaki kod</translation>
+        </message>
+        <message>
+            <source>6-digit code from the email</source>
+            <translation>E-postadaki 6 haneli kod</translation>
+        </message>
+        <message>
+            <source>New password</source>
+            <translation>Yeni parola</translation>
+        </message>
+        <message>
+            <source>Weak</source>
+            <translation>Zayıf</translation>
+        </message>
+        <message>
+            <source>Medium</source>
+            <translation>Orta</translation>
+        </message>
+        <message>
+            <source>Strong</source>
+            <translation>Güçlü</translation>
+        </message>
+        <message>
+            <source>Passwords found in known data breaches are refused. The check is private: your password is never shared.</source>
+            <translation>Bilinen veri sızıntılarında görülen parolalar kabul edilmez. Kontrol gizlidir: parolan asla paylaşılmaz.</translation>
+        </message>
+        <message>
+            <source>%1 doesn&apos;t send password emails. Ask whoever runs it to reset your password.</source>
+            <translation>%1 parola e-postası göndermez. Parolanı sıfırlaması için sunucuyu yöneten kişiye başvur.</translation>
+        </message>
+        <message>
+            <source>Send code</source>
+            <translation>Kod gönder</translation>
+        </message>
+        <message>
+            <source>Continue</source>
+            <translation>Devam</translation>
+        </message>
+        <message>
+            <source>Save new password</source>
+            <translation>Yeni parolayı kaydet</translation>
+        </message>
+        <message>
+            <source>The code works once and expires in 30 minutes. Nothing there? Look in spam, or send it again.</source>
+            <translation>Kod bir kez çalışır ve 30 dakika içinde geçersiz olur. Bir şey gelmedi mi? Spam klasörüne bak ya da tekrar gönder.</translation>
+        </message>
+        <message>
+            <source>Send again in %1 s</source>
+            <translation>%1 sn sonra tekrar gönder</translation>
+        </message>
+        <message>
+            <source>Send a new code</source>
+            <translation>Yeni kod gönder</translation>
+        </message>
+        <message>
+            <source>Use a different email</source>
+            <translation>Başka bir e-posta kullan</translation>
+        </message>
+        <message>
+            <source>Back to sign in</source>
+            <translation>Oturum açmaya dön</translation>
+        </message>
     </context>
     <context>
         <name>BackToTop</name>

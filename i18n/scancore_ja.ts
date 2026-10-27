@@ -1608,6 +1608,114 @@
             <source>Your password is sent only there and is never stored by this app.</source>
             <translation>パスワードはそこにだけ送信され、このアプリには保存されません。</translation>
         </message>
+        <message>
+            <source>That reset has expired. Ask for a new email.</source>
+            <translation>このリセットは期限切れです。新しいメールをリクエストしてください。</translation>
+        </message>
+        <message>
+            <source>Check your email</source>
+            <translation>メールを確認してください</translation>
+        </message>
+        <message>
+            <source>Choose a new password</source>
+            <translation>新しいパスワードを設定</translation>
+        </message>
+        <message>
+            <source>Password updated</source>
+            <translation>パスワードを更新しました</translation>
+        </message>
+        <message>
+            <source>Reset your password</source>
+            <translation>パスワードをリセット</translation>
+        </message>
+        <message>
+            <source>If an account uses %1, we sent it a 6-digit code. Enter it here, or open the link in the same email on any device.</source>
+            <translation>%1 を使うアカウントがあれば、6 桁のコードを送信しました。ここに入力するか、同じメールのリンクを任意のデバイスで開いてください。</translation>
+        </message>
+        <message>
+            <source>Use at least 8 characters. Every device signs out once it&apos;s saved.</source>
+            <translation>8 文字以上にしてください。保存すると、すべてのデバイスがログアウトされます。</translation>
+        </message>
+        <message>
+            <source>Your new password is set, and every device was signed out. Sign in with it now.</source>
+            <translation>新しいパスワードを設定し、すべてのデバイスをログアウトしました。新しいパスワードでログインしてください。</translation>
+        </message>
+        <message>
+            <source>Enter the email on your account. We&apos;ll send a code to enter here, and a link that works on any device.</source>
+            <translation>アカウントのメールアドレスを入力してください。ここに入力するコードと、どのデバイスでも使えるリンクを送信します。</translation>
+        </message>
+        <message>
+            <source>Forgot password?</source>
+            <translation>パスワードをお忘れですか？</translation>
+        </message>
+        <message>
+            <source>At least 8 characters</source>
+            <translation>8 文字以上</translation>
+        </message>
+        <message>
+            <source>Code from the email</source>
+            <translation>メールに届いたコード</translation>
+        </message>
+        <message>
+            <source>6-digit code from the email</source>
+            <translation>メールに届いた 6 桁のコード</translation>
+        </message>
+        <message>
+            <source>New password</source>
+            <translation>新しいパスワード</translation>
+        </message>
+        <message>
+            <source>Weak</source>
+            <translation>弱い</translation>
+        </message>
+        <message>
+            <source>Medium</source>
+            <translation>普通</translation>
+        </message>
+        <message>
+            <source>Strong</source>
+            <translation>強い</translation>
+        </message>
+        <message>
+            <source>Passwords found in known data breaches are refused. The check is private: your password is never shared.</source>
+            <translation>既知のデータ漏洩に含まれるパスワードは使えません。確認は非公開で行われ、パスワードが共有されることはありません。</translation>
+        </message>
+        <message>
+            <source>%1 doesn&apos;t send password emails. Ask whoever runs it to reset your password.</source>
+            <translation>%1 はパスワードのメールを送信しません。運営者にパスワードのリセットを依頼してください。</translation>
+        </message>
+        <message>
+            <source>Send code</source>
+            <translation>コードを送信</translation>
+        </message>
+        <message>
+            <source>Continue</source>
+            <translation>続ける</translation>
+        </message>
+        <message>
+            <source>Save new password</source>
+            <translation>新しいパスワードを保存</translation>
+        </message>
+        <message>
+            <source>The code works once and expires in 30 minutes. Nothing there? Look in spam, or send it again.</source>
+            <translation>コードは 1 回だけ使え、30 分で期限切れになります。届かない場合は迷惑メールを確認するか、再送信してください。</translation>
+        </message>
+        <message>
+            <source>Send again in %1 s</source>
+            <translation>%1 秒後に再送信</translation>
+        </message>
+        <message>
+            <source>Send a new code</source>
+            <translation>新しいコードを送信</translation>
+        </message>
+        <message>
+            <source>Use a different email</source>
+            <translation>別のメールアドレスを使う</translation>
+        </message>
+        <message>
+            <source>Back to sign in</source>
+            <translation>ログインに戻る</translation>
+        </message>
     </context>
     <context>
         <name>BackToTop</name>

@@ -1608,6 +1608,114 @@
             <source>Your password is sent only there and is never stored by this app.</source>
             <translation>Doon lang ipinapadala ang password mo at hindi ito iniimbak ng app na ito.</translation>
         </message>
+        <message>
+            <source>That reset has expired. Ask for a new email.</source>
+            <translation>Nag-expire na ang reset na iyon. Humingi ng bagong email.</translation>
+        </message>
+        <message>
+            <source>Check your email</source>
+            <translation>Tingnan ang email mo</translation>
+        </message>
+        <message>
+            <source>Choose a new password</source>
+            <translation>Pumili ng bagong password</translation>
+        </message>
+        <message>
+            <source>Password updated</source>
+            <translation>Na-update ang password</translation>
+        </message>
+        <message>
+            <source>Reset your password</source>
+            <translation>I-reset ang password mo</translation>
+        </message>
+        <message>
+            <source>If an account uses %1, we sent it a 6-digit code. Enter it here, or open the link in the same email on any device.</source>
+            <translation>Kung may account na gumagamit ng %1, pinadalhan namin ito ng 6-digit na code. Ilagay ito rito, o buksan ang link sa parehong email sa kahit anong device.</translation>
+        </message>
+        <message>
+            <source>Use at least 8 characters. Every device signs out once it&apos;s saved.</source>
+            <translation>Gumamit ng hindi bababa sa 8 character. Masa-sign out ang bawat device kapag na-save na ito.</translation>
+        </message>
+        <message>
+            <source>Your new password is set, and every device was signed out. Sign in with it now.</source>
+            <translation>Naitakda na ang bago mong password, at na-sign out ang bawat device. Mag-sign in gamit ito ngayon.</translation>
+        </message>
+        <message>
+            <source>Enter the email on your account. We&apos;ll send a code to enter here, and a link that works on any device.</source>
+            <translation>Ilagay ang email ng account mo. Magpapadala kami ng code na ilalagay rito, at link na gumagana sa kahit anong device.</translation>
+        </message>
+        <message>
+            <source>Forgot password?</source>
+            <translation>Nakalimutan ang password?</translation>
+        </message>
+        <message>
+            <source>At least 8 characters</source>
+            <translation>Hindi bababa sa 8 character</translation>
+        </message>
+        <message>
+            <source>Code from the email</source>
+            <translation>Code mula sa email</translation>
+        </message>
+        <message>
+            <source>6-digit code from the email</source>
+            <translation>6-digit na code mula sa email</translation>
+        </message>
+        <message>
+            <source>New password</source>
+            <translation>Bagong password</translation>
+        </message>
+        <message>
+            <source>Weak</source>
+            <translation>Mahina</translation>
+        </message>
+        <message>
+            <source>Medium</source>
+            <translation>Katamtaman</translation>
+        </message>
+        <message>
+            <source>Strong</source>
+            <translation>Malakas</translation>
+        </message>
+        <message>
+            <source>Passwords found in known data breaches are refused. The check is private: your password is never shared.</source>
+            <translation>Tinatanggihan ang mga password na lumabas sa mga kilalang data breach. Pribado ang pagsusuri: hindi kailanman ibinabahagi ang password mo.</translation>
+        </message>
+        <message>
+            <source>%1 doesn&apos;t send password emails. Ask whoever runs it to reset your password.</source>
+            <translation>Hindi nagpapadala ng password email ang %1. Hilingin sa nagpapatakbo nito na i-reset ang password mo.</translation>
+        </message>
+        <message>
+            <source>Send code</source>
+            <translation>Ipadala ang code</translation>
+        </message>
+        <message>
+            <source>Continue</source>
+            <translation>Magpatuloy</translation>
+        </message>
+        <message>
+            <source>Save new password</source>
+            <translation>I-save ang bagong password</translation>
+        </message>
+        <message>
+            <source>The code works once and expires in 30 minutes. Nothing there? Look in spam, or send it again.</source>
+            <translation>Isang beses lang gumagana ang code at mag-e-expire ito sa loob ng 30 minuto. Wala pa? Tingnan ang spam, o ipadala ulit.</translation>
+        </message>
+        <message>
+            <source>Send again in %1 s</source>
+            <translation>Ipadala ulit sa %1 s</translation>
+        </message>
+        <message>
+            <source>Send a new code</source>
+            <translation>Magpadala ng bagong code</translation>
+        </message>
+        <message>
+            <source>Use a different email</source>
+            <translation>Gumamit ng ibang email</translation>
+        </message>
+        <message>
+            <source>Back to sign in</source>
+            <translation>Bumalik sa pag-sign in</translation>
+        </message>
     </context>
     <context>
         <name>BackToTop</name>

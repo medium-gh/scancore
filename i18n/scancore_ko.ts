@@ -1608,6 +1608,114 @@
             <source>Your password is sent only there and is never stored by this app.</source>
             <translation>비밀번호는 그곳으로만 전송되며 이 앱에는 저장되지 않습니다.</translation>
         </message>
+        <message>
+            <source>That reset has expired. Ask for a new email.</source>
+            <translation>재설정 기간이 만료되었습니다. 새 이메일을 요청하세요.</translation>
+        </message>
+        <message>
+            <source>Check your email</source>
+            <translation>이메일을 확인하세요</translation>
+        </message>
+        <message>
+            <source>Choose a new password</source>
+            <translation>새 비밀번호 설정</translation>
+        </message>
+        <message>
+            <source>Password updated</source>
+            <translation>비밀번호가 변경되었습니다</translation>
+        </message>
+        <message>
+            <source>Reset your password</source>
+            <translation>비밀번호 재설정</translation>
+        </message>
+        <message>
+            <source>If an account uses %1, we sent it a 6-digit code. Enter it here, or open the link in the same email on any device.</source>
+            <translation>%1을(를) 사용하는 계정이 있다면 6자리 코드를 보냈습니다. 여기에 입력하거나, 같은 이메일의 링크를 아무 기기에서나 여세요.</translation>
+        </message>
+        <message>
+            <source>Use at least 8 characters. Every device signs out once it&apos;s saved.</source>
+            <translation>8자 이상 입력하세요. 저장하면 모든 기기에서 로그아웃됩니다.</translation>
+        </message>
+        <message>
+            <source>Your new password is set, and every device was signed out. Sign in with it now.</source>
+            <translation>새 비밀번호가 설정되었고 모든 기기에서 로그아웃되었습니다. 이제 새 비밀번호로 로그인하세요.</translation>
+        </message>
+        <message>
+            <source>Enter the email on your account. We&apos;ll send a code to enter here, and a link that works on any device.</source>
+            <translation>계정의 이메일을 입력하세요. 여기에 입력할 코드와 어느 기기에서나 열 수 있는 링크를 보내 드립니다.</translation>
+        </message>
+        <message>
+            <source>Forgot password?</source>
+            <translation>비밀번호를 잊으셨나요?</translation>
+        </message>
+        <message>
+            <source>At least 8 characters</source>
+            <translation>8자 이상</translation>
+        </message>
+        <message>
+            <source>Code from the email</source>
+            <translation>이메일로 받은 코드</translation>
+        </message>
+        <message>
+            <source>6-digit code from the email</source>
+            <translation>이메일로 받은 6자리 코드</translation>
+        </message>
+        <message>
+            <source>New password</source>
+            <translation>새 비밀번호</translation>
+        </message>
+        <message>
+            <source>Weak</source>
+            <translation>약함</translation>
+        </message>
+        <message>
+            <source>Medium</source>
+            <translation>보통</translation>
+        </message>
+        <message>
+            <source>Strong</source>
+            <translation>강함</translation>
+        </message>
+        <message>
+            <source>Passwords found in known data breaches are refused. The check is private: your password is never shared.</source>
+            <translation>알려진 데이터 유출에 포함된 비밀번호는 사용할 수 없습니다. 확인은 비공개로 이루어지며 비밀번호는 절대 공유되지 않습니다.</translation>
+        </message>
+        <message>
+            <source>%1 doesn&apos;t send password emails. Ask whoever runs it to reset your password.</source>
+            <translation>%1은(는) 비밀번호 이메일을 보내지 않습니다. 운영자에게 비밀번호 재설정을 요청하세요.</translation>
+        </message>
+        <message>
+            <source>Send code</source>
+            <translation>코드 보내기</translation>
+        </message>
+        <message>
+            <source>Continue</source>
+            <translation>계속</translation>
+        </message>
+        <message>
+            <source>Save new password</source>
+            <translation>새 비밀번호 저장</translation>
+        </message>
+        <message>
+            <source>The code works once and expires in 30 minutes. Nothing there? Look in spam, or send it again.</source>
+            <translation>코드는 한 번만 사용할 수 있으며 30분 후 만료됩니다. 받지 못했나요? 스팸함을 확인하거나 다시 보내세요.</translation>
+        </message>
+        <message>
+            <source>Send again in %1 s</source>
+            <translation>%1초 후 다시 보내기</translation>
+        </message>
+        <message>
+            <source>Send a new code</source>
+            <translation>새 코드 보내기</translation>
+        </message>
+        <message>
+            <source>Use a different email</source>
+            <translation>다른 이메일 사용</translation>
+        </message>
+        <message>
+            <source>Back to sign in</source>
+            <translation>로그인으로 돌아가기</translation>
+        </message>
     </context>
     <context>
         <name>BackToTop</name>

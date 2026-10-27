@@ -2,6 +2,14 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.4 — 2026-10-27
+
+Forgot your password? Reset it without leaving the app.
+
+- **Forgot password?** sits beside the password when you sign in (the welcome screen and Settings → Sync). Enter your email and scancore.onl sends a 6-digit code: type it into the app and choose a new password right there. The same email has a link that works on any device. The code and the link work once and expire in 30 minutes, and five wrong codes use the reset up. On your own sync server, the app tells you to ask whoever runs it.
+- **Safer passwords**: new passwords that appeared in known data breaches are refused, and so are passwords built from your username or email. The check is private: only five characters of a hash leave the server, never the password. The strength meter shows what is still missing.
+- The sign-in form eases between signing in, creating an account and each recovery step instead of jumping, and a focused field or button brightens its own edge instead of drawing a ring over what is next to it.
+
 ## 2.16.3 — 2026-10-27
 
 Copy a page, and pin your sources.

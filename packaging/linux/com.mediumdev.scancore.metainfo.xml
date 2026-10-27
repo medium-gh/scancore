@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.16.4" date="2026-10-27">
+      <description>
+        <p>Forgot your password? Get a 6-digit code by email and choose a new password without leaving the app. Passwords from known data breaches are refused, and the sign-in form moves smoothly between its steps.</p>
+      </description>
+    </release>
     <release version="2.16.3" date="2026-10-27">
       <description>
         <p>Copy, save or share a comic page from the reader, and pin the extensions and sources you use most so they come first.</p>

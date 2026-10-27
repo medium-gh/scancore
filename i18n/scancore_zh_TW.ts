@@ -1608,6 +1608,114 @@
             <source>Your password is sent only there and is never stored by this app.</source>
             <translation>密碼只會傳送到那裡，絕不會儲存在本應用中。</translation>
         </message>
+        <message>
+            <source>That reset has expired. Ask for a new email.</source>
+            <translation>該重設已過期。請重新申請郵件。</translation>
+        </message>
+        <message>
+            <source>Check your email</source>
+            <translation>查看你的郵箱</translation>
+        </message>
+        <message>
+            <source>Choose a new password</source>
+            <translation>設定新密碼</translation>
+        </message>
+        <message>
+            <source>Password updated</source>
+            <translation>密碼已更新</translation>
+        </message>
+        <message>
+            <source>Reset your password</source>
+            <translation>重設密碼</translation>
+        </message>
+        <message>
+            <source>If an account uses %1, we sent it a 6-digit code. Enter it here, or open the link in the same email on any device.</source>
+            <translation>如果有賬號使用 %1，我們已向其傳送 6 位驗證碼。在此輸入，或在任何裝置上開啟同一封郵件中的連結。</translation>
+        </message>
+        <message>
+            <source>Use at least 8 characters. Every device signs out once it&apos;s saved.</source>
+            <translation>至少 8 個字元。儲存後，所有裝置都會登出。</translation>
+        </message>
+        <message>
+            <source>Your new password is set, and every device was signed out. Sign in with it now.</source>
+            <translation>新密碼已設定，所有裝置均已登出。現在用新密碼登入吧。</translation>
+        </message>
+        <message>
+            <source>Enter the email on your account. We&apos;ll send a code to enter here, and a link that works on any device.</source>
+            <translation>輸入你賬號的郵箱。我們會傳送一個在此輸入的驗證碼，以及一個在任何裝置上都能用的連結。</translation>
+        </message>
+        <message>
+            <source>Forgot password?</source>
+            <translation>忘記密碼？</translation>
+        </message>
+        <message>
+            <source>At least 8 characters</source>
+            <translation>至少 8 個字元</translation>
+        </message>
+        <message>
+            <source>Code from the email</source>
+            <translation>郵件中的驗證碼</translation>
+        </message>
+        <message>
+            <source>6-digit code from the email</source>
+            <translation>郵件中的 6 位驗證碼</translation>
+        </message>
+        <message>
+            <source>New password</source>
+            <translation>新密碼</translation>
+        </message>
+        <message>
+            <source>Weak</source>
+            <translation>弱</translation>
+        </message>
+        <message>
+            <source>Medium</source>
+            <translation>中</translation>
+        </message>
+        <message>
+            <source>Strong</source>
+            <translation>強</translation>
+        </message>
+        <message>
+            <source>Passwords found in known data breaches are refused. The check is private: your password is never shared.</source>
+            <translation>出現在已知資料外洩中的密碼將被拒絕。檢查過程是私密的：你的密碼絕不會被分享。</translation>
+        </message>
+        <message>
+            <source>%1 doesn&apos;t send password emails. Ask whoever runs it to reset your password.</source>
+            <translation>%1 不傳送密碼郵件。請讓伺服器的管理者為你重設密碼。</translation>
+        </message>
+        <message>
+            <source>Send code</source>
+            <translation>傳送驗證碼</translation>
+        </message>
+        <message>
+            <source>Continue</source>
+            <translation>繼續</translation>
+        </message>
+        <message>
+            <source>Save new password</source>
+            <translation>儲存新密碼</translation>
+        </message>
+        <message>
+            <source>The code works once and expires in 30 minutes. Nothing there? Look in spam, or send it again.</source>
+            <translation>驗證碼僅能使用一次，30 分鐘後過期。沒收到？請查看垃圾郵件，或重新傳送。</translation>
+        </message>
+        <message>
+            <source>Send again in %1 s</source>
+            <translation>%1 秒後可重新傳送</translation>
+        </message>
+        <message>
+            <source>Send a new code</source>
+            <translation>傳送新驗證碼</translation>
+        </message>
+        <message>
+            <source>Use a different email</source>
+            <translation>使用其他郵箱</translation>
+        </message>
+        <message>
+            <source>Back to sign in</source>
+            <translation>返回登入</translation>
+        </message>
     </context>
     <context>
         <name>BackToTop</name>

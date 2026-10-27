@@ -1608,6 +1608,114 @@
             <source>Your password is sent only there and is never stored by this app.</source>
             <translation>Пароль отправляется только туда и никогда не сохраняется этим приложением.</translation>
         </message>
+        <message>
+            <source>That reset has expired. Ask for a new email.</source>
+            <translation>Срок действия сброса истёк. Запросите новое письмо.</translation>
+        </message>
+        <message>
+            <source>Check your email</source>
+            <translation>Проверьте почту</translation>
+        </message>
+        <message>
+            <source>Choose a new password</source>
+            <translation>Придумайте новый пароль</translation>
+        </message>
+        <message>
+            <source>Password updated</source>
+            <translation>Пароль изменён</translation>
+        </message>
+        <message>
+            <source>Reset your password</source>
+            <translation>Сброс пароля</translation>
+        </message>
+        <message>
+            <source>If an account uses %1, we sent it a 6-digit code. Enter it here, or open the link in the same email on any device.</source>
+            <translation>Если какой-то аккаунт использует %1, мы отправили на него 6-значный код. Введите его здесь или откройте ссылку из того же письма на любом устройстве.</translation>
+        </message>
+        <message>
+            <source>Use at least 8 characters. Every device signs out once it&apos;s saved.</source>
+            <translation>Не менее 8 символов. После сохранения все устройства выйдут из аккаунта.</translation>
+        </message>
+        <message>
+            <source>Your new password is set, and every device was signed out. Sign in with it now.</source>
+            <translation>Новый пароль установлен, все устройства вышли из аккаунта. Войдите с новым паролем.</translation>
+        </message>
+        <message>
+            <source>Enter the email on your account. We&apos;ll send a code to enter here, and a link that works on any device.</source>
+            <translation>Введите почту вашего аккаунта. Мы пришлём код, который нужно ввести здесь, и ссылку, которая работает на любом устройстве.</translation>
+        </message>
+        <message>
+            <source>Forgot password?</source>
+            <translation>Забыли пароль?</translation>
+        </message>
+        <message>
+            <source>At least 8 characters</source>
+            <translation>Не менее 8 символов</translation>
+        </message>
+        <message>
+            <source>Code from the email</source>
+            <translation>Код из письма</translation>
+        </message>
+        <message>
+            <source>6-digit code from the email</source>
+            <translation>6-значный код из письма</translation>
+        </message>
+        <message>
+            <source>New password</source>
+            <translation>Новый пароль</translation>
+        </message>
+        <message>
+            <source>Weak</source>
+            <translation>Слабый</translation>
+        </message>
+        <message>
+            <source>Medium</source>
+            <translation>Средний</translation>
+        </message>
+        <message>
+            <source>Strong</source>
+            <translation>Надёжный</translation>
+        </message>
+        <message>
+            <source>Passwords found in known data breaches are refused. The check is private: your password is never shared.</source>
+            <translation>Пароли из известных утечек данных не принимаются. Проверка конфиденциальна: ваш пароль никому не передаётся.</translation>
+        </message>
+        <message>
+            <source>%1 doesn&apos;t send password emails. Ask whoever runs it to reset your password.</source>
+            <translation>%1 не отправляет письма для сброса пароля. Попросите владельца сервера сбросить ваш пароль.</translation>
+        </message>
+        <message>
+            <source>Send code</source>
+            <translation>Отправить код</translation>
+        </message>
+        <message>
+            <source>Continue</source>
+            <translation>Продолжить</translation>
+        </message>
+        <message>
+            <source>Save new password</source>
+            <translation>Сохранить новый пароль</translation>
+        </message>
+        <message>
+            <source>The code works once and expires in 30 minutes. Nothing there? Look in spam, or send it again.</source>
+            <translation>Код действует один раз и истекает через 30 минут. Ничего не пришло? Проверьте папку «Спам» или отправьте ещё раз.</translation>
+        </message>
+        <message>
+            <source>Send again in %1 s</source>
+            <translation>Отправить снова через %1 с</translation>
+        </message>
+        <message>
+            <source>Send a new code</source>
+            <translation>Отправить новый код</translation>
+        </message>
+        <message>
+            <source>Use a different email</source>
+            <translation>Указать другую почту</translation>
+        </message>
+        <message>
+            <source>Back to sign in</source>
+            <translation>Вернуться ко входу</translation>
+        </message>
     </context>
     <context>
         <name>BackToTop</name>

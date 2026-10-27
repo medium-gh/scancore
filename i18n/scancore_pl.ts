@@ -1608,6 +1608,114 @@
             <source>Your password is sent only there and is never stored by this app.</source>
             <translation>Hasło jest wysyłane tylko tam i nigdy nie jest zapisywane przez aplikację.</translation>
         </message>
+        <message>
+            <source>That reset has expired. Ask for a new email.</source>
+            <translation>Ten reset wygasł. Poproś o nowy e-mail.</translation>
+        </message>
+        <message>
+            <source>Check your email</source>
+            <translation>Sprawdź pocztę</translation>
+        </message>
+        <message>
+            <source>Choose a new password</source>
+            <translation>Wybierz nowe hasło</translation>
+        </message>
+        <message>
+            <source>Password updated</source>
+            <translation>Hasło zmienione</translation>
+        </message>
+        <message>
+            <source>Reset your password</source>
+            <translation>Zresetuj hasło</translation>
+        </message>
+        <message>
+            <source>If an account uses %1, we sent it a 6-digit code. Enter it here, or open the link in the same email on any device.</source>
+            <translation>Jeśli jakieś konto używa adresu %1, wysłaliśmy na nie 6-cyfrowy kod. Wpisz go tutaj albo otwórz link z tego samego e-maila na dowolnym urządzeniu.</translation>
+        </message>
+        <message>
+            <source>Use at least 8 characters. Every device signs out once it&apos;s saved.</source>
+            <translation>Użyj co najmniej 8 znaków. Po zapisaniu wszystkie urządzenia zostaną wylogowane.</translation>
+        </message>
+        <message>
+            <source>Your new password is set, and every device was signed out. Sign in with it now.</source>
+            <translation>Nowe hasło jest ustawione, a wszystkie urządzenia zostały wylogowane. Zaloguj się nim teraz.</translation>
+        </message>
+        <message>
+            <source>Enter the email on your account. We&apos;ll send a code to enter here, and a link that works on any device.</source>
+            <translation>Wpisz e-mail swojego konta. Wyślemy kod do wpisania tutaj i link, który działa na każdym urządzeniu.</translation>
+        </message>
+        <message>
+            <source>Forgot password?</source>
+            <translation>Nie pamiętasz hasła?</translation>
+        </message>
+        <message>
+            <source>At least 8 characters</source>
+            <translation>Co najmniej 8 znaków</translation>
+        </message>
+        <message>
+            <source>Code from the email</source>
+            <translation>Kod z e-maila</translation>
+        </message>
+        <message>
+            <source>6-digit code from the email</source>
+            <translation>6-cyfrowy kod z e-maila</translation>
+        </message>
+        <message>
+            <source>New password</source>
+            <translation>Nowe hasło</translation>
+        </message>
+        <message>
+            <source>Weak</source>
+            <translation>Słabe</translation>
+        </message>
+        <message>
+            <source>Medium</source>
+            <translation>Średnie</translation>
+        </message>
+        <message>
+            <source>Strong</source>
+            <translation>Silne</translation>
+        </message>
+        <message>
+            <source>Passwords found in known data breaches are refused. The check is private: your password is never shared.</source>
+            <translation>Hasła, które pojawiły się w znanych wyciekach danych, są odrzucane. Sprawdzanie jest prywatne: twoje hasło nigdy nie jest udostępniane.</translation>
+        </message>
+        <message>
+            <source>%1 doesn&apos;t send password emails. Ask whoever runs it to reset your password.</source>
+            <translation>%1 nie wysyła e-maili z hasłem. Poproś osobę, która prowadzi ten serwer, o zresetowanie hasła.</translation>
+        </message>
+        <message>
+            <source>Send code</source>
+            <translation>Wyślij kod</translation>
+        </message>
+        <message>
+            <source>Continue</source>
+            <translation>Dalej</translation>
+        </message>
+        <message>
+            <source>Save new password</source>
+            <translation>Zapisz nowe hasło</translation>
+        </message>
+        <message>
+            <source>The code works once and expires in 30 minutes. Nothing there? Look in spam, or send it again.</source>
+            <translation>Kod działa raz i wygasa po 30 minutach. Nic nie dotarło? Sprawdź spam albo wyślij ponownie.</translation>
+        </message>
+        <message>
+            <source>Send again in %1 s</source>
+            <translation>Wyślij ponownie za %1 s</translation>
+        </message>
+        <message>
+            <source>Send a new code</source>
+            <translation>Wyślij nowy kod</translation>
+        </message>
+        <message>
+            <source>Use a different email</source>
+            <translation>Użyj innego e-maila</translation>
+        </message>
+        <message>
+            <source>Back to sign in</source>
+            <translation>Wróć do logowania</translation>
+        </message>
     </context>
     <context>
         <name>BackToTop</name>

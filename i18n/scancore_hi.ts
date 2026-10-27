@@ -1608,6 +1608,114 @@
             <source>Your password is sent only there and is never stored by this app.</source>
             <translation>आपका पासवर्ड सिर्फ़ वहीं भेजा जाता है और यह ऐप उसे कभी नहीं सहेजता।</translation>
         </message>
+        <message>
+            <source>That reset has expired. Ask for a new email.</source>
+            <translation>वह रीसेट समाप्त हो गया है। नया ईमेल मंगाएं।</translation>
+        </message>
+        <message>
+            <source>Check your email</source>
+            <translation>अपना ईमेल देखें</translation>
+        </message>
+        <message>
+            <source>Choose a new password</source>
+            <translation>नया पासवर्ड चुनें</translation>
+        </message>
+        <message>
+            <source>Password updated</source>
+            <translation>पासवर्ड बदल गया</translation>
+        </message>
+        <message>
+            <source>Reset your password</source>
+            <translation>अपना पासवर्ड रीसेट करें</translation>
+        </message>
+        <message>
+            <source>If an account uses %1, we sent it a 6-digit code. Enter it here, or open the link in the same email on any device.</source>
+            <translation>अगर कोई खाता %1 इस्तेमाल करता है, तो हमने उस पर 6 अंकों का कोड भेजा है। उसे यहां डालें, या किसी भी डिवाइस पर उसी ईमेल का लिंक खोलें।</translation>
+        </message>
+        <message>
+            <source>Use at least 8 characters. Every device signs out once it&apos;s saved.</source>
+            <translation>कम से कम 8 अक्षर इस्तेमाल करें। सेव होते ही हर डिवाइस साइन आउट हो जाएगा।</translation>
+        </message>
+        <message>
+            <source>Your new password is set, and every device was signed out. Sign in with it now.</source>
+            <translation>आपका नया पासवर्ड सेट हो गया है और हर डिवाइस साइन आउट हो गया है। अब इससे साइन इन करें।</translation>
+        </message>
+        <message>
+            <source>Enter the email on your account. We&apos;ll send a code to enter here, and a link that works on any device.</source>
+            <translation>अपने खाते का ईमेल डालें। हम यहां डालने के लिए एक कोड और किसी भी डिवाइस पर चलने वाला लिंक भेजेंगे।</translation>
+        </message>
+        <message>
+            <source>Forgot password?</source>
+            <translation>पासवर्ड भूल गए?</translation>
+        </message>
+        <message>
+            <source>At least 8 characters</source>
+            <translation>कम से कम 8 अक्षर</translation>
+        </message>
+        <message>
+            <source>Code from the email</source>
+            <translation>ईमेल में आया कोड</translation>
+        </message>
+        <message>
+            <source>6-digit code from the email</source>
+            <translation>ईमेल में आया 6 अंकों का कोड</translation>
+        </message>
+        <message>
+            <source>New password</source>
+            <translation>नया पासवर्ड</translation>
+        </message>
+        <message>
+            <source>Weak</source>
+            <translation>कमज़ोर</translation>
+        </message>
+        <message>
+            <source>Medium</source>
+            <translation>मध्यम</translation>
+        </message>
+        <message>
+            <source>Strong</source>
+            <translation>मज़बूत</translation>
+        </message>
+        <message>
+            <source>Passwords found in known data breaches are refused. The check is private: your password is never shared.</source>
+            <translation>जाने-माने डेटा लीक में पाए गए पासवर्ड स्वीकार नहीं किए जाते। यह जांच निजी है: आपका पासवर्ड कभी साझा नहीं होता।</translation>
+        </message>
+        <message>
+            <source>%1 doesn&apos;t send password emails. Ask whoever runs it to reset your password.</source>
+            <translation>%1 पासवर्ड ईमेल नहीं भेजता। इसे चलाने वाले से अपना पासवर्ड रीसेट करने को कहें।</translation>
+        </message>
+        <message>
+            <source>Send code</source>
+            <translation>कोड भेजें</translation>
+        </message>
+        <message>
+            <source>Continue</source>
+            <translation>जारी रखें</translation>
+        </message>
+        <message>
+            <source>Save new password</source>
+            <translation>नया पासवर्ड सेव करें</translation>
+        </message>
+        <message>
+            <source>The code works once and expires in 30 minutes. Nothing there? Look in spam, or send it again.</source>
+            <translation>कोड एक ही बार काम करता है और 30 मिनट में समाप्त हो जाता है। कुछ नहीं आया? स्पैम देखें, या फिर से भेजें।</translation>
+        </message>
+        <message>
+            <source>Send again in %1 s</source>
+            <translation>%1 s में फिर से भेजें</translation>
+        </message>
+        <message>
+            <source>Send a new code</source>
+            <translation>नया कोड भेजें</translation>
+        </message>
+        <message>
+            <source>Use a different email</source>
+            <translation>दूसरा ईमेल इस्तेमाल करें</translation>
+        </message>
+        <message>
+            <source>Back to sign in</source>
+            <translation>साइन इन पर वापस जाएं</translation>
+        </message>
     </context>
     <context>
         <name>BackToTop</name>

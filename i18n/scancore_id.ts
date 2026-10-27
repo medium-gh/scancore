@@ -1608,6 +1608,114 @@
             <source>Your password is sent only there and is never stored by this app.</source>
             <translation>Kata sandi hanya dikirim ke sana dan tidak pernah disimpan aplikasi ini.</translation>
         </message>
+        <message>
+            <source>That reset has expired. Ask for a new email.</source>
+            <translation>Pengaturan ulang itu sudah kedaluwarsa. Minta email baru.</translation>
+        </message>
+        <message>
+            <source>Check your email</source>
+            <translation>Periksa email Anda</translation>
+        </message>
+        <message>
+            <source>Choose a new password</source>
+            <translation>Pilih kata sandi baru</translation>
+        </message>
+        <message>
+            <source>Password updated</source>
+            <translation>Kata sandi diperbarui</translation>
+        </message>
+        <message>
+            <source>Reset your password</source>
+            <translation>Atur ulang kata sandi Anda</translation>
+        </message>
+        <message>
+            <source>If an account uses %1, we sent it a 6-digit code. Enter it here, or open the link in the same email on any device.</source>
+            <translation>Jika ada akun yang memakai %1, kami telah mengirim kode 6 digit ke sana. Masukkan di sini, atau buka tautan di email yang sama di perangkat mana pun.</translation>
+        </message>
+        <message>
+            <source>Use at least 8 characters. Every device signs out once it&apos;s saved.</source>
+            <translation>Gunakan minimal 8 karakter. Semua perangkat akan keluar setelah disimpan.</translation>
+        </message>
+        <message>
+            <source>Your new password is set, and every device was signed out. Sign in with it now.</source>
+            <translation>Kata sandi baru Anda sudah diatur, dan semua perangkat telah keluar. Masuk dengan kata sandi itu sekarang.</translation>
+        </message>
+        <message>
+            <source>Enter the email on your account. We&apos;ll send a code to enter here, and a link that works on any device.</source>
+            <translation>Masukkan email akun Anda. Kami akan mengirim kode untuk dimasukkan di sini, dan tautan yang berfungsi di perangkat mana pun.</translation>
+        </message>
+        <message>
+            <source>Forgot password?</source>
+            <translation>Lupa kata sandi?</translation>
+        </message>
+        <message>
+            <source>At least 8 characters</source>
+            <translation>Minimal 8 karakter</translation>
+        </message>
+        <message>
+            <source>Code from the email</source>
+            <translation>Kode dari email</translation>
+        </message>
+        <message>
+            <source>6-digit code from the email</source>
+            <translation>Kode 6 digit dari email</translation>
+        </message>
+        <message>
+            <source>New password</source>
+            <translation>Kata sandi baru</translation>
+        </message>
+        <message>
+            <source>Weak</source>
+            <translation>Lemah</translation>
+        </message>
+        <message>
+            <source>Medium</source>
+            <translation>Sedang</translation>
+        </message>
+        <message>
+            <source>Strong</source>
+            <translation>Kuat</translation>
+        </message>
+        <message>
+            <source>Passwords found in known data breaches are refused. The check is private: your password is never shared.</source>
+            <translation>Kata sandi yang muncul di kebocoran data yang diketahui akan ditolak. Pemeriksaannya privat: kata sandi Anda tidak pernah dibagikan.</translation>
+        </message>
+        <message>
+            <source>%1 doesn&apos;t send password emails. Ask whoever runs it to reset your password.</source>
+            <translation>%1 tidak mengirim email kata sandi. Minta pengelolanya untuk mengatur ulang kata sandi Anda.</translation>
+        </message>
+        <message>
+            <source>Send code</source>
+            <translation>Kirim kode</translation>
+        </message>
+        <message>
+            <source>Continue</source>
+            <translation>Lanjutkan</translation>
+        </message>
+        <message>
+            <source>Save new password</source>
+            <translation>Simpan kata sandi baru</translation>
+        </message>
+        <message>
+            <source>The code works once and expires in 30 minutes. Nothing there? Look in spam, or send it again.</source>
+            <translation>Kode hanya berlaku sekali dan kedaluwarsa dalam 30 menit. Belum ada? Periksa folder spam, atau kirim lagi.</translation>
+        </message>
+        <message>
+            <source>Send again in %1 s</source>
+            <translation>Kirim lagi dalam %1 dtk</translation>
+        </message>
+        <message>
+            <source>Send a new code</source>
+            <translation>Kirim kode baru</translation>
+        </message>
+        <message>
+            <source>Use a different email</source>
+            <translation>Gunakan email lain</translation>
+        </message>
+        <message>
+            <source>Back to sign in</source>
+            <translation>Kembali ke halaman masuk</translation>
+        </message>
     </context>
     <context>
         <name>BackToTop</name>

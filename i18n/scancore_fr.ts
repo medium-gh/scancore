@@ -1608,6 +1608,114 @@
             <source>Your password is sent only there and is never stored by this app.</source>
             <translation>Votre mot de passe n’est envoyé que là et l’app ne le garde jamais.</translation>
         </message>
+        <message>
+            <source>That reset has expired. Ask for a new email.</source>
+            <translation>Cette réinitialisation a expiré. Demandez un nouvel e-mail.</translation>
+        </message>
+        <message>
+            <source>Check your email</source>
+            <translation>Consultez vos e-mails</translation>
+        </message>
+        <message>
+            <source>Choose a new password</source>
+            <translation>Choisissez un nouveau mot de passe</translation>
+        </message>
+        <message>
+            <source>Password updated</source>
+            <translation>Mot de passe modifié</translation>
+        </message>
+        <message>
+            <source>Reset your password</source>
+            <translation>Réinitialiser votre mot de passe</translation>
+        </message>
+        <message>
+            <source>If an account uses %1, we sent it a 6-digit code. Enter it here, or open the link in the same email on any device.</source>
+            <translation>Si un compte utilise %1, nous lui avons envoyé un code à 6 chiffres. Saisissez-le ici, ou ouvrez le lien du même e-mail sur n’importe quel appareil.</translation>
+        </message>
+        <message>
+            <source>Use at least 8 characters. Every device signs out once it&apos;s saved.</source>
+            <translation>Au moins 8 caractères. Tous les appareils seront déconnectés une fois enregistré.</translation>
+        </message>
+        <message>
+            <source>Your new password is set, and every device was signed out. Sign in with it now.</source>
+            <translation>Votre nouveau mot de passe est enregistré et tous les appareils ont été déconnectés. Connectez-vous dès maintenant avec celui-ci.</translation>
+        </message>
+        <message>
+            <source>Enter the email on your account. We&apos;ll send a code to enter here, and a link that works on any device.</source>
+            <translation>Saisissez l’e-mail de votre compte. Nous enverrons un code à saisir ici, et un lien qui fonctionne sur n’importe quel appareil.</translation>
+        </message>
+        <message>
+            <source>Forgot password?</source>
+            <translation>Mot de passe oublié ?</translation>
+        </message>
+        <message>
+            <source>At least 8 characters</source>
+            <translation>Au moins 8 caractères</translation>
+        </message>
+        <message>
+            <source>Code from the email</source>
+            <translation>Code reçu par e-mail</translation>
+        </message>
+        <message>
+            <source>6-digit code from the email</source>
+            <translation>Code à 6 chiffres reçu par e-mail</translation>
+        </message>
+        <message>
+            <source>New password</source>
+            <translation>Nouveau mot de passe</translation>
+        </message>
+        <message>
+            <source>Weak</source>
+            <translation>Faible</translation>
+        </message>
+        <message>
+            <source>Medium</source>
+            <translation>Moyen</translation>
+        </message>
+        <message>
+            <source>Strong</source>
+            <translation>Fort</translation>
+        </message>
+        <message>
+            <source>Passwords found in known data breaches are refused. The check is private: your password is never shared.</source>
+            <translation>Les mots de passe présents dans des fuites de données connues sont refusés. La vérification est confidentielle : votre mot de passe n’est jamais partagé.</translation>
+        </message>
+        <message>
+            <source>%1 doesn&apos;t send password emails. Ask whoever runs it to reset your password.</source>
+            <translation>%1 n’envoie pas d’e-mails de mot de passe. Demandez à la personne qui le gère de réinitialiser votre mot de passe.</translation>
+        </message>
+        <message>
+            <source>Send code</source>
+            <translation>Envoyer le code</translation>
+        </message>
+        <message>
+            <source>Continue</source>
+            <translation>Continuer</translation>
+        </message>
+        <message>
+            <source>Save new password</source>
+            <translation>Enregistrer le mot de passe</translation>
+        </message>
+        <message>
+            <source>The code works once and expires in 30 minutes. Nothing there? Look in spam, or send it again.</source>
+            <translation>Le code ne fonctionne qu’une fois et expire au bout de 30 minutes. Rien reçu ? Regardez dans les spams, ou renvoyez-le.</translation>
+        </message>
+        <message>
+            <source>Send again in %1 s</source>
+            <translation>Renvoyer dans %1 s</translation>
+        </message>
+        <message>
+            <source>Send a new code</source>
+            <translation>Envoyer un nouveau code</translation>
+        </message>
+        <message>
+            <source>Use a different email</source>
+            <translation>Utiliser un autre e-mail</translation>
+        </message>
+        <message>
+            <source>Back to sign in</source>
+            <translation>Retour à la connexion</translation>
+        </message>
     </context>
     <context>
         <name>BackToTop</name>

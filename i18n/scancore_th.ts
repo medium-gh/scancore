@@ -1608,6 +1608,114 @@
             <source>Your password is sent only there and is never stored by this app.</source>
             <translation>รหัสผ่านจะส่งไปที่นั่นเท่านั้น และแอปนี้ไม่เคยเก็บไว้</translation>
         </message>
+        <message>
+            <source>That reset has expired. Ask for a new email.</source>
+            <translation>การรีเซ็ตนั้นหมดอายุแล้ว ขออีเมลใหม่</translation>
+        </message>
+        <message>
+            <source>Check your email</source>
+            <translation>ตรวจสอบอีเมลของคุณ</translation>
+        </message>
+        <message>
+            <source>Choose a new password</source>
+            <translation>ตั้งรหัสผ่านใหม่</translation>
+        </message>
+        <message>
+            <source>Password updated</source>
+            <translation>อัปเดตรหัสผ่านแล้ว</translation>
+        </message>
+        <message>
+            <source>Reset your password</source>
+            <translation>รีเซ็ตรหัสผ่าน</translation>
+        </message>
+        <message>
+            <source>If an account uses %1, we sent it a 6-digit code. Enter it here, or open the link in the same email on any device.</source>
+            <translation>หากมีบัญชีที่ใช้ %1 เราได้ส่งรหัส 6 หลักไปแล้ว ป้อนรหัสที่นี่ หรือเปิดลิงก์ในอีเมลฉบับเดียวกันบนอุปกรณ์ใดก็ได้</translation>
+        </message>
+        <message>
+            <source>Use at least 8 characters. Every device signs out once it&apos;s saved.</source>
+            <translation>ใช้อย่างน้อย 8 ตัวอักษร ทุกอุปกรณ์จะออกจากระบบเมื่อบันทึกแล้ว</translation>
+        </message>
+        <message>
+            <source>Your new password is set, and every device was signed out. Sign in with it now.</source>
+            <translation>ตั้งรหัสผ่านใหม่แล้ว และทุกอุปกรณ์ออกจากระบบแล้ว ลงชื่อเข้าใช้ด้วยรหัสผ่านใหม่ได้เลย</translation>
+        </message>
+        <message>
+            <source>Enter the email on your account. We&apos;ll send a code to enter here, and a link that works on any device.</source>
+            <translation>ป้อนอีเมลของบัญชี เราจะส่งรหัสสำหรับป้อนที่นี่ และลิงก์ที่ใช้ได้บนทุกอุปกรณ์</translation>
+        </message>
+        <message>
+            <source>Forgot password?</source>
+            <translation>ลืมรหัสผ่าน?</translation>
+        </message>
+        <message>
+            <source>At least 8 characters</source>
+            <translation>อย่างน้อย 8 ตัวอักษร</translation>
+        </message>
+        <message>
+            <source>Code from the email</source>
+            <translation>รหัสจากอีเมล</translation>
+        </message>
+        <message>
+            <source>6-digit code from the email</source>
+            <translation>รหัส 6 หลักจากอีเมล</translation>
+        </message>
+        <message>
+            <source>New password</source>
+            <translation>รหัสผ่านใหม่</translation>
+        </message>
+        <message>
+            <source>Weak</source>
+            <translation>อ่อน</translation>
+        </message>
+        <message>
+            <source>Medium</source>
+            <translation>ปานกลาง</translation>
+        </message>
+        <message>
+            <source>Strong</source>
+            <translation>แข็งแรง</translation>
+        </message>
+        <message>
+            <source>Passwords found in known data breaches are refused. The check is private: your password is never shared.</source>
+            <translation>รหัสผ่านที่เคยหลุดในเหตุข้อมูลรั่วไหลที่รู้จักจะใช้ไม่ได้ การตรวจสอบเป็นแบบส่วนตัว: รหัสผ่านของคุณไม่ถูกแชร์</translation>
+        </message>
+        <message>
+            <source>%1 doesn&apos;t send password emails. Ask whoever runs it to reset your password.</source>
+            <translation>%1 ไม่ส่งอีเมลรหัสผ่าน ขอให้ผู้ดูแลเซิร์ฟเวอร์รีเซ็ตรหัสผ่านให้</translation>
+        </message>
+        <message>
+            <source>Send code</source>
+            <translation>ส่งรหัส</translation>
+        </message>
+        <message>
+            <source>Continue</source>
+            <translation>ดำเนินการต่อ</translation>
+        </message>
+        <message>
+            <source>Save new password</source>
+            <translation>บันทึกรหัสผ่านใหม่</translation>
+        </message>
+        <message>
+            <source>The code works once and expires in 30 minutes. Nothing there? Look in spam, or send it again.</source>
+            <translation>รหัสใช้ได้ครั้งเดียวและหมดอายุใน 30 นาที ยังไม่ได้รับ? ดูในสแปม หรือส่งอีกครั้ง</translation>
+        </message>
+        <message>
+            <source>Send again in %1 s</source>
+            <translation>ส่งอีกครั้งใน %1 วิ</translation>
+        </message>
+        <message>
+            <source>Send a new code</source>
+            <translation>ส่งรหัสใหม่</translation>
+        </message>
+        <message>
+            <source>Use a different email</source>
+            <translation>ใช้อีเมลอื่น</translation>
+        </message>
+        <message>
+            <source>Back to sign in</source>
+            <translation>กลับไปหน้าลงชื่อเข้าใช้</translation>
+        </message>
     </context>
     <context>
         <name>BackToTop</name>

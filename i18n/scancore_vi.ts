@@ -1608,6 +1608,114 @@
             <source>Your password is sent only there and is never stored by this app.</source>
             <translation>Mật khẩu chỉ được gửi tới đó và không bao giờ được ứng dụng này lưu lại.</translation>
         </message>
+        <message>
+            <source>That reset has expired. Ask for a new email.</source>
+            <translation>Yêu cầu đặt lại đó đã hết hạn. Hãy yêu cầu email mới.</translation>
+        </message>
+        <message>
+            <source>Check your email</source>
+            <translation>Kiểm tra email của bạn</translation>
+        </message>
+        <message>
+            <source>Choose a new password</source>
+            <translation>Chọn mật khẩu mới</translation>
+        </message>
+        <message>
+            <source>Password updated</source>
+            <translation>Đã cập nhật mật khẩu</translation>
+        </message>
+        <message>
+            <source>Reset your password</source>
+            <translation>Đặt lại mật khẩu</translation>
+        </message>
+        <message>
+            <source>If an account uses %1, we sent it a 6-digit code. Enter it here, or open the link in the same email on any device.</source>
+            <translation>Nếu có tài khoản dùng %1, chúng tôi đã gửi một mã 6 chữ số đến đó. Hãy nhập mã ở đây, hoặc mở liên kết trong cùng email đó trên bất kỳ thiết bị nào.</translation>
+        </message>
+        <message>
+            <source>Use at least 8 characters. Every device signs out once it&apos;s saved.</source>
+            <translation>Dùng ít nhất 8 ký tự. Mọi thiết bị sẽ bị đăng xuất khi lưu.</translation>
+        </message>
+        <message>
+            <source>Your new password is set, and every device was signed out. Sign in with it now.</source>
+            <translation>Mật khẩu mới của bạn đã được đặt và mọi thiết bị đã bị đăng xuất. Hãy đăng nhập bằng mật khẩu mới ngay.</translation>
+        </message>
+        <message>
+            <source>Enter the email on your account. We&apos;ll send a code to enter here, and a link that works on any device.</source>
+            <translation>Nhập email của tài khoản. Chúng tôi sẽ gửi một mã để nhập ở đây và một liên kết dùng được trên mọi thiết bị.</translation>
+        </message>
+        <message>
+            <source>Forgot password?</source>
+            <translation>Quên mật khẩu?</translation>
+        </message>
+        <message>
+            <source>At least 8 characters</source>
+            <translation>Ít nhất 8 ký tự</translation>
+        </message>
+        <message>
+            <source>Code from the email</source>
+            <translation>Mã trong email</translation>
+        </message>
+        <message>
+            <source>6-digit code from the email</source>
+            <translation>Mã 6 chữ số trong email</translation>
+        </message>
+        <message>
+            <source>New password</source>
+            <translation>Mật khẩu mới</translation>
+        </message>
+        <message>
+            <source>Weak</source>
+            <translation>Yếu</translation>
+        </message>
+        <message>
+            <source>Medium</source>
+            <translation>Trung bình</translation>
+        </message>
+        <message>
+            <source>Strong</source>
+            <translation>Mạnh</translation>
+        </message>
+        <message>
+            <source>Passwords found in known data breaches are refused. The check is private: your password is never shared.</source>
+            <translation>Mật khẩu từng xuất hiện trong các vụ rò rỉ dữ liệu đã biết sẽ bị từ chối. Việc kiểm tra là riêng tư: mật khẩu của bạn không bao giờ bị chia sẻ.</translation>
+        </message>
+        <message>
+            <source>%1 doesn&apos;t send password emails. Ask whoever runs it to reset your password.</source>
+            <translation>%1 không gửi email mật khẩu. Hãy nhờ người quản lý máy chủ đặt lại mật khẩu cho bạn.</translation>
+        </message>
+        <message>
+            <source>Send code</source>
+            <translation>Gửi mã</translation>
+        </message>
+        <message>
+            <source>Continue</source>
+            <translation>Tiếp tục</translation>
+        </message>
+        <message>
+            <source>Save new password</source>
+            <translation>Lưu mật khẩu mới</translation>
+        </message>
+        <message>
+            <source>The code works once and expires in 30 minutes. Nothing there? Look in spam, or send it again.</source>
+            <translation>Mã chỉ dùng được một lần và hết hạn sau 30 phút. Chưa nhận được? Hãy xem thư rác hoặc gửi lại.</translation>
+        </message>
+        <message>
+            <source>Send again in %1 s</source>
+            <translation>Gửi lại sau %1 giây</translation>
+        </message>
+        <message>
+            <source>Send a new code</source>
+            <translation>Gửi mã mới</translation>
+        </message>
+        <message>
+            <source>Use a different email</source>
+            <translation>Dùng email khác</translation>
+        </message>
+        <message>
+            <source>Back to sign in</source>
+            <translation>Quay lại đăng nhập</translation>
+        </message>
     </context>
     <context>
         <name>BackToTop</name>
