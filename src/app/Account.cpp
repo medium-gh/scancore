@@ -508,21 +508,30 @@ void Account::setUser(const QVariantMap &user) {
     emit changed();
 }
 
+namespace {
+// POSTs to one of the site's /api/auth routes (no session needed); throws
+// the site's own message when it refuses.
+QJsonObject postAuth(const QString &path, const QJsonObject &body) {
+    const auto response = Http::postJson(QUrl(siteUrl() + path), QJsonDocument(body).toJson(QJsonDocument::Compact),
+                                         {{"Accept", "application/json"}});
+    const auto json = QJsonDocument::fromJson(response.body).object();
+    if (!response.ok()) {
+        auto message = json.value("error").toString();
+        if (message.isEmpty())
+            message = json.value("problem").toObject().value("message").toString();
+        if (response.status == 429)
+            message = QStringLiteral("Too many attempts. Wait a few minutes and try again.");
+        throw Error(message.isEmpty() ? QStringLiteral("%1 responded with HTTP %2.").arg(siteName()).arg(response.status)
+                                      : message,
+                    response.status);
+    }
+    return json;
+}
+} // namespace
+
 Task *Account::authenticate(const QString &path, const QJsonObject &body) {
     auto *task = Task::run([path, body]() -> QVariant {
-        const auto response = Http::postJson(QUrl(siteUrl() + path), QJsonDocument(body).toJson(QJsonDocument::Compact),
-                                             {{"Accept", "application/json"}});
-        const auto json = QJsonDocument::fromJson(response.body).object();
-        if (!response.ok()) {
-            auto message = json.value("error").toString();
-            if (message.isEmpty())
-                message = json.value("problem").toObject().value("message").toString();
-            if (response.status == 429)
-                message = QStringLiteral("Too many attempts. Wait a few minutes and try again.");
-            throw Error(message.isEmpty() ? QStringLiteral("%1 responded with HTTP %2.").arg(siteName()).arg(response.status)
-                                          : message,
-                        response.status);
-        }
+        const auto json = postAuth(path, body);
         CookieJar::shared().save();
         return json.toVariantMap();
     });
@@ -546,15 +555,40 @@ Task *Account::signUp(const QString &email, const QString &username, const QStri
     return authenticate(QStringLiteral("/api/auth/signup"), body);
 }
 
+Task *Account::requestPasswordReset(const QString &email) {
+    const QJsonObject body{{"action", "request"}, {"email", email.trimmed()}, {"purpose", "PASSWORD_RESET"}};
+    return Task::run([body]() -> QVariant { return postAuth(QStringLiteral("/api/auth/recovery"), body).toVariantMap(); });
+}
+
+Task *Account::exchangeResetCode(const QString &email, const QString &code) {
+    const QJsonObject body{{"action", "code"}, {"email", email.trimmed()}, {"code", code.trimmed()}};
+    return Task::run([body]() -> QVariant {
+        return postAuth(QStringLiteral("/api/auth/recovery"), body).value(QStringLiteral("token")).toString();
+    });
+}
+
+Task *Account::completePasswordReset(const QString &token, const QString &password) {
+    const QJsonObject body{{"action", "complete"}, {"token", token}, {"purpose", "PASSWORD_RESET"}, {"password", password}};
+    return Task::run([body]() -> QVariant { return postAuth(QStringLiteral("/api/auth/recovery"), body).toVariantMap(); });
+}
+
 Task *Account::signupOptions() {
-    return Task::run([]() -> QVariant {
-        QVariantMap options{{"open", true}, {"accessCode", false}, {"codeLength", 6}, {"help", QString()}};
+    // recovery: forgotten passwords can be reset by email on the site
+    // (scancore.onl says so; a sync server has no mail, its owner resets).
+    const bool official = !customSite();
+    return Task::run([official]() -> QVariant {
+        QVariantMap options{{"open", true}, {"accessCode", false}, {"codeLength", 6}, {"help", QString()},
+                            {"recovery", official}};
         const auto response = Http::get(QUrl(siteUrl() + QStringLiteral("/api/capabilities")), apiHeaders(), 10000);
         if (!response.ok())
             return options;
+        const auto capabilities = response.json().object();
+        // Sites from before 2.16.3 don't say; keep the default for them.
+        if (capabilities.value("recovery").isBool())
+            options.insert(QStringLiteral("recovery"), capabilities.value("recovery").toBool());
         // scancore.onl sends {open, accessCode, accessCodeLength, help}; a
         // SCANCORE sync server sends true or false.
-        const auto signup = response.json().object().value("signup");
+        const auto signup = capabilities.value("signup");
         if (signup.isBool())
             options.insert(QStringLiteral("open"), signup.toBool());
         else if (signup.isObject()) {

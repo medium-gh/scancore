@@ -50,8 +50,16 @@ public:
     // the site asks for one (signupOptions().accessCode).
     Q_INVOKABLE sc::Task *signUp(const QString &email, const QString &username, const QString &password,
                                  const QString &accessCode = QString());
+    // Emails a link to choose a new password, when the address has an
+    // account; the link opens the site's account/recovery page.
+    Q_INVOKABLE sc::Task *requestPasswordReset(const QString &email);
+    // The 6-digit code from that email: resolves to a one-time token (the
+    // emailed link stops working), which completePasswordReset() spends.
+    Q_INVOKABLE sc::Task *exchangeResetCode(const QString &email, const QString &code);
+    // Sets the new password and signs the account out everywhere.
+    Q_INVOKABLE sc::Task *completePasswordReset(const QString &token, const QString &password);
     // Who may create an account on the current site: {open, accessCode,
-    // codeLength, help}. scancore.onl may need an access code; a SCANCORE
+    // codeLength, help, recovery}. scancore.onl may need an access code; a SCANCORE
     // sync server answers open or closed.
     Q_INVOKABLE sc::Task *signupOptions();
     // A JSON request to the account's site with its session (comments and

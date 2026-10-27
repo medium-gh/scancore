@@ -40,13 +40,15 @@ AbstractButton {
             opacity: control.pressed ? 0.12 : control.hovered ? 0.06 : 0
             Behavior on opacity { NumberAnimation { duration: Motion.fast } }
         }
+        // Keyboard focus: a ring just inside the edge, never over what is
+        // next to the button.
         Rectangle {
             anchors.fill: parent
-            anchors.margins: -3
+            anchors.margins: 2
             radius: Theme.pill(height)
             color: "transparent"
-            border.width: 2
-            border.color: Theme.alpha(Theme.accent, 0.6)
+            border.width: 1.5
+            border.color: control.variant === "primary" ? Theme.alpha(Theme.accentInk, 0.7) : Theme.alpha(Theme.text, 0.55)
             visible: control.visualFocus
         }
     }

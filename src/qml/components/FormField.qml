@@ -2,7 +2,8 @@ import QtQuick
 import QtQuick.Controls.Basic
 import Scancore
 
-// Labelled text input with a hint or problem line underneath.
+// Labelled text input with a hint or problem line underneath. `action`
+// puts a small link at the end of the label row ("Forgot password?").
 Column {
     id: field
     property alias text: input.text
@@ -12,19 +13,52 @@ Column {
     property string label
     property string problem
     property string hint
+    property string action
     signal accepted()
+    signal actionClicked()
 
     function focusInput() { input.forceActiveFocus() }
 
     spacing: 6
     width: parent ? parent.width : 320
 
-    Text {
-        text: field.label
-        color: Theme.textMuted
-        font.family: Theme.fontSans
-        font.pixelSize: Theme.textSm
-        font.weight: Font.Medium
+    Item {
+        width: parent.width
+        height: Math.max(labelText.implicitHeight, actionLink.visible ? actionLink.implicitHeight : 0)
+        Text {
+            id: labelText
+            anchors.verticalCenter: parent.verticalCenter
+            text: field.label
+            color: Theme.textMuted
+            font.family: Theme.fontSans
+            font.pixelSize: Theme.textSm
+            font.weight: Font.Medium
+        }
+        Text {
+            id: actionLink
+            visible: field.action.length > 0
+            anchors.right: parent.right
+            anchors.verticalCenter: parent.verticalCenter
+            text: field.action
+            color: actionArea.containsMouse || actionArea.activeFocus ? Theme.text : Theme.textMuted
+            font.family: Theme.fontSans
+            font.pixelSize: Theme.textSm
+            font.weight: Font.Medium
+            Behavior on color { ColorAnimation { duration: Motion.fast } }
+            MouseArea {
+                id: actionArea
+                anchors.fill: parent
+                anchors.margins: -6
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                activeFocusOnTab: true
+                Accessible.role: Accessible.Link
+                Accessible.name: field.action
+                Keys.onReturnPressed: field.actionClicked()
+                Keys.onSpacePressed: field.actionClicked()
+                onClicked: field.actionClicked()
+            }
+        }
     }
     TextField {
         id: input
@@ -39,12 +73,17 @@ Column {
         font.pixelSize: Theme.textMd
         selectByMouse: true
         onAccepted: field.accepted()
+        // Focus brightens and thickens the field's own edge, inward, so
+        // nothing around the field is covered.
         background: Rectangle {
             radius: Theme.radiusMd
-            color: Theme.surface2
-            border.width: 1
-            border.color: field.problem ? Theme.danger : input.activeFocus ? Theme.alpha(Theme.accent, 0.7) : Theme.border
+            color: input.activeFocus ? Theme.surface : Theme.surface2
+            border.width: input.activeFocus ? 1.5 : 1
+            border.color: field.problem ? Theme.danger
+                : input.activeFocus ? Theme.alpha(Theme.text, 0.6)
+                : input.hovered ? Theme.borderStrong : Theme.border
             Behavior on border.color { ColorAnimation { duration: Motion.fast } }
+            Behavior on color { ColorAnimation { duration: Motion.fast } }
         }
         IconButton {
             id: reveal
