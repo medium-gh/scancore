@@ -218,6 +218,14 @@ jobs:
           modules: ${{ env.QT_MODULES }}
           cache: true
 
+      # Compiled objects kept between runs (tools/ci, ci.yml): a release
+      # compiles only what changed since the last one.
+      - name: Compiler cache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: release-${{ matrix.name }}
+          max-size: 500M
+
       - name: Build
         shell: bash
         run: |
@@ -227,7 +235,8 @@ jobs:
           # runtime; the host from host/ is for development builds.
           # AVIF: no universal (arm64 + x86_64) libavif to link here yet.
           cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DSCANCORE_BUILD_TESTS=OFF \
-            -DSCANCORE_WITH_EXTENSION_HOST=OFF -DSCANCORE_WITH_AVIF=OFF -DCMAKE_INSTALL_PREFIX=/usr $EXTRA
+            -DSCANCORE_WITH_EXTENSION_HOST=OFF -DSCANCORE_WITH_AVIF=OFF -DCMAKE_INSTALL_PREFIX=/usr \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache $EXTRA
           cmake --build build --parallel
 
       # ---------------------------------------------------------------- Windows
@@ -407,21 +416,21 @@ jobs:
           echo "LINUX_QT_VERSION=${{ needs.version.outputs.linuxQt }}" >> "$GITHUB_ENV"
 
       - name: Linux packages
+        timeout-minutes: 20
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ninja-build libgl1-mesa-dev libxkbcommon-dev libxkbcommon-x11-0 \
+          # The last line: what the CI-built libmpv.so links (libmpv.yml),
+          # for the link and for linuxdeploy to bundle.
+          tools/ci/apt-install.sh ninja-build libgl1-mesa-dev libxkbcommon-dev libxkbcommon-x11-0 \
             libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 \
             libxcb-shape0 libxcb-xinerama0 libfontconfig1-dev libnss3 libxcomposite1 libxdamage1 \
-            libxrandr2 libxtst6 libfuse2 file
-          # What the CI-built libmpv.so links (libmpv.yml), for the link and
-          # for linuxdeploy to bundle.
-          sudo apt-get install -y libass9 libva2 libva-drm2 libdrm2 libbz2-1.0 libxfixes3 libasound2 libpulse0 libegl1
+            libxrandr2 libxtst6 libfuse2 file \
+            libass9 libva2 libva-drm2 libdrm2 libbz2-1.0 libxfixes3 libasound2 libpulse0 libegl1
 
       # AVIF covers and pages: libavif decoding through dav1d alone (Ubuntu's
       # also brings three AV1 encoders the AppImage has no use for).
       - name: libavif
         run: |
-          sudo apt-get install -y libdav1d-dev
+          tools/ci/apt-install.sh libdav1d-dev
           git clone --depth 1 --branch v1.3.0 https://github.com/AOMediaCodec/libavif.git "$RUNNER_TEMP/libavif"
           cmake -S "$RUNNER_TEMP/libavif" -B "$RUNNER_TEMP/libavif/build" -G Ninja -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_SHARED_LIBS=ON -DAVIF_CODEC_DAV1D=SYSTEM -DAVIF_LIBYUV=OFF -DAVIF_BUILD_APPS=OFF \
@@ -454,6 +463,14 @@ jobs:
           name: libmpv-linux-x86_64
           path: build/libmpv/linux-x86_64
 
+      # Compiled objects kept between runs (tools/ci, ci.yml): a release
+      # compiles only what changed since the last one.
+      - name: Compiler cache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: release-AppImage
+          max-size: 500M
+
       - name: Build
         run: |
           if [ "${{ steps.mpv.outcome }}" = success ]; then
@@ -462,7 +479,7 @@ jobs:
             echo "MPV_DIR=$MPV_DIR" >> "$GITHUB_ENV"
           fi
           cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DSCANCORE_BUILD_TESTS=OFF \
-            -DSCANCORE_WITH_EXTENSION_HOST=OFF -DCMAKE_INSTALL_PREFIX=/usr
+            -DSCANCORE_WITH_EXTENSION_HOST=OFF -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           cmake --build build --parallel
 
       - name: AppImage
@@ -548,12 +565,23 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Install Flatpak build tools
+        timeout-minutes: 20
         run: |
-          sudo apt-get update
-          sudo apt-get install -y flatpak flatpak-builder python3-yaml
+          tools/ci/apt-install.sh flatpak flatpak-builder python3-yaml
           flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+      # flatpak-builder's own cache: the libraries (dav1d … mpv, about 8
+      # minutes, ffmpeg most of it) are built again only when their part of
+      # the manifest changes, and --ccache keeps the app's compiled objects.
+      - name: Flatpak build cache
+        uses: actions/cache@v4
+        with:
+          path: .flatpak-builder
+          key: flatpak-${{ hashFiles('com.mediumdev.scancore.yml') }}-${{ github.sha }}
+          restore-keys: flatpak-
       - name: Build from this commit
         run: |
+          mkdir -p .flatpak-builder/ccache
+          echo "max_size = 600M" > .flatpak-builder/ccache/ccache.conf
           python3 - <<'EOF'
           import yaml
           m = yaml.safe_load(open("com.mediumdev.scancore.yml"))
@@ -562,8 +590,10 @@ jobs:
                             for s in app["sources"]]
           yaml.safe_dump(m, open("test.flatpak.yml", "w"), sort_keys=False)
           EOF
-          flatpak-builder --user --force-clean --install-deps-from=flathub \
+          flatpak-builder --user --force-clean --ccache --install-deps-from=flathub \
             --repo=repo flatpak-build test.flatpak.yml
+          # Only the build stages and compiled objects go back in the cache.
+          rm -rf .flatpak-builder/build .flatpak-builder/rofiles
           mkdir -p dist
           flatpak build-bundle --runtime-repo=https://dl.flathub.org/repo/flathub.flatpakrepo \
             repo "dist/SCANCORE-${{ needs.version.outputs.version }}-linux-x86_64.flatpak" com.mediumdev.scancore master
@@ -601,7 +631,7 @@ jobs:
 
       - name: Tools
         run: |
-          sudo apt-get update && sudo apt-get install -y ninja-build
+          tools/ci/apt-install.sh ninja-build
           # Android 37: the extension host's OkHttp needs it to compile against.
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "ndk;27.2.12479018" "platforms;android-37.0" "build-tools;37.0.0" > /dev/null
           echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/27.2.12479018" >> "$GITHUB_ENV"
@@ -635,9 +665,17 @@ jobs:
       - name: libmpv
         if: steps.libmpv.outputs.cache-hit != 'true'
         run: |
-          sudo apt-get install -y nasm gperf python3-jinja2
+          tools/ci/apt-install.sh nasm gperf python3-jinja2
           pipx install meson
           tools/libmpv/build.sh ${{ matrix.mpv }}
+
+      # Compiled objects kept between runs (tools/ci, ci.yml): a release
+      # compiles only what changed since the last one.
+      - name: Compiler cache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: release-Android-${{ matrix.name }}
+          max-size: 500M
 
       - name: Signed APK
         env:
@@ -651,7 +689,7 @@ jobs:
           # Qt's android_armv7 package ships qt-cmake without its execute bit.
           sh "$QT_ROOT_DIR/bin/qt-cmake" -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
             -DQT_HOST_PATH="$HOST_QT" -DANDROID_SDK_ROOT="$ANDROID_HOME" -DANDROID_NDK_ROOT="$ANDROID_NDK_ROOT" \
-            -DQT_ANDROID_SIGN_APK=ON
+            -DQT_ANDROID_SIGN_APK=ON -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           cmake --build build --parallel
           cmake --build build --target apk
           mkdir -p dist
