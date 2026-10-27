@@ -135,13 +135,24 @@ QtObject {
     // Jellyfin server) rather than AniList's.
     function extensionAnime(source) { return /^(aniyomi|cloudstream):/.test(String(source || "")) }
 
+    // An AniList anime's id from any shape of it: a catalogue card, a saved
+    // series (extra.anilistId), or a brief library row that has only its id
+    // ("anime:anilist:<id>") and address. 0 when it has none.
+    function anilistIdOf(item) {
+        if (!item) return 0
+        const direct = Number(item.anilistId || (item.extra && item.extra.anilistId) || 0)
+        if (direct > 0) return direct
+        const m = /^anime:anilist:(\d+)$/.exec(String(item.id || "")) || /anilist\.co\/anime\/(\d+)/.exec(String(item.sourceUrl || ""))
+        return m ? Number(m[1]) : 0
+    }
+
     // item: a search/library map with id, media, sourceUrl, title, cover.
     function openSeries(item, fromCover) {
         if (!shell || !item) return
         if (item.media === "anime" && Router.extensionAnime(item.source))
             shell.push("pages/AnimeDetails.qml", { sourceUrl: item.sourceUrl || item.url, summary: item }, fromCover, item.cover)
         else if (item.media === "anime")
-            shell.push("pages/AnimeDetails.qml", { anilistId: item.anilistId || item.extra?.anilistId || 0, summary: item }, fromCover, item.cover)
+            shell.push("pages/AnimeDetails.qml", { anilistId: anilistIdOf(item), summary: item }, fromCover, item.cover)
         else if (item.media === "novel")
             shell.push("pages/NovelDetails.qml", { url: item.sourceUrl || item.url, summary: item }, fromCover, item.cover)
         else

@@ -8,6 +8,8 @@ AbstractButton {
     property bool selected: checked
     property string iconName
     property string detail
+    // After the label, as a menu's chevron.
+    property string trailingIcon
     // A colour dot before the label (theme presets).
     property color dot: "transparent"
 
@@ -65,6 +67,13 @@ AbstractButton {
                 font.family: Theme.fontSans
                 font.pixelSize: Theme.textXs
                 color: chip.selected ? Theme.alpha(Theme.accentInk, 0.7) : Theme.textFaint
+                anchors.verticalCenter: parent.verticalCenter
+            }
+            Icon {
+                visible: chip.trailingIcon.length > 0
+                name: chip.trailingIcon
+                size: 14
+                color: chip.selected ? Theme.accentInk : Theme.textMuted
                 anchors.verticalCenter: parent.verticalCenter
             }
         }

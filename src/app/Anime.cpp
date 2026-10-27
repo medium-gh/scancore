@@ -407,6 +407,40 @@ QString Anime::malClientId() {
 #endif
 }
 
+QHash<int, QString> Anime::currentCovers(const QList<int> &ids) {
+    QHash<int, QString> out;
+    for (qsizetype from = 0; from < ids.size(); from += 50) {
+        QJsonArray page;
+        for (const int id : ids.mid(from, 50))
+            page.append(id);
+        QJsonArray media;
+        try {
+            // Not cached: the stored address is the stale one.
+            media = graphql(QStringLiteral("query ($ids: [Int]) { Page(perPage: 50) { media(id_in: $ids, type: ANIME) "
+                                           "{ id coverImage { extraLarge large } } } }"),
+                            {{"ids", page}}, {}, 0)
+                        .value("Page").toObject().value("media").toArray();
+        } catch (const Error &e) {
+            if (e.status() == 499)
+                throw;
+            // AniList's API down: each as its page gets it (Kitsu's), a
+            // few at a time.
+            for (const int id : ids.mid(from, 12)) {
+                try {
+                    media.append(mediaObject(id));
+                } catch (const Error &) {
+                }
+            }
+        }
+        for (const auto &value : media) {
+            const auto m = value.toObject();
+            const auto cover = m.value("coverImage").toObject();
+            out.insert(m.value("id").toInt(), cover.value("extraLarge").toString(cover.value("large").toString()));
+        }
+    }
+    return out;
+}
+
 Task *Anime::anilistIdFor(int malId) {
     return Task::run([malId]() -> QVariant {
         const int id = orFallback<int>(

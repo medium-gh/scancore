@@ -464,6 +464,8 @@ Rectangle {
         return items
     }
     ActionMenu { id: moreMenu }
+    // Server names differ at their end (Sub or Dub, 720p): room for them.
+    ActionMenu { id: serverMenu; implicitWidth: 400 }
 
     // Casting: the TV plays (through Cast) and this page follows it, saving
     // progress; another episode goes to the same TV.
@@ -1042,105 +1044,140 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             spacing: 6
             visible: !watch.phone
-            Repeater {
-                model: watch.sourceChips
-                Chip {
-                    required property var modelData
-                    text: modelData.label
-                    iconName: modelData.key === "more" ? "" : "server"
-                    selected: modelData.key === (watch.provider.source || "")
-                    onClicked: watch.pickSource(modelData.key)
+            // The sources and servers as chips while they fit beside the
+            // title (at least 200 px of it) and the buttons; else one chip
+            // with the server in use that lists them all.
+            readonly property bool chipsFit: inlineChips.implicitWidth <= bar.width - backButton.x - backButton.width - 10 - 200
+                                             - (barActions.visible ? barActions.width + 12 : 0) - 12 - playerButtons.width - 14
+            readonly property bool anyChips: watch.sourceChips.length > 0 || watch.streams.length > 0
+            Row {
+                id: inlineChips
+                visible: controls.chipsFit && controls.anyChips
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 6
+                Repeater {
+                    model: watch.sourceChips
+                    Chip {
+                        required property var modelData
+                        text: modelData.label
+                        iconName: modelData.key === "more" ? "" : "server"
+                        selected: modelData.key === (watch.provider.source || "")
+                        onClicked: watch.pickSource(modelData.key)
+                    }
+                }
+                Rectangle { visible: watch.sourceChips.length > 0 && watch.streams.length > 0; width: 1; height: 20; color: "#3f3f46"; anchors.verticalCenter: parent.verticalCenter }
+                Repeater {
+                    model: watch.streams
+                    Chip {
+                        required property var modelData
+                        text: modelData.quality
+                        selected: watch.isCurrent(modelData)
+                        onClicked: watch.pickServer(modelData)
+                    }
                 }
             }
-            Rectangle { visible: watch.sourceChips.length > 0 && watch.streams.length > 0; width: 1; height: 20; color: "#3f3f46"; anchors.verticalCenter: parent.verticalCenter }
-            Repeater {
-                model: watch.streams
-                Chip {
-                    required property var modelData
-                    text: modelData.quality
-                    selected: watch.isCurrent(modelData)
-                    onClicked: watch.pickServer(modelData)
+            Chip {
+                id: serverPick
+                visible: !controls.chipsFit && controls.anyChips
+                anchors.verticalCenter: parent.verticalCenter
+                width: Math.min(implicitWidth, 320)
+                iconName: "server"
+                trailingIcon: "chevron-down"
+                text: (watch.streams.find(s => watch.isCurrent(s)) || { quality: "" }).quality
+                      || (watch.sourceChips.find(c => c.key === (watch.provider.source || "")) || { label: qsTr("Server") }).label
+                onClicked: {
+                    const list = watch.sourceChips.map(c => ({ text: c.label, icon: c.key === "more" ? "" : "server",
+                                                               checked: c.key === (watch.provider.source || ""), run: () => watch.pickSource(c.key) }))
+                    if (list.length > 0 && watch.streams.length > 0) list.push(null)
+                    for (const s of watch.streams)
+                        list.push({ text: s.quality, checked: watch.isCurrent(s), run: () => watch.pickServer(s) })
+                    serverMenu.openAt(serverPick, 0, height + 6, list)
                 }
             }
             Item { width: 8; height: 1 }
-            IconButton { iconName: "skip-back"; iconColor: "white"; enabled: watch.hasPrev; tip: qsTr("Previous episode") + watch.keyHint("player.prev"); onClicked: watch.load(watch.index - 1) }
-            IconButton { iconName: "skip-forward"; iconColor: "white"; enabled: watch.hasNext; tip: qsTr("Next episode") + watch.keyHint("player.next"); onClicked: watch.load(watch.index + 1) }
-            IconButton { iconName: "list"; iconColor: "white"; active: watch.sideOpen; tip: qsTr("Episodes"); onClicked: watch.sideOpen = !watch.sideOpen }
-            IconButton {
-                visible: !watch.fromSource && (watch.hasSources || watch.nativeStream)
-                iconName: "server"
-                iconColor: "white"
-                tip: qsTr("Watch from")
-                onClicked: watchFrom.start(watch.media, false)
-            }
-            // On in a window of its own (a second screen).
-            IconButton {
-                visible: Router.windows && !(Window.window && Window.window.isPageWindow === true)
-                iconName: "columns-2"
-                iconColor: "white"
-                tip: qsTr("Open in a new window")
-                onClicked: {
-                    watch.saveProgress(true)
-                    Router.openWindow("pages/WatchPage.qml", { media: watch.media, episodes: watch.episodes, index: watch.index })
-                    Router.leave(watch)
+            Row {
+                id: playerButtons
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 6
+                IconButton { iconName: "skip-back"; iconColor: "white"; enabled: watch.hasPrev; tip: qsTr("Previous episode") + watch.keyHint("player.prev"); onClicked: watch.load(watch.index - 1) }
+                IconButton { iconName: "skip-forward"; iconColor: "white"; enabled: watch.hasNext; tip: qsTr("Next episode") + watch.keyHint("player.next"); onClicked: watch.load(watch.index + 1) }
+                IconButton { iconName: "list"; iconColor: "white"; active: watch.sideOpen; tip: qsTr("Episodes"); onClicked: watch.sideOpen = !watch.sideOpen }
+                IconButton {
+                    visible: !watch.fromSource && (watch.hasSources || watch.nativeStream)
+                    iconName: "server"
+                    iconColor: "white"
+                    tip: qsTr("Watch from")
+                    onClicked: watchFrom.start(watch.media, false)
                 }
-            }
-            IconButton {
-                visible: !!watch.media.anilistId
-                iconName: "users"
-                iconColor: Party.active ? Theme.accent : "white"
-                tip: Party.active ? qsTr("Watch party (%1)").arg(Party.code) : qsTr("Watch together")
-                onClicked: partyPanel.open()
-                Rectangle {
-                    visible: Party.unread > 0
-                    anchors.right: parent.right
-                    anchors.top: parent.top
-                    anchors.margins: 4
-                    width: 8
-                    height: 8
-                    radius: 4
-                    color: Theme.accent
+                // On in a window of its own (a second screen).
+                IconButton {
+                    visible: Router.windows && !(Window.window && Window.window.isPageWindow === true)
+                    iconName: "columns-2"
+                    iconColor: "white"
+                    tip: qsTr("Open in a new window")
+                    onClicked: {
+                        watch.saveProgress(true)
+                        Router.openWindow("pages/WatchPage.qml", { media: watch.media, episodes: watch.episodes, index: watch.index })
+                        Router.leave(watch)
+                    }
                 }
-            }
-            IconButton { visible: !!watch.media.anilistId; iconName: "message-circle"; iconColor: "white"; tip: qsTr("Comments"); onClicked: comments.open() }
-            ContinueOn { seriesId: watch.series.id || ""; iconColor: "white"; save: () => watch.saveProgress(true) }
-            IconButton {
-                visible: watch.nativeStream && !watch.offline && !!watch.provider.source && Anime.nativePlayerAvailable
-                iconName: !watch.downloadJob ? "download" : watch.downloadJob.status === "done" ? "check" : "loader-circle"
-                iconColor: "white"
-                enabled: !watch.downloadJob && watch.currentUrl.length > 0
-                tip: watch.downloadJob ? qsTr("Downloading…") : qsTr("Download this episode")
-                onClicked: watch.downloadEpisode()
-            }
-            IconButton {
-                visible: watch.nativeStream && (watch.currentUrl.length > 0 || watch.casting)
-                iconName: "cast"
-                iconColor: watch.casting ? Theme.accent : "white"
-                tip: watch.casting ? qsTr("Stop casting") : qsTr("Cast to a TV")
-                onClicked: watch.casting ? watch.stopCasting() : castPicker.open()
-            }
-            IconButton {
-                id: outsideButton
-                visible: watch.canOpenOutside
-                iconName: "external-link"
-                iconColor: "white"
-                tip: qsTr("Open in another player")
-                onClicked: watch.pickOutside(outsideButton)
-            }
-            IconButton {
-                // A web player's page opens in the browser.
-                visible: !watch.nativeStream
-                iconName: "external-link"
-                iconColor: "white"
-                enabled: watch.currentUrl.length > 0
-                tip: qsTr("Open in your browser")
-                onClicked: App.openUrl(watch.currentUrl)
-            }
-            IconButton {
-                iconName: watch.fullScreen ? "minimize" : "maximize"
-                iconColor: "white"
-                tip: (watch.fullScreen ? qsTr("Exit full screen") : qsTr("Full screen")) + watch.keyHint("player.fullscreen")
-                onClicked: watch.toggleFullScreen()
+                IconButton {
+                    visible: !!watch.media.anilistId
+                    iconName: "users"
+                    iconColor: Party.active ? Theme.accent : "white"
+                    tip: Party.active ? qsTr("Watch party (%1)").arg(Party.code) : qsTr("Watch together")
+                    onClicked: partyPanel.open()
+                    Rectangle {
+                        visible: Party.unread > 0
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.margins: 4
+                        width: 8
+                        height: 8
+                        radius: 4
+                        color: Theme.accent
+                    }
+                }
+                IconButton { visible: !!watch.media.anilistId; iconName: "message-circle"; iconColor: "white"; tip: qsTr("Comments"); onClicked: comments.open() }
+                ContinueOn { seriesId: watch.series.id || ""; iconColor: "white"; save: () => watch.saveProgress(true) }
+                IconButton {
+                    visible: watch.nativeStream && !watch.offline && !!watch.provider.source && Anime.nativePlayerAvailable
+                    iconName: !watch.downloadJob ? "download" : watch.downloadJob.status === "done" ? "check" : "loader-circle"
+                    iconColor: "white"
+                    enabled: !watch.downloadJob && watch.currentUrl.length > 0
+                    tip: watch.downloadJob ? qsTr("Downloading…") : qsTr("Download this episode")
+                    onClicked: watch.downloadEpisode()
+                }
+                IconButton {
+                    visible: watch.nativeStream && (watch.currentUrl.length > 0 || watch.casting)
+                    iconName: "cast"
+                    iconColor: watch.casting ? Theme.accent : "white"
+                    tip: watch.casting ? qsTr("Stop casting") : qsTr("Cast to a TV")
+                    onClicked: watch.casting ? watch.stopCasting() : castPicker.open()
+                }
+                IconButton {
+                    id: outsideButton
+                    visible: watch.canOpenOutside
+                    iconName: "external-link"
+                    iconColor: "white"
+                    tip: qsTr("Open in another player")
+                    onClicked: watch.pickOutside(outsideButton)
+                }
+                IconButton {
+                    // A web player's page opens in the browser.
+                    visible: !watch.nativeStream
+                    iconName: "external-link"
+                    iconColor: "white"
+                    enabled: watch.currentUrl.length > 0
+                    tip: qsTr("Open in your browser")
+                    onClicked: App.openUrl(watch.currentUrl)
+                }
+                IconButton {
+                    iconName: watch.fullScreen ? "minimize" : "maximize"
+                    iconColor: "white"
+                    tip: (watch.fullScreen ? qsTr("Exit full screen") : qsTr("Full screen")) + watch.keyHint("player.fullscreen")
+                    onClicked: watch.toggleFullScreen()
+                }
             }
         }
     }

@@ -66,7 +66,7 @@ Item {
             if (chosen.length === 0) { Router.toast(qsTr("That list is empty."), "info"); return }
             const items = chosen.slice(0, 500).map(e => ({ title: e.title, media: e.media, source: e.source || "",
                                                            sourceUrl: e.sourceUrl || "", cover: e.cover || "",
-                                                           anilistId: (e.extra && e.extra.anilistId) || 0 }))
+                                                           anilistId: Router.anilistIdOf(e) }))
             page.send("POST", "/api/app/lists", { title: category.label, items: items }, (result) => {
                 App.copy(page.linkFor(result.code))
                 Router.toast(qsTr("Shared. The link is copied: %1").arg(page.linkFor(result.code)), "success")

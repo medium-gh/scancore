@@ -362,8 +362,7 @@ ApplicationWindow {
             if (entry.media === "anime" && Router.extensionAnime(entry.source)) {
                 push("pages/AnimeDetails.qml", { sourceUrl: entry.sourceUrl, summary: entry, autoResume: true })
             } else if (entry.media === "anime") {
-                const extra = entry.extra || {}
-                push("pages/AnimeDetails.qml", { anilistId: extra.anilistId || 0, summary: entry, autoResume: true })
+                push("pages/AnimeDetails.qml", { anilistId: Router.anilistIdOf(entry), summary: entry, autoResume: true })
             } else if (entry.media === "novel") {
                 push("pages/NovelDetails.qml", props)
             } else {

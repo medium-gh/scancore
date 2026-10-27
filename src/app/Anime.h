@@ -32,6 +32,11 @@ public:
     // SCANCORE's MyAnimeList client id (empty in builds without one).
     static QString malClientId();
 
+    // AniList's covers for these anime as they are now (worker threads):
+    // {id: cover}. A replaced cover gets a new address and the old one
+    // stops working.
+    static QHash<int, QString> currentCovers(const QList<int> &ids);
+
     bool webPlayerAvailable() const;
     bool nativePlayerAvailable() const;
     QString playerEngine() const;

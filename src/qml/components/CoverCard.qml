@@ -43,6 +43,8 @@ AbstractButton {
     opacity: 0
     transform: Translate { id: rise; y: 14 }
     Component.onCompleted: {
+        // A saved AniList anime that came without a cover (an import, a sync).
+        if (!coverUrl && item.progressAt !== undefined && /^anime:anilist:\d+$/.test(item.id || "")) Library.refreshCover(item.id)
         if (!animateIn || Motion.reduced) {
             opacity = 1
             rise.y = 0

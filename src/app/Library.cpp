@@ -2,6 +2,7 @@
 #include "sources/servers/Servers.h"
 
 #include "Activity.h"
+#include "Anime.h"
 #include "App.h"
 #include "Comics.h"
 #include "Downloads.h"
@@ -22,6 +23,8 @@
 #include <algorithm>
 #include <QMutex>
 #include <QUuid>
+#include <QTimer>
+#include <QRegularExpression>
 #include <QSet>
 #include <QJsonObject>
 #include <QLocale>
@@ -74,7 +77,39 @@ Library *Library::instance() {
 
 void Library::refreshCover(const QString &seriesId) {
     static QSet<QString> tried;
-    if (!seriesId.startsWith(QLatin1String("comic:")) || tried.contains(seriesId))
+    if (tried.contains(seriesId))
+        return;
+    // An AniList anime: the covers that failed together (a screen of the
+    // library) are asked for in one go.
+    static const QRegularExpression anilist(QStringLiteral("^anime:anilist:(\\d+)$"));
+    if (const auto match = anilist.match(seriesId); match.hasMatch()) {
+        tried.insert(seriesId);
+        static QList<int> pending;
+        pending.append(match.captured(1).toInt());
+        if (pending.size() == 1)
+            QTimer::singleShot(400, this, [this] {
+                runInBackground([this, ids = std::exchange(pending, {})] {
+                    try {
+                        bool changed = false;
+                        const auto covers = Anime::currentCovers(ids);
+                        for (auto it = covers.begin(); it != covers.end(); ++it) {
+                            if (it.value().isEmpty())
+                                continue;
+                            const auto id = QStringLiteral("anime:anilist:%1").arg(it.key());
+                            if (Database::scalar(QStringLiteral("SELECT cover FROM series WHERE id = ?"), {id}).toString() == it.value())
+                                continue;
+                            Database::exec(QStringLiteral("UPDATE series SET cover = ? WHERE id = ?"), {it.value(), id});
+                            changed = true;
+                        }
+                        if (changed)
+                            QMetaObject::invokeMethod(this, [this] { notifyChanged(); }, Qt::QueuedConnection);
+                    } catch (const Error &) {
+                    }
+                });
+            });
+        return;
+    }
+    if (!seriesId.startsWith(QLatin1String("comic:")))
         return;
     tried.insert(seriesId);
     const auto row = seriesRow(seriesId);
@@ -475,7 +510,7 @@ namespace {
 // Each series once, at its latest progress. Imports, syncs and "mark as
 // read" save many chapters or episodes at the same moment: then the furthest
 // one counts, not whichever the database happens to list first.
-QVariantList historyRows(const QString &media, int limit) {
+QVariantList historyRows(const QString &media, int limit, int offset = 0) {
     const auto rows = Database::query(QStringLiteral(R"(
         WITH latest AS (
             SELECT *, ROW_NUMBER() OVER (PARTITION BY series_id
@@ -486,11 +521,11 @@ QVariantList historyRows(const QString &media, int limit) {
         FROM latest p JOIN series s ON s.id = p.series_id
         LEFT JOIN library l ON l.series_id = s.id
         WHERE p.rank = 1
-        ORDER BY p.updated_at DESC LIMIT ?
+        ORDER BY p.updated_at DESC LIMIT ? OFFSET ?
     )"),
                                       // A null QString binds as NULL, which no
                                       // "? = ''" matches: "" for every media.
-                                      {media.isNull() ? QStringLiteral("") : media, media.isNull() ? QStringLiteral("") : media, limit});
+                                      {media.isNull() ? QStringLiteral("") : media, media.isNull() ? QStringLiteral("") : media, limit, offset});
     QVariantList out;
     for (const auto &row : rows)
         out.append(shapeEntry(row.toMap()));
@@ -507,27 +542,37 @@ Task *Library::continueItems(const QString &media, int limit) {
     return Task::run([media, limit]() -> QVariant {
         // One entry per title: a series read on several sources, or under a
         // source's changed address, shows only where it was read last.
+        // Read page by page until the list is full: an import, a sync or
+        // "mark as read" can put many finished or planned series ahead of
+        // the ones still going, and a single page left those out (Home's
+        // row stopped at a few, and changed with every sync).
         QVariantList out;
         QSet<QString> seen;
-        for (const auto &value : historyRows(media, limit * 4)) {
-            const auto entry = value.toMap();
-            const auto key = entry.value(QStringLiteral("media")).toString() + QLatin1Char(':') +
-                             titleKey(entry.value(QStringLiteral("title")).toString());
-            if (seen.contains(key))
-                continue;
-            seen.insert(key);
-            // Not something being read or watched: planned, dropped or
-            // finished lists, and anime watched to their last episode.
-            const auto category = entry.value(QStringLiteral("category")).toString();
-            if (category == QLatin1String("planned") || category == QLatin1String("dropped") || category == QLatin1String("completed"))
-                continue;
-            if (entry.value(QStringLiteral("media")).toString() == QLatin1String("anime") && entry.value(QStringLiteral("completed")).toBool()) {
-                const int episodes = entry.value(QStringLiteral("extra")).toMap().value(QStringLiteral("episodes")).toInt();
-                if (episodes > 0 && entry.value(QStringLiteral("unitNumber")).toString().toDouble() >= episodes)
+        const int page = std::max(limit * 4, 50);
+        for (int offset = 0; out.size() < limit && offset < page * 20; offset += page) {
+            const auto rows = historyRows(media, page, offset);
+            for (const auto &value : rows) {
+                const auto entry = value.toMap();
+                const auto key = entry.value(QStringLiteral("media")).toString() + QLatin1Char(':') +
+                                 titleKey(entry.value(QStringLiteral("title")).toString());
+                if (seen.contains(key))
                     continue;
+                seen.insert(key);
+                // Not something being read or watched: planned, dropped or
+                // finished lists, and anime watched to their last episode.
+                const auto category = entry.value(QStringLiteral("category")).toString();
+                if (category == QLatin1String("planned") || category == QLatin1String("dropped") || category == QLatin1String("completed"))
+                    continue;
+                if (entry.value(QStringLiteral("media")).toString() == QLatin1String("anime") && entry.value(QStringLiteral("completed")).toBool()) {
+                    const int episodes = entry.value(QStringLiteral("extra")).toMap().value(QStringLiteral("episodes")).toInt();
+                    if (episodes > 0 && entry.value(QStringLiteral("unitNumber")).toString().toDouble() >= episodes)
+                        continue;
+                }
+                out.append(entry);
+                if (out.size() >= limit)
+                    break;
             }
-            out.append(entry);
-            if (out.size() >= limit)
+            if (rows.size() < page)
                 break;
         }
         return out;
