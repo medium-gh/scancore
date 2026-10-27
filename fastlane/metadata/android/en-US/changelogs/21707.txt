@@ -1,0 +1,4 @@
+• Continue watching lists every show you're still watching
+• Anime opened from the Library load their page again
+• Covers that AniList replaced load again
+• Long server lists fold into one menu

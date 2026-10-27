@@ -2,6 +2,15 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.2 — 2026-10-27
+
+Anime fixes.
+
+- **Continue watching**: Home's Continue row lists every show you're still watching again. After importing a list from MyAnimeList or AniList it could stop at a handful, and shows came and went as you synced.
+- **Library**: an anime opened from the Library loads its page (episodes, details, In library) instead of saying AniList has no entry for it. Resuming from the search palette and sharing a list with friends had the same problem.
+- **Covers**: when AniList replaces an anime's cover, the old picture stops loading. Covers in the Library and Continue are now fetched again, and anime saved without a cover get one.
+- **Player servers**: on desktop, when an episode has more servers than fit beside the title (extensions such as Anikoto list many), they fold into one button with the server in use that opens the whole list. Long menus scroll instead of running off the window.
+
 ## 2.16.1 — 2026-10-27
 
 Echo music extensions, and fixes.

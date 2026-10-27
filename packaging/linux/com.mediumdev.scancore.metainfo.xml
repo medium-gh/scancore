@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.16.2" date="2026-10-27">
+      <description>
+        <p>Anime fixes: Continue lists every show you are still watching, anime opened from the Library load their page again, covers that AniList replaced come back, and a long list of servers in the player folds into one menu.</p>
+      </description>
+    </release>
     <release version="2.16.1" date="2026-10-27">
       <description>
         <p>Echo music extensions under Music, series and anime pages that keep their place when you switch between chapters, reviews and discussion, no crash report when the Android app closes itself, and a strip reader scroll bar that follows the page.</p>
