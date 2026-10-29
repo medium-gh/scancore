@@ -14,9 +14,11 @@
 #include <QWebEngineProfile>
 #include <QWebEngineScript>
 #include <QWebEngineScriptCollection>
+#include <QWebEngineUrlRequestInterceptor>
 #include <QtWebEngineQuick/QQuickWebEngineProfile>
 
 #include <algorithm>
+#include <atomic>
 #include <deque>
 #endif
 
@@ -24,9 +26,73 @@ namespace sc {
 
 namespace {
 std::function<void(const QString &)> g_clearanceSeen;
+
+// Ad and pop-under networks scan sites use (the same list as Android's
+// BrowserCheck.java): never loaded while a site's check is open.
+bool isAdHost(QString host) {
+    static const QStringList ads{
+        "doubleclick.net", "googlesyndication.com", "googleadservices.com", "adservice.google.com",
+        "popads.net", "popcash.net", "propellerads.com", "propellerclick.com", "adsterra.com", "adsterratech.com",
+        "highperformanceformat.com", "profitablecpmrate.com", "profitablegatecpm.com", "effectiveratecpm.com",
+        "exoclick.com", "exosrv.com", "juicyads.com", "trafficjunky.net", "hilltopads.net", "clickadu.com",
+        "adcash.com", "monetag.com", "onclickads.net", "onclickalgo.com", "a-ads.com", "adskeeper.com",
+        "mgid.com", "revcontent.com", "taboola.com", "outbrain.com", "pubfuture.com", "galaksion.com",
+        "admaven.com", "ad-maven.com", "adtelligent.com", "bidgear.com", "richads.com", "evadav.com",
+        "pushwhy.com", "rollerads.com", "dtscout.com", "dtscdn.com"};
+    host = host.toLower();
+    return std::any_of(ads.begin(), ads.end(), [&](const QString &ad) { return host == ad || host.endsWith(QLatin1Char('.') + ad); });
 }
+} // namespace
 
 void setClearanceSeen(std::function<void(const QString &domain)> seen) { g_clearanceSeen = std::move(seen); }
+
+QString registeredSite(QString host) {
+    host = host.toLower();
+    const auto labels = host.split(QLatin1Char('.'), Qt::SkipEmptyParts);
+    const auto n = labels.size();
+    if (n <= 2)
+        return host;
+    static const QStringList secondLevel{"co", "com", "net", "org", "gov", "ac", "edu", "ne", "or"};
+    const int keep = labels.last().size() == 2 && secondLevel.contains(labels[n - 2]) ? 3 : 2;
+    return labels.mid(n - keep).join(QLatin1Char('.'));
+}
+
+bool sameSite(const QUrl &a, const QUrl &b) {
+    static const QStringList checks{"cloudflare.com", "ddos-guard.net", "hcaptcha.com", "recaptcha.net"};
+    const auto site = registeredSite(b.host());
+    return site == registeredSite(a.host()) || checks.contains(site);
+}
+
+#ifdef SCANCORE_HAVE_WEBENGINE
+namespace {
+std::atomic<int> g_checksOpen{0};
+
+class AdBlocker : public QWebEngineUrlRequestInterceptor {
+public:
+    // `always`: the hidden checks' own profile; otherwise only while the
+    // reader's check window is open (players share that profile).
+    AdBlocker(bool always, QObject *parent) : QWebEngineUrlRequestInterceptor(parent), m_always(always) {}
+    void interceptRequest(QWebEngineUrlRequestInfo &info) override {
+        if ((m_always || g_checksOpen.load() > 0) && isAdHost(info.requestUrl().host()))
+            info.block(true);
+    }
+
+private:
+    bool m_always;
+};
+} // namespace
+#endif
+
+void setSiteCheckOpen(bool open) {
+#ifdef SCANCORE_HAVE_WEBENGINE
+    if (open)
+        ++g_checksOpen;
+    else if (g_checksOpen.load() > 0)
+        --g_checksOpen;
+#else
+    Q_UNUSED(open)
+#endif
+}
 
 void installWebBridge() {
 #ifdef SCANCORE_HAVE_WEBENGINE
@@ -38,6 +104,7 @@ void installWebBridge() {
     if (!profile)
         return;
     profile->setHttpUserAgent(QString::fromUtf8(Http::userAgent()));
+    profile->setUrlRequestInterceptor(new AdBlocker(false, profile));
     auto *store = profile->cookieStore();
     QObject::connect(store, &QWebEngineCookieStore::cookieAdded, &CookieJar::shared(), [](const QNetworkCookie &cookie) {
         // Only a clearance the jar did not have is news: the stored ones
@@ -94,8 +161,13 @@ class CheckPage : public QWebEnginePage {
 public:
     using QWebEnginePage::QWebEnginePage;
     std::function<void(const QString &)> onEvent;
+    QUrl home;
 
 protected:
+    // The check stays on its site: an ad's redirect goes nowhere.
+    bool acceptNavigationRequest(const QUrl &url, NavigationType, bool isMainFrame) override {
+        return !isMainFrame || home.isEmpty() || sameSite(home, url);
+    }
     void javaScriptConsoleMessage(JavaScriptConsoleMessageLevel, const QString &message, int, const QString &) override {
         if (message.startsWith(QLatin1String("scancore-check:")) && onEvent)
             onEvent(message.mid(int(qstrlen("scancore-check:"))));
@@ -107,6 +179,7 @@ public:
     Checks() : QObject(QCoreApplication::instance()) {
         // Off the record: no clearance left from an earlier check is sent.
         m_profile = new QWebEngineProfile(this);
+        m_profile->setUrlRequestInterceptor(new AdBlocker(true, m_profile));
         QWebEngineScript listener;
         listener.setName(QStringLiteral("scancore-check"));
         listener.setSourceCode(QString::fromUtf8(kListener));
@@ -140,6 +213,7 @@ private:
         m_profile->setHttpUserAgent(m_current.userAgent.isEmpty() ? QString::fromUtf8(Http::userAgent()) : m_current.userAgent);
         auto *page = new CheckPage(m_profile, this);
         m_page = page;
+        page->home = m_current.url;
         page->onEvent = [this](const QString &event) {
             if (event == QLatin1String("interactiveBegin") || event == QLatin1String("fail"))
                 finish(false);

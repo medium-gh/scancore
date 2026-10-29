@@ -143,7 +143,7 @@ Rectangle {
     // Scrolled into another chapter of the strip: it becomes the one read
     // (its progress, page count and the next one's prefetch), with no jump.
     function stripSwitch(ci, panel) {
-        if (ci === index || !chapterTasks[ci]) return
+        if (ci === index || !chapterTasks[ci] || restoring) return
         if (ci > index) markFinished()
         saveProgress(true)
         index = ci
@@ -300,6 +300,11 @@ Rectangle {
     }
     property bool finished: false
     property var resumePosition: null
+    // How far down the current image the reading line is (strip), 0-1.
+    property real stripPartial: 0
+    // The page is being put back where it was read to: not a page turn.
+    property bool restoring: false
+    Timer { id: restored; interval: 400; onTriggered: reader.restoring = false }
 
     // Drawn under the phone's status and navigation bars; the controls are
     // padded by these insets instead (see the immersive stack in Main.qml).
@@ -365,11 +370,21 @@ Rectangle {
             if (reader.stripChapters[reader.index]) return
             reader.stripFill()
             Qt.callLater(() => {
-                if (reader.resumePosition && reader.resumePosition.panel > 0) {
-                    const p = Math.min(reader.resumePosition.panel, reader.panels.length - 1)
-                    if (reader.mode === "strip") strip.positionViewAtIndex(reader.stripRow(p), ListView.Beginning)
-                    else pageView.page = pageView.views[pageView.viewOf(p)][0]
+                const at = reader.resumePosition
+                if (at && (at.panel > 0 || at.offset > 0)) {
+                    reader.restoring = true
+                    const p = Math.min(at.panel, reader.panels.length - 1)
+                    if (reader.mode === "strip") {
+                        const row = reader.stripRow(p)
+                        strip.positionViewAtIndex(row, ListView.Beginning)
+                        // Where in that image: tall webtoon images hold a
+                        // whole scene each.
+                        const item = strip.itemAtIndex(row)
+                        if (item && at.offset > 0)
+                            strip.contentY = Math.max(strip.originY, item.y + item.height * at.offset - strip.height * 0.35)
+                    } else pageView.page = pageView.views[pageView.viewOf(p)][0]
                     reader.currentPanel = p
+                    restored.restart()
                 }
             })
         }
@@ -384,8 +399,13 @@ Rectangle {
         const now = Date.now()
         if (!force && now - lastSaved < 1500) return
         lastSaved = now
-        const percent = finished ? 1 : (currentPanel + 1) / panels.length
-        Library.recordProgress(series, unit, { type: reader.mode, panel: currentPanel }, percent, finished || percent >= 0.98)
+        // Read only once its end was reached (markFinished): a chapter of a
+        // few tall images is otherwise "read" on its last image's first
+        // screen, and Continue went on to the next chapter.
+        const strip = reader.mode === "strip"
+        const percent = finished ? 1 : Math.min(0.97, (currentPanel + (strip ? stripPartial : 1)) / panels.length)
+        Library.recordProgress(series, unit, strip ? { type: reader.mode, panel: currentPanel, offset: stripPartial } : { type: reader.mode, panel: currentPanel },
+                               percent, finished)
     }
 
     onCurrentPanelChanged: {
@@ -656,10 +676,16 @@ Rectangle {
             const i = indexAt(width / 2, contentY + height * 0.35)
             const row = i >= 0 ? stripModel.get(i) : null
             if (row && row.panel >= 0) {
+                const item = itemAtIndex(i)
+                reader.stripPartial = item && item.height > 0 ? Math.max(0, Math.min(1, (contentY + height * 0.35 - item.y) / item.height)) : 0
                 if (row.chapter !== reader.index) reader.stripSwitch(row.chapter, row.panel)
                 else reader.currentPanel = row.panel
             }
-            if (atYEnd && reader.panels.length > 0) reader.markFinished()
+            // The end reached by scrolling (or auto-scroll), not the strip
+            // being short while its pages load or put back where it was.
+            if (atYEnd && reader.panels.length > 0 && reader.currentPanel >= reader.panels.length - 1
+                && (moving || stripWheel.ease.running || reader.autoScrolling) && !reader.restoring)
+                reader.markFinished()
             if (moving || stripWheel.ease.running) reader.controlsShown = false
         }
 
@@ -982,7 +1008,7 @@ Rectangle {
             const v = viewOf(page)
             const pagesShown = views[v] || [page]
             reader.currentPanel = pagesShown[pagesShown.length - 1]
-            if (v === views.length - 1) reader.markFinished()
+            if (v === views.length - 1 && !reader.restoring) reader.markFinished()
             pageSwap.restart()
         }
 

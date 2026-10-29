@@ -83,7 +83,9 @@ public:
     // This device's library, progress and activity as a snapshot, and
     // another device's merged into the local database.
     static QJsonObject snapshot();
-    static int merge(const QJsonObject &snapshot);
+    // `own`: this device's own copy, read back after its library was taken
+    // off it (signed out); otherwise skipped.
+    static int merge(const QJsonObject &snapshot, bool own = false);
     // One chapter's or episode's progress with its series, as live sync
     // sends it ({seriesId, series, unitKey, unit} in the snapshot's shapes),
     // or empty when there is none; and one such merged here when newer.

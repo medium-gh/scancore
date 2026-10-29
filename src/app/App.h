@@ -80,6 +80,10 @@ public:
     // The user agent to pass a site's check with: the extension's own when
     // one met the check, else SCANCORE's (Cloudflare ties the clearance to it).
     Q_INVOKABLE QString siteAgent(const QString &url) const;
+    // A site's check window: open (ad networks blocked meanwhile) or
+    // closed, and whether an address is on the checked site.
+    Q_INVOKABLE void setSiteCheckOpen(bool open) const;
+    Q_INVOKABLE bool sameSite(const QString &home, const QString &url) const;
     Q_INVOKABLE QString defaultAgent() const;
     // The reader passed a check in the window (desktop): extensions get the
     // site's cookies, then siteChecked(url) tells pages to try again.

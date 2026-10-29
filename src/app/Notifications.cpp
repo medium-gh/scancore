@@ -2,6 +2,7 @@
 
 #include "App.h"
 #include "Platform.h"
+#include "SiteNotifications.h"
 #include "core/Database.h"
 
 #include <QGuiApplication>
@@ -73,6 +74,10 @@ Task *Notifications::list(int limit) {
 
 void Notifications::markRead(qint64 id) {
     runInBackground([this, id] {
+        // One from the site: read there too.
+        if (const auto key = Database::scalar(QStringLiteral("SELECT key FROM notifications WHERE id = ? AND read_at IS NULL"), {id}).toString();
+            key.startsWith(QLatin1String("site:")))
+            SiteNotifications::markRead({key.mid(5)});
         Database::exec(QStringLiteral("UPDATE notifications SET read_at = ? WHERE id = ? AND read_at IS NULL"), {Database::now(), id});
         refreshUnread();
     });
@@ -82,6 +87,8 @@ void Notifications::markAllRead() {
     m_unread = 0;
     bump();
     runInBackground([this] {
+        if (Database::scalar(QStringLiteral("SELECT 1 FROM notifications WHERE read_at IS NULL AND key LIKE 'site:%'")).isValid())
+            SiteNotifications::markRead({}, true);
         Database::exec(QStringLiteral("UPDATE notifications SET read_at = ? WHERE read_at IS NULL"), {Database::now()});
         refreshUnread();
     });

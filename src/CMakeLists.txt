@@ -146,6 +146,7 @@ qt_add_qml_module(scancore
         app/Importer.cpp app/Importer.h
         app/SingleInstance.cpp app/SingleInstance.h
         app/Announcements.cpp app/Announcements.h
+        app/SiteNotifications.cpp app/SiteNotifications.h
         app/Notifications.cpp app/Notifications.h
         app/Music.cpp app/Music.h
         app/AudioPlayer.cpp app/AudioPlayer.h

@@ -27,6 +27,11 @@ class Account : public QObject {
     // scancore.onl, or a SCANCORE website hosted elsewhere.
     Q_PROPERTY(QString site READ site NOTIFY changed)
     Q_PROPERTY(bool customSite READ customSite NOTIFY changed)
+    // Signed in to an account while another account's library is still on
+    // this device (kept at sign-out, or a session that ended elsewhere):
+    // that account's email, and nothing syncs until keepOtherData() says
+    // whether it goes into this one. Empty otherwise.
+    Q_PROPERTY(QString otherData READ otherData NOTIFY changed)
 
 public:
     static Account *instance();
@@ -41,6 +46,7 @@ public:
     QString lastSync() const;
     QString site() const;
     bool customSite() const;
+    QString otherData() const { return m_otherData; }
     // While signed out: the website to sign in to; empty for scancore.onl.
     // Returns what is wrong with the address, or nothing.
     Q_INVOKABLE QString setSite(const QString &address);
@@ -70,7 +76,13 @@ public:
     // Website rules, so the form can explain problems before submitting.
     Q_INVOKABLE QVariantList passwordChecks(const QString &password) const;
     Q_INVOKABLE QString usernameProblem(const QString &username) const;
-    Q_INVOKABLE void signOut();
+    // Signs out. The library, progress, bookmarks, lists and activity are
+    // the account's: they leave this device unless `keepData` (sync first,
+    // so nothing unsent is lost). Files from the device's own folders stay.
+    Q_INVOKABLE void signOut(bool keepData = false);
+    // See otherData: true adds that library to this account, false
+    // replaces it with this account's.
+    Q_INVOKABLE void keepOtherData(bool keep);
     // {libraryImported, historyImported, pushed, morePending}. While a sync
     // runs, returns that one.
     Q_INVOKABLE sc::Task *sync();
@@ -92,8 +104,14 @@ private:
     // than about once a minute.
     void scheduleSync();
     static QVariantMap importAll(const QJsonObject &session);
+    // Who the library on this device belongs to: "<site>|<email>".
+    QString ownerKey() const;
+    // Removes what belongs to an account from this device.
+    static void clearAccountData();
+    static bool hasAccountData();
 
     QVariantMap m_user;
+    QString m_otherData;
     bool m_syncing = false;
     // Something changed during a sync, so another follows it.
     bool m_dirty = false;

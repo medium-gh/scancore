@@ -36,6 +36,8 @@ QString platformName() {
 #endif
 }
 
+const auto kRestoreOwnPref = QStringLiteral("sync.restoreOwn");
+
 QString ownFile() { return Activity::deviceId() + QStringLiteral(".json"); }
 
 // ------------------------------------------------------------------ folder
@@ -362,11 +364,11 @@ bool Sync::mergeUnit(const QJsonObject &payload) {
     return merged;
 }
 
-int Sync::merge(const QJsonObject &s) {
+int Sync::merge(const QJsonObject &s, bool own) {
     if (s.value("format").toString() != QLatin1String("scancore-sync"))
         throw Error(QStringLiteral("That is not a SCANCORE sync file."));
     const auto device = s.value("device").toObject().value("id").toString();
-    if (device.isEmpty() || device == Activity::deviceId())
+    if (device.isEmpty() || (device == Activity::deviceId() && !own))
         return 0;
     const auto series = s.value("series").toObject();
     const auto library = s.value("library").toObject();
@@ -529,14 +531,18 @@ QVariantMap Sync::exchange(Store &store, const QString &seenKey) {
     auto seen = Database::pref(seenKey).toMap();
     auto devices = Database::pref(QStringLiteral("sync.devices")).toMap();
     const auto own = ownFile();
+    // This device's own copy is read back once after its library was taken
+    // off it (signed out): signing in again brings it back instead of
+    // overwriting it with nothing.
+    const bool restoreOwn = Database::pref(kRestoreOwnPref).toBool();
     int merged = 0;
     for (const auto &entry : store.list()) {
-        if (entry.name == own || seen.value(entry.name).toString() == entry.tag)
+        if ((entry.name == own && !restoreOwn) || (entry.name != own && seen.value(entry.name).toString() == entry.tag))
             continue;
         const auto data = entry.inlineData.isEmpty() ? store.read(entry.name) : entry.inlineData;
         const auto snapshot = QJsonDocument::fromJson(data).object();
         try {
-            merged += merge(snapshot);
+            merged += merge(snapshot, entry.name == own);
         } catch (const Error &e) {
             qWarning().noquote() << "Sync:" << entry.name << e.message();
         }
@@ -561,6 +567,8 @@ QVariantMap Sync::exchange(Store &store, const QString &seenKey) {
     }
     Database::setPref(seenKey, seen);
     Database::setPref(QStringLiteral("sync.devices"), devices);
+    if (restoreOwn)
+        Database::setPref(kRestoreOwnPref, false);
     return {{"merged", merged}, {"devices", devices.size()}};
 }
 

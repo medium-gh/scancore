@@ -1,5 +1,6 @@
 #include "Account.h"
 
+#include "Activity.h"
 #include "Library.h"
 #include "Live.h"
 #include "Sync.h"
@@ -417,7 +418,11 @@ int pullAnimeProgress() {
 
 Account::Account(QObject *parent) : QObject(parent) {
     m_user = Database::pref(QStringLiteral("account.user")).toMap();
-    if (signedIn() && active())
+    // Closed while asking what to do with another account's library: asked again.
+    if (const auto owner = Database::pref(QStringLiteral("account.dataOwner")).toString();
+        signedIn() && !owner.isEmpty() && owner != ownerKey() && hasAccountData())
+        m_otherData = owner.section(QLatin1Char('|'), 1);
+    if (signedIn() && active() && m_otherData.isEmpty())
         QTimer::singleShot(6000, this, [this] { sync(); });
     m_soon.setSingleShot(true);
     connect(&m_soon, &QTimer::timeout, this, [this] {
@@ -470,7 +475,7 @@ QString Account::setSite(const QString &address) {
 
 void Account::scheduleSync() {
     // Progress that live sync just brought in is not a change to send.
-    if (!signedIn() || !active() || Live::applying())
+    if (!signedIn() || !active() || Live::applying() || !m_otherData.isEmpty())
         return;
     if (m_syncing) {
         m_dirty = true;
@@ -539,6 +544,15 @@ Task *Account::authenticate(const QString &path, const QJsonObject &body) {
         const auto user = result.toMap().value(QStringLiteral("user")).toMap();
         // Keep only what the app shows.
         setUser({{"username", user.value("username")}, {"email", user.value("email")}, {"avatar", user.value("avatarUrl")}});
+        // Another account's library on this device: asked before anything
+        // of it goes into this one.
+        const auto owner = Database::pref(QStringLiteral("account.dataOwner")).toString();
+        if (!owner.isEmpty() && owner != ownerKey() && hasAccountData()) {
+            m_otherData = owner.section(QLatin1Char('|'), 1);
+            emit changed();
+            return;
+        }
+        Database::setPref(QStringLiteral("account.dataOwner"), ownerKey());
         sync();
     });
     return task;
@@ -663,7 +677,7 @@ QString Account::usernameProblem(const QString &username) const {
     return {};
 }
 
-void Account::signOut() {
+void Account::signOut(bool keepData) {
     // The session's cookies go now and the site is told with them in the
     // background: deleting them only once it answered also deleted the next
     // sign-in's when it came first (posts then failed as signed out).
@@ -683,15 +697,63 @@ void Account::signOut() {
             }
         });
     setUser({});
+    m_otherData.clear();
     Database::setPref(QStringLiteral("account.lastSync"), 0);
-    // A different account starts from scratch, uploading this device's history.
+    // Gone with the account: the next one starts from its own library.
+    // Kept: the next account asks first (otherData).
+    if (!keepData) {
+        clearAccountData();
+        Database::setPref(QStringLiteral("account.dataOwner"), QString());
+    }
     Database::setPref(QStringLiteral("account.animePushedAt"), 0);
     Database::setPref(QStringLiteral("account.animePulledAt"), 0);
     Database::setPref(QStringLiteral("account.comicPushedAt"), 0);
     Database::setPref(QStringLiteral("account.libraryPushedAt"), 0);
     Database::setPref(QStringLiteral("account.libraryRemoved"), QStringList());
+    // Which devices' copies were read, and since when, are the account's
+    // too: the next account (or this one again) reads all of its own.
+    for (const auto *key : {"account.devicesSince", "account.devicesSeen", "account.devicesSeen.written"})
+        Database::setPref(QLatin1String(key), QVariant());
     m_soon.stop();
     m_dirty = false;
+}
+
+bool Account::hasAccountData() {
+    return Database::scalar(QStringLiteral("SELECT 1 FROM library WHERE series_id NOT LIKE '%:local:%' "
+                                           "UNION SELECT 1 FROM progress WHERE series_id NOT LIKE '%:local:%' LIMIT 1"))
+        .isValid();
+}
+
+QString Account::ownerKey() const {
+    return siteUrl() + QLatin1Char('|') + m_user.value(QStringLiteral("email")).toString().trimmed().toLower();
+}
+
+void Account::clearAccountData() {
+    Database::transaction([] {
+        // Files from the device's own folders never reach the account.
+        for (const auto *table : {"library", "library_removed", "progress", "bookmarks", "bookmarks_removed", "series_settings"})
+            Database::query(QStringLiteral("DELETE FROM %1 WHERE series_id NOT LIKE '%:local:%'").arg(QLatin1String(table)));
+        Database::query(QStringLiteral("DELETE FROM activity"));
+        Database::query(QStringLiteral("DELETE FROM notifications WHERE kind = 'comments'"));
+    });
+    for (const auto *key : {"libraryCategories", "account.devicesSince", "account.devicesSeen", "account.devicesSeen.written",
+                            "siteNotifications.seen", "account.libraryRemoved"})
+        Database::setPref(QLatin1String(key), QVariant());
+    // The account keeps this device's copy: read back at the next sign-in.
+    Database::setPref(QStringLiteral("sync.restoreOwn"), true);
+    Library::instance()->notifyChanged();
+    emit Activity::instance()->changed();
+}
+
+void Account::keepOtherData(bool keep) {
+    if (m_otherData.isEmpty())
+        return;
+    m_otherData.clear();
+    if (!keep)
+        clearAccountData();
+    Database::setPref(QStringLiteral("account.dataOwner"), ownerKey());
+    emit changed();
+    sync();
 }
 
 QVariantMap Account::importAll(const QJsonObject &session) {
@@ -941,6 +1003,9 @@ QVariantMap Account::importAll(const QJsonObject &session) {
 Task *Account::sync() {
     if (m_syncing && m_task)
         return m_task;
+    // Nothing of another account's library goes up before the reader says so.
+    if (!m_otherData.isEmpty())
+        return Task::run([]() -> QVariant { throw Error(QStringLiteral("Choose first what happens to the library already on this device.")); });
     m_soon.stop();
     m_dirty = false;
     m_syncing = true;
@@ -966,6 +1031,10 @@ Task *Account::sync() {
         // does not start another sync.
         if (task->ok()) {
             Database::setPref(QStringLiteral("account.lastSync"), Database::now());
+            // The library here is this account's now (also for devices signed
+            // in before 2.16.7, which never recorded it).
+            if (signedIn() && Database::pref(QStringLiteral("account.dataOwner")).toString().isEmpty())
+                Database::setPref(QStringLiteral("account.dataOwner"), ownerKey());
             const auto user = task->result().toMap().value(QStringLiteral("user")).toMap();
             const QVariantMap fresh{{"username", user.value("username")}, {"email", user.value("email")}, {"avatar", user.value("avatarUrl")}};
             if (!user.isEmpty() && signedIn() && fresh != m_user)

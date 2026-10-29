@@ -19,6 +19,14 @@ void installWebBridge();
 // Called with the site's domain when the embedded browser's window receives
 // a Cloudflare clearance (the reader passed the check there).
 void setClearanceSeen(std::function<void(const QString &domain)> seen);
+// The reader's check window is open (true) or closed: ad networks are
+// blocked while one is. The hidden checks always block them.
+void setSiteCheckOpen(bool open);
+// The name a host is registered under ("manga.example.co.uk" ->
+// "example.co.uk"), and whether `url` is on the same site as `home` (or a
+// browser check's own host): a check window stays on its site.
+QString registeredSite(QString host);
+bool sameSite(const QUrl &home, const QUrl &url);
 
 // Passes a browser check without the reader, for extensions (the host asks,
 // see host/desktop/AppBrowserCheck.kt): `url` opens in a page nobody sees,

@@ -14,7 +14,15 @@ Dialog {
     property bool asksText: false
     property alias value: field.text
     property string placeholder
+    // A switch under the message (keep something, say): its state is
+    // `optionOn`.
+    property string option
+    property bool optionOn: false
+    // The other button, when it is a choice of its own rather than Cancel:
+    // `declined` then says it was pressed.
+    property string cancelText: qsTr("Cancel")
     signal confirmed()
+    signal declined()
 
     function confirm() {
         if (asksText && !field.text.trim()) return
@@ -82,12 +90,37 @@ Dialog {
             maximumLength: 60
             onAccepted: dialog.confirm()
         }
+        Item {
+            visible: dialog.option.length > 0
+            width: parent.width
+            height: Math.max(optionSwitch.height, optionLabel.implicitHeight)
+            Text {
+                id: optionLabel
+                anchors.left: parent.left
+                anchors.right: optionSwitch.left
+                anchors.rightMargin: 12
+                anchors.verticalCenter: parent.verticalCenter
+                text: dialog.option
+                color: Theme.text
+                font.family: Theme.fontSans
+                font.pixelSize: Theme.textSm
+                wrapMode: Text.Wrap
+            }
+            Toggle {
+                id: optionSwitch
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                checked: dialog.optionOn
+                onToggled: dialog.optionOn = checked
+                Accessible.name: dialog.option
+            }
+        }
         Row {
             anchors.right: parent.right
             spacing: 8
             ScButton {
-                text: qsTr("Cancel")
-                onClicked: dialog.close()
+                text: dialog.cancelText
+                onClicked: { dialog.close(); dialog.declined() }
             }
             ScButton {
                 text: dialog.confirmText

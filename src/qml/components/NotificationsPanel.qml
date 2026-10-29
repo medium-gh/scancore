@@ -30,7 +30,7 @@ Popup {
     }
     function iconFor(kind) {
         return kind === "chapters" ? "book-open" : kind === "announcement" ? "megaphone"
-            : kind === "extensions" ? "puzzle" : kind === "app" ? "download" : "bell"
+            : kind === "extensions" ? "puzzle" : kind === "app" ? "download" : kind === "comments" ? "message-circle" : "bell"
     }
 
     onOpened: reload()

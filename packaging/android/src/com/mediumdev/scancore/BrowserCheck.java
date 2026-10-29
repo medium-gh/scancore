@@ -10,10 +10,16 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.net.Uri;
+import android.os.Message;
 import android.webkit.CookieManager;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import java.io.ByteArrayInputStream;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -89,7 +95,36 @@ public final class BrowserCheck extends Activity {
         // site sets a new Cloudflare clearance the check is passed, and the
         // screen closes by itself.
         final String before = clearance(cookies, url);
-        web.setWebViewClient(new WebViewClient());
+        // A site's check (not a sign-in): the view stays on that site. Ads
+        // that send the page elsewhere on a tap, open pop-ups or pop-unders
+        // are refused, and requests to ad networks never leave.
+        final boolean lockSite = userAgent != null && !userAgent.isEmpty();
+        final String home = site(Uri.parse(url).getHost());
+        settings.setSupportMultipleWindows(lockSite);
+        settings.setJavaScriptCanOpenWindowsAutomatically(!lockSite);
+        web.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onCreateWindow(WebView view, boolean dialog, boolean userGesture, Message result) {
+                return false;
+            }
+        });
+        web.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                if (!lockSite || !request.isForMainFrame()) return false;
+                Uri target = request.getUrl();
+                String scheme = target.getScheme();
+                if (scheme == null || !(scheme.equals("http") || scheme.equals("https"))) return true;
+                return !site(target.getHost()).equals(home) && !CHECK_HOSTS.contains(site(target.getHost()));
+            }
+
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                if (lockSite && isAd(request.getUrl().getHost()))
+                    return new WebResourceResponse("text/plain", "utf-8", 204, "No Content", null, new ByteArrayInputStream(new byte[0]));
+                return null;
+            }
+        });
         // Looked for four times a second: a site's page behind the check
         // may never quite finish loading (ads, covers), and waiting for it
         // kept the screen open long after the check had passed.
@@ -113,6 +148,46 @@ public final class BrowserCheck extends Activity {
         setContentView(root);
         if (state == null) web.loadUrl(url);
         else web.restoreState(state);
+    }
+
+    // Browser checks that may move the page to their own site.
+    private static final java.util.Set<String> CHECK_HOSTS = new java.util.HashSet<>(java.util.Arrays.asList(
+        "cloudflare.com", "ddos-guard.net", "hcaptcha.com", "recaptcha.net"));
+
+    // Ad and pop-under networks scan sites use (the same list as
+    // src/app/WebBridge.cpp).
+    private static final String[] AD_HOSTS = {
+        "doubleclick.net", "googlesyndication.com", "googleadservices.com", "adservice.google.com",
+        "popads.net", "popcash.net", "propellerads.com", "propellerclick.com", "adsterra.com", "adsterratech.com",
+        "highperformanceformat.com", "profitablecpmrate.com", "profitablegatecpm.com", "effectiveratecpm.com",
+        "exoclick.com", "exosrv.com", "juicyads.com", "trafficjunky.net", "hilltopads.net", "clickadu.com",
+        "adcash.com", "monetag.com", "onclickads.net", "onclickalgo.com", "a-ads.com", "adskeeper.com",
+        "mgid.com", "revcontent.com", "taboola.com", "outbrain.com", "pubfuture.com", "galaksion.com",
+        "admaven.com", "ad-maven.com", "adtelligent.com", "bidgear.com", "richads.com", "evadav.com",
+        "pushwhy.com", "rollerads.com", "dtscout.com", "dtscdn.com"};
+
+    static boolean isAd(String host) {
+        if (host == null) return false;
+        String h = host.toLowerCase();
+        for (String ad : AD_HOSTS)
+            if (h.equals(ad) || h.endsWith("." + ad)) return true;
+        return false;
+    }
+
+    // The name a site is registered under: "manga.example.co.uk" ->
+    // "example.co.uk", "www.example.com" -> "example.com".
+    static String site(String host) {
+        if (host == null) return "";
+        String[] labels = host.toLowerCase().split("\\.");
+        int n = labels.length;
+        if (n <= 2) return host.toLowerCase();
+        String second = labels[n - 2];
+        boolean twoPart = labels[n - 1].length() == 2
+            && java.util.Arrays.asList("co", "com", "net", "org", "gov", "ac", "edu", "ne", "or").contains(second);
+        int keep = twoPart ? 3 : 2;
+        StringBuilder out = new StringBuilder();
+        for (int i = n - keep; i < n; i++) out.append(i > n - keep ? "." : "").append(labels[i]);
+        return out.toString();
     }
 
     @Override

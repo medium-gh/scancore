@@ -5,6 +5,7 @@
 #include "WebBridge.h"
 #include "Images.h"
 #include "Announcements.h"
+#include "SiteNotifications.h"
 #include "Downloads.h"
 #include "CrashLog.h"
 #include "Library.h"
@@ -480,6 +481,10 @@ QString App::siteAgent(const QString &url) const { return ext::ExtensionSource::
 
 QString App::defaultAgent() const { return QString::fromUtf8(Http::userAgent()); }
 
+void App::setSiteCheckOpen(bool open) const { sc::setSiteCheckOpen(open); }
+
+bool App::sameSite(const QString &home, const QString &url) const { return sc::sameSite(QUrl(home), QUrl(url)); }
+
 void App::finishSiteCheck(const QString &url) {
     QPointer<App> self(this);
     runInBackground([self, url] {
@@ -760,6 +765,7 @@ void App::startBackgroundWork() {
     });
     // Announcements from scancore.onl, live while online.
     QTimer::singleShot(6000, this, [] { Announcements::instance()->start(); });
+    QTimer::singleShot(8000, this, [] { SiteNotifications::instance()->start(); });
     // Live progress with the account's other open apps.
     QTimer::singleShot(5000, this, [] { Live::instance()->update(); });
     scheduleLibraryCheck();

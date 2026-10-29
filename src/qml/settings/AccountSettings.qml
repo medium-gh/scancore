@@ -148,18 +148,55 @@ SettingsPane {
                     enabled: !Account.syncing
                     onClicked: pane.report(Account.sync())
                 }
-                ScButton { text: qsTr("Sign out"); iconName: "log-out"; variant: "ghost"; onClicked: signOutConfirm.open() }
+                ScButton {
+                    text: qsTr("Sign out")
+                    iconName: "log-out"
+                    variant: "ghost"
+                    loading: pane.signingOut !== null
+                    enabled: pane.signingOut === null
+                    onClicked: signOutConfirm.open()
+                }
             }
         }
     }
 
+    // Signing out takes the account's library, progress and lists off this
+    // device (they stay in the account), after a last sync so nothing
+    // unsent is lost; or keeps them here.
     ConfirmDialog {
         id: signOutConfirm
         heading: qsTr("Sign out of ") + pane.host + "?"
-        message: qsTr("Your library and reading progress stay on this device. They stop syncing until you sign in again.")
+        message: optionOn ? qsTr("Your library, reading progress and lists stay on this device and stop syncing. Signing in to another account later asks what to do with them.")
+                          : qsTr("Your library, reading progress and lists stay in your account and leave this device. Anything not synced yet is sent first.")
+        option: qsTr("Keep them on this device")
+        onOpened: optionOn = false
         confirmText: qsTr("Sign out")
         destructive: true
-        onConfirmed: Account.signOut()
+        onConfirmed: {
+            if (optionOn) { Account.signOut(true); return }
+            pane.lastSync(Account.syncing)
+        }
+    }
+    // A sync already running may have started before the latest changes:
+    // it ends first, then one more sends everything.
+    function lastSync(again) {
+        signingOut = Account.sync()
+        signingOut.finished.connect(() => {
+            if (again) { pane.lastSync(false); return }
+            pane.signingOut = null
+            Account.signOut(false)
+        })
+        signingOut.failed.connect((error) => { pane.signingOut = null; pane.unsentError = error; unsentConfirm.open() })
+    }
+    property var signingOut: null
+    property string unsentError: ""
+    ConfirmDialog {
+        id: unsentConfirm
+        heading: qsTr("Some changes have not reached your account")
+        message: pane.unsentError + "\n\n" + qsTr("Signing out now removes them from this device too.")
+        confirmText: qsTr("Sign out anyway")
+        destructive: true
+        onConfirmed: Account.signOut(false)
     }
 
     // Your own website: its address first.

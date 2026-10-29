@@ -737,6 +737,24 @@ ApplicationWindow {
         confirmText: qsTr("Use theme")
         onConfirmed: window.importTheme(window.pendingTheme)
     }
+    // Signed in to an account while another account's library is still on
+    // this device: nothing of it syncs until the reader picks.
+    ConfirmDialog {
+        id: otherDataAsk
+        heading: qsTr("This device has another account's library")
+        message: qsTr("The library, reading progress and lists here came from %1. Replace them with %2's, or add them to %2's account?")
+            .arg(Account.otherData).arg(Account.user.username || Account.user.email || "")
+        confirmText: qsTr("Replace")
+        cancelText: qsTr("Add to this account")
+        closePolicy: Popup.NoAutoClose
+        onConfirmed: Account.keepOtherData(false)
+        onDeclined: Account.keepOtherData(true)
+    }
+    Timer {
+        interval: 400
+        running: Account.otherData !== "" && !otherDataAsk.visible
+        onTriggered: otherDataAsk.open()
+    }
     AddRepositoryDialog { id: repositorySheet }
     NotificationsPanel { id: notificationsPanel }
     Timer { interval: 1500; running: true; onTriggered: shell.settled = true }

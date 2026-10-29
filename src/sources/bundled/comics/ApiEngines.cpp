@@ -284,12 +284,24 @@ QJsonDocument MangaDexSource::api(const QString &path, const QList<QPair<QString
     return Http::getJson(apiUrl(m_config.api, path, params), {{"User-Agent", "SCANCORE-Desktop/1.0"}});
 }
 
+namespace {
+// MangaDex's content ratings to ask for: adult ones too when the reader
+// turned on Settings → Sources → adult sources (titles rated erotica or
+// pornographic were never found, though the website lists them).
+void addRatings(QList<QPair<QString, QString>> &params) {
+    params.append({{"contentRating[]", "safe"}, {"contentRating[]", "suggestive"}});
+    if (Database::pref(QStringLiteral("setting.showNsfwSources"), false).toBool())
+        params.append({{"contentRating[]", "erotica"}, {"contentRating[]", "pornographic"}});
+}
+} // namespace
+
 QList<Summary> MangaDexSource::search(const QString &query) {
     const auto wanted = languages();
     QList<QPair<QString, QString>> params{{"title", query}, {"limit", "24"}, {"includes[]", "cover_art"}};
     for (const auto &language : wanted)
         params.append({"availableTranslatedLanguage[]", language});
-    params.append({{"contentRating[]", "safe"}, {"contentRating[]", "suggestive"}, {"order[relevance]", "desc"}});
+    addRatings(params);
+    params.append(qMakePair(QStringLiteral("order[relevance]"), QStringLiteral("desc")));
     const auto doc = api(QStringLiteral("/manga"), params);
     QList<Summary> out;
     for (const auto &row : arr(doc.object().value("data"))) {
@@ -339,12 +351,12 @@ QList<QPair<QString, QString>> MangaDexSource::otherNames(const QString &title, 
             out.append({str(row.toArray().at(0)), str(row.toArray().at(1))});
         return out;
     }
-    const auto doc = api(QStringLiteral("/manga"), {{"title", title},
-                                                   {"limit", "10"},
-                                                   {"contentRating[]", "safe"},
-                                                   {"contentRating[]", "suggestive"},
-                                                   {"contentRating[]", "erotica"},
-                                                   {"order[relevance]", "desc"}});
+    QList<QPair<QString, QString>> params{{"title", title}, {"limit", "10"}};
+    addRatings(params);
+    if (!Database::pref(QStringLiteral("setting.showNsfwSources"), false).toBool())
+        params.append(qMakePair(QStringLiteral("contentRating[]"), QStringLiteral("erotica")));
+    params.append(qMakePair(QStringLiteral("order[relevance]"), QStringLiteral("desc")));
+    const auto doc = api(QStringLiteral("/manga"), params);
     const auto namesOf = [](const QJsonObject &attrs) {
         QList<QPair<QString, QString>> names;
         const auto titles = attrs.value("title").toObject();
@@ -421,6 +433,11 @@ QList<QPair<QString, QString>> feedParams(int offset, const QStringList &languag
         params.append({"translatedLanguage[]", language});
     params.append({{"order[chapter]", "asc"}, {"order[volume]", "asc"}, {"includeExternalUrl", "0"}, {"includeFuturePublishAt", "0"},
                    {"includes[]", "scanlation_group"}});
+    // The feed of one series already chosen: its rating was the search's
+    // business. Without these MangaDex leaves out a pornographic series'
+    // chapters, so it looked unreadable.
+    params.append({{"contentRating[]", "safe"}, {"contentRating[]", "suggestive"}, {"contentRating[]", "erotica"},
+                   {"contentRating[]", "pornographic"}});
     return params;
 }
 
