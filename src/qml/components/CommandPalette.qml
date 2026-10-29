@@ -33,7 +33,7 @@ Popup {
         }
         const pages = [["home", "Home", "house"], ["comics", qsTr("Comics"), "book-open"], ["novels", qsTr("Novels"), "book-text"],
                        ["anime", qsTr("Anime"), "tv"], ["library", qsTr("Library"), "library"], ["history", qsTr("History"), "history"],
-                       ["activity", qsTr("Activity"), "activity"],
+                       ["activity", qsTr("Activity"), "activity"], ["latest", qsTr("Latest"), "flame"],
                        ["downloads", qsTr("Downloads"), "download"], ["settings", qsTr("Settings"), "settings"]]
         for (const [key, label, icon] of pages)
             if (!lower || label.toLowerCase().includes(lower))

@@ -2814,6 +2814,10 @@
             <source>Search comics, novels, anime or jump to a page</source>
             <translation>Çizgi roman, roman, anime ara veya bir sayfaya git</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>En yeniler</translation>
+        </message>
     </context>
     <context>
         <name>CommentsPanel</name>
@@ -3457,6 +3461,10 @@
         <message>
             <source>Settings</source>
             <translation>Ayarlar</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>En yeniler</translation>
         </message>
     </context>
     <context>
@@ -5262,6 +5270,77 @@
         <message>
             <source>Show all %1</source>
             <translation>Tümünü göster (%1)</translation>
+        </message>
+    </context>
+    <context>
+        <name>LatestPage</name>
+        <message>
+            <source>Latest</source>
+            <translation>En yeniler</translation>
+        </message>
+        <message>
+            <source>What people on %1 read and watch this week</source>
+            <translation>%1 kullanıcılarının bu hafta okudukları ve izledikleri</translation>
+        </message>
+        <message>
+            <source>Refresh</source>
+            <translation>Yenile</translation>
+        </message>
+        <message>
+            <source>Not on this server</source>
+            <translation>Bu sunucuda yok</translation>
+        </message>
+        <message>
+            <source>Quiet this week</source>
+            <translation>Sakin bir hafta</translation>
+        </message>
+        <message>
+            <source>Your sync server has no Latest page. It is on scancore.onl.</source>
+            <translation>Eşitleme sunucunda En yeniler sayfası yok. scancore.onl’da var.</translation>
+        </message>
+        <message>
+            <source>Nobody has read, watched or reviewed anything here this week yet.</source>
+            <translation>Bu hafta burada henüz kimse bir şey okumadı, izlemedi ya da incelemedi.</translation>
+        </message>
+        <message>
+            <source>Trending comics</source>
+            <translation>Trend çizgi romanlar</translation>
+        </message>
+        <message>
+            <source>1 reading</source>
+            <translation>1 kişi okuyor</translation>
+        </message>
+        <message>
+            <source>%1 reading</source>
+            <translation>%1 kişi okuyor</translation>
+        </message>
+        <message>
+            <source>Trending anime</source>
+            <translation>Trend animeler</translation>
+        </message>
+        <message>
+            <source>1 watching</source>
+            <translation>1 kişi izliyor</translation>
+        </message>
+        <message>
+            <source>%1 watching</source>
+            <translation>%1 kişi izliyor</translation>
+        </message>
+        <message>
+            <source>Trending novels</source>
+            <translation>Trend romanlar</translation>
+        </message>
+        <message>
+            <source>Comments and reviews</source>
+            <translation>Yorumlar ve incelemeler</translation>
+        </message>
+        <message>
+            <source>reviewed</source>
+            <translation>inceledi</translation>
+        </message>
+        <message>
+            <source>commented</source>
+            <translation>yorum yaptı</translation>
         </message>
     </context>
     <context>
@@ -9236,6 +9315,10 @@
             <source>Account</source>
             <translation>Hesap</translation>
         </message>
+        <message>
+            <source>latest</source>
+            <translation>en yeniler</translation>
+        </message>
     </context>
     <context>
         <name>RetroHub</name>
@@ -10521,6 +10604,10 @@
             <source>Music</source>
             <translation>Müzik</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>En yeniler</translation>
+        </message>
     </context>
     <context>
         <name>SiteCheck</name>
@@ -11404,6 +11491,10 @@
         <message>
             <source>Music</source>
             <translation>Müzik</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>En yeniler</translation>
         </message>
     </context>
     <context>

@@ -2814,6 +2814,10 @@
             <source>Search comics, novels, anime or jump to a page</source>
             <translation>कॉमिक्स, उपन्यास, एनीमे खोजें या किसी पेज पर जाएं</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>ताज़ा</translation>
+        </message>
     </context>
     <context>
         <name>CommentsPanel</name>
@@ -3457,6 +3461,10 @@
         <message>
             <source>Settings</source>
             <translation>सेटिंग</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>ताज़ा</translation>
         </message>
     </context>
     <context>
@@ -5254,6 +5262,77 @@
         <message>
             <source>Show all %1</source>
             <translation>सभी %1 दिखाएँ</translation>
+        </message>
+    </context>
+    <context>
+        <name>LatestPage</name>
+        <message>
+            <source>Latest</source>
+            <translation>ताज़ा</translation>
+        </message>
+        <message>
+            <source>What people on %1 read and watch this week</source>
+            <translation>%1 पर लोग इस हफ़्ते क्या पढ़ और देख रहे हैं</translation>
+        </message>
+        <message>
+            <source>Refresh</source>
+            <translation>रीफ़्रेश करें</translation>
+        </message>
+        <message>
+            <source>Not on this server</source>
+            <translation>इस सर्वर पर नहीं</translation>
+        </message>
+        <message>
+            <source>Quiet this week</source>
+            <translation>शांत हफ़्ता</translation>
+        </message>
+        <message>
+            <source>Your sync server has no Latest page. It is on scancore.onl.</source>
+            <translation>आपके सिंक सर्वर पर ताज़ा पेज नहीं है। यह scancore.onl पर है।</translation>
+        </message>
+        <message>
+            <source>Nobody has read, watched or reviewed anything here this week yet.</source>
+            <translation>इस हफ़्ते यहाँ अभी तक किसी ने कुछ नहीं पढ़ा, देखा या रिव्यू किया।</translation>
+        </message>
+        <message>
+            <source>Trending comics</source>
+            <translation>ट्रेंडिंग कॉमिक्स</translation>
+        </message>
+        <message>
+            <source>1 reading</source>
+            <translation>1 पढ़ रहा है</translation>
+        </message>
+        <message>
+            <source>%1 reading</source>
+            <translation>%1 पढ़ रहे हैं</translation>
+        </message>
+        <message>
+            <source>Trending anime</source>
+            <translation>ट्रेंडिंग एनीमे</translation>
+        </message>
+        <message>
+            <source>1 watching</source>
+            <translation>1 देख रहा है</translation>
+        </message>
+        <message>
+            <source>%1 watching</source>
+            <translation>%1 देख रहे हैं</translation>
+        </message>
+        <message>
+            <source>Trending novels</source>
+            <translation>ट्रेंडिंग उपन्यास</translation>
+        </message>
+        <message>
+            <source>Comments and reviews</source>
+            <translation>टिप्पणियाँ और रिव्यू</translation>
+        </message>
+        <message>
+            <source>reviewed</source>
+            <translation>ने रिव्यू किया</translation>
+        </message>
+        <message>
+            <source>commented</source>
+            <translation>ने टिप्पणी की</translation>
         </message>
     </context>
     <context>
@@ -9228,6 +9307,10 @@
             <source>Account</source>
             <translation>खाता</translation>
         </message>
+        <message>
+            <source>latest</source>
+            <translation>ताज़ा</translation>
+        </message>
     </context>
     <context>
         <name>RetroHub</name>
@@ -10506,6 +10589,10 @@
             <source>Music</source>
             <translation>संगीत</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>ताज़ा</translation>
+        </message>
     </context>
     <context>
         <name>SiteCheck</name>
@@ -11389,6 +11476,10 @@
         <message>
             <source>Music</source>
             <translation>संगीत</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>ताज़ा</translation>
         </message>
     </context>
     <context>

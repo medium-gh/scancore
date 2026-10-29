@@ -2814,6 +2814,10 @@
             <source>Search comics, novels, anime or jump to a page</source>
             <translation>Maghanap ng komiks, nobela, anime o pumunta sa pahina</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>Pinakabago</translation>
+        </message>
     </context>
     <context>
         <name>CommentsPanel</name>
@@ -3457,6 +3461,10 @@
         <message>
             <source>Settings</source>
             <translation>Settings</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>Pinakabago</translation>
         </message>
     </context>
     <context>
@@ -5254,6 +5262,77 @@
         <message>
             <source>Show all %1</source>
             <translation>Ipakita lahat (%1)</translation>
+        </message>
+    </context>
+    <context>
+        <name>LatestPage</name>
+        <message>
+            <source>Latest</source>
+            <translation>Pinakabago</translation>
+        </message>
+        <message>
+            <source>What people on %1 read and watch this week</source>
+            <translation>Ang binabasa at pinapanood ng mga tao sa %1 ngayong linggo</translation>
+        </message>
+        <message>
+            <source>Refresh</source>
+            <translation>I-refresh</translation>
+        </message>
+        <message>
+            <source>Not on this server</source>
+            <translation>Wala sa server na ito</translation>
+        </message>
+        <message>
+            <source>Quiet this week</source>
+            <translation>Tahimik ngayong linggo</translation>
+        </message>
+        <message>
+            <source>Your sync server has no Latest page. It is on scancore.onl.</source>
+            <translation>Walang Pinakabago na page ang sync server mo. Nasa scancore.onl ito.</translation>
+        </message>
+        <message>
+            <source>Nobody has read, watched or reviewed anything here this week yet.</source>
+            <translation>Wala pang nagbasa, nanood o nag-review dito ngayong linggo.</translation>
+        </message>
+        <message>
+            <source>Trending comics</source>
+            <translation>Trending na komiks</translation>
+        </message>
+        <message>
+            <source>1 reading</source>
+            <translation>1 nagbabasa</translation>
+        </message>
+        <message>
+            <source>%1 reading</source>
+            <translation>%1 nagbabasa</translation>
+        </message>
+        <message>
+            <source>Trending anime</source>
+            <translation>Trending na anime</translation>
+        </message>
+        <message>
+            <source>1 watching</source>
+            <translation>1 nanonood</translation>
+        </message>
+        <message>
+            <source>%1 watching</source>
+            <translation>%1 nanonood</translation>
+        </message>
+        <message>
+            <source>Trending novels</source>
+            <translation>Trending na nobela</translation>
+        </message>
+        <message>
+            <source>Comments and reviews</source>
+            <translation>Mga komento at review</translation>
+        </message>
+        <message>
+            <source>reviewed</source>
+            <translation>nag-review</translation>
+        </message>
+        <message>
+            <source>commented</source>
+            <translation>nagkomento</translation>
         </message>
     </context>
     <context>
@@ -9228,6 +9307,10 @@
             <source>Account</source>
             <translation>Account</translation>
         </message>
+        <message>
+            <source>latest</source>
+            <translation>pinakabago</translation>
+        </message>
     </context>
     <context>
         <name>RetroHub</name>
@@ -10506,6 +10589,10 @@
             <source>Music</source>
             <translation>Musika</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>Pinakabago</translation>
+        </message>
     </context>
     <context>
         <name>SiteCheck</name>
@@ -11389,6 +11476,10 @@
         <message>
             <source>Music</source>
             <translation>Musika</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>Pinakabago</translation>
         </message>
     </context>
     <context>

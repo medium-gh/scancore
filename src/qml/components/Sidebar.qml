@@ -27,6 +27,7 @@ Rectangle {
         { key: "library", label: qsTr("Library"), icon: "library" },
         { key: "history", label: qsTr("History"), icon: "history" },
         { key: "activity", label: qsTr("Activity"), icon: "activity" },
+        { key: "latest", label: qsTr("Latest"), icon: "flame" },
         { key: "downloads", label: qsTr("Downloads"), icon: "download" },
         // Opens the notification area rather than a page.
         { key: "notifications", label: qsTr("Notifications"), icon: "bell" }

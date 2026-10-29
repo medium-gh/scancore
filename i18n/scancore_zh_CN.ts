@@ -2814,6 +2814,10 @@
             <source>Search comics, novels, anime or jump to a page</source>
             <translation>搜索漫画、小说、动画，或跳转到页面</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>最新</translation>
+        </message>
     </context>
     <context>
         <name>CommentsPanel</name>
@@ -3457,6 +3461,10 @@
         <message>
             <source>Settings</source>
             <translation>设置</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>最新</translation>
         </message>
     </context>
     <context>
@@ -5262,6 +5270,77 @@
         <message>
             <source>Show all %1</source>
             <translation>显示全部 %1</translation>
+        </message>
+    </context>
+    <context>
+        <name>LatestPage</name>
+        <message>
+            <source>Latest</source>
+            <translation>最新</translation>
+        </message>
+        <message>
+            <source>What people on %1 read and watch this week</source>
+            <translation>本周 %1 上的大家在看什么</translation>
+        </message>
+        <message>
+            <source>Refresh</source>
+            <translation>刷新</translation>
+        </message>
+        <message>
+            <source>Not on this server</source>
+            <translation>此服务器上没有</translation>
+        </message>
+        <message>
+            <source>Quiet this week</source>
+            <translation>本周很安静</translation>
+        </message>
+        <message>
+            <source>Your sync server has no Latest page. It is on scancore.onl.</source>
+            <translation>你的同步服务器没有最新页面，它在 scancore.onl 上。</translation>
+        </message>
+        <message>
+            <source>Nobody has read, watched or reviewed anything here this week yet.</source>
+            <translation>本周这里还没有人阅读、观看或评价任何作品。</translation>
+        </message>
+        <message>
+            <source>Trending comics</source>
+            <translation>热门漫画</translation>
+        </message>
+        <message>
+            <source>1 reading</source>
+            <translation>1 人在读</translation>
+        </message>
+        <message>
+            <source>%1 reading</source>
+            <translation>%1 人在读</translation>
+        </message>
+        <message>
+            <source>Trending anime</source>
+            <translation>热门动画</translation>
+        </message>
+        <message>
+            <source>1 watching</source>
+            <translation>1 人在看</translation>
+        </message>
+        <message>
+            <source>%1 watching</source>
+            <translation>%1 人在看</translation>
+        </message>
+        <message>
+            <source>Trending novels</source>
+            <translation>热门小说</translation>
+        </message>
+        <message>
+            <source>Comments and reviews</source>
+            <translation>评论和评价</translation>
+        </message>
+        <message>
+            <source>reviewed</source>
+            <translation>发表了评价</translation>
+        </message>
+        <message>
+            <source>commented</source>
+            <translation>发表了评论</translation>
         </message>
     </context>
     <context>
@@ -9236,6 +9315,10 @@
             <source>Account</source>
             <translation>账户</translation>
         </message>
+        <message>
+            <source>latest</source>
+            <translation>最新</translation>
+        </message>
     </context>
     <context>
         <name>RetroHub</name>
@@ -10521,6 +10604,10 @@
             <source>Music</source>
             <translation>音乐</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>最新</translation>
+        </message>
     </context>
     <context>
         <name>SiteCheck</name>
@@ -11404,6 +11491,10 @@
         <message>
             <source>Music</source>
             <translation>音乐</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>最新</translation>
         </message>
     </context>
     <context>

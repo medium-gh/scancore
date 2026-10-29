@@ -126,6 +126,7 @@ Rectangle {
                     { key: "notifications", label: qsTr("Notifications"), icon: "bell" },
                     { key: "history", label: qsTr("History"), icon: "history" },
                     { key: "activity", label: qsTr("Activity"), icon: "activity" },
+                    { key: "latest", label: qsTr("Latest"), icon: "flame" },
                     { key: "downloads", label: qsTr("Downloads"), icon: "download" },
                     { key: "settings", label: qsTr("Settings"), icon: "settings" }
                 ])

@@ -2814,6 +2814,10 @@
             <source>Search comics, novels, anime or jump to a page</source>
             <translation>만화, 소설, 애니메이션 검색 또는 페이지로 이동</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>최신</translation>
+        </message>
     </context>
     <context>
         <name>CommentsPanel</name>
@@ -3457,6 +3461,10 @@
         <message>
             <source>Settings</source>
             <translation>설정</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>최신</translation>
         </message>
     </context>
     <context>
@@ -5262,6 +5270,77 @@
         <message>
             <source>Show all %1</source>
             <translation>모두 보기(%1)</translation>
+        </message>
+    </context>
+    <context>
+        <name>LatestPage</name>
+        <message>
+            <source>Latest</source>
+            <translation>최신</translation>
+        </message>
+        <message>
+            <source>What people on %1 read and watch this week</source>
+            <translation>이번 주 %1 사람들이 읽고 보는 작품</translation>
+        </message>
+        <message>
+            <source>Refresh</source>
+            <translation>새로 고침</translation>
+        </message>
+        <message>
+            <source>Not on this server</source>
+            <translation>이 서버에는 없음</translation>
+        </message>
+        <message>
+            <source>Quiet this week</source>
+            <translation>조용한 한 주</translation>
+        </message>
+        <message>
+            <source>Your sync server has no Latest page. It is on scancore.onl.</source>
+            <translation>동기화 서버에는 최신 페이지가 없습니다. scancore.onl에 있습니다.</translation>
+        </message>
+        <message>
+            <source>Nobody has read, watched or reviewed anything here this week yet.</source>
+            <translation>이번 주에는 아직 아무도 여기서 읽거나 보거나 리뷰하지 않았습니다.</translation>
+        </message>
+        <message>
+            <source>Trending comics</source>
+            <translation>트렌딩 만화</translation>
+        </message>
+        <message>
+            <source>1 reading</source>
+            <translation>1명이 읽는 중</translation>
+        </message>
+        <message>
+            <source>%1 reading</source>
+            <translation>%1명이 읽는 중</translation>
+        </message>
+        <message>
+            <source>Trending anime</source>
+            <translation>트렌딩 애니메이션</translation>
+        </message>
+        <message>
+            <source>1 watching</source>
+            <translation>1명이 보는 중</translation>
+        </message>
+        <message>
+            <source>%1 watching</source>
+            <translation>%1명이 보는 중</translation>
+        </message>
+        <message>
+            <source>Trending novels</source>
+            <translation>트렌딩 소설</translation>
+        </message>
+        <message>
+            <source>Comments and reviews</source>
+            <translation>댓글과 리뷰</translation>
+        </message>
+        <message>
+            <source>reviewed</source>
+            <translation>리뷰함</translation>
+        </message>
+        <message>
+            <source>commented</source>
+            <translation>댓글 남김</translation>
         </message>
     </context>
     <context>
@@ -9236,6 +9315,10 @@
             <source>Account</source>
             <translation>계정</translation>
         </message>
+        <message>
+            <source>latest</source>
+            <translation>최신</translation>
+        </message>
     </context>
     <context>
         <name>RetroHub</name>
@@ -10521,6 +10604,10 @@
             <source>Music</source>
             <translation>음악</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>최신</translation>
+        </message>
     </context>
     <context>
         <name>SiteCheck</name>
@@ -11404,6 +11491,10 @@
         <message>
             <source>Music</source>
             <translation>음악</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>최신</translation>
         </message>
     </context>
     <context>

@@ -2814,6 +2814,10 @@
             <source>Search comics, novels, anime or jump to a page</source>
             <translation>ค้นหาการ์ตูน นิยาย อนิเมะ หรือไปยังหน้า</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>ล่าสุด</translation>
+        </message>
     </context>
     <context>
         <name>CommentsPanel</name>
@@ -3457,6 +3461,10 @@
         <message>
             <source>Settings</source>
             <translation>การตั้งค่า</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>ล่าสุด</translation>
         </message>
     </context>
     <context>
@@ -5254,6 +5262,77 @@
         <message>
             <source>Show all %1</source>
             <translation>แสดงทั้งหมด %1</translation>
+        </message>
+    </context>
+    <context>
+        <name>LatestPage</name>
+        <message>
+            <source>Latest</source>
+            <translation>ล่าสุด</translation>
+        </message>
+        <message>
+            <source>What people on %1 read and watch this week</source>
+            <translation>สิ่งที่คนใน %1 อ่านและดูในสัปดาห์นี้</translation>
+        </message>
+        <message>
+            <source>Refresh</source>
+            <translation>รีเฟรช</translation>
+        </message>
+        <message>
+            <source>Not on this server</source>
+            <translation>ไม่มีในเซิร์ฟเวอร์นี้</translation>
+        </message>
+        <message>
+            <source>Quiet this week</source>
+            <translation>สัปดาห์ที่เงียบเหงา</translation>
+        </message>
+        <message>
+            <source>Your sync server has no Latest page. It is on scancore.onl.</source>
+            <translation>เซิร์ฟเวอร์ซิงค์ของคุณไม่มีหน้าล่าสุด มีอยู่ใน scancore.onl</translation>
+        </message>
+        <message>
+            <source>Nobody has read, watched or reviewed anything here this week yet.</source>
+            <translation>สัปดาห์นี้ยังไม่มีใครอ่าน ดู หรือรีวิวอะไรที่นี่</translation>
+        </message>
+        <message>
+            <source>Trending comics</source>
+            <translation>การ์ตูนมาแรง</translation>
+        </message>
+        <message>
+            <source>1 reading</source>
+            <translation>อ่านอยู่ 1 คน</translation>
+        </message>
+        <message>
+            <source>%1 reading</source>
+            <translation>อ่านอยู่ %1 คน</translation>
+        </message>
+        <message>
+            <source>Trending anime</source>
+            <translation>อนิเมะมาแรง</translation>
+        </message>
+        <message>
+            <source>1 watching</source>
+            <translation>ดูอยู่ 1 คน</translation>
+        </message>
+        <message>
+            <source>%1 watching</source>
+            <translation>ดูอยู่ %1 คน</translation>
+        </message>
+        <message>
+            <source>Trending novels</source>
+            <translation>นิยายมาแรง</translation>
+        </message>
+        <message>
+            <source>Comments and reviews</source>
+            <translation>ความคิดเห็นและรีวิว</translation>
+        </message>
+        <message>
+            <source>reviewed</source>
+            <translation>รีวิว</translation>
+        </message>
+        <message>
+            <source>commented</source>
+            <translation>แสดงความคิดเห็น</translation>
         </message>
     </context>
     <context>
@@ -9228,6 +9307,10 @@
             <source>Account</source>
             <translation>บัญชี</translation>
         </message>
+        <message>
+            <source>latest</source>
+            <translation>ล่าสุด</translation>
+        </message>
     </context>
     <context>
         <name>RetroHub</name>
@@ -10506,6 +10589,10 @@
             <source>Music</source>
             <translation>เพลง</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>ล่าสุด</translation>
+        </message>
     </context>
     <context>
         <name>SiteCheck</name>
@@ -11389,6 +11476,10 @@
         <message>
             <source>Music</source>
             <translation>เพลง</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>ล่าสุด</translation>
         </message>
     </context>
     <context>

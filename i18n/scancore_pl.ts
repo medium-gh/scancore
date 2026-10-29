@@ -2814,6 +2814,10 @@
             <source>Search comics, novels, anime or jump to a page</source>
             <translation>Szukaj komiksów, powieści, anime lub przejdź do strony</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>Najnowsze</translation>
+        </message>
     </context>
     <context>
         <name>CommentsPanel</name>
@@ -3457,6 +3461,10 @@
         <message>
             <source>Settings</source>
             <translation>Ustawienia</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>Najnowsze</translation>
         </message>
     </context>
     <context>
@@ -5254,6 +5262,77 @@
         <message>
             <source>Show all %1</source>
             <translation>Pokaż wszystkie (%1)</translation>
+        </message>
+    </context>
+    <context>
+        <name>LatestPage</name>
+        <message>
+            <source>Latest</source>
+            <translation>Najnowsze</translation>
+        </message>
+        <message>
+            <source>What people on %1 read and watch this week</source>
+            <translation>Co ludzie na %1 czytają i oglądają w tym tygodniu</translation>
+        </message>
+        <message>
+            <source>Refresh</source>
+            <translation>Odśwież</translation>
+        </message>
+        <message>
+            <source>Not on this server</source>
+            <translation>Nie na tym serwerze</translation>
+        </message>
+        <message>
+            <source>Quiet this week</source>
+            <translation>Spokojny tydzień</translation>
+        </message>
+        <message>
+            <source>Your sync server has no Latest page. It is on scancore.onl.</source>
+            <translation>Twój serwer synchronizacji nie ma strony Najnowsze. Jest na scancore.onl.</translation>
+        </message>
+        <message>
+            <source>Nobody has read, watched or reviewed anything here this week yet.</source>
+            <translation>W tym tygodniu nikt jeszcze niczego tu nie przeczytał, nie obejrzał ani nie ocenił.</translation>
+        </message>
+        <message>
+            <source>Trending comics</source>
+            <translation>Popularne komiksy</translation>
+        </message>
+        <message>
+            <source>1 reading</source>
+            <translation>1 czyta</translation>
+        </message>
+        <message>
+            <source>%1 reading</source>
+            <translation>%1 czyta</translation>
+        </message>
+        <message>
+            <source>Trending anime</source>
+            <translation>Popularne anime</translation>
+        </message>
+        <message>
+            <source>1 watching</source>
+            <translation>1 ogląda</translation>
+        </message>
+        <message>
+            <source>%1 watching</source>
+            <translation>%1 ogląda</translation>
+        </message>
+        <message>
+            <source>Trending novels</source>
+            <translation>Popularne powieści</translation>
+        </message>
+        <message>
+            <source>Comments and reviews</source>
+            <translation>Komentarze i recenzje</translation>
+        </message>
+        <message>
+            <source>reviewed</source>
+            <translation>zrecenzował(a)</translation>
+        </message>
+        <message>
+            <source>commented</source>
+            <translation>skomentował(a)</translation>
         </message>
     </context>
     <context>
@@ -9228,6 +9307,10 @@
             <source>Account</source>
             <translation>Konto</translation>
         </message>
+        <message>
+            <source>latest</source>
+            <translation>najnowsze</translation>
+        </message>
     </context>
     <context>
         <name>RetroHub</name>
@@ -10506,6 +10589,10 @@
             <source>Music</source>
             <translation>Muzyka</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>Najnowsze</translation>
+        </message>
     </context>
     <context>
         <name>SiteCheck</name>
@@ -11389,6 +11476,10 @@
         <message>
             <source>Music</source>
             <translation>Muzyka</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>Najnowsze</translation>
         </message>
     </context>
     <context>

@@ -67,6 +67,7 @@ Item {
         { label: qsTr("history"), run: () => Router.go("history") },
         { label: qsTr("downloads"), run: () => Router.go("downloads") },
         { label: qsTr("activity"), run: () => Router.go("activity") },
+        { label: qsTr("latest"), run: () => Router.go("latest") },
         { label: qsTr("extensions"), run: () => Router.openExtensions() },
         { label: App.settings.incognito === true ? qsTr("turn incognito off") : qsTr("go incognito"),
           run: () => Router.setIncognito(App.settings.incognito !== true) },

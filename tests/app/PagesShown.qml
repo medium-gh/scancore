@@ -9,7 +9,7 @@ import Scancore
 // were, 1 otherwise. 2.12.1 and 2.12.3 both shipped pages left hidden.
 Item {
     id: run
-    readonly property var sections: ["home", "comics", "novels", "anime", "music", "library", "history", "activity", "downloads", "settings"]
+    readonly property var sections: ["home", "comics", "novels", "anime", "music", "library", "history", "activity", "latest", "downloads", "settings"]
     readonly property var pages: [
         ["pages/ExtensionsPage.qml", {}],
         ["pages/ExtensionsDiagnostics.qml", {}],

@@ -2814,6 +2814,10 @@
             <source>Search comics, novels, anime or jump to a page</source>
             <translation>Искать комиксы, новеллы, аниме или перейти на страницу</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>Свежее</translation>
+        </message>
     </context>
     <context>
         <name>CommentsPanel</name>
@@ -3457,6 +3461,10 @@
         <message>
             <source>Settings</source>
             <translation>Настройки</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>Свежее</translation>
         </message>
     </context>
     <context>
@@ -5262,6 +5270,77 @@
         <message>
             <source>Show all %1</source>
             <translation>Показать все (%1)</translation>
+        </message>
+    </context>
+    <context>
+        <name>LatestPage</name>
+        <message>
+            <source>Latest</source>
+            <translation>Свежее</translation>
+        </message>
+        <message>
+            <source>What people on %1 read and watch this week</source>
+            <translation>Что люди на %1 читают и смотрят на этой неделе</translation>
+        </message>
+        <message>
+            <source>Refresh</source>
+            <translation>Обновить</translation>
+        </message>
+        <message>
+            <source>Not on this server</source>
+            <translation>Нет на этом сервере</translation>
+        </message>
+        <message>
+            <source>Quiet this week</source>
+            <translation>Тихая неделя</translation>
+        </message>
+        <message>
+            <source>Your sync server has no Latest page. It is on scancore.onl.</source>
+            <translation>На вашем сервере синхронизации нет страницы «Свежее». Она есть на scancore.onl.</translation>
+        </message>
+        <message>
+            <source>Nobody has read, watched or reviewed anything here this week yet.</source>
+            <translation>На этой неделе здесь ещё никто ничего не читал, не смотрел и не оценивал.</translation>
+        </message>
+        <message>
+            <source>Trending comics</source>
+            <translation>Комиксы в тренде</translation>
+        </message>
+        <message>
+            <source>1 reading</source>
+            <translation>1 читает</translation>
+        </message>
+        <message>
+            <source>%1 reading</source>
+            <translation>Читают: %1</translation>
+        </message>
+        <message>
+            <source>Trending anime</source>
+            <translation>Аниме в тренде</translation>
+        </message>
+        <message>
+            <source>1 watching</source>
+            <translation>1 смотрит</translation>
+        </message>
+        <message>
+            <source>%1 watching</source>
+            <translation>Смотрят: %1</translation>
+        </message>
+        <message>
+            <source>Trending novels</source>
+            <translation>Романы в тренде</translation>
+        </message>
+        <message>
+            <source>Comments and reviews</source>
+            <translation>Комментарии и рецензии</translation>
+        </message>
+        <message>
+            <source>reviewed</source>
+            <translation>оставил(а) рецензию</translation>
+        </message>
+        <message>
+            <source>commented</source>
+            <translation>оставил(а) комментарий</translation>
         </message>
     </context>
     <context>
@@ -9236,6 +9315,10 @@
             <source>Account</source>
             <translation>Аккаунт</translation>
         </message>
+        <message>
+            <source>latest</source>
+            <translation>свежее</translation>
+        </message>
     </context>
     <context>
         <name>RetroHub</name>
@@ -10521,6 +10604,10 @@
             <source>Music</source>
             <translation>Музыка</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>Свежее</translation>
+        </message>
     </context>
     <context>
         <name>SiteCheck</name>
@@ -11404,6 +11491,10 @@
         <message>
             <source>Music</source>
             <translation>Музыка</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>Свежее</translation>
         </message>
     </context>
     <context>

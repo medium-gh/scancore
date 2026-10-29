@@ -2814,6 +2814,10 @@
             <source>Search comics, novels, anime or jump to a page</source>
             <translation>Tìm truyện tranh, tiểu thuyết, anime hoặc nhảy tới một trang</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>Mới nhất</translation>
+        </message>
     </context>
     <context>
         <name>CommentsPanel</name>
@@ -3457,6 +3461,10 @@
         <message>
             <source>Settings</source>
             <translation>Cài đặt</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>Mới nhất</translation>
         </message>
     </context>
     <context>
@@ -5262,6 +5270,77 @@
         <message>
             <source>Show all %1</source>
             <translation>Hiện tất cả %1</translation>
+        </message>
+    </context>
+    <context>
+        <name>LatestPage</name>
+        <message>
+            <source>Latest</source>
+            <translation>Mới nhất</translation>
+        </message>
+        <message>
+            <source>What people on %1 read and watch this week</source>
+            <translation>Những gì mọi người trên %1 đọc và xem tuần này</translation>
+        </message>
+        <message>
+            <source>Refresh</source>
+            <translation>Làm mới</translation>
+        </message>
+        <message>
+            <source>Not on this server</source>
+            <translation>Không có trên máy chủ này</translation>
+        </message>
+        <message>
+            <source>Quiet this week</source>
+            <translation>Một tuần yên ắng</translation>
+        </message>
+        <message>
+            <source>Your sync server has no Latest page. It is on scancore.onl.</source>
+            <translation>Máy chủ đồng bộ của bạn không có trang Mới nhất. Trang này có trên scancore.onl.</translation>
+        </message>
+        <message>
+            <source>Nobody has read, watched or reviewed anything here this week yet.</source>
+            <translation>Tuần này chưa ai đọc, xem hay đánh giá gì ở đây.</translation>
+        </message>
+        <message>
+            <source>Trending comics</source>
+            <translation>Truyện tranh thịnh hành</translation>
+        </message>
+        <message>
+            <source>1 reading</source>
+            <translation>1 người đang đọc</translation>
+        </message>
+        <message>
+            <source>%1 reading</source>
+            <translation>%1 người đang đọc</translation>
+        </message>
+        <message>
+            <source>Trending anime</source>
+            <translation>Anime thịnh hành</translation>
+        </message>
+        <message>
+            <source>1 watching</source>
+            <translation>1 người đang xem</translation>
+        </message>
+        <message>
+            <source>%1 watching</source>
+            <translation>%1 người đang xem</translation>
+        </message>
+        <message>
+            <source>Trending novels</source>
+            <translation>Tiểu thuyết thịnh hành</translation>
+        </message>
+        <message>
+            <source>Comments and reviews</source>
+            <translation>Bình luận và đánh giá</translation>
+        </message>
+        <message>
+            <source>reviewed</source>
+            <translation>đã đánh giá</translation>
+        </message>
+        <message>
+            <source>commented</source>
+            <translation>đã bình luận</translation>
         </message>
     </context>
     <context>
@@ -9236,6 +9315,10 @@
             <source>Account</source>
             <translation>Tài khoản</translation>
         </message>
+        <message>
+            <source>latest</source>
+            <translation>mới nhất</translation>
+        </message>
     </context>
     <context>
         <name>RetroHub</name>
@@ -10521,6 +10604,10 @@
             <source>Music</source>
             <translation>Âm nhạc</translation>
         </message>
+        <message>
+            <source>Latest</source>
+            <translation>Mới nhất</translation>
+        </message>
     </context>
     <context>
         <name>SiteCheck</name>
@@ -11404,6 +11491,10 @@
         <message>
             <source>Music</source>
             <translation>Âm nhạc</translation>
+        </message>
+        <message>
+            <source>Latest</source>
+            <translation>Mới nhất</translation>
         </message>
     </context>
     <context>

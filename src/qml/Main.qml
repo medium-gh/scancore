@@ -439,7 +439,7 @@ ApplicationWindow {
 
             Repeater {
                 id: sectionRepeater
-                model: ["home", "comics", "novels", "anime", "music", "library", "history", "activity", "downloads", "settings"]
+                model: ["home", "comics", "novels", "anime", "music", "library", "history", "activity", "latest", "downloads", "settings"]
                 delegate: Loader {
                     id: sectionLoader
                     required property string modelData
@@ -473,6 +473,7 @@ ApplicationWindow {
                                 case "library": return "pages/LibraryPage.qml"
                                 case "history": return "pages/HistoryPage.qml"
                                 case "activity": return "pages/ActivityPage.qml"
+                                case "latest": return "pages/LatestPage.qml"
                                 case "downloads": return "pages/DownloadsPage.qml"
                                 default: return "pages/SettingsPage.qml"
                                 }
