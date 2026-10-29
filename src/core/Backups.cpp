@@ -417,7 +417,9 @@ MihonBackup parseMihonBackup(const QByteArray &data) {
                 if (ok && id && !out.configuredSources.contains(id))
                     out.configuredSources.append(id);
             }
-        } else if (f == 106) {
+        } else if (f == 106 || f == 107 || f == 108) {
+            // Mihon's repositories (106); Aniyomi's anime (107) and manga
+            // (108) ones, where 106 is extension packages (no address).
             if (auto repo = parseRepository(backup.bytes()); repo.url.startsWith(QLatin1String("https://")))
                 out.repositories.append(repo);
         } else if (f == 600) {

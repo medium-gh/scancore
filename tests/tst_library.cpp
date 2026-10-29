@@ -335,6 +335,21 @@ private slots:
         current.message(4, category(QStringLiteral("Plan to watch"), 3));
         current.message(3, anime(777, QStringLiteral("/anime/one"), QStringLiteral("One Piece"), 3));
         current.message(103, source(QStringLiteral("Some Source"), 777));
+        // Aniyomi's repositories: anime (107) and manga (108); its 106 is
+        // extension packages, with no address.
+        const auto repo = [](const QString &url, const QString &name) {
+            ProtoWriter r;
+            r.text(1, url);
+            r.text(2, name);
+            return r;
+        };
+        current.message(106, repo(QStringLiteral("eu.kanade.tachiyomi.animeextension.en.one"), QStringLiteral("apk bytes")));
+        current.message(107, repo(QStringLiteral("https://example.org/anime/index.min.json"), QStringLiteral("Anime repo")));
+        current.message(108, repo(QStringLiteral("https://example.org/manga"), QStringLiteral("Manga repo")));
+        const auto repos = backups::parseMihonBackup(current.data()).repositories;
+        QCOMPARE(repos.size(), 2);
+        QCOMPARE(repos[0].url, QStringLiteral("https://example.org/anime/index.min.json"));
+        QCOMPARE(repos[1].name, QStringLiteral("Manga repo"));
         ProtoWriter legacy;
         legacy.message(502, category(QStringLiteral("On hold"), 1));
         legacy.message(501, anime(778, QStringLiteral("/anime/two"), QStringLiteral("Two"), 1));

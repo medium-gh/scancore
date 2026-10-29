@@ -171,27 +171,34 @@ void Downloads::enqueue(const QVariantMap &series, const QVariantList &units) {
     const auto seriesId = series.value(QStringLiteral("id")).toString();
     if (seriesId.isEmpty())
         return;
-    // Kept, so the downloads list can name it before anything is read.
-    if (!series.value(QStringLiteral("title")).toString().isEmpty())
-        Library::upsertSeries(series);
-    Database::transaction([&] {
-        for (const auto &value : units) {
-            const auto u = value.toMap();
-            Database::query(QStringLiteral(R"(
-                INSERT INTO downloads(series_id, unit_key, unit_title, unit_url, status, created_at, extra)
-                VALUES(?, ?, ?, ?, 'queued', ?, ?)
-                ON CONFLICT(series_id, unit_key) DO UPDATE SET
-                    status = CASE WHEN downloads.status = 'done' THEN 'done' ELSE 'queued' END, error = NULL,
-                    extra = COALESCE(excluded.extra, downloads.extra)
-            )"),
-                            {seriesId, u.value(QStringLiteral("key")).toString(), u.value(QStringLiteral("title")).toString(),
-                             u.value(QStringLiteral("url")).toString(), Database::now(),
-                             // Anime: where the episode's video comes from.
-                             u.contains(QStringLiteral("download"))
-                                 ? QVariant(QString::fromUtf8(QJsonDocument::fromVariant(u.value(QStringLiteral("download"))).toJson(QJsonDocument::Compact)))
-                                 : QVariant()});
-        }
-    });
+    // Called from QML: a storage failure is reported, not thrown through
+    // the interface (which ends the app).
+    try {
+        // Kept, so the downloads list can name it before anything is read.
+        if (!series.value(QStringLiteral("title")).toString().isEmpty())
+            Library::upsertSeries(series);
+        Database::transaction([&] {
+            for (const auto &value : units) {
+                const auto u = value.toMap();
+                Database::query(QStringLiteral(R"(
+                    INSERT INTO downloads(series_id, unit_key, unit_title, unit_url, status, created_at, extra)
+                    VALUES(?, ?, ?, ?, 'queued', ?, ?)
+                    ON CONFLICT(series_id, unit_key) DO UPDATE SET
+                        status = CASE WHEN downloads.status = 'done' THEN 'done' ELSE 'queued' END, error = NULL,
+                        extra = COALESCE(excluded.extra, downloads.extra)
+                )"),
+                                {seriesId, u.value(QStringLiteral("key")).toString(), u.value(QStringLiteral("title")).toString(),
+                                 u.value(QStringLiteral("url")).toString(), Database::now(),
+                                 // Anime: where the episode's video comes from.
+                                 u.contains(QStringLiteral("download"))
+                                     ? QVariant(QString::fromUtf8(QJsonDocument::fromVariant(u.value(QStringLiteral("download"))).toJson(QJsonDocument::Compact)))
+                                     : QVariant()});
+            }
+        });
+    } catch (const Error &e) {
+        qWarning() << "Downloads: not queued:" << e.message();
+        return;
+    }
     notify();
     pump();
 }

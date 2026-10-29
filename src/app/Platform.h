@@ -87,5 +87,13 @@ bool isTv();
 void setSystemBars(bool shown);
 // Android: the screen's fastest refresh rate for this window, or the system's choice.
 void setFastestRefresh(bool on);
+// Android: touches as the system's own lists take them. A finger that has
+// moved more than the touch slop (ViewConfiguration's, 8 dp; Qt's own is
+// 10 of its pixels, a third more on most phones) is scrolling, not
+// tapping: the list it is in takes the touch at once. Qt's lists take it
+// one move later, and never while they cannot move that way (pulling down
+// at the top), so a short swipe or a pull at the top tapped the row,
+// switch or menu under the finger and the page did not move.
+void setUpTouch();
 
 } // namespace sc::platform

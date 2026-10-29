@@ -28,6 +28,7 @@
 #include <QRegularExpression>
 #include <QSaveFile>
 #include <QSet>
+#include <QThread>
 #include <QXmlStreamReader>
 
 #include <cstring>
@@ -48,10 +49,19 @@ QVariantMap toMap(const Item &item) {
     QVariantList numbers;
     for (const double n : item.numbers)
         numbers.append(n);
-    return {{"title", item.title()}, {"titles", item.titles},       {"media", item.media},     {"cover", item.cover},
-            {"category", item.category}, {"source", item.sourceName}, {"anilistId", item.anilistId}, {"malId", item.malId},
-            {"comick", item.comickHid},
-            {"numbers", numbers},        {"count", item.count},       {"read", item.numbers.isEmpty() ? item.count : int(item.numbers.size())}};
+    QVariantMap map{{"title", item.title()}, {"titles", item.titles},       {"media", item.media},     {"cover", item.cover},
+                    {"category", item.category}, {"source", item.sourceName}, {"anilistId", item.anilistId}, {"malId", item.malId},
+                    {"comick", item.comickHid},
+                    {"numbers", numbers},        {"count", item.count},       {"read", item.numbers.isEmpty() ? item.count : int(item.numbers.size())}};
+    // The extension it came from and its address there, so installing that
+    // extension later brings it in where it was, with what was done.
+    if (!item.extensionKey.isEmpty() && !item.url.isEmpty()) {
+        map.insert("extension", item.extensionKey);
+        map.insert("url", item.url);
+        if (!item.doneLinks.isEmpty())
+            map.insert("done", QStringList(item.doneLinks.cbegin(), item.doneLinks.cend()));
+    }
+    return map;
 }
 
 Item fromMap(const QVariantMap &map) {
@@ -69,6 +79,10 @@ Item fromMap(const QVariantMap &map) {
     for (const auto &n : map.value("numbers").toList())
         item.numbers.append(n.toDouble());
     item.count = map.value("count").toInt();
+    item.extensionKey = map.value("extension").toString();
+    item.url = map.value("url").toString();
+    for (const auto &link : map.value("done").toStringList())
+        item.doneLinks.insert(link);
     return item;
 }
 
@@ -379,9 +393,23 @@ bool storeFound(const Item &item, Tally &outcome, bool searchEverywhere) {
             return true;
         }
     }
-    // Anime without their extension are found on AniList (storeAnimeAll).
-    if (anime)
+    // Anime: an installed extension of the same name (another version or
+    // language of it has another id) at the backup's address. Those without
+    // one are found on AniList (storeAnimeOnAniList).
+    if (anime) {
+        if (item.url.isEmpty() || item.sourceName.isEmpty())
+            return false;
+        for (const auto &source : anime::Registry::all()) {
+            if (!source->enabled() || source->key() == item.extensionKey || !sameSource(source, item.sourceName))
+                continue;
+            if (tryUrl(ext::wrapUrl(source->key(), item.url), source->key(), {}, {})) {
+                outcome.progress += store(series, item.category, units, item);
+                stored(series, item, outcome);
+                return true;
+            }
+        }
         return false;
+    }
     if (!novel) {
         for (const auto &source : comics::Registry::all()) {
             if (!source->enabled() || source->key() == QLatin1String("local"))
@@ -479,30 +507,96 @@ void storeAnimeOnAniList(const QList<Item> &items, Tally &outcome) {
     } catch (const Error &) {
         // Whatever was not found waits in the list of titles to find.
     }
-    // Searching by title is one request each; AniList allows about 90 a
-    // minute, so only the first few are looked up.
-    int searches = 0;
-    for (const auto &item : items) {
+    // The others by title: ten searches to a request (aliases), only ids
+    // and titles, then their details 50 at a time like those above. AniList
+    // allows about 30 requests a minute when busy, so they are spaced out
+    // and a "busy" answer waits a minute; a whole Aniyomi library (hundreds
+    // of anime) takes a few minutes, not one search per anime.
+    QList<int> unknown;
+    for (int i = 0; i < items.size(); ++i)
+        if (!(items[i].anilistId > 0 && byAnilist.contains(items[i].anilistId)) && !(items[i].malId > 0 && byMal.contains(items[i].malId))
+            && !titleKey(items[i].title()).isEmpty())
+            unknown.append(i);
+    const auto pause = [](int ms) {
+        for (int waited = 0; waited < ms; waited += 250) {
+            if (CancelScope::cancelled())
+                throw Error(QStringLiteral("Cancelled"), 499);
+            QThread::msleep(250);
+        }
+    };
+    const auto request = [&](const QString &query, const QJsonObject &variables) {
+        for (int attempt = 0;; ++attempt) {
+            try {
+                return anilist(query, variables);
+            } catch (const Error &e) {
+                if (e.status() != 429 || attempt >= 2)
+                    throw;
+                pause(61000);
+            }
+        }
+    };
+    QHash<int, int> foundIds; // item -> AniList id
+    constexpr int kPerRequest = 10;
+    for (int i = 0; i < unknown.size(); i += kPerRequest) {
+        if (i > 0)
+            pause(2100);
+        QStringList params;
+        QStringList fields;
+        QJsonObject variables;
+        const auto batch = unknown.mid(i, kPerRequest);
+        for (int j = 0; j < batch.size(); ++j) {
+            params.append(QStringLiteral("$q%1: String").arg(j));
+            fields.append(QStringLiteral("s%1: Page(perPage: 6) { media(search: $q%1, type: ANIME) { id title { romaji english native userPreferred } synonyms } }").arg(j));
+            variables.insert(QStringLiteral("q%1").arg(j), items[batch[j]].title());
+        }
+        QJsonObject data;
+        try {
+            data = request(QStringLiteral("query (%1) { %2 }").arg(params.join(QStringLiteral(", ")), fields.join(QLatin1Char(' '))), variables);
+        } catch (const Error &e) {
+            if (e.status() == 499)
+                throw;
+            continue;
+        }
+        for (int j = 0; j < batch.size(); ++j) {
+            const auto &item = items[batch[j]];
+            QSet<QString> wanted;
+            for (const auto &t : item.titles)
+                if (const auto key = titleKey(t); !key.isEmpty())
+                    wanted.insert(key);
+            for (const auto &value : data.value(QStringLiteral("s%1").arg(j)).toObject().value("media").toArray()) {
+                const auto titles = titlesOf(value.toObject());
+                if (std::any_of(titles.begin(), titles.end(), [&](const QString &t) { return wanted.contains(titleKey(t)); })) {
+                    foundIds.insert(batch[j], value.toObject().value("id").toInt());
+                    break;
+                }
+            }
+        }
+    }
+    QHash<int, QJsonObject> byFound;
+    const auto ids = QSet<int>(foundIds.cbegin(), foundIds.cend()).values();
+    for (int i = 0; i < ids.size(); i += 50) {
+        pause(2100);
+        QJsonArray chunk;
+        for (const int id : ids.mid(i, 50))
+            chunk.append(id);
+        try {
+            const auto data = request(QStringLiteral("query ($ids: [Int]) { Page(perPage: 50) { media(id_in: $ids, type: ANIME) {%1} } }")
+                                          .arg(QString::fromLatin1(kMediaFields)),
+                                      {{"ids", chunk}});
+            for (const auto &value : data.value("Page").toObject().value("media").toArray())
+                byFound.insert(value.toObject().value("id").toInt(), value.toObject());
+        } catch (const Error &e) {
+            if (e.status() == 499)
+                throw;
+        }
+    }
+    for (int i = 0; i < items.size(); ++i) {
+        const auto &item = items[i];
         if (CancelScope::cancelled())
             throw Error(QStringLiteral("Cancelled"), 499);
         auto media = item.anilistId > 0 ? byAnilist.value(item.anilistId) : item.malId > 0 ? byMal.value(item.malId) : QJsonObject();
-        if (media.isEmpty() && searches < 30) {
-            ++searches;
-            try {
-                const auto data = anilist(QStringLiteral("query ($q: String) { Page(perPage: 8) { media(search: $q, type: ANIME) {%1} } }")
-                                              .arg(QString::fromLatin1(kMediaFields)),
-                                          {{"q", item.title()}});
-                const auto wanted = titleKey(item.title());
-                for (const auto &value : data.value("Page").toObject().value("media").toArray()) {
-                    const auto titles = titlesOf(value.toObject());
-                    if (std::any_of(titles.begin(), titles.end(), [&](const QString &t) { return titleKey(t) == wanted; })) {
-                        media = value.toObject();
-                        break;
-                    }
-                }
-            } catch (const Error &) {
-            }
-        }
+        if (media.isEmpty())
+            media = byFound.value(foundIds.value(i));
         if (media.isEmpty()) {
             outcome.unmatched.append(item);
             continue;

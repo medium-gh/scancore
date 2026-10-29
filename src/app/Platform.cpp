@@ -9,10 +9,18 @@
 
 #include <QCoreApplication>
 #include <QDateTime>
+#include <QGuiApplication>
 #include <QJniEnvironment>
 #include <QJniObject>
 #include <QNetworkCookie>
+#include <QQuickItem>
+#include <QQuickWindow>
+#include <QScreen>
+#include <QStyleHints>
+#include <QTouchEvent>
 #include <QUrl>
+
+#include <cmath>
 #endif
 
 namespace sc::platform {
@@ -428,6 +436,72 @@ void setFastestRefresh(bool on) {
                                        QNativeInterface::QAndroidApplication::context().object(), jboolean(on));
 #else
     Q_UNUSED(on)
+#endif
+}
+
+#ifdef Q_OS_ANDROID
+namespace {
+
+// The list (Flickable, ListView, GridView…) around `item` that scrolls
+// along the finger's way.
+QQuickItem *scrollerFor(QQuickItem *item, bool vertical) {
+    for (auto *p = item ? item->parentItem() : nullptr; p; p = p->parentItem()) {
+        if (!p->inherits("QQuickFlickable") || !p->property("interactive").toBool())
+            continue;
+        // Flickable.AutoFlickDirection 0, HorizontalFlick 1, VerticalFlick 2,
+        // HorizontalAndVerticalFlick 3.
+        const int direction = p->property("flickableDirection").toInt();
+        const bool along = vertical ? (direction == 2 || direction == 3 || (direction == 0 && p->property("contentHeight").toReal() > p->height()))
+                                    : (direction == 1 || direction == 3 || (direction == 0 && p->property("contentWidth").toReal() > p->width()));
+        if (along)
+            return p;
+    }
+    return nullptr;
+}
+
+class TouchScroll : public QObject {
+public:
+    using QObject::QObject;
+
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override {
+        if ((event->type() != QEvent::TouchUpdate && event->type() != QEvent::TouchEnd) || !qobject_cast<QQuickWindow *>(watched))
+            return false;
+        auto *touch = static_cast<QTouchEvent *>(event);
+        if (touch->pointCount() != 1)
+            return false;
+        const auto &point = touch->point(0);
+        const auto moved = point.globalPosition() - point.globalPressPosition();
+        const int slop = QGuiApplication::styleHints()->startDragDistance();
+        if (std::abs(moved.x()) <= slop && std::abs(moved.y()) <= slop)
+            return false;
+        // A control or row holding the touch (not a list, a slider being
+        // dragged or anything else that keeps it): the list it is in takes
+        // it, and the control lets go without acting.
+        auto *holder = qobject_cast<QQuickItem *>(touch->exclusiveGrabber(point));
+        if (!holder || holder->inherits("QQuickFlickable") || holder->keepTouchGrab() || holder->keepMouseGrab())
+            return false;
+        if (auto *list = scrollerFor(holder, std::abs(moved.y()) >= std::abs(moved.x())))
+            touch->setExclusiveGrabber(point, list);
+        return false;
+    }
+};
+
+} // namespace
+#endif
+
+void setUpTouch() {
+#ifdef Q_OS_ANDROID
+    const auto configuration = QJniObject::callStaticObjectMethod(
+        "android/view/ViewConfiguration", "get", "(Landroid/content/Context;)Landroid/view/ViewConfiguration;",
+        QNativeInterface::QAndroidApplication::context().object());
+    const auto *screen = QGuiApplication::primaryScreen();
+    if (configuration.isValid() && screen && screen->devicePixelRatio() > 0) {
+        const int slop = configuration.callMethod<jint>("getScaledTouchSlop");
+        if (const int distance = qRound(slop / screen->devicePixelRatio()); distance > 0)
+            QGuiApplication::styleHints()->setStartDragDistance(distance);
+    }
+    qApp->installEventFilter(new TouchScroll(qApp));
 #endif
 }
 

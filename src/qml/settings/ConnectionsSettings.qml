@@ -303,10 +303,10 @@ SettingsPane {
             model: pane.showAllWaiting ? pane.waiting : pane.waiting.slice(0, 6)
             SettingRow {
                 required property var modelData
-                iconName: modelData.media === "novel" ? "book-text" : "book-open"
+                iconName: modelData.media === "novel" ? "book-text" : modelData.media === "anime" ? "tv" : "book-open"
                 title: modelData.title
-                description: (modelData.media === "novel" ? qsTr("Novel") : qsTr("Comic"))
-                    + (modelData.read > 0 ? " · " + modelData.read + qsTr(" read") : "")
+                description: (modelData.media === "novel" ? qsTr("Novel") : modelData.media === "anime" ? qsTr("Anime") : qsTr("Comic"))
+                    + (modelData.read > 0 ? " · " + modelData.read + (modelData.media === "anime" ? qsTr(" watched") : qsTr(" read")) : "")
                     + (modelData.source ? qsTr(" · from ") + modelData.source : "")
                 IconButton {
                     iconName: "x"

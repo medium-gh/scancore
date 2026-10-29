@@ -167,6 +167,13 @@ void Library::upsertSeries(const QVariantMap &s) {
     auto source = s.value(QStringLiteral("source")).toString();
     if (source.isEmpty())
         source = id.section(QLatin1Char(':'), 1, 1);
+    // A summary without a link or title (a download or a mark from a page
+    // that only had the id) keeps the id's own link: those columns may not
+    // be NULL, and a null QString is bound as NULL.
+    auto sourceUrl = s.value(QStringLiteral("sourceUrl")).toString();
+    if (const auto prefix = media + QLatin1Char(':') + source + QLatin1Char(':'); sourceUrl.isEmpty())
+        sourceUrl = id.startsWith(prefix) ? id.mid(prefix.size()) : id.section(QLatin1Char(':'), 2);
+    const auto text = [](const QString &value) { return value.isNull() ? QStringLiteral("") : value; };
     auto genres = s.value(QStringLiteral("genres"));
     const auto genreText = genres.typeId() == QMetaType::QStringList || genres.typeId() == QMetaType::QVariantList
                                ? genres.toStringList().join(QStringLiteral(", "))
@@ -186,8 +193,7 @@ void Library::upsertSeries(const QVariantMap &s) {
             extra = COALESCE(NULLIF(excluded.extra, ''), series.extra),
             updated_at = excluded.updated_at
     )"),
-                   {id, media, source,
-                    s.value(QStringLiteral("sourceUrl")).toString(), s.value(QStringLiteral("title")).toString(),
+                   {id, text(media), text(source), text(sourceUrl), text(s.value(QStringLiteral("title")).toString()),
                     s.value(QStringLiteral("cover")).toString(), s.value(QStringLiteral("description")).toString(),
                     s.value(QStringLiteral("author")).toString(), s.value(QStringLiteral("status")).toString(),
                     genreText, json(s.value(QStringLiteral("extra"))), Database::now()});

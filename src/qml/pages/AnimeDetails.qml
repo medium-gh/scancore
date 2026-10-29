@@ -42,7 +42,7 @@ Item {
         target: Library
         function onChanged() { if (page.visible) page.libraryRevision = Library.revision }
     }
-    onVisibleChanged: if (visible) libraryRevision = Library.revision
+    onVisibleChanged: if (visible) { libraryRevision = Library.revision; providerRevision++ }
     // A value from here on, not a binding that follows every change.
     Component.onCompleted: libraryRevision = Library.revision
     readonly property var progress: { App.dependOn(page.libraryRevision); return Library.progressMap(seriesId) }
@@ -80,16 +80,30 @@ Item {
 
     // Episodes can be downloaded when they play from an anime source with
     // SCANCORE's own player: {source, animeUrl?}, or null.
+    // The source picked for an AniList anime changes here and in the player.
+    property int providerRevision: 0
     readonly property var downloadSource: {
         App.dependOn(Downloads.revision)
+        App.dependOn(page.providerRevision)
         if (!Anime.nativePlayerAvailable) return null
         if (fromSource) return (media.source || summary.source) ? { source: media.source || summary.source } : null
         const p = Anime.provider(anilistId)
         return p.source ? { source: p.source, animeUrl: p.url } : null
     }
+    // An AniList anime with no source picked yet: downloading asks where
+    // from first (the player's "Watch from"), then goes on.
+    readonly property bool canDownload: downloadSource !== null
+        || (!fromSource && anilistId > 0 && Anime.nativePlayerAvailable && hasSources)
+    property var pendingDownload: null
     readonly property var downloadStates: { App.dependOn(Downloads.revision); return seriesId ? Downloads.states(seriesId) : ({}) }
     function download(list) {
-        if (!downloadSource || list.length === 0) return
+        if (list.length === 0) return
+        if (!downloadSource) {
+            if (!canDownload) return
+            pendingDownload = list
+            downloadFrom.start(Object.assign({ anilistId: anilistId }, media), false)
+            return
+        }
         Downloads.enqueue(Object.assign({}, series, { id: seriesId }), list.map(ep => ({
             key: ep.key, title: ep.title, url: ep.url || "",
             download: Object.assign({}, downloadSource, fromSource ? { episodeUrl: ep.url } : { number: Number(ep.number) })
@@ -101,6 +115,20 @@ Item {
         return episodes.filter(e => !(progress[e.key] && progress[e.key].completed) && !downloadStates[e.key])
     }
     ActionMenu { id: downloadMenu }
+    WatchFromDialog {
+        id: downloadFrom
+        onChosen: (picked) => {
+            page.providerRevision++
+            const list = page.pendingDownload
+            page.pendingDownload = null
+            if (!picked.source) {
+                Router.toast(qsTr("Downloads come from an anime extension. Pick one to download from."), "info")
+                return
+            }
+            if (list) page.download(list)
+        }
+        onDismissed: page.pendingDownload = null
+    }
 
     function watch(i) {
         if (i < 0 || i >= episodes.length) return
@@ -335,7 +363,7 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     IconButton {
                         id: downloadButton
-                        visible: page.downloadSource !== null
+                        visible: page.canDownload
                         iconName: "download"
                         tip: qsTr("Download episodes")
                         onClicked: {
@@ -443,7 +471,7 @@ Item {
                                 // Download: start it, see it go, or delete it.
                                 IconButton {
                                     readonly property var job: page.downloadStates[ep.modelData.key] || null
-                                    visible: page.downloadSource !== null || job !== null
+                                    visible: page.canDownload || job !== null
                                     anchors.right: parent.right
                                     anchors.top: parent.top
                                     anchors.margins: 4

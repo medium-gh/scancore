@@ -5,6 +5,7 @@
 #include "app/Customize.h"
 #include "app/Extensions.h"
 #include "app/Images.h"
+#include "app/Platform.h"
 #include "app/MpvPlayer.h"
 #include "app/Presence.h"
 #include "app/CrashLog.h"
@@ -325,6 +326,7 @@ int main(int argc, char *argv[]) {
 #endif
     Application app(argc, argv);
     startStep("application");
+    sc::platform::setUpTouch();
 #if defined(Q_OS_MACOS) || defined(Q_OS_ANDROID)
     app.installEventFilter(new FileOpenFilter(&app));
 #endif
