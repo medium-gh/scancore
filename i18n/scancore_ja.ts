@@ -1088,6 +1088,10 @@
             <source>%1 episodes</source>
             <translation>%1話</translation>
         </message>
+        <message>
+            <source>Downloads come from an anime extension. Pick one to download from.</source>
+            <translation>ダウンロードはアニメ拡張機能から行います。ダウンロード元を選んでください。</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3194,6 +3198,14 @@
         <message>
             <source>Your server: series read from other sources move forward on it too. It is managed in Settings → Sources → Your servers.</source>
             <translation>自分のサーバー: ほかのソースで読んだシリーズの進み具合もここに反映されます。設定 → ソース → 自分のサーバー で管理します。</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>アニメ</translation>
+        </message>
+        <message>
+            <source> watched</source>
+            <translation> 視聴済み</translation>
         </message>
     </context>
     <context>
@@ -9425,6 +9437,18 @@
         <message>
             <source>Show more reviews (%1)</source>
             <translation>レビューをさらに表示（%1）</translation>
+        </message>
+        <message>
+            <source>Review updated</source>
+            <translation>レビューを更新しました</translation>
+        </message>
+        <message>
+            <source>Your review</source>
+            <translation>あなたのレビュー</translation>
+        </message>
+        <message>
+            <source>Update review</source>
+            <translation>レビューを更新</translation>
         </message>
     </context>
     <context>

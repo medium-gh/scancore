@@ -1088,6 +1088,10 @@
             <source>%1 episodes</source>
             <translation>%1화</translation>
         </message>
+        <message>
+            <source>Downloads come from an anime extension. Pick one to download from.</source>
+            <translation>다운로드는 애니메이션 확장 프로그램에서 받습니다. 받을 곳을 하나 고르세요.</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3194,6 +3198,14 @@
         <message>
             <source>Your server: series read from other sources move forward on it too. It is managed in Settings → Sources → Your servers.</source>
             <translation>내 서버: 다른 소스에서 읽은 시리즈의 진행도 여기에 반영됩니다. 설정 → 소스 → 내 서버에서 관리합니다.</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>애니메이션</translation>
+        </message>
+        <message>
+            <source> watched</source>
+            <translation> 시청함</translation>
         </message>
     </context>
     <context>
@@ -9425,6 +9437,18 @@
         <message>
             <source>Show more reviews (%1)</source>
             <translation>리뷰 더 보기(%1)</translation>
+        </message>
+        <message>
+            <source>Review updated</source>
+            <translation>리뷰 수정됨</translation>
+        </message>
+        <message>
+            <source>Your review</source>
+            <translation>내 리뷰</translation>
+        </message>
+        <message>
+            <source>Update review</source>
+            <translation>리뷰 수정</translation>
         </message>
     </context>
     <context>

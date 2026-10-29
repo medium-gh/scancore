@@ -2,6 +2,17 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.5 — 2026-10-29
+
+Scrolling on phones, a crash when downloading, anime downloads from the info page, and Aniyomi backups.
+
+- **Scrolling on Android** works as the system's own lists do. A short swipe used to count as a tap: it pressed the setting, switch, menu or row under the finger and the page did not move, and pulling down at the top of a page tapped whatever was there. Now a finger that moves more than Android's own touch distance is scrolling, and only a touch that stays put is a tap.
+- Downloading an episode could close the app (issue #32). It no longer can, and a download that cannot be queued says so in the log instead.
+- **Download from the anime's page**: the download buttons on an AniList anime's page no longer wait until it has played from an extension. Without a source picked yet, downloading asks where to download from (the player's "Watch from"), then starts.
+- **Aniyomi backups**: anime still waiting to be found are listed as anime, with the episodes watched, not as comics. They keep the extension and address they came from, so once that extension is installed, "Find them" brings each one in where it was, with the episodes watched. Another version or language of the same extension is tried too. Anime with no tracker link are looked up on AniList ten at a time and spaced out for AniList's limits, so a library of hundreds of anime is matched in a few minutes, where only the first 30 were looked up before. The backup's anime and comic extension repositories are offered when it is brought in.
+- **Reviews**: the stars fill as you pick them (hovering previews), and your own review is edited instead of added a second time.
+- Signing out no longer removes the next sign-in, and a session ended on another device (or on the website) signs the app out instead of leaving it half signed in.
+
 ## 2.16.4 — 2026-10-27
 
 Forgot your password? Reset it without leaving the app.

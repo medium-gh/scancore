@@ -1088,6 +1088,10 @@
             <source>%1 episodes</source>
             <translation>%1 Folgen</translation>
         </message>
+        <message>
+            <source>Downloads come from an anime extension. Pick one to download from.</source>
+            <translation>Downloads kommen von einer Anime-Erweiterung. Wähle eine, von der geladen wird.</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3194,6 +3198,14 @@
         <message>
             <source>Your server: series read from other sources move forward on it too. It is managed in Settings → Sources → Your servers.</source>
             <translation>Dein Server: Serien, die du aus anderen Quellen liest, gehen dort auch weiter. Verwaltet wird er unter Einstellungen → Quellen → Deine Server.</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>Anime</translation>
+        </message>
+        <message>
+            <source> watched</source>
+            <translation> gesehen</translation>
         </message>
     </context>
     <context>
@@ -9425,6 +9437,18 @@
         <message>
             <source>Show more reviews (%1)</source>
             <translation>Mehr Rezensionen zeigen (%1)</translation>
+        </message>
+        <message>
+            <source>Review updated</source>
+            <translation>Rezension aktualisiert</translation>
+        </message>
+        <message>
+            <source>Your review</source>
+            <translation>Deine Rezension</translation>
+        </message>
+        <message>
+            <source>Update review</source>
+            <translation>Rezension aktualisieren</translation>
         </message>
     </context>
     <context>

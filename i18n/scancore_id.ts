@@ -1088,6 +1088,10 @@
             <source>%1 episodes</source>
             <translation>%1 episode</translation>
         </message>
+        <message>
+            <source>Downloads come from an anime extension. Pick one to download from.</source>
+            <translation>Unduhan berasal dari ekstensi anime. Pilih satu untuk mengunduh.</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3194,6 +3198,14 @@
         <message>
             <source>Your server: series read from other sources move forward on it too. It is managed in Settings → Sources → Your servers.</source>
             <translation>Server Anda: seri yang dibaca dari sumber lain juga maju di sana. Dikelola di Pengaturan → Sumber → Server Anda.</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>Anime</translation>
+        </message>
+        <message>
+            <source> watched</source>
+            <translation> ditonton</translation>
         </message>
     </context>
     <context>
@@ -9425,6 +9437,18 @@
         <message>
             <source>Show more reviews (%1)</source>
             <translation>Tampilkan ulasan lain (%1)</translation>
+        </message>
+        <message>
+            <source>Review updated</source>
+            <translation>Ulasan diperbarui</translation>
+        </message>
+        <message>
+            <source>Your review</source>
+            <translation>Ulasan Anda</translation>
+        </message>
+        <message>
+            <source>Update review</source>
+            <translation>Perbarui ulasan</translation>
         </message>
     </context>
     <context>

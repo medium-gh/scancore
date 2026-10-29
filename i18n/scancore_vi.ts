@@ -1088,6 +1088,10 @@
             <source>%1 episodes</source>
             <translation>%1 tập</translation>
         </message>
+        <message>
+            <source>Downloads come from an anime extension. Pick one to download from.</source>
+            <translation>Tải xuống đến từ một tiện ích anime. Hãy chọn một tiện ích để tải.</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3194,6 +3198,14 @@
         <message>
             <source>Your server: series read from other sources move forward on it too. It is managed in Settings → Sources → Your servers.</source>
             <translation>Máy chủ của bạn: các bộ đọc từ nguồn khác cũng tiến lên ở đó. Quản lý ở Cài đặt → Nguồn → Máy chủ của bạn.</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>Anime</translation>
+        </message>
+        <message>
+            <source> watched</source>
+            <translation> đã xem</translation>
         </message>
     </context>
     <context>
@@ -9425,6 +9437,18 @@
         <message>
             <source>Show more reviews (%1)</source>
             <translation>Hiện thêm đánh giá (%1)</translation>
+        </message>
+        <message>
+            <source>Review updated</source>
+            <translation>Đã cập nhật đánh giá</translation>
+        </message>
+        <message>
+            <source>Your review</source>
+            <translation>Đánh giá của bạn</translation>
+        </message>
+        <message>
+            <source>Update review</source>
+            <translation>Cập nhật đánh giá</translation>
         </message>
     </context>
     <context>

@@ -1088,6 +1088,10 @@
             <source>%1 episodes</source>
             <translation>%1 bölüm</translation>
         </message>
+        <message>
+            <source>Downloads come from an anime extension. Pick one to download from.</source>
+            <translation>İndirmeler bir anime eklentisinden yapılır. İndirmek için birini seç.</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3194,6 +3198,14 @@
         <message>
             <source>Your server: series read from other sources move forward on it too. It is managed in Settings → Sources → Your servers.</source>
             <translation>Sunucun: başka kaynaklardan okunan seriler onda da ilerler. Ayarlar → Kaynaklar → Sunucuların bölümünden yönetilir.</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>Anime</translation>
+        </message>
+        <message>
+            <source> watched</source>
+            <translation> izlendi</translation>
         </message>
     </context>
     <context>
@@ -9425,6 +9437,18 @@
         <message>
             <source>Show more reviews (%1)</source>
             <translation>Daha fazla inceleme göster (%1)</translation>
+        </message>
+        <message>
+            <source>Review updated</source>
+            <translation>İnceleme güncellendi</translation>
+        </message>
+        <message>
+            <source>Your review</source>
+            <translation>İncelemen</translation>
+        </message>
+        <message>
+            <source>Update review</source>
+            <translation>İncelemeyi güncelle</translation>
         </message>
     </context>
     <context>

@@ -1,0 +1,4 @@
+• Short swipes scroll instead of tapping what is under the finger
+• Downloading an episode no longer closes the app
+• Download anime from their own page
+• Aniyomi backups bring anime in as anime

@@ -1088,6 +1088,10 @@
             <source>%1 episodes</source>
             <translation>%1 集</translation>
         </message>
+        <message>
+            <source>Downloads come from an anime extension. Pick one to download from.</source>
+            <translation>下載來自動畫擴充功能。請選擇一個來下載。</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3194,6 +3198,14 @@
         <message>
             <source>Your server: series read from other sources move forward on it too. It is managed in Settings → Sources → Your servers.</source>
             <translation>我的伺服器：從其他來源閱讀的作品也會在上面同步進度。在 設定 → 來源 → 我的伺服器 中管理。</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>動畫</translation>
+        </message>
+        <message>
+            <source> watched</source>
+            <translation> 已看</translation>
         </message>
     </context>
     <context>
@@ -9425,6 +9437,18 @@
         <message>
             <source>Show more reviews (%1)</source>
             <translation>顯示更多評價（%1）</translation>
+        </message>
+        <message>
+            <source>Review updated</source>
+            <translation>評價已更新</translation>
+        </message>
+        <message>
+            <source>Your review</source>
+            <translation>你的評價</translation>
+        </message>
+        <message>
+            <source>Update review</source>
+            <translation>更新評價</translation>
         </message>
     </context>
     <context>

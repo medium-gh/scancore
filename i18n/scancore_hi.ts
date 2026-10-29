@@ -1088,6 +1088,10 @@
             <source>%1 episodes</source>
             <translation>%1 एपिसोड</translation>
         </message>
+        <message>
+            <source>Downloads come from an anime extension. Pick one to download from.</source>
+            <translation>डाउनलोड किसी एनीमे एक्सटेंशन से होते हैं। डाउनलोड के लिए एक चुनें।</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3194,6 +3198,14 @@
         <message>
             <source>Your server: series read from other sources move forward on it too. It is managed in Settings → Sources → Your servers.</source>
             <translation>आपका सर्वर: दूसरे स्रोतों से पढ़ी गई सीरीज़ उस पर भी आगे बढ़ती हैं। इसे सेटिंग → स्रोत → आपके सर्वर में संभाला जाता है।</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>एनीमे</translation>
+        </message>
+        <message>
+            <source> watched</source>
+            <translation> देखे गए</translation>
         </message>
     </context>
     <context>
@@ -9417,6 +9429,18 @@
         <message>
             <source>Show more reviews (%1)</source>
             <translation>और समीक्षाएँ दिखाएँ (%1)</translation>
+        </message>
+        <message>
+            <source>Review updated</source>
+            <translation>रिव्यू अपडेट किया गया</translation>
+        </message>
+        <message>
+            <source>Your review</source>
+            <translation>आपका रिव्यू</translation>
+        </message>
+        <message>
+            <source>Update review</source>
+            <translation>रिव्यू अपडेट करें</translation>
         </message>
     </context>
     <context>

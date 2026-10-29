@@ -1088,6 +1088,10 @@
             <source>%1 episodes</source>
             <translation>%1 episode</translation>
         </message>
+        <message>
+            <source>Downloads come from an anime extension. Pick one to download from.</source>
+            <translation>Galing sa anime extension ang mga download. Pumili ng isa na pagda-downloadan.</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3194,6 +3198,14 @@
         <message>
             <source>Your server: series read from other sources move forward on it too. It is managed in Settings → Sources → Your servers.</source>
             <translation>Server mo: umuusad din dito ang mga seryeng binabasa mula sa ibang source. Pinamamahalaan ito sa Settings → Mga source → Your servers.</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>Anime</translation>
+        </message>
+        <message>
+            <source> watched</source>
+            <translation> napanood</translation>
         </message>
     </context>
     <context>
@@ -9417,6 +9429,18 @@
         <message>
             <source>Show more reviews (%1)</source>
             <translation>Ipakita ang iba pang review (%1)</translation>
+        </message>
+        <message>
+            <source>Review updated</source>
+            <translation>Na-update ang review</translation>
+        </message>
+        <message>
+            <source>Your review</source>
+            <translation>Ang review mo</translation>
+        </message>
+        <message>
+            <source>Update review</source>
+            <translation>I-update ang review</translation>
         </message>
     </context>
     <context>

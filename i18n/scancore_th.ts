@@ -1088,6 +1088,10 @@
             <source>%1 episodes</source>
             <translation>%1 ตอน</translation>
         </message>
+        <message>
+            <source>Downloads come from an anime extension. Pick one to download from.</source>
+            <translation>การดาวน์โหลดมาจากส่วนขยายอนิเมะ เลือกส่วนขยายที่จะดาวน์โหลด</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3194,6 +3198,14 @@
         <message>
             <source>Your server: series read from other sources move forward on it too. It is managed in Settings → Sources → Your servers.</source>
             <translation>เซิร์ฟเวอร์ของคุณ: เรื่องที่อ่านจากแหล่งอื่นจะเดินหน้าบนเซิร์ฟเวอร์นี้ด้วย จัดการได้ใน การตั้งค่า → แหล่ง → เซิร์ฟเวอร์ของคุณ</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>อนิเมะ</translation>
+        </message>
+        <message>
+            <source> watched</source>
+            <translation> ดูแล้ว</translation>
         </message>
     </context>
     <context>
@@ -9417,6 +9429,18 @@
         <message>
             <source>Show more reviews (%1)</source>
             <translation>แสดงรีวิวเพิ่ม (%1)</translation>
+        </message>
+        <message>
+            <source>Review updated</source>
+            <translation>อัปเดตรีวิวแล้ว</translation>
+        </message>
+        <message>
+            <source>Your review</source>
+            <translation>รีวิวของคุณ</translation>
+        </message>
+        <message>
+            <source>Update review</source>
+            <translation>อัปเดตรีวิว</translation>
         </message>
     </context>
     <context>
