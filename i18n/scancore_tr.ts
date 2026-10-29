@@ -414,6 +414,30 @@
             <source>· open now</source>
             <translation>· şu an açık</translation>
         </message>
+        <message>
+            <source>Your library, reading progress and lists stay on this device and stop syncing. Signing in to another account later asks what to do with them.</source>
+            <translation>Kitaplığın, okuma ilerlemen ve listelerin bu cihazda kalır ve eşitlenmez. Daha sonra başka bir hesaba giriş yaparsan bunlarla ne yapılacağı sorulur.</translation>
+        </message>
+        <message>
+            <source>Your library, reading progress and lists stay in your account and leave this device. Anything not synced yet is sent first.</source>
+            <translation>Kitaplığın, okuma ilerlemen ve listelerin hesabında kalır ve bu cihazdan kaldırılır. Henüz eşitlenmeyenler önce gönderilir.</translation>
+        </message>
+        <message>
+            <source>Keep them on this device</source>
+            <translation>Bu cihazda tut</translation>
+        </message>
+        <message>
+            <source>Some changes have not reached your account</source>
+            <translation>Bazı değişiklikler hesabına ulaşmadı</translation>
+        </message>
+        <message>
+            <source>Signing out now removes them from this device too.</source>
+            <translation>Şimdi çıkış yaparsan bunlar bu cihazdan da kaldırılır.</translation>
+        </message>
+        <message>
+            <source>Sign out anyway</source>
+            <translation>Yine de çıkış yap</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>
@@ -6020,6 +6044,22 @@
         <message>
             <source>Open</source>
             <translation>Aç</translation>
+        </message>
+        <message>
+            <source>This device has another account's library</source>
+            <translation>Bu cihazda başka bir hesabın kitaplığı var</translation>
+        </message>
+        <message>
+            <source>The library, reading progress and lists here came from %1. Replace them with %2's, or add them to %2's account?</source>
+            <translation>Buradaki kitaplık, okuma ilerlemesi ve listeler %1 hesabından geliyor. %2 hesabındakilerle değiştirilsin mi, yoksa %2 hesabına mı eklensin?</translation>
+        </message>
+        <message>
+            <source>Replace</source>
+            <translation>Değiştir</translation>
+        </message>
+        <message>
+            <source>Add to this account</source>
+            <translation>Bu hesaba ekle</translation>
         </message>
     </context>
     <context>
@@ -13346,6 +13386,25 @@
         <message>
             <source>Wrapped</source>
             <translation>Wrapped</translation>
+        </message>
+    </context>
+    <context>
+        <name>sc::SiteNotifications</name>
+        <message>
+            <source>%1 replied to your comment</source>
+            <translation>%1 yorumuna yanıt verdi</translation>
+        </message>
+        <message>
+            <source>%1 mentioned you</source>
+            <translation>%1 senden bahsetti</translation>
+        </message>
+        <message>
+            <source>%1 upvoted your comment</source>
+            <translation>%1 yorumunu beğendi</translation>
+        </message>
+        <message>
+            <source>%1 downvoted your comment</source>
+            <translation>%1 yorumuna olumsuz oy verdi</translation>
         </message>
     </context>
     <context>

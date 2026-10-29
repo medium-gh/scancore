@@ -414,6 +414,30 @@
             <source>· open now</source>
             <translation>· 正在打开</translation>
         </message>
+        <message>
+            <source>Your library, reading progress and lists stay on this device and stop syncing. Signing in to another account later asks what to do with them.</source>
+            <translation>你的书架、阅读进度和列表会留在这台设备上并停止同步。之后登录其他账号时，会询问如何处理它们。</translation>
+        </message>
+        <message>
+            <source>Your library, reading progress and lists stay in your account and leave this device. Anything not synced yet is sent first.</source>
+            <translation>你的书架、阅读进度和列表会保留在账号中，并从这台设备上移除。尚未同步的内容会先发送。</translation>
+        </message>
+        <message>
+            <source>Keep them on this device</source>
+            <translation>保留在这台设备上</translation>
+        </message>
+        <message>
+            <source>Some changes have not reached your account</source>
+            <translation>有些更改尚未同步到你的账号</translation>
+        </message>
+        <message>
+            <source>Signing out now removes them from this device too.</source>
+            <translation>现在退出登录也会把它们从这台设备上移除。</translation>
+        </message>
+        <message>
+            <source>Sign out anyway</source>
+            <translation>仍然退出登录</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>
@@ -6020,6 +6044,22 @@
         <message>
             <source>Open</source>
             <translation>打开</translation>
+        </message>
+        <message>
+            <source>This device has another account's library</source>
+            <translation>这台设备上有其他账号的书架</translation>
+        </message>
+        <message>
+            <source>The library, reading progress and lists here came from %1. Replace them with %2's, or add them to %2's account?</source>
+            <translation>这里的书架、阅读进度和列表来自 %1。要替换为 %2 的，还是添加到 %2 的账号中？</translation>
+        </message>
+        <message>
+            <source>Replace</source>
+            <translation>替换</translation>
+        </message>
+        <message>
+            <source>Add to this account</source>
+            <translation>添加到此账号</translation>
         </message>
     </context>
     <context>
@@ -13346,6 +13386,25 @@
         <message>
             <source>Wrapped</source>
             <translation>Wrapped</translation>
+        </message>
+    </context>
+    <context>
+        <name>sc::SiteNotifications</name>
+        <message>
+            <source>%1 replied to your comment</source>
+            <translation>%1 回复了你的评论</translation>
+        </message>
+        <message>
+            <source>%1 mentioned you</source>
+            <translation>%1 提到了你</translation>
+        </message>
+        <message>
+            <source>%1 upvoted your comment</source>
+            <translation>%1 赞了你的评论</translation>
+        </message>
+        <message>
+            <source>%1 downvoted your comment</source>
+            <translation>%1 踩了你的评论</translation>
         </message>
     </context>
     <context>

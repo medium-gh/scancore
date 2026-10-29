@@ -2,6 +2,17 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.7 — 2026-10-30
+
+Signing out, picking up where you left off, cleaner browser checks, and replies to your comments.
+
+- **Signing out** takes your library, reading progress and lists off the device after a last sync, so a new account no longer starts with the old one's library (they stay in your account and come back when you sign in again). "Keep them on this device" leaves them, and signing in to a different account then asks whether to replace them or add them to that account; nothing syncs until you choose.
+- **Continue reading** opens the chapter you were in, where you stopped. A chapter of a few tall images used to count as read as soon as its last image appeared, so Continue jumped to the next chapter; now a chapter is read only once you reach its end, and the place inside a long image is kept.
+- **Browser checks** stay on the site being checked: ads that send the page elsewhere on a tap, pop-ups and pop-unders are blocked, and so are the common ad networks while the check is open (phones and computers).
+- **MangaDex** finds titles it rates adult when adult sources are turned on (Settings → Sources), and their chapters load. "Read from" found them on Comick but never on MangaDex.
+- **Replies, mentions and votes** on your comments arrive in the notification area (replies and mentions as system notifications too), and reading them here marks them read on scancore.onl.
+- Signing in to another account reads all of that account's devices again; an account switch could skip the older ones.
+
 ## 2.16.6 — 2026-10-30
 
 What people are reading and watching, and what they are saying about it.

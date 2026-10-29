@@ -1,0 +1,5 @@
+• Signing out takes your library off the device; a new account starts empty
+• Continue opens the chapter where you stopped
+• Browser checks block redirecting ads and pop-ups
+• MangaDex finds adult titles when adult sources are on
+• Replies to your comments arrive as notifications

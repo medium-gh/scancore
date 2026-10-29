@@ -414,6 +414,30 @@
             <source>· updated </source>
             <translation>· na-update </translation>
         </message>
+        <message>
+            <source>Your library, reading progress and lists stay on this device and stop syncing. Signing in to another account later asks what to do with them.</source>
+            <translation>Mananatili sa device na ito ang library, progreso sa pagbasa at mga listahan mo at hindi na magsi-sync. Kapag nag-sign in ka sa ibang account mamaya, tatanungin ka kung ano ang gagawin sa mga ito.</translation>
+        </message>
+        <message>
+            <source>Your library, reading progress and lists stay in your account and leave this device. Anything not synced yet is sent first.</source>
+            <translation>Mananatili sa account mo ang library, progreso sa pagbasa at mga listahan mo at aalisin sa device na ito. Ipapadala muna ang anumang hindi pa naka-sync.</translation>
+        </message>
+        <message>
+            <source>Keep them on this device</source>
+            <translation>Itago sa device na ito</translation>
+        </message>
+        <message>
+            <source>Some changes have not reached your account</source>
+            <translation>May mga pagbabagong hindi pa umaabot sa account mo</translation>
+        </message>
+        <message>
+            <source>Signing out now removes them from this device too.</source>
+            <translation>Kapag nag-sign out ka ngayon, aalisin din ang mga ito sa device na ito.</translation>
+        </message>
+        <message>
+            <source>Sign out anyway</source>
+            <translation>Mag-sign out pa rin</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>
@@ -6012,6 +6036,22 @@
         <message>
             <source>Open</source>
             <translation>Buksan</translation>
+        </message>
+        <message>
+            <source>This device has another account's library</source>
+            <translation>May library ng ibang account ang device na ito</translation>
+        </message>
+        <message>
+            <source>The library, reading progress and lists here came from %1. Replace them with %2's, or add them to %2's account?</source>
+            <translation>Galing kay %1 ang library, progreso sa pagbasa at mga listahan dito. Palitan ng kay %2, o idagdag sa account ni %2?</translation>
+        </message>
+        <message>
+            <source>Replace</source>
+            <translation>Palitan</translation>
+        </message>
+        <message>
+            <source>Add to this account</source>
+            <translation>Idagdag sa account na ito</translation>
         </message>
     </context>
     <context>
@@ -13338,6 +13378,25 @@
         <message>
             <source>Another app</source>
             <translation>Ibang app</translation>
+        </message>
+    </context>
+    <context>
+        <name>sc::SiteNotifications</name>
+        <message>
+            <source>%1 replied to your comment</source>
+            <translation>Sumagot si %1 sa komento mo</translation>
+        </message>
+        <message>
+            <source>%1 mentioned you</source>
+            <translation>Binanggit ka ni %1</translation>
+        </message>
+        <message>
+            <source>%1 upvoted your comment</source>
+            <translation>In-upvote ni %1 ang komento mo</translation>
+        </message>
+        <message>
+            <source>%1 downvoted your comment</source>
+            <translation>In-downvote ni %1 ang komento mo</translation>
         </message>
     </context>
     <context>

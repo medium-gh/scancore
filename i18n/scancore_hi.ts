@@ -414,6 +414,30 @@
             <source>· updated </source>
             <translation>· अपडेट हुआ </translation>
         </message>
+        <message>
+            <source>Your library, reading progress and lists stay on this device and stop syncing. Signing in to another account later asks what to do with them.</source>
+            <translation>आपकी लाइब्रेरी, पढ़ने की प्रगति और सूचियाँ इसी डिवाइस पर रहेंगी और सिंक होना बंद हो जाएँगी। बाद में किसी दूसरे खाते में साइन इन करने पर पूछा जाएगा कि इनका क्या करना है।</translation>
+        </message>
+        <message>
+            <source>Your library, reading progress and lists stay in your account and leave this device. Anything not synced yet is sent first.</source>
+            <translation>आपकी लाइब्रेरी, पढ़ने की प्रगति और सूचियाँ आपके खाते में रहेंगी और इस डिवाइस से हट जाएँगी। जो अभी सिंक नहीं हुआ है, वह पहले भेज दिया जाएगा।</translation>
+        </message>
+        <message>
+            <source>Keep them on this device</source>
+            <translation>इन्हें इस डिवाइस पर रखें</translation>
+        </message>
+        <message>
+            <source>Some changes have not reached your account</source>
+            <translation>कुछ बदलाव अभी आपके खाते तक नहीं पहुँचे हैं</translation>
+        </message>
+        <message>
+            <source>Signing out now removes them from this device too.</source>
+            <translation>अभी साइन आउट करने पर वे इस डिवाइस से भी हट जाएँगे।</translation>
+        </message>
+        <message>
+            <source>Sign out anyway</source>
+            <translation>फिर भी साइन आउट करें</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>
@@ -6012,6 +6036,22 @@
         <message>
             <source>Open</source>
             <translation>खोलें</translation>
+        </message>
+        <message>
+            <source>This device has another account's library</source>
+            <translation>इस डिवाइस पर किसी दूसरे खाते की लाइब्रेरी है</translation>
+        </message>
+        <message>
+            <source>The library, reading progress and lists here came from %1. Replace them with %2's, or add them to %2's account?</source>
+            <translation>यहाँ की लाइब्रेरी, पढ़ने की प्रगति और सूचियाँ %1 की हैं। इन्हें %2 की से बदलें, या %2 के खाते में जोड़ें?</translation>
+        </message>
+        <message>
+            <source>Replace</source>
+            <translation>बदलें</translation>
+        </message>
+        <message>
+            <source>Add to this account</source>
+            <translation>इस खाते में जोड़ें</translation>
         </message>
     </context>
     <context>
@@ -13338,6 +13378,25 @@
         <message>
             <source>Another app</source>
             <translation>दूसरा ऐप</translation>
+        </message>
+    </context>
+    <context>
+        <name>sc::SiteNotifications</name>
+        <message>
+            <source>%1 replied to your comment</source>
+            <translation>%1 ने आपकी टिप्पणी का जवाब दिया</translation>
+        </message>
+        <message>
+            <source>%1 mentioned you</source>
+            <translation>%1 ने आपका ज़िक्र किया</translation>
+        </message>
+        <message>
+            <source>%1 upvoted your comment</source>
+            <translation>%1 ने आपकी टिप्पणी को अपवोट किया</translation>
+        </message>
+        <message>
+            <source>%1 downvoted your comment</source>
+            <translation>%1 ने आपकी टिप्पणी को डाउनवोट किया</translation>
         </message>
     </context>
     <context>

@@ -414,6 +414,30 @@
             <source>· open now</source>
             <translation>· đang mở</translation>
         </message>
+        <message>
+            <source>Your library, reading progress and lists stay on this device and stop syncing. Signing in to another account later asks what to do with them.</source>
+            <translation>Thư viện, tiến độ đọc và danh sách của bạn sẽ ở lại trên thiết bị này và ngừng đồng bộ. Nếu sau này đăng nhập tài khoản khác, bạn sẽ được hỏi cần làm gì với chúng.</translation>
+        </message>
+        <message>
+            <source>Your library, reading progress and lists stay in your account and leave this device. Anything not synced yet is sent first.</source>
+            <translation>Thư viện, tiến độ đọc và danh sách của bạn ở lại trong tài khoản và rời khỏi thiết bị này. Những gì chưa đồng bộ sẽ được gửi trước.</translation>
+        </message>
+        <message>
+            <source>Keep them on this device</source>
+            <translation>Giữ lại trên thiết bị này</translation>
+        </message>
+        <message>
+            <source>Some changes have not reached your account</source>
+            <translation>Một số thay đổi chưa đến tài khoản của bạn</translation>
+        </message>
+        <message>
+            <source>Signing out now removes them from this device too.</source>
+            <translation>Đăng xuất bây giờ cũng sẽ xóa chúng khỏi thiết bị này.</translation>
+        </message>
+        <message>
+            <source>Sign out anyway</source>
+            <translation>Vẫn đăng xuất</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>
@@ -6020,6 +6044,22 @@
         <message>
             <source>Open</source>
             <translation>Mở</translation>
+        </message>
+        <message>
+            <source>This device has another account's library</source>
+            <translation>Thiết bị này có thư viện của tài khoản khác</translation>
+        </message>
+        <message>
+            <source>The library, reading progress and lists here came from %1. Replace them with %2's, or add them to %2's account?</source>
+            <translation>Thư viện, tiến độ đọc và danh sách ở đây thuộc về %1. Thay bằng của %2, hay thêm vào tài khoản của %2?</translation>
+        </message>
+        <message>
+            <source>Replace</source>
+            <translation>Thay thế</translation>
+        </message>
+        <message>
+            <source>Add to this account</source>
+            <translation>Thêm vào tài khoản này</translation>
         </message>
     </context>
     <context>
@@ -13346,6 +13386,25 @@
         <message>
             <source>Wrapped</source>
             <translation>Wrapped</translation>
+        </message>
+    </context>
+    <context>
+        <name>sc::SiteNotifications</name>
+        <message>
+            <source>%1 replied to your comment</source>
+            <translation>%1 đã trả lời bình luận của bạn</translation>
+        </message>
+        <message>
+            <source>%1 mentioned you</source>
+            <translation>%1 đã nhắc đến bạn</translation>
+        </message>
+        <message>
+            <source>%1 upvoted your comment</source>
+            <translation>%1 đã ủng hộ bình luận của bạn</translation>
+        </message>
+        <message>
+            <source>%1 downvoted your comment</source>
+            <translation>%1 đã phản đối bình luận của bạn</translation>
         </message>
     </context>
     <context>

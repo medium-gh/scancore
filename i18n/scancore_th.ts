@@ -414,6 +414,30 @@
             <source>· updated </source>
             <translation>· อัปเดตเมื่อ </translation>
         </message>
+        <message>
+            <source>Your library, reading progress and lists stay on this device and stop syncing. Signing in to another account later asks what to do with them.</source>
+            <translation>คลัง ความคืบหน้าการอ่าน และรายการของคุณจะอยู่ในอุปกรณ์นี้และหยุดซิงค์ หากภายหลังลงชื่อเข้าใช้บัญชีอื่น จะมีการถามว่าจะทำอย่างไรกับข้อมูลเหล่านี้</translation>
+        </message>
+        <message>
+            <source>Your library, reading progress and lists stay in your account and leave this device. Anything not synced yet is sent first.</source>
+            <translation>คลัง ความคืบหน้าการอ่าน และรายการของคุณจะอยู่ในบัญชีและถูกนำออกจากอุปกรณ์นี้ สิ่งที่ยังไม่ได้ซิงค์จะถูกส่งก่อน</translation>
+        </message>
+        <message>
+            <source>Keep them on this device</source>
+            <translation>เก็บไว้ในอุปกรณ์นี้</translation>
+        </message>
+        <message>
+            <source>Some changes have not reached your account</source>
+            <translation>มีการเปลี่ยนแปลงบางอย่างที่ยังไม่ถึงบัญชีของคุณ</translation>
+        </message>
+        <message>
+            <source>Signing out now removes them from this device too.</source>
+            <translation>หากออกจากระบบตอนนี้ ข้อมูลเหล่านั้นจะถูกนำออกจากอุปกรณ์นี้ด้วย</translation>
+        </message>
+        <message>
+            <source>Sign out anyway</source>
+            <translation>ออกจากระบบต่อไป</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>
@@ -6012,6 +6036,22 @@
         <message>
             <source>Open</source>
             <translation>เปิด</translation>
+        </message>
+        <message>
+            <source>This device has another account's library</source>
+            <translation>อุปกรณ์นี้มีคลังของบัญชีอื่น</translation>
+        </message>
+        <message>
+            <source>The library, reading progress and lists here came from %1. Replace them with %2's, or add them to %2's account?</source>
+            <translation>คลัง ความคืบหน้าการอ่าน และรายการที่นี่มาจาก %1 จะแทนที่ด้วยของ %2 หรือเพิ่มเข้าไปในบัญชีของ %2?</translation>
+        </message>
+        <message>
+            <source>Replace</source>
+            <translation>แทนที่</translation>
+        </message>
+        <message>
+            <source>Add to this account</source>
+            <translation>เพิ่มลงในบัญชีนี้</translation>
         </message>
     </context>
     <context>
@@ -13338,6 +13378,25 @@
         <message>
             <source>Another app</source>
             <translation>แอปอื่น</translation>
+        </message>
+    </context>
+    <context>
+        <name>sc::SiteNotifications</name>
+        <message>
+            <source>%1 replied to your comment</source>
+            <translation>%1 ตอบกลับความคิดเห็นของคุณ</translation>
+        </message>
+        <message>
+            <source>%1 mentioned you</source>
+            <translation>%1 กล่าวถึงคุณ</translation>
+        </message>
+        <message>
+            <source>%1 upvoted your comment</source>
+            <translation>%1 โหวตขึ้นความคิดเห็นของคุณ</translation>
+        </message>
+        <message>
+            <source>%1 downvoted your comment</source>
+            <translation>%1 โหวตลงความคิดเห็นของคุณ</translation>
         </message>
     </context>
     <context>

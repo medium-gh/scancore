@@ -414,6 +414,30 @@
             <source>· open now</source>
             <translation>· aberto agora</translation>
         </message>
+        <message>
+            <source>Your library, reading progress and lists stay on this device and stop syncing. Signing in to another account later asks what to do with them.</source>
+            <translation>Sua biblioteca, seu progresso de leitura e suas listas ficam neste dispositivo e param de sincronizar. Se depois você entrar em outra conta, vamos perguntar o que fazer com eles.</translation>
+        </message>
+        <message>
+            <source>Your library, reading progress and lists stay in your account and leave this device. Anything not synced yet is sent first.</source>
+            <translation>Sua biblioteca, seu progresso de leitura e suas listas ficam na sua conta e saem deste dispositivo. O que ainda não foi sincronizado é enviado antes.</translation>
+        </message>
+        <message>
+            <source>Keep them on this device</source>
+            <translation>Manter neste dispositivo</translation>
+        </message>
+        <message>
+            <source>Some changes have not reached your account</source>
+            <translation>Algumas mudanças não chegaram à sua conta</translation>
+        </message>
+        <message>
+            <source>Signing out now removes them from this device too.</source>
+            <translation>Sair agora também as remove deste dispositivo.</translation>
+        </message>
+        <message>
+            <source>Sign out anyway</source>
+            <translation>Sair mesmo assim</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>
@@ -6020,6 +6044,22 @@
         <message>
             <source>Open</source>
             <translation>Abrir</translation>
+        </message>
+        <message>
+            <source>This device has another account's library</source>
+            <translation>Este dispositivo tem a biblioteca de outra conta</translation>
+        </message>
+        <message>
+            <source>The library, reading progress and lists here came from %1. Replace them with %2's, or add them to %2's account?</source>
+            <translation>A biblioteca, o progresso de leitura e as listas daqui são de %1. Substituir pelos de %2 ou adicionar à conta de %2?</translation>
+        </message>
+        <message>
+            <source>Replace</source>
+            <translation>Substituir</translation>
+        </message>
+        <message>
+            <source>Add to this account</source>
+            <translation>Adicionar a esta conta</translation>
         </message>
     </context>
     <context>
@@ -13346,6 +13386,25 @@
         <message>
             <source>Wrapped</source>
             <translation>Wrapped</translation>
+        </message>
+    </context>
+    <context>
+        <name>sc::SiteNotifications</name>
+        <message>
+            <source>%1 replied to your comment</source>
+            <translation>%1 respondeu ao seu comentário</translation>
+        </message>
+        <message>
+            <source>%1 mentioned you</source>
+            <translation>%1 mencionou você</translation>
+        </message>
+        <message>
+            <source>%1 upvoted your comment</source>
+            <translation>%1 votou a favor do seu comentário</translation>
+        </message>
+        <message>
+            <source>%1 downvoted your comment</source>
+            <translation>%1 votou contra o seu comentário</translation>
         </message>
     </context>
     <context>

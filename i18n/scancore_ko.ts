@@ -414,6 +414,30 @@
             <source>· open now</source>
             <translation>· 지금 열려 있음</translation>
         </message>
+        <message>
+            <source>Your library, reading progress and lists stay on this device and stop syncing. Signing in to another account later asks what to do with them.</source>
+            <translation>라이브러리, 읽기 진행 상황, 목록은 이 기기에 남고 동기화가 멈춥니다. 나중에 다른 계정으로 로그인하면 어떻게 할지 묻습니다.</translation>
+        </message>
+        <message>
+            <source>Your library, reading progress and lists stay in your account and leave this device. Anything not synced yet is sent first.</source>
+            <translation>라이브러리, 읽기 진행 상황, 목록은 계정에 남고 이 기기에서 지워집니다. 아직 동기화되지 않은 내용은 먼저 보냅니다.</translation>
+        </message>
+        <message>
+            <source>Keep them on this device</source>
+            <translation>이 기기에 유지</translation>
+        </message>
+        <message>
+            <source>Some changes have not reached your account</source>
+            <translation>계정에 반영되지 않은 변경 사항이 있습니다</translation>
+        </message>
+        <message>
+            <source>Signing out now removes them from this device too.</source>
+            <translation>지금 로그아웃하면 이 기기에서도 지워집니다.</translation>
+        </message>
+        <message>
+            <source>Sign out anyway</source>
+            <translation>그래도 로그아웃</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>
@@ -6020,6 +6044,22 @@
         <message>
             <source>Open</source>
             <translation>열기</translation>
+        </message>
+        <message>
+            <source>This device has another account's library</source>
+            <translation>이 기기에 다른 계정의 라이브러리가 있습니다</translation>
+        </message>
+        <message>
+            <source>The library, reading progress and lists here came from %1. Replace them with %2's, or add them to %2's account?</source>
+            <translation>여기 있는 라이브러리, 읽기 진행 상황, 목록은 %1의 것입니다. %2의 것으로 바꿀까요, 아니면 %2의 계정에 추가할까요?</translation>
+        </message>
+        <message>
+            <source>Replace</source>
+            <translation>바꾸기</translation>
+        </message>
+        <message>
+            <source>Add to this account</source>
+            <translation>이 계정에 추가</translation>
         </message>
     </context>
     <context>
@@ -13346,6 +13386,25 @@
         <message>
             <source>Wrapped</source>
             <translation>Wrapped</translation>
+        </message>
+    </context>
+    <context>
+        <name>sc::SiteNotifications</name>
+        <message>
+            <source>%1 replied to your comment</source>
+            <translation>%1님이 내 댓글에 답글을 달았습니다</translation>
+        </message>
+        <message>
+            <source>%1 mentioned you</source>
+            <translation>%1님이 나를 언급했습니다</translation>
+        </message>
+        <message>
+            <source>%1 upvoted your comment</source>
+            <translation>%1님이 내 댓글에 추천했습니다</translation>
+        </message>
+        <message>
+            <source>%1 downvoted your comment</source>
+            <translation>%1님이 내 댓글에 비추천했습니다</translation>
         </message>
     </context>
     <context>

@@ -414,6 +414,30 @@
             <source>· open now</source>
             <translation>・今開いています</translation>
         </message>
+        <message>
+            <source>Your library, reading progress and lists stay on this device and stop syncing. Signing in to another account later asks what to do with them.</source>
+            <translation>ライブラリ、読書の進み具合、リストはこの端末に残り、同期は止まります。あとで別のアカウントにサインインすると、どうするか確認されます。</translation>
+        </message>
+        <message>
+            <source>Your library, reading progress and lists stay in your account and leave this device. Anything not synced yet is sent first.</source>
+            <translation>ライブラリ、読書の進み具合、リストはアカウントに残り、この端末からは消えます。まだ同期していない分は先に送られます。</translation>
+        </message>
+        <message>
+            <source>Keep them on this device</source>
+            <translation>この端末に残す</translation>
+        </message>
+        <message>
+            <source>Some changes have not reached your account</source>
+            <translation>アカウントに届いていない変更があります</translation>
+        </message>
+        <message>
+            <source>Signing out now removes them from this device too.</source>
+            <translation>今サインアウトすると、それらはこの端末からも消えます。</translation>
+        </message>
+        <message>
+            <source>Sign out anyway</source>
+            <translation>それでもサインアウト</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>
@@ -6020,6 +6044,22 @@
         <message>
             <source>Open</source>
             <translation>開く</translation>
+        </message>
+        <message>
+            <source>This device has another account's library</source>
+            <translation>この端末には別のアカウントのライブラリがあります</translation>
+        </message>
+        <message>
+            <source>The library, reading progress and lists here came from %1. Replace them with %2's, or add them to %2's account?</source>
+            <translation>ここにあるライブラリ、読書の進み具合、リストは %1 のものです。%2 のものに置き換えますか、それとも %2 のアカウントに追加しますか？</translation>
+        </message>
+        <message>
+            <source>Replace</source>
+            <translation>置き換える</translation>
+        </message>
+        <message>
+            <source>Add to this account</source>
+            <translation>このアカウントに追加</translation>
         </message>
     </context>
     <context>
@@ -13346,6 +13386,25 @@
         <message>
             <source>Wrapped</source>
             <translation>Wrapped</translation>
+        </message>
+    </context>
+    <context>
+        <name>sc::SiteNotifications</name>
+        <message>
+            <source>%1 replied to your comment</source>
+            <translation>%1 さんがあなたのコメントに返信しました</translation>
+        </message>
+        <message>
+            <source>%1 mentioned you</source>
+            <translation>%1 さんがあなたについて言及しました</translation>
+        </message>
+        <message>
+            <source>%1 upvoted your comment</source>
+            <translation>%1 さんがあなたのコメントに高評価しました</translation>
+        </message>
+        <message>
+            <source>%1 downvoted your comment</source>
+            <translation>%1 さんがあなたのコメントに低評価しました</translation>
         </message>
     </context>
     <context>

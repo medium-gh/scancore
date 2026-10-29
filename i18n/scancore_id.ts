@@ -414,6 +414,30 @@
             <source>· open now</source>
             <translation>· sedang terbuka</translation>
         </message>
+        <message>
+            <source>Your library, reading progress and lists stay on this device and stop syncing. Signing in to another account later asks what to do with them.</source>
+            <translation>Pustaka, progres membaca, dan daftar Anda tetap di perangkat ini dan berhenti disinkronkan. Jika nanti masuk ke akun lain, Anda akan ditanya apa yang dilakukan dengannya.</translation>
+        </message>
+        <message>
+            <source>Your library, reading progress and lists stay in your account and leave this device. Anything not synced yet is sent first.</source>
+            <translation>Pustaka, progres membaca, dan daftar Anda tetap di akun Anda dan dihapus dari perangkat ini. Yang belum tersinkron dikirim lebih dulu.</translation>
+        </message>
+        <message>
+            <source>Keep them on this device</source>
+            <translation>Simpan di perangkat ini</translation>
+        </message>
+        <message>
+            <source>Some changes have not reached your account</source>
+            <translation>Beberapa perubahan belum sampai ke akun Anda</translation>
+        </message>
+        <message>
+            <source>Signing out now removes them from this device too.</source>
+            <translation>Keluar sekarang juga akan menghapusnya dari perangkat ini.</translation>
+        </message>
+        <message>
+            <source>Sign out anyway</source>
+            <translation>Tetap keluar</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>
@@ -6020,6 +6044,22 @@
         <message>
             <source>Open</source>
             <translation>Buka</translation>
+        </message>
+        <message>
+            <source>This device has another account's library</source>
+            <translation>Perangkat ini berisi pustaka akun lain</translation>
+        </message>
+        <message>
+            <source>The library, reading progress and lists here came from %1. Replace them with %2's, or add them to %2's account?</source>
+            <translation>Pustaka, progres membaca, dan daftar di sini berasal dari %1. Ganti dengan milik %2, atau tambahkan ke akun %2?</translation>
+        </message>
+        <message>
+            <source>Replace</source>
+            <translation>Ganti</translation>
+        </message>
+        <message>
+            <source>Add to this account</source>
+            <translation>Tambahkan ke akun ini</translation>
         </message>
     </context>
     <context>
@@ -13346,6 +13386,25 @@
         <message>
             <source>Wrapped</source>
             <translation>Wrapped</translation>
+        </message>
+    </context>
+    <context>
+        <name>sc::SiteNotifications</name>
+        <message>
+            <source>%1 replied to your comment</source>
+            <translation>%1 membalas komentar Anda</translation>
+        </message>
+        <message>
+            <source>%1 mentioned you</source>
+            <translation>%1 menyebut Anda</translation>
+        </message>
+        <message>
+            <source>%1 upvoted your comment</source>
+            <translation>%1 memberi suara naik pada komentar Anda</translation>
+        </message>
+        <message>
+            <source>%1 downvoted your comment</source>
+            <translation>%1 memberi suara turun pada komentar Anda</translation>
         </message>
     </context>
     <context>
