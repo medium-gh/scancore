@@ -2,6 +2,12 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.6 — 2026-10-30
+
+What people are reading and watching, and what they are saying about it.
+
+- **Latest**, a new page in the sidebar (on phones under More): this week's trending comics, anime and novels on scancore.onl, ranked by how many people there read or watched them, and the newest comments and reviews as they are posted. The feed updates by itself while the page is open, and sits beside the trending titles on wide windows. A trending anime opens on its AniList page, a comic asks which source to read it from, and a novel opens where it is published. On your own sync server the page says it is only on scancore.onl.
+
 ## 2.16.5 — 2026-10-29
 
 Scrolling on phones, a crash when downloading, anime downloads from the info page, and Aniyomi backups.

@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.16.6" date="2026-10-30">
+      <description>
+        <p>A new Latest page: this week's trending comics, anime and novels on scancore.onl, and the newest comments and reviews as they are posted.</p>
+      </description>
+    </release>
     <release version="2.16.5" date="2026-10-29">
       <description>
         <p>Short swipes on phones scroll instead of tapping what is under the finger. Downloading an episode no longer closes the app, anime can be downloaded from their own page, and Aniyomi backups bring anime in as anime.</p>
