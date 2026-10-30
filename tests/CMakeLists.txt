@@ -45,7 +45,7 @@ if(UNIX AND NOT APPLE AND NOT ANDROID)
     add_test(NAME smoke COMMAND ${CMAKE_COMMAND}
         -DAPP=$<TARGET_FILE:scancore> -DPROBE=${CMAKE_CURRENT_SOURCE_DIR}/app/Smoke.qml
         -DWORK=${CMAKE_CURRENT_BINARY_DIR}/smoke
-        "-DSTART=\"fixtures\":\"${CMAKE_CURRENT_SOURCE_DIR}/fixtures\",\"noPlayer\":true"
+        "-DSTART=\"fixtures\":\"${CMAKE_CURRENT_SOURCE_DIR}/fixtures\",\"noPlayer\":true" -DLIMIT=240
         -P ${CMAKE_CURRENT_SOURCE_DIR}/app/run.cmake)
     set_tests_properties(smoke PROPERTIES TIMEOUT 300)
 endif()

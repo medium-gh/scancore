@@ -3,7 +3,8 @@
 #   -DAPP=<scancore> -DPROBE=<probe.qml> -DWORK=<folder> [-DLOOK_AS=android]
 #   [-DPROFILE=ON] (SCANCORE_PROFILE, for FrameTimes.qml) [-DGL=ON] (OpenGL,
 #   not the software renderer) [-DOPT_IN=<variable>] (skipped unless set)
-#   [-DSTART=<more SCANCORE_START fields>]
+#   [-DSTART=<more SCANCORE_START fields>] [-DLIMIT=<seconds>] (below the
+#   test's own TIMEOUT, so a hang still prints what the app said)
 if(OPT_IN AND NOT DEFINED ENV{${OPT_IN}})
     message("Skipped: set ${OPT_IN}=1 to run it")
     return()
@@ -41,12 +42,26 @@ if(START)
     set(START ",${START}")
 endif()
 set(ENV{SCANCORE_START} "{\"probe\":\"file://${probe}\",\"size\":[${SIZE}]${START}}")
-execute_process(COMMAND "${APP}" RESULT_VARIABLE result OUTPUT_VARIABLE output ERROR_VARIABLE output TIMEOUT 900)
+if(NOT LIMIT)
+    set(LIMIT 900)
+endif()
+execute_process(COMMAND "${APP}" RESULT_VARIABLE result OUTPUT_VARIABLE output ERROR_VARIABLE output TIMEOUT ${LIMIT})
 # The probe's own lines, and anything that went wrong in QML.
 string(REGEX MATCHALL "[^\n]*(PAGES|HIDDEN|hidden:|FRAMES|SMOKE|Error|error:|TypeError|ReferenceError)[^\n]*" lines "${output}")
 list(JOIN lines "\n" lines)
 message("${lines}")
 file(WRITE "${WORK}.log" "${output}")
+# A hang (seen once on CI, start-up never finishing): the last of what the
+# app printed, since CI keeps no files.
+if(result MATCHES "timeout")
+    string(LENGTH "${output}" length)
+    math(EXPR from "${length} - 6000")
+    if(from LESS 0)
+        set(from 0)
+    endif()
+    string(SUBSTRING "${output}" ${from} -1 tail)
+    message("The app did not finish within ${LIMIT} s. Its last output:\n${tail}")
+endif()
 if(NOT result EQUAL 0)
     message(FATAL_ERROR "The probe failed, or the app did not finish (${result}); log: ${WORK}.log")
 endif()
