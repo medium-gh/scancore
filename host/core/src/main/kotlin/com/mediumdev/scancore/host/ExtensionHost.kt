@@ -229,6 +229,35 @@ class ExtensionHost(
         }
     }
 
+    // An extension that loads the site in its own hidden web view (Keiyoushi's
+    // runWebView) cannot show the site's human check there, and asks the
+    // reader to "Open in WebView" instead, as Mihon's button does. That
+    // becomes a browser check of the page that failed (a series' page holds
+    // a check of its own that the home page does not), with the extension's
+    // user agent, so the clearance the reader earns is the one its web view
+    // sends.
+    private suspend fun <T> checkInWebView(
+        source: Source,
+        page: (Source) -> String,
+        work: suspend () -> T,
+    ): T =
+        try {
+            work()
+        } catch (e: Exception) {
+            val asks =
+                generateSequence<Throwable>(e) { it.cause }.any { cause ->
+                    cause !is eu.kanade.tachiyomi.network.BrowserCheckException &&
+                        cause.message?.contains("in WebView", ignoreCase = true) == true
+                }
+            val http = source as? HttpSource
+            val url = if (asks && http != null) runCatching { page(source) }.getOrNull() else null
+            if (url == null || !url.startsWith("http")) throw e
+            throw eu.kanade.tachiyomi.network.BrowserCheckException(
+                url,
+                http!!.headers["User-Agent"] ?: eu.kanade.tachiyomi.network.HostNetwork.userAgent,
+            )
+        }
+
     private fun catalogue(source: Source) = source as? CatalogueSource ?: throw HostError("${source.name} cannot be browsed.", 501)
 
     // A series' details and chapters come from one getMangaUpdate, and
@@ -337,17 +366,22 @@ class ExtensionHost(
                     base(source),
                 )
             }
-            "details" -> {
-                val update = mangaUpdate(source, params.string("url"), details = true, chapters = false)
-                remember(source, listOf(update.manga))
-                Codec.details(update.manga, base(source))
-            }
-            "chapters" -> {
-                val update = mangaUpdate(source, params.string("url"), details = false, chapters = true)
-                for (c in update.chapters) if (c.memo.isNotEmpty()) memos.putChapter(source.id, c.url, c.memo)
-                Codec.chapters(update.chapters)
-            }
-            "pages" -> Codec.pages(source.getPageList(chapter(source, params.string("url"))))
+            "details" ->
+                checkInWebView(source, { (it as HttpSource).getMangaUrl(manga(source, params.string("url"))) }) {
+                    val update = mangaUpdate(source, params.string("url"), details = true, chapters = false)
+                    remember(source, listOf(update.manga))
+                    Codec.details(update.manga, base(source))
+                }
+            "chapters" ->
+                checkInWebView(source, { (it as HttpSource).getMangaUrl(manga(source, params.string("url"))) }) {
+                    val update = mangaUpdate(source, params.string("url"), details = false, chapters = true)
+                    for (c in update.chapters) if (c.memo.isNotEmpty()) memos.putChapter(source.id, c.url, c.memo)
+                    Codec.chapters(update.chapters)
+                }
+            "pages" ->
+                checkInWebView(source, { (it as HttpSource).getChapterUrl(chapter(source, params.string("url"))) }) {
+                    Codec.pages(source.getPageList(chapter(source, params.string("url"))))
+                }
             "imageUrl" -> {
                 val http = source as? HttpSource ?: throw HostError("${source.name} has no image addresses.", 501)
                 JsonPrimitive(http.getImageUrl(Codec.page(params["page"]?.jsonObject ?: JsonObject(emptyMap()))))

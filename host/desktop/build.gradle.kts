@@ -97,7 +97,7 @@ fun sqliteNative(): String {
     }
 }
 
-val hostVersion = "9"
+val hostVersion = "10"
 
 val runtimeImage by tasks.registering {
     dependsOn("installDist", ":cloudstream:runtimeJars", ":echo:runtimeJars")
