@@ -2,7 +2,11 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
-## 2.16.10 — 2026-10-30
+## 2.16.11 — 2026-10-30
+
+The changes listed under 2.16.10, which was not published (its build stopped because the desktop Extensions runtime had to be updated first). Desktop copies download Extensions runtime 10 with it.
+
+## 2.16.10 — 2026-10-30 (not published)
 
 - **Extensions that read the site in a web view** (The Blank and others built the same way): when the site wants its "Verify you are human" check, the series or chapter now offers **Open browser check** for that page. Pass it once and its chapters and pages load; before, it only said "Open in WebView", with nothing to press.
 - Friends see the anime you watch in SCANCORE in their activity (only comics showed before).

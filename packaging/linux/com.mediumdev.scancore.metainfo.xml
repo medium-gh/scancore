@@ -52,7 +52,7 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="2.16.10" date="2026-10-30">
+    <release version="2.16.11" date="2026-10-30">
       <description>
         <p>Extensions that read a site in a web view offer the site's human check for the page that needs it, and friends see the anime you watch.</p>
       </description>
