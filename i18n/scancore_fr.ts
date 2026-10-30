@@ -3439,6 +3439,58 @@
             <source>Show more comments (%1)</source>
             <translation>Voir plus de commentaires (%1)</translation>
         </message>
+        <message>
+            <source>Comment deleted</source>
+            <translation>Commentaire supprimé</translation>
+        </message>
+        <message>
+            <source>Reported. Thank you.</source>
+            <translation>Signalé. Merci.</translation>
+        </message>
+        <message>
+            <source>Delete this comment?</source>
+            <translation>Supprimer ce commentaire ?</translation>
+        </message>
+        <message>
+            <source>It shows as deleted for everyone; replies to it stay.</source>
+            <translation>Il apparaîtra comme supprimé pour tout le monde ; les réponses restent.</translation>
+        </message>
+        <message>
+            <source>Delete</source>
+            <translation>Supprimer</translation>
+        </message>
+        <message>
+            <source>Edit</source>
+            <translation>Modifier</translation>
+        </message>
+        <message>
+            <source>Spam</source>
+            <translation>Spam</translation>
+        </message>
+        <message>
+            <source>Abuse or harassment</source>
+            <translation>Insultes ou harcèlement</translation>
+        </message>
+        <message>
+            <source>Unmarked spoilers</source>
+            <translation>Spoilers non signalés</translation>
+        </message>
+        <message>
+            <source>Piracy links</source>
+            <translation>Liens vers des copies piratées</translation>
+        </message>
+        <message>
+            <source>Report this comment for</source>
+            <translation>Signaler ce commentaire pour</translation>
+        </message>
+        <message>
+            <source>Save</source>
+            <translation>Enregistrer</translation>
+        </message>
+        <message>
+            <source>More</source>
+            <translation>Plus</translation>
+        </message>
     </context>
     <context>
         <name>Dock</name>

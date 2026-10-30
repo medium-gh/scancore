@@ -3439,6 +3439,58 @@
             <source>Show more comments (%1)</source>
             <translation>Ver más comentarios (%1)</translation>
         </message>
+        <message>
+            <source>Comment deleted</source>
+            <translation>Comentario eliminado</translation>
+        </message>
+        <message>
+            <source>Reported. Thank you.</source>
+            <translation>Denunciado. Gracias.</translation>
+        </message>
+        <message>
+            <source>Delete this comment?</source>
+            <translation>¿Eliminar este comentario?</translation>
+        </message>
+        <message>
+            <source>It shows as deleted for everyone; replies to it stay.</source>
+            <translation>Se mostrará como eliminado para todos; las respuestas se mantienen.</translation>
+        </message>
+        <message>
+            <source>Delete</source>
+            <translation>Eliminar</translation>
+        </message>
+        <message>
+            <source>Edit</source>
+            <translation>Editar</translation>
+        </message>
+        <message>
+            <source>Spam</source>
+            <translation>Spam</translation>
+        </message>
+        <message>
+            <source>Abuse or harassment</source>
+            <translation>Insultos o acoso</translation>
+        </message>
+        <message>
+            <source>Unmarked spoilers</source>
+            <translation>Spoilers sin aviso</translation>
+        </message>
+        <message>
+            <source>Piracy links</source>
+            <translation>Enlaces a copias piratas</translation>
+        </message>
+        <message>
+            <source>Report this comment for</source>
+            <translation>Denunciar este comentario por</translation>
+        </message>
+        <message>
+            <source>Save</source>
+            <translation>Guardar</translation>
+        </message>
+        <message>
+            <source>More</source>
+            <translation>Más</translation>
+        </message>
     </context>
     <context>
         <name>Dock</name>

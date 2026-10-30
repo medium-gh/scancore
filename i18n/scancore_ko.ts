@@ -3439,6 +3439,58 @@
             <source>Show more comments (%1)</source>
             <translation>댓글 더 보기(%1)</translation>
         </message>
+        <message>
+            <source>Comment deleted</source>
+            <translation>댓글을 삭제했습니다</translation>
+        </message>
+        <message>
+            <source>Reported. Thank you.</source>
+            <translation>신고했습니다. 감사합니다.</translation>
+        </message>
+        <message>
+            <source>Delete this comment?</source>
+            <translation>이 댓글을 삭제할까요?</translation>
+        </message>
+        <message>
+            <source>It shows as deleted for everyone; replies to it stay.</source>
+            <translation>모두에게 삭제된 것으로 표시되며 답글은 남습니다.</translation>
+        </message>
+        <message>
+            <source>Delete</source>
+            <translation>삭제</translation>
+        </message>
+        <message>
+            <source>Edit</source>
+            <translation>수정</translation>
+        </message>
+        <message>
+            <source>Spam</source>
+            <translation>스팸</translation>
+        </message>
+        <message>
+            <source>Abuse or harassment</source>
+            <translation>욕설 또는 괴롭힘</translation>
+        </message>
+        <message>
+            <source>Unmarked spoilers</source>
+            <translation>경고 없는 스포일러</translation>
+        </message>
+        <message>
+            <source>Piracy links</source>
+            <translation>불법 복제본 링크</translation>
+        </message>
+        <message>
+            <source>Report this comment for</source>
+            <translation>이 댓글을 신고하는 이유</translation>
+        </message>
+        <message>
+            <source>Save</source>
+            <translation>저장</translation>
+        </message>
+        <message>
+            <source>More</source>
+            <translation>더 보기</translation>
+        </message>
     </context>
     <context>
         <name>Dock</name>

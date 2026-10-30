@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.16.9" date="2026-10-30">
+      <description>
+        <p>Edit, delete and report comments; deleting a comment and unfollowing a friend work again.</p>
+      </description>
+    </release>
     <release version="2.16.8" date="2026-10-30">
       <description>
         <p>A series moved to another source stays there: Continue reading no longer shows the old source again after a sync.</p>

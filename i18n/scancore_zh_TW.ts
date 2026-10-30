@@ -3439,6 +3439,58 @@
             <source>Show more comments (%1)</source>
             <translation>顯示更多留言（%1）</translation>
         </message>
+        <message>
+            <source>Comment deleted</source>
+            <translation>留言已刪除</translation>
+        </message>
+        <message>
+            <source>Reported. Thank you.</source>
+            <translation>已檢舉，謝謝。</translation>
+        </message>
+        <message>
+            <source>Delete this comment?</source>
+            <translation>刪除這則留言？</translation>
+        </message>
+        <message>
+            <source>It shows as deleted for everyone; replies to it stay.</source>
+            <translation>所有人都會看到它已刪除；回覆會保留。</translation>
+        </message>
+        <message>
+            <source>Delete</source>
+            <translation>刪除</translation>
+        </message>
+        <message>
+            <source>Edit</source>
+            <translation>編輯</translation>
+        </message>
+        <message>
+            <source>Spam</source>
+            <translation>垃圾內容</translation>
+        </message>
+        <message>
+            <source>Abuse or harassment</source>
+            <translation>辱罵或騷擾</translation>
+        </message>
+        <message>
+            <source>Unmarked spoilers</source>
+            <translation>未標示的劇透</translation>
+        </message>
+        <message>
+            <source>Piracy links</source>
+            <translation>盜版連結</translation>
+        </message>
+        <message>
+            <source>Report this comment for</source>
+            <translation>檢舉這則留言的原因</translation>
+        </message>
+        <message>
+            <source>Save</source>
+            <translation>儲存</translation>
+        </message>
+        <message>
+            <source>More</source>
+            <translation>更多</translation>
+        </message>
     </context>
     <context>
         <name>Dock</name>

@@ -3439,6 +3439,58 @@
             <source>Show more comments (%1)</source>
             <translation>Tampilkan komentar lain (%1)</translation>
         </message>
+        <message>
+            <source>Comment deleted</source>
+            <translation>Komentar dihapus</translation>
+        </message>
+        <message>
+            <source>Reported. Thank you.</source>
+            <translation>Dilaporkan. Terima kasih.</translation>
+        </message>
+        <message>
+            <source>Delete this comment?</source>
+            <translation>Hapus komentar ini?</translation>
+        </message>
+        <message>
+            <source>It shows as deleted for everyone; replies to it stay.</source>
+            <translation>Komentar akan tampil terhapus untuk semua orang; balasannya tetap ada.</translation>
+        </message>
+        <message>
+            <source>Delete</source>
+            <translation>Hapus</translation>
+        </message>
+        <message>
+            <source>Edit</source>
+            <translation>Edit</translation>
+        </message>
+        <message>
+            <source>Spam</source>
+            <translation>Spam</translation>
+        </message>
+        <message>
+            <source>Abuse or harassment</source>
+            <translation>Pelecehan atau perundungan</translation>
+        </message>
+        <message>
+            <source>Unmarked spoilers</source>
+            <translation>Spoiler tanpa peringatan</translation>
+        </message>
+        <message>
+            <source>Piracy links</source>
+            <translation>Tautan ke salinan bajakan</translation>
+        </message>
+        <message>
+            <source>Report this comment for</source>
+            <translation>Laporkan komentar ini karena</translation>
+        </message>
+        <message>
+            <source>Save</source>
+            <translation>Simpan</translation>
+        </message>
+        <message>
+            <source>More</source>
+            <translation>Lainnya</translation>
+        </message>
     </context>
     <context>
         <name>Dock</name>

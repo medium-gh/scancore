@@ -3439,6 +3439,58 @@
             <source>Show more comments (%1)</source>
             <translation>Hiện thêm bình luận (%1)</translation>
         </message>
+        <message>
+            <source>Comment deleted</source>
+            <translation>Đã xóa bình luận</translation>
+        </message>
+        <message>
+            <source>Reported. Thank you.</source>
+            <translation>Đã báo cáo. Cảm ơn bạn.</translation>
+        </message>
+        <message>
+            <source>Delete this comment?</source>
+            <translation>Xóa bình luận này?</translation>
+        </message>
+        <message>
+            <source>It shows as deleted for everyone; replies to it stay.</source>
+            <translation>Mọi người sẽ thấy nó đã bị xóa; các trả lời vẫn còn.</translation>
+        </message>
+        <message>
+            <source>Delete</source>
+            <translation>Xóa</translation>
+        </message>
+        <message>
+            <source>Edit</source>
+            <translation>Sửa</translation>
+        </message>
+        <message>
+            <source>Spam</source>
+            <translation>Thư rác</translation>
+        </message>
+        <message>
+            <source>Abuse or harassment</source>
+            <translation>Lăng mạ hoặc quấy rối</translation>
+        </message>
+        <message>
+            <source>Unmarked spoilers</source>
+            <translation>Tiết lộ nội dung không cảnh báo</translation>
+        </message>
+        <message>
+            <source>Piracy links</source>
+            <translation>Liên kết đến bản lậu</translation>
+        </message>
+        <message>
+            <source>Report this comment for</source>
+            <translation>Báo cáo bình luận này vì</translation>
+        </message>
+        <message>
+            <source>Save</source>
+            <translation>Lưu</translation>
+        </message>
+        <message>
+            <source>More</source>
+            <translation>Thêm</translation>
+        </message>
     </context>
     <context>
         <name>Dock</name>

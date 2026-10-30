@@ -2,6 +2,12 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.9 — 2026-10-30
+
+- **Comments**: edit or delete your own (⋯ beside a comment), and report someone else's as spam, abuse, unmarked spoilers or piracy links. Deleting a comment and unfollowing a friend failed before ("could not read" or nothing happened); both work now.
+- A comic the catalogue has dropped (or a catalogue that is down) keeps its comments on scancore.onl instead of showing an error.
+- Chapters are numbered the same way on every source for discussions, page reactions and moving a series to another source: "Vol. 3 Ch. 12" is chapter 12 (it was taken as 3), a chapter whose source gives no number is read from its title ("Chapter 45", "第45話", "제45화"), and a prologue is chapter 0.
+
 ## 2.16.8 — 2026-10-30
 
 - **Moving a series to another source** sticks: Continue reading showed it on the old source again after a sync, because the old source's reading history came back from your other devices or from scancore.onl. A move is now remembered and travels with sync, so the old source's history stays gone on every device (anything read there after the move still counts).

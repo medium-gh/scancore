@@ -3439,6 +3439,58 @@
             <source>Show more comments (%1)</source>
             <translation>Ipakita ang iba pang komento (%1)</translation>
         </message>
+        <message>
+            <source>Comment deleted</source>
+            <translation>Nabura ang komento</translation>
+        </message>
+        <message>
+            <source>Reported. Thank you.</source>
+            <translation>Naiulat na. Salamat.</translation>
+        </message>
+        <message>
+            <source>Delete this comment?</source>
+            <translation>Burahin ang komentong ito?</translation>
+        </message>
+        <message>
+            <source>It shows as deleted for everyone; replies to it stay.</source>
+            <translation>Lalabas itong nabura para sa lahat; mananatili ang mga sagot dito.</translation>
+        </message>
+        <message>
+            <source>Delete</source>
+            <translation>Burahin</translation>
+        </message>
+        <message>
+            <source>Edit</source>
+            <translation>I-edit</translation>
+        </message>
+        <message>
+            <source>Spam</source>
+            <translation>Spam</translation>
+        </message>
+        <message>
+            <source>Abuse or harassment</source>
+            <translation>Pang-aabuso o panliligalig</translation>
+        </message>
+        <message>
+            <source>Unmarked spoilers</source>
+            <translation>Spoiler na walang babala</translation>
+        </message>
+        <message>
+            <source>Piracy links</source>
+            <translation>Link sa piniratang kopya</translation>
+        </message>
+        <message>
+            <source>Report this comment for</source>
+            <translation>Iulat ang komentong ito dahil sa</translation>
+        </message>
+        <message>
+            <source>Save</source>
+            <translation>I-save</translation>
+        </message>
+        <message>
+            <source>More</source>
+            <translation>Iba pa</translation>
+        </message>
     </context>
     <context>
         <name>Dock</name>

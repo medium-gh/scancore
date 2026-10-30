@@ -3439,6 +3439,58 @@
             <source>Show more comments (%1)</source>
             <translation>显示更多评论（%1）</translation>
         </message>
+        <message>
+            <source>Comment deleted</source>
+            <translation>评论已删除</translation>
+        </message>
+        <message>
+            <source>Reported. Thank you.</source>
+            <translation>已举报，谢谢。</translation>
+        </message>
+        <message>
+            <source>Delete this comment?</source>
+            <translation>删除这条评论？</translation>
+        </message>
+        <message>
+            <source>It shows as deleted for everyone; replies to it stay.</source>
+            <translation>所有人都会看到它已删除；回复会保留。</translation>
+        </message>
+        <message>
+            <source>Delete</source>
+            <translation>删除</translation>
+        </message>
+        <message>
+            <source>Edit</source>
+            <translation>编辑</translation>
+        </message>
+        <message>
+            <source>Spam</source>
+            <translation>垃圾内容</translation>
+        </message>
+        <message>
+            <source>Abuse or harassment</source>
+            <translation>辱骂或骚扰</translation>
+        </message>
+        <message>
+            <source>Unmarked spoilers</source>
+            <translation>未标注的剧透</translation>
+        </message>
+        <message>
+            <source>Piracy links</source>
+            <translation>盗版链接</translation>
+        </message>
+        <message>
+            <source>Report this comment for</source>
+            <translation>举报这条评论的原因</translation>
+        </message>
+        <message>
+            <source>Save</source>
+            <translation>保存</translation>
+        </message>
+        <message>
+            <source>More</source>
+            <translation>更多</translation>
+        </message>
     </context>
     <context>
         <name>Dock</name>

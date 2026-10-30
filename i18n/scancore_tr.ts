@@ -3439,6 +3439,58 @@
             <source>Show more comments (%1)</source>
             <translation>Daha fazla yorum göster (%1)</translation>
         </message>
+        <message>
+            <source>Comment deleted</source>
+            <translation>Yorum silindi</translation>
+        </message>
+        <message>
+            <source>Reported. Thank you.</source>
+            <translation>Bildirildi. Teşekkürler.</translation>
+        </message>
+        <message>
+            <source>Delete this comment?</source>
+            <translation>Bu yorum silinsin mi?</translation>
+        </message>
+        <message>
+            <source>It shows as deleted for everyone; replies to it stay.</source>
+            <translation>Herkese silinmiş olarak görünür; yanıtlar kalır.</translation>
+        </message>
+        <message>
+            <source>Delete</source>
+            <translation>Sil</translation>
+        </message>
+        <message>
+            <source>Edit</source>
+            <translation>Düzenle</translation>
+        </message>
+        <message>
+            <source>Spam</source>
+            <translation>Spam</translation>
+        </message>
+        <message>
+            <source>Abuse or harassment</source>
+            <translation>Hakaret veya taciz</translation>
+        </message>
+        <message>
+            <source>Unmarked spoilers</source>
+            <translation>Uyarısız spoiler</translation>
+        </message>
+        <message>
+            <source>Piracy links</source>
+            <translation>Korsan kopya bağlantıları</translation>
+        </message>
+        <message>
+            <source>Report this comment for</source>
+            <translation>Bu yorumu şu nedenle bildir</translation>
+        </message>
+        <message>
+            <source>Save</source>
+            <translation>Kaydet</translation>
+        </message>
+        <message>
+            <source>More</source>
+            <translation>Daha fazla</translation>
+        </message>
     </context>
     <context>
         <name>Dock</name>

@@ -3439,6 +3439,58 @@
             <source>Show more comments (%1)</source>
             <translation>แสดงความคิดเห็นเพิ่ม (%1)</translation>
         </message>
+        <message>
+            <source>Comment deleted</source>
+            <translation>ลบความคิดเห็นแล้ว</translation>
+        </message>
+        <message>
+            <source>Reported. Thank you.</source>
+            <translation>รายงานแล้ว ขอบคุณ</translation>
+        </message>
+        <message>
+            <source>Delete this comment?</source>
+            <translation>ลบความคิดเห็นนี้?</translation>
+        </message>
+        <message>
+            <source>It shows as deleted for everyone; replies to it stay.</source>
+            <translation>ทุกคนจะเห็นว่าถูกลบแล้ว ส่วนการตอบกลับยังคงอยู่</translation>
+        </message>
+        <message>
+            <source>Delete</source>
+            <translation>ลบ</translation>
+        </message>
+        <message>
+            <source>Edit</source>
+            <translation>แก้ไข</translation>
+        </message>
+        <message>
+            <source>Spam</source>
+            <translation>สแปม</translation>
+        </message>
+        <message>
+            <source>Abuse or harassment</source>
+            <translation>การด่าทอหรือการคุกคาม</translation>
+        </message>
+        <message>
+            <source>Unmarked spoilers</source>
+            <translation>สปอยล์โดยไม่เตือน</translation>
+        </message>
+        <message>
+            <source>Piracy links</source>
+            <translation>ลิงก์ไปยังสำเนาละเมิดลิขสิทธิ์</translation>
+        </message>
+        <message>
+            <source>Report this comment for</source>
+            <translation>รายงานความคิดเห็นนี้เพราะ</translation>
+        </message>
+        <message>
+            <source>Save</source>
+            <translation>บันทึก</translation>
+        </message>
+        <message>
+            <source>More</source>
+            <translation>เพิ่มเติม</translation>
+        </message>
     </context>
     <context>
         <name>Dock</name>

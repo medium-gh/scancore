@@ -3439,6 +3439,58 @@
             <source>Show more comments (%1)</source>
             <translation>Pokaż więcej komentarzy (%1)</translation>
         </message>
+        <message>
+            <source>Comment deleted</source>
+            <translation>Komentarz usunięty</translation>
+        </message>
+        <message>
+            <source>Reported. Thank you.</source>
+            <translation>Zgłoszono. Dziękujemy.</translation>
+        </message>
+        <message>
+            <source>Delete this comment?</source>
+            <translation>Usunąć ten komentarz?</translation>
+        </message>
+        <message>
+            <source>It shows as deleted for everyone; replies to it stay.</source>
+            <translation>Wszyscy zobaczą go jako usunięty; odpowiedzi zostaną.</translation>
+        </message>
+        <message>
+            <source>Delete</source>
+            <translation>Usuń</translation>
+        </message>
+        <message>
+            <source>Edit</source>
+            <translation>Edytuj</translation>
+        </message>
+        <message>
+            <source>Spam</source>
+            <translation>Spam</translation>
+        </message>
+        <message>
+            <source>Abuse or harassment</source>
+            <translation>Obelgi lub nękanie</translation>
+        </message>
+        <message>
+            <source>Unmarked spoilers</source>
+            <translation>Nieoznaczone spoilery</translation>
+        </message>
+        <message>
+            <source>Piracy links</source>
+            <translation>Linki do pirackich kopii</translation>
+        </message>
+        <message>
+            <source>Report this comment for</source>
+            <translation>Zgłoś ten komentarz z powodu</translation>
+        </message>
+        <message>
+            <source>Save</source>
+            <translation>Zapisz</translation>
+        </message>
+        <message>
+            <source>More</source>
+            <translation>Więcej</translation>
+        </message>
     </context>
     <context>
         <name>Dock</name>

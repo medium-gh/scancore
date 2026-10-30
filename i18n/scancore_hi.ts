@@ -3439,6 +3439,58 @@
             <source>Show more comments (%1)</source>
             <translation>और टिप्पणियाँ दिखाएँ (%1)</translation>
         </message>
+        <message>
+            <source>Comment deleted</source>
+            <translation>टिप्पणी हटाई गई</translation>
+        </message>
+        <message>
+            <source>Reported. Thank you.</source>
+            <translation>रिपोर्ट कर दी गई। धन्यवाद।</translation>
+        </message>
+        <message>
+            <source>Delete this comment?</source>
+            <translation>यह टिप्पणी हटाएँ?</translation>
+        </message>
+        <message>
+            <source>It shows as deleted for everyone; replies to it stay.</source>
+            <translation>यह सभी को हटाई गई दिखेगी; इसके जवाब बने रहेंगे।</translation>
+        </message>
+        <message>
+            <source>Delete</source>
+            <translation>हटाएँ</translation>
+        </message>
+        <message>
+            <source>Edit</source>
+            <translation>संपादित करें</translation>
+        </message>
+        <message>
+            <source>Spam</source>
+            <translation>स्पैम</translation>
+        </message>
+        <message>
+            <source>Abuse or harassment</source>
+            <translation>गाली या उत्पीड़न</translation>
+        </message>
+        <message>
+            <source>Unmarked spoilers</source>
+            <translation>बिना चेतावनी के स्पॉइलर</translation>
+        </message>
+        <message>
+            <source>Piracy links</source>
+            <translation>पायरेटेड कॉपी के लिंक</translation>
+        </message>
+        <message>
+            <source>Report this comment for</source>
+            <translation>इस टिप्पणी की रिपोर्ट इस कारण से करें</translation>
+        </message>
+        <message>
+            <source>Save</source>
+            <translation>सहेजें</translation>
+        </message>
+        <message>
+            <source>More</source>
+            <translation>और</translation>
+        </message>
     </context>
     <context>
         <name>Dock</name>

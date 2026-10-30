@@ -3439,6 +3439,58 @@
             <source>Show more comments (%1)</source>
             <translation>コメントをさらに表示（%1）</translation>
         </message>
+        <message>
+            <source>Comment deleted</source>
+            <translation>コメントを削除しました</translation>
+        </message>
+        <message>
+            <source>Reported. Thank you.</source>
+            <translation>報告しました。ありがとうございます。</translation>
+        </message>
+        <message>
+            <source>Delete this comment?</source>
+            <translation>このコメントを削除しますか？</translation>
+        </message>
+        <message>
+            <source>It shows as deleted for everyone; replies to it stay.</source>
+            <translation>全員に削除済みと表示されます。返信は残ります。</translation>
+        </message>
+        <message>
+            <source>Delete</source>
+            <translation>削除</translation>
+        </message>
+        <message>
+            <source>Edit</source>
+            <translation>編集</translation>
+        </message>
+        <message>
+            <source>Spam</source>
+            <translation>スパム</translation>
+        </message>
+        <message>
+            <source>Abuse or harassment</source>
+            <translation>暴言・嫌がらせ</translation>
+        </message>
+        <message>
+            <source>Unmarked spoilers</source>
+            <translation>警告なしのネタバレ</translation>
+        </message>
+        <message>
+            <source>Piracy links</source>
+            <translation>海賊版へのリンク</translation>
+        </message>
+        <message>
+            <source>Report this comment for</source>
+            <translation>このコメントを報告する理由</translation>
+        </message>
+        <message>
+            <source>Save</source>
+            <translation>保存</translation>
+        </message>
+        <message>
+            <source>More</source>
+            <translation>その他</translation>
+        </message>
     </context>
     <context>
         <name>Dock</name>
