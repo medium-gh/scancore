@@ -33,6 +33,46 @@ class TextTests : public QObject {
     }
 
 private slots:
+    // One number per chapter whichever source names it, so it shares one
+    // discussion and moves between sources by number (v3 plan, section 5).
+    void chapterNumbers() {
+        const QList<std::tuple<QString, QString, QString>> cases{
+            {"12", "", "12"},
+            {"012", "", "12"},
+            {"12.50", "", "12.5"},
+            {"12,5", "", "12.5"},
+            {"0", "", "0"},
+            {"", "Chapter 12", "12"},
+            {"", "Ch. 12.5 - The Return", "12.5"},
+            {"", "Vol. 3 Ch. 12", "12"},
+            {"Vol.3 Ch.12", "", "12"},
+            {"", "Vol.03 Chapter 007: Night", "7"},
+            {"", "Episode 5", "5"},
+            {"", "Ep. 05", "5"},
+            {"", "#45", "45"},
+            {"", "Capítulo 7", "7"},
+            {"", "Chương 9", "9"},
+            {"", QString::fromUtf8("第12話"), "12"},
+            {"", QString::fromUtf8("第 3 话 再会"), "3"},
+            {"", QString::fromUtf8("제12화"), "12"},
+            {"", QString::fromUtf8("12화"), "12"},
+            {"", "12 - A New Start", "12"},
+            {"", "Chapter 12a", "12"},
+            {"", "Chapter 12 Part 2", "12"},
+            {"", "Prologue", "0"},
+            // A volume or an extra is not a numbered chapter.
+            {"", "Volume 4", ""},
+            {"", "Extra 2", ""},
+            {"", QString::fromUtf8("番外 1"), ""},
+            {"", "Oneshot", ""},
+            {"", "", ""},
+            // The number field wins over a title that disagrees.
+            {"13", "Chapter 12.5 (Special)", "13"},
+        };
+        for (const auto &[number, title, expected] : cases)
+            QCOMPARE(chapterNumber(number, title), expected);
+    }
+
     // Music files' own tags, from hand-made headers of each kind.
     void readsAudioTags() {
         const auto be = [](quint32 v) { QByteArray b(4, 0); qToBigEndian(v, b.data()); return b; };

@@ -2,6 +2,8 @@
 
 #include "Database.h"
 
+#include <cmath>
+
 #include <QHash>
 #include <QList>
 #include <QLocale>
@@ -117,6 +119,53 @@ QString chapterPart(const QString &title) {
     const bool cjk = cjkVolume.match(title).hasMatch() && !cjkChapter.match(title).hasMatch();
     const bool latin = latinVolume.match(title).hasMatch() && !numbered;
     return cjk || latin ? QStringLiteral("volume") : QStringLiteral("chapter");
+}
+
+namespace {
+
+QString canonicalNumber(QString text) {
+    text.replace(QLatin1Char(','), QLatin1Char('.'));
+    bool ok = false;
+    const double value = text.toDouble(&ok);
+    if (!ok || value < 0 || value > 100000 || !std::isfinite(value))
+        return {};
+    // 12.50 -> 12.5, 012 -> 12, 1e3 never (plain digits only reach here).
+    return QString::number(value, 'f', 6).remove(QRegularExpression(QStringLiteral("\\.?0+$")));
+}
+
+} // namespace
+
+QString chapterNumber(const QString &number, const QString &title) {
+    static const QRegularExpression plain(QStringLiteral(R"(^\s*0*(\d+(?:[.,]\d+)?)\s*$)"));
+    if (const auto m = plain.match(number); m.hasMatch())
+        return canonicalNumber(m.captured(1));
+    // A number field with words in it ("Vol.3 Ch.12") is read as a title.
+    for (const auto &text : {number, title}) {
+        if (text.trimmed().isEmpty())
+            continue;
+        static const QRegularExpression latin(
+            QStringLiteral(R"((?:\b(?:ch(?:apter|ap)?|ep(?:isode)?|eps|cap(?:[ií]tulo)?|chapitre|kapitel|chuong|ch[uư]ơng|bab|episodio)\.?|#)\s*0*(\d+(?:[.,]\d+)?))"),
+            QRegularExpression::CaseInsensitiveOption | QRegularExpression::UseUnicodePropertiesOption);
+        static const QRegularExpression cjk(QString::fromUtf8(R"((?:第|제)?\s*0*(\d+(?:\.\d+)?)\s*[话話章回화회])"));
+        if (const auto m = latin.match(text); m.hasMatch())
+            return canonicalNumber(m.captured(1));
+        if (const auto m = cjk.match(text); m.hasMatch())
+            return canonicalNumber(m.captured(1));
+        // Volumes and extras are not numbered chapters.
+        if (chapterPart(text) != QLatin1String("chapter"))
+            return {};
+        static const QRegularExpression prologue(QStringLiteral(R"(\b(prologue|prólogo|prologo|序章|프롤로그)\b)"),
+                                                 QRegularExpression::CaseInsensitiveOption | QRegularExpression::UseUnicodePropertiesOption);
+        if (prologue.match(text).hasMatch())
+            return QStringLiteral("0");
+        // "12 - Title", "012": a leading number, a volume's taken out first.
+        static const QRegularExpression volume(QStringLiteral(R"(\b(?:vol(?:ume)?|tome|tomo|band|s(?:eason)?)\.?\s*\d+)"),
+                                               QRegularExpression::CaseInsensitiveOption);
+        static const QRegularExpression leading(QStringLiteral(R"(^\D{0,3}0*(\d+(?:[.,]\d+)?))"));
+        if (const auto m = leading.match(QString(text).remove(volume).trimmed()); m.hasMatch())
+            return canonicalNumber(m.captured(1));
+    }
+    return {};
 }
 
 QList<QPair<int, int>> sentenceSpans(const QString &text) {

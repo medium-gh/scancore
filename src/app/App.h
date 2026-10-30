@@ -82,6 +82,8 @@ public:
     Q_INVOKABLE QString siteAgent(const QString &url) const;
     // A site's check window: open (ad networks blocked meanwhile) or
     // closed, and whether an address is on the checked site.
+    // A chapter's number as every source shares it (sc::chapterNumber).
+    Q_INVOKABLE QString chapterNumber(const QString &number, const QString &title) const;
     Q_INVOKABLE void setSiteCheckOpen(bool open) const;
     Q_INVOKABLE bool sameSite(const QString &home, const QString &url) const;
     Q_INVOKABLE QString defaultAgent() const;

@@ -483,6 +483,8 @@ QString App::defaultAgent() const { return QString::fromUtf8(Http::userAgent());
 
 void App::setSiteCheckOpen(bool open) const { sc::setSiteCheckOpen(open); }
 
+QString App::chapterNumber(const QString &number, const QString &title) const { return sc::chapterNumber(number, title); }
+
 bool App::sameSite(const QString &home, const QString &url) const { return sc::sameSite(QUrl(home), QUrl(url)); }
 
 void App::finishSiteCheck(const QString &url) {

@@ -43,6 +43,6 @@ int applyMoves(const QVariantMap &moves);
 
 // A chapter's number as a value ("12", "12.5", "0.003"); empty when it has
 // none.
-std::optional<double> chapterValue(const QString &number);
+std::optional<double> chapterValue(const QString &number, const QString &title = QString());
 
 } // namespace sc::migration

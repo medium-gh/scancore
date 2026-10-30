@@ -171,7 +171,12 @@ private slots:
         QCOMPARE(*migration::chapterValue(QStringLiteral(" 12.5 ")), 12.5);
         QCOMPARE(*migration::chapterValue(QStringLiteral("0.003")), 0.003);
         QCOMPARE(*migration::chapterValue(QStringLiteral("Chapter 7")), 7.0);
-        QVERIFY(!migration::chapterValue(QStringLiteral("Prologue")));
+        // As discussions number them (sc::chapterNumber): a prologue is 0,
+        // and a volume's number is not the chapter's.
+        QCOMPARE(*migration::chapterValue(QStringLiteral("Prologue")), 0.0);
+        QCOMPARE(*migration::chapterValue(QStringLiteral("Vol.3 Ch.12")), 12.0);
+        QCOMPARE(*migration::chapterValue(QString(), QStringLiteral("Chapter 45: The End")), 45.0);
+        QVERIFY(!migration::chapterValue(QStringLiteral("Extra 2")));
     }
 
     void moveCarriesProgressAndEntry() {

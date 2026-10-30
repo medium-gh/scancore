@@ -779,8 +779,9 @@ Rectangle {
         media: "novel"
         title: reader.series.title || ""
         url: reader.series.sourceUrl || ""
-        unit: String(reader.unit.number || "")
-        label: qsTr("Chapter ") + (reader.unit.number || "")
+        // The same chapter on any source is one discussion.
+        unit: App.chapterNumber(String(reader.unit.number || ""), reader.unit.title || "")
+        label: qsTr("Chapter ") + (unit || reader.unit.number || "")
     }
 
     Popup {

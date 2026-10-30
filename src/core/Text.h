@@ -20,6 +20,15 @@ QString titleKey(const QString &text);
 // else, "Vol.1 Ch.3" included).
 QString chapterPart(const QString &title);
 
+// A chapter's (or episode's) number in one form for every source, so the
+// same chapter shares one discussion and moves between sources by number:
+// "12", "12.5", "0" (prologue); empty when it has none, or is a volume or
+// an extra. The source's own number field first, else the title:
+// "Chapter 012", "Ch. 12.5 - Title", "Vol. 3 Ch. 12" (12, not 3), "#12",
+// "Ep 5", "Capítulo 7", "第12話", "제12화", "12 - Title"; a part ("12a",
+// "12 part 2") is its chapter, 12.
+QString chapterNumber(const QString &number, const QString &title = QString());
+
 // A content language's name in that language, for source lists: "en" ->
 // "English", "es" -> "Español".
 QString languageName(const QString &code);

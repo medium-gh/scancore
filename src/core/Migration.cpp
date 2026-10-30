@@ -2,6 +2,7 @@
 
 #include "Database.h"
 #include "Http.h"
+#include "Text.h"
 
 #include <QHash>
 #include <QSet>
@@ -11,15 +12,13 @@
 
 namespace sc::migration {
 
-std::optional<double> chapterValue(const QString &number) {
-    bool ok = false;
-    const double value = number.trimmed().toDouble(&ok);
-    if (ok)
-        return value;
-    static const QRegularExpression first(QStringLiteral("(\\d+(?:\\.\\d+)?)"));
-    if (const auto m = first.match(number); m.hasMatch())
-        return m.captured(1).toDouble();
-    return std::nullopt;
+std::optional<double> chapterValue(const QString &number, const QString &title) {
+    // As discussions read it ("Vol.3 Ch.12" is 12, not 3; a title when
+    // the source gives no number).
+    const auto canonical = chapterNumber(number, title);
+    if (canonical.isEmpty())
+        return std::nullopt;
+    return canonical.toDouble();
 }
 
 Result move(const QString &fromId, const QString &toId, const Options &options) {
@@ -38,13 +37,13 @@ Result move(const QString &fromId, const QString &toId, const Options &options) 
             double furthest = -std::numeric_limits<double>::infinity();
             qint64 oldest = std::numeric_limits<qint64>::max();
             QHash<double, QVariantMap> byValue;
-            for (const auto &value : Database::query(QStringLiteral("SELECT unit_number, percent, completed, updated_at FROM progress "
+            for (const auto &value : Database::query(QStringLiteral("SELECT unit_number, unit_title, percent, completed, updated_at FROM progress "
                                                                     "WHERE series_id = ?"),
                                                      {fromId})) {
                 const auto row = value.toMap();
                 const qint64 at = row.value(QStringLiteral("updated_at")).toLongLong();
                 oldest = std::min(oldest, at);
-                const auto v = chapterValue(row.value(QStringLiteral("unit_number")).toString());
+                const auto v = chapterValue(row.value(QStringLiteral("unit_number")).toString(), row.value(QStringLiteral("unit_title")).toString());
                 if (!v)
                     continue;
                 if (row.value(QStringLiteral("completed")).toBool())
@@ -54,7 +53,7 @@ Result move(const QString &fromId, const QString &toId, const Options &options) 
             double nextValue = std::numeric_limits<double>::infinity();
             for (const auto &value : units) {
                 const auto unit = value.toMap();
-                const auto v = chapterValue(unit.value(QStringLiteral("number")).toString());
+                const auto v = chapterValue(unit.value(QStringLiteral("number")).toString(), unit.value(QStringLiteral("title")).toString());
                 if (!v)
                     continue;
                 const auto match = byValue.value(*v);
@@ -94,7 +93,7 @@ Result move(const QString &fromId, const QString &toId, const Options &options) 
                     marked.insert(*v);
             for (const auto &value : units) {
                 const auto unit = value.toMap();
-                if (const auto v = chapterValue(unit.value(QStringLiteral("number")).toString()); v && marked.contains(*v))
+                if (const auto v = chapterValue(unit.value(QStringLiteral("number")).toString(), unit.value(QStringLiteral("title")).toString()); v && marked.contains(*v))
                     Database::query(QStringLiteral("INSERT OR IGNORE INTO bookmarks(series_id, unit_key, created_at) VALUES(?, ?, ?)"),
                                     {toId, unit.value(QStringLiteral("unit_key")), Database::now()});
             }
