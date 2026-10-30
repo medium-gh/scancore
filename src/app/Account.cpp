@@ -213,7 +213,10 @@ int pushAnimeProgress(bool batchSupported, bool *more) {
             item = QJsonObject{{"unitId", unit},
                                {"seconds", std::clamp(seconds, 0.0, 36000.0)},
                                {"duration", std::clamp(duration, 1.0, 36000.0)},
-                               {"track", false}};
+                               {"track", false},
+                               // So the site tells an episode just watched
+                               // (friends see it) from a backlog.
+                               {"watchedAt", row.value("updated_at").toLongLong() * 1000}};
         pending.append({row.value("updated_at").toLongLong(), item});
     }
 
