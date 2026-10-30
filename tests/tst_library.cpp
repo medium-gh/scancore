@@ -215,6 +215,26 @@ private slots:
         QVERIFY(!Database::scalar(QStringLiteral("SELECT 1 FROM library WHERE series_id = ?"), {from}).isValid());
         QVERIFY(Database::scalar(QStringLiteral("SELECT 1 FROM library_removed WHERE series_id = ?"), {from}).isValid());
         QCOMPARE(Database::scalar(QStringLiteral("SELECT COUNT(*) FROM progress WHERE series_id = ?"), {from}).toInt(), 0);
+        // The move is remembered, so sync does not bring the old progress
+        // back (it stood in Continue for the moved series).
+        const auto moved = migration::movedAt(from, migration::moves());
+        QVERIFY(moved > 0);
+        QCOMPARE(migration::movedAt(to, migration::moves()), 0);
+
+        // Another device made the same move: its old progress from before
+        // goes, anything read there since stays.
+        Database::exec(QStringLiteral("DELETE FROM prefs WHERE key = 'library.moved'"));
+        read(from, "1", 1, moved - 10);
+        read(from, "6", 0.5, moved + 10);
+        QCOMPARE(migration::applyMoves({{from, QVariantList{to, moved}}}), 1);
+        QCOMPARE(Database::scalar(QStringLiteral("SELECT COUNT(*) FROM progress WHERE series_id = ?"), {from}).toInt(), 1);
+        QCOMPARE(migration::applyMoves({{from, QVariantList{to, moved}}}), 0);
+        Database::exec(QStringLiteral("DELETE FROM progress WHERE series_id = ?"), {from});
+
+        // Moving back: that move no longer stands.
+        migration::move(to, from);
+        QCOMPARE(migration::movedAt(from, migration::moves()), 0);
+        QVERIFY(migration::movedAt(to, migration::moves()) > 0);
     }
 
     void copyKeepsTheOld() {

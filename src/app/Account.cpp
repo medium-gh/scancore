@@ -5,6 +5,7 @@
 #include "Live.h"
 #include "Sync.h"
 #include "core/Cookies.h"
+#include "core/Migration.h"
 #include "core/Database.h"
 #include "sources/comics/Registry.h"
 #include "sources/novels/Registry.h"
@@ -736,7 +737,7 @@ void Account::clearAccountData() {
         Database::query(QStringLiteral("DELETE FROM activity"));
         Database::query(QStringLiteral("DELETE FROM notifications WHERE kind = 'comments'"));
     });
-    for (const auto *key : {"libraryCategories", "account.devicesSince", "account.devicesSeen", "account.devicesSeen.written",
+    for (const auto *key : {"libraryCategories", "library.moved", "account.devicesSince", "account.devicesSeen", "account.devicesSeen.written",
                             "siteNotifications.seen", "account.libraryRemoved"})
         Database::setPref(QLatin1String(key), QVariant());
     // The account keeps this device's copy: read back at the next sign-in.
@@ -867,8 +868,10 @@ QVariantMap Account::importAll(const QJsonObject &session) {
         qWarning().noquote() << "Comic progress sync:" << e.message();
     }
 
-    // Website comic reading history -> local progress, when newer.
+    // Website comic reading history -> local progress, when newer, and not
+    // for a series since moved to another source.
     qint64 newestPulledComic = 0;
+    const auto moves = migration::moves();
     for (const auto &value : session.value("history").toArray()) {
         const auto entry = value.toObject();
         const auto comic = entry.value("comic").toObject();
@@ -880,6 +883,8 @@ QVariantMap Account::importAll(const QJsonObject &session) {
             continue;
         const auto id = Library::idFor(QStringLiteral("comic"), source->key(), url);
         const auto updated = qint64(entry.value("updatedAt").toDouble() / 1000);
+        if (updated <= migration::movedAt(id, moves))
+            continue;
         const auto local = Database::scalar(QStringLiteral("SELECT MAX(updated_at) FROM progress WHERE series_id = ?"), {id});
         if (local.isValid() && local.toLongLong() >= updated)
             continue;

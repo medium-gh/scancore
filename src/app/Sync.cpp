@@ -3,6 +3,7 @@
 #include "Activity.h"
 #include "Library.h"
 #include "Live.h"
+#include "core/Migration.h"
 #include "core/Database.h"
 
 #include <QCoreApplication>
@@ -304,7 +305,8 @@ QJsonObject Sync::snapshot() {
             // hidden, names}]. Versions before 2.10.0 read the first two.
             {"categories", QJsonArray{QJsonArray::fromVariantList(Library::storedCategories()), Library::categoriesChangedAt(),
                                       QJsonObject::fromVariantMap(Library::storedListLayout())}},
-            {"activity", Activity::rowsForSync()}};
+            {"activity", Activity::rowsForSync()},
+            {"moved", QJsonObject::fromVariantMap(migration::moves())}};
 }
 
 QString Sync::platform() { return platformName(); }
@@ -336,6 +338,8 @@ bool Sync::mergeUnit(const QJsonObject &payload) {
     if (id.isEmpty() || key.isEmpty() || p.size() < 7 || id.contains(QLatin1String(":local:")))
         return false;
     const qint64 at = p.at(6).toInteger();
+    if (at <= migration::movedAt(id, migration::moves()))
+        return false;
     const auto local = Database::scalar(QStringLiteral("SELECT updated_at FROM progress WHERE series_id = ? AND unit_key = ?"), {id, key});
     if (local.isValid() && at <= local.toLongLong())
         return false;
@@ -370,6 +374,8 @@ int Sync::merge(const QJsonObject &s, bool own) {
     const auto device = s.value("device").toObject().value("id").toString();
     if (device.isEmpty() || (device == Activity::deviceId() && !own))
         return 0;
+    // Series moved to another source there: their old progress goes here too.
+    const int moved = migration::applyMoves(s.value("moved").toObject().toVariantMap());
     const auto series = s.value("series").toObject();
     const auto library = s.value("library").toObject();
     const auto removed = s.value("removed").toObject();
@@ -442,13 +448,16 @@ int Sync::merge(const QJsonObject &s, bool own) {
             localProgress.insert(row.value("series_id").toString() + QLatin1Char('\n') + row.value("unit_key").toString(),
                                  row.value("updated_at").toLongLong());
         }
+        const auto moves = migration::moves();
         for (auto it = progress.begin(); it != progress.end(); ++it) {
             const auto units = it.value().toObject();
+            const qint64 movedAway = migration::movedAt(it.key(), moves);
             bool known = false;
             for (auto unit = units.begin(); unit != units.end(); ++unit) {
                 const auto p = unit.value().toArray();
                 const qint64 at = p.at(6).toInteger();
-                if (at <= localProgress.value(it.key() + QLatin1Char('\n') + unit.key(), -1))
+                // From before this series was moved to another source.
+                if (at <= movedAway || at <= localProgress.value(it.key() + QLatin1Char('\n') + unit.key(), -1))
                     continue;
                 if (!known && !(known = ensureSeries(it.key())))
                     break;
@@ -523,7 +532,7 @@ int Sync::merge(const QJsonObject &s, bool own) {
         }
     });
     Activity::mergeRows(device, s.value("activity").toArray());
-    return changes;
+    return changes + moved;
 }
 
 QVariantMap Sync::exchange(Store &store, const QString &seenKey) {

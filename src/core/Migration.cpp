@@ -113,7 +113,13 @@ Result move(const QString &fromId, const QString &toId, const Options &options) 
                              entry.value(QStringLiteral("added_at")), units.size(), Database::now()});
             Database::query(QStringLiteral("DELETE FROM library_removed WHERE series_id = ?"), {toId});
         }
+        // Moving back to where it once was: that move no longer stands.
+        if (auto all = moves(); all.remove(toId) > 0)
+            Database::setPref(QStringLiteral("library.moved"), all);
         if (!options.keepOld) {
+            auto all = moves();
+            all.insert(fromId, QVariantList{toId, Database::now()});
+            Database::setPref(QStringLiteral("library.moved"), all);
             // Recorded as removed so file sync removes it on other devices.
             if (!entry.isEmpty()) {
                 Database::query(QStringLiteral("DELETE FROM library WHERE series_id = ?"), {fromId});
@@ -126,6 +132,29 @@ Result move(const QString &fromId, const QString &toId, const Options &options) 
         }
     });
     return result;
+}
+
+QVariantMap moves() { return Database::pref(QStringLiteral("library.moved")).toMap(); }
+
+qint64 movedAt(const QString &seriesId, const QVariantMap &moves) {
+    const auto it = moves.constFind(seriesId);
+    return it == moves.cend() ? 0 : it->toList().value(1).toLongLong();
+}
+
+int applyMoves(const QVariantMap &incoming) {
+    auto all = moves();
+    int added = 0;
+    for (auto it = incoming.cbegin(); it != incoming.cend(); ++it) {
+        const auto at = it->toList().value(1).toLongLong();
+        if (at <= 0 || movedAt(it.key(), all) >= at)
+            continue;
+        all.insert(it.key(), it.value());
+        Database::exec(QStringLiteral("DELETE FROM progress WHERE series_id = ? AND updated_at <= ?"), {it.key(), at});
+        ++added;
+    }
+    if (added > 0)
+        Database::setPref(QStringLiteral("library.moved"), all);
+    return added;
 }
 
 } // namespace sc::migration
