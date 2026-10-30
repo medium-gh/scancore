@@ -24,6 +24,8 @@ Column {
     property string problem
     property string sort: "TOP"
     property string replyTo
+    // The reader's own comment being edited (its id).
+    property string editing
     property var postTask: null
 
     spacing: 14
@@ -109,6 +111,51 @@ Column {
         task.failed.connect((message) => Router.toast(message, "error"))
     }
 
+    // The reader's own comments can be edited and deleted; others' reported.
+    function mine(c) { return Account.signedIn && !!c.user && c.user.username === (Account.user.username || "") }
+    function deleted(c) { return !!c.deletedAt || c.body === "This comment has been deleted" }
+    function save(c, body) {
+        if (!body.trim()) return null
+        postTask = Account.request("PATCH", "/api/comments", { commentId: c.id, body: body.trim() })
+        postTask.finished.connect(() => { discussion.editing = ""; discussion.refresh() })
+        postTask.failed.connect((message) => Router.toast(message, "error"))
+        return postTask
+    }
+    function remove(c) {
+        const task = Account.request("DELETE", "/api/comments?commentId=" + encodeURIComponent(c.id))
+        task.finished.connect(() => { Router.toast(qsTr("Comment deleted"), "success"); discussion.refresh() })
+        task.failed.connect((message) => Router.toast(message, "error"))
+    }
+    function report(c, reason) {
+        const task = Account.request("PATCH", "/api/comments", { commentId: c.id, reason: reason })
+        task.finished.connect(() => { Router.toast(qsTr("Reported. Thank you."), "success"); discussion.refresh() })
+        task.failed.connect((message) => Router.toast(message, "error"))
+    }
+    property var pendingDelete: null
+    ActionMenu { id: commentMenu }
+    ConfirmDialog {
+        id: deleteConfirm
+        heading: qsTr("Delete this comment?")
+        message: qsTr("It shows as deleted for everyone; replies to it stay.")
+        confirmText: qsTr("Delete")
+        destructive: true
+        onConfirmed: if (discussion.pendingDelete) discussion.remove(discussion.pendingDelete)
+    }
+    function openMenu(c, anchor) {
+        if (mine(c)) {
+            commentMenu.openAt(anchor, 0, anchor.height, [
+                { text: qsTr("Edit"), icon: "pencil", run: () => { discussion.replyTo = ""; discussion.editing = c.id } },
+                { text: qsTr("Delete"), icon: "trash", run: () => { discussion.pendingDelete = c; deleteConfirm.open() } }
+            ])
+        } else {
+            // Shown in the reader's language; the site keeps the English.
+            const reasons = [[qsTr("Spam"), "Spam"], [qsTr("Abuse or harassment"), "Abuse or harassment"],
+                             [qsTr("Unmarked spoilers"), "Spoilers without a warning"], [qsTr("Piracy links"), "Links to pirated copies"]]
+            commentMenu.openAt(anchor, 0, anchor.height, [{ text: qsTr("Report this comment for"), icon: "triangle-alert", enabled: false }]
+                .concat(reasons.map(r => ({ text: r[0], run: () => discussion.report(c, r[1]) }))))
+        }
+    }
+
     function ago(iso) {
         const minutes = Math.max(1, Math.round((Date.now() - Date.parse(iso)) / 60000))
         if (minutes < 60) return minutes + qsTr(" min ago")
@@ -191,6 +238,9 @@ Column {
         id: composerComponent
         Column {
             property string parentId: ""
+            // Editing one of the reader's comments: it, with its text.
+            property var editOf: null
+            onEditOfChanged: if (editOf) box.text = editOf.body
             width: parent ? parent.width : 0
             spacing: 8
             TextArea {
@@ -217,19 +267,19 @@ Column {
                 ScButton {
                     compact: true
                     variant: "primary"
-                    text: parentId ? qsTr("Reply") : qsTr("Post")
+                    text: editOf ? qsTr("Save") : parentId ? qsTr("Reply") : qsTr("Post")
                     enabled: box.text.trim().length > 0 && !(discussion.postTask && discussion.postTask.loading)
                     loading: !!discussion.postTask && discussion.postTask.loading
                     onClicked: {
-                        const task = discussion.post(box.text, parentId)
-                        if (task) task.finished.connect(() => box.text = "")
+                        const task = editOf ? discussion.save(editOf, box.text) : discussion.post(box.text, parentId)
+                        if (task && !editOf) task.finished.connect(() => box.text = "")
                     }
                 }
                 ScButton {
-                    visible: !!parentId
+                    visible: !!parentId || !!editOf
                     compact: true
                     text: qsTr("Cancel")
-                    onClicked: discussion.replyTo = ""
+                    onClicked: { discussion.replyTo = ""; discussion.editing = "" }
                 }
             }
         }
@@ -312,6 +362,7 @@ Column {
                 }
             }
             Text {
+                visible: discussion.editing !== c.id
                 width: parent.width
                 leftPadding: 34
                 text: c.hidden ? qsTr("This comment is hidden.") : c.body
@@ -354,7 +405,16 @@ Column {
                     visible: Account.signedIn && modelData.depth < 2
                     compact: true
                     text: qsTr("Reply")
-                    onClicked: discussion.replyTo = discussion.replyTo === c.id ? "" : c.id
+                    onClicked: { discussion.editing = ""; discussion.replyTo = discussion.replyTo === c.id ? "" : c.id }
+                }
+                IconButton {
+                    id: moreButton
+                    visible: Account.signedIn && !discussion.deleted(c) && !c.hidden
+                    diameter: 30
+                    iconSize: 15
+                    iconName: "ellipsis"
+                    tip: qsTr("More")
+                    onClicked: discussion.openMenu(c, moreButton)
                 }
             }
             Loader {
@@ -363,6 +423,13 @@ Column {
                 visible: active
                 sourceComponent: composerComponent
                 onLoaded: item.parentId = c.id
+            }
+            Loader {
+                width: parent.width
+                active: discussion.editing === c.id
+                visible: active
+                sourceComponent: composerComponent
+                onLoaded: item.editOf = c
             }
             Item { width: 1; height: 4 }
         }

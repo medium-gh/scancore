@@ -623,12 +623,19 @@ QVariantMap Account::call(const QByteArray &method, const QString &path, const Q
     Request request;
     request.url = QUrl(siteUrl() + path);
     request.method = method;
-    request.headers = apiHeaders();
     request.timeoutMs = 20000;
-    if (method != "GET" && method != "DELETE")
+    if (method != "GET" && method != "DELETE") {
+        request.headers = apiHeaders();
         request.body = QJsonDocument(QJsonObject::fromVariantMap(body)).toJson(QJsonDocument::Compact);
+    } else {
+        // No body, so no JSON type: the site refuses a DELETE that claims a
+        // JSON body and sends none ("Invalid JSON"), which broke deleting a
+        // comment and unfollowing a friend.
+        request.headers = {{"Accept", "application/json"}};
+    }
     const auto response = Http::send(request);
-    const auto json = response.json().object();
+    // "No content" (an unfollow, say) is an answer too, not unreadable data.
+    const auto json = response.body.trimmed().isEmpty() ? QJsonObject() : response.json().object();
     if (!response.ok()) {
         auto message = json.value("error").toString();
         if (message.isEmpty())
