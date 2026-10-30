@@ -1,0 +1,1 @@
+• A series moved to another source stays there after a sync

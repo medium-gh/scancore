@@ -2,6 +2,10 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.8 — 2026-10-30
+
+- **Moving a series to another source** sticks: Continue reading showed it on the old source again after a sync, because the old source's reading history came back from your other devices or from scancore.onl. A move is now remembered and travels with sync, so the old source's history stays gone on every device (anything read there after the move still counts).
+
 ## 2.16.7 — 2026-10-30
 
 Signing out, picking up where you left off, cleaner browser checks, and replies to your comments.

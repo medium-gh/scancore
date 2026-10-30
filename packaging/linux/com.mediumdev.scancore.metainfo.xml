@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.16.8" date="2026-10-30">
+      <description>
+        <p>A series moved to another source stays there: Continue reading no longer shows the old source again after a sync.</p>
+      </description>
+    </release>
     <release version="2.16.7" date="2026-10-30">
       <description>
         <p>Signing out takes your library off the device so a new account starts empty, Continue opens the chapter where you stopped, browser checks block redirecting ads and pop-ups, MangaDex finds adult titles when allowed, and replies to your comments arrive as notifications.</p>
