@@ -2,6 +2,11 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.10 — 2026-10-30
+
+- **Extensions that read the site in a web view** (The Blank and others built the same way): when the site wants its "Verify you are human" check, the series or chapter now offers **Open browser check** for that page. Pass it once and its chapters and pages load; before, it only said "Open in WebView", with nothing to press.
+- Friends see the anime you watch in SCANCORE in their activity (only comics showed before).
+
 ## 2.16.9 — 2026-10-30
 
 - **Comments**: edit or delete your own (⋯ beside a comment), and report someone else's as spam, abuse, unmarked spoilers or piracy links. Deleting a comment and unfollowing a friend failed before ("could not read" or nothing happened); both work now.
