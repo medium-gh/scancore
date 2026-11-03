@@ -13738,4 +13738,55 @@
             <translation> (นิวรัล)</translation>
         </message>
     </context>
+    <context>
+        <name>SeriesMenu</name>
+        <message>
+            <source>Details</source>
+            <translation>รายละเอียด</translation>
+        </message>
+        <message>
+            <source>Continue watching</source>
+            <translation>ดูต่อ</translation>
+        </message>
+        <message>
+            <source>Continue reading</source>
+            <translation>อ่านต่อ</translation>
+        </message>
+        <message>
+            <source>Add to library</source>
+            <translation>เพิ่มในคลัง</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>นำออกจากคลัง</translation>
+        </message>
+        <message>
+            <source>Remove from history</source>
+            <translation>นำออกจากประวัติ</translation>
+        </message>
+        <message>
+            <source>%1 is in your library</source>
+            <translation>%1 อยู่ในคลังของคุณแล้ว</translation>
+        </message>
+        <message>
+            <source>%1 left your library</source>
+            <translation>นำ %1 ออกจากคลังแล้ว</translation>
+        </message>
+        <message>
+            <source>Undo</source>
+            <translation>เลิกทำ</translation>
+        </message>
+        <message>
+            <source>Remove %1 from your history?</source>
+            <translation>นำ %1 ออกจากประวัติไหม</translation>
+        </message>
+        <message>
+            <source>Your place in it is forgotten here and on your other synced devices. Your library and downloads are kept.</source>
+            <translation>ตำแหน่งที่คุณค้างไว้จะถูกลืมทั้งที่นี่และในอุปกรณ์อื่นที่ซิงค์ไว้ คลังและไฟล์ดาวน์โหลดยังอยู่</translation>
+        </message>
+        <message>
+            <source>Remove</source>
+            <translation>นำออก</translation>
+        </message>
+    </context>
 </TS>

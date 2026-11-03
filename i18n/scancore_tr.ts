@@ -13746,4 +13746,55 @@
             <translation> (nöral)</translation>
         </message>
     </context>
+    <context>
+        <name>SeriesMenu</name>
+        <message>
+            <source>Details</source>
+            <translation>Ayrıntılar</translation>
+        </message>
+        <message>
+            <source>Continue watching</source>
+            <translation>İzlemeye devam et</translation>
+        </message>
+        <message>
+            <source>Continue reading</source>
+            <translation>Okumaya devam et</translation>
+        </message>
+        <message>
+            <source>Add to library</source>
+            <translation>Kütüphaneye ekle</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Kütüphaneden kaldır</translation>
+        </message>
+        <message>
+            <source>Remove from history</source>
+            <translation>Geçmişten kaldır</translation>
+        </message>
+        <message>
+            <source>%1 is in your library</source>
+            <translation>%1 kütüphanende</translation>
+        </message>
+        <message>
+            <source>%1 left your library</source>
+            <translation>%1 kütüphanenden çıkarıldı</translation>
+        </message>
+        <message>
+            <source>Undo</source>
+            <translation>Geri al</translation>
+        </message>
+        <message>
+            <source>Remove %1 from your history?</source>
+            <translation>%1 geçmişinden kaldırılsın mı?</translation>
+        </message>
+        <message>
+            <source>Your place in it is forgotten here and on your other synced devices. Your library and downloads are kept.</source>
+            <translation>Kaldığın yer burada ve eşitlenen diğer cihazlarında unutulur. Kütüphanen ve indirmelerin kalır.</translation>
+        </message>
+        <message>
+            <source>Remove</source>
+            <translation>Kaldır</translation>
+        </message>
+    </context>
 </TS>

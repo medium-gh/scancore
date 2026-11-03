@@ -13746,4 +13746,55 @@
             <translation> (ニューラル)</translation>
         </message>
     </context>
+    <context>
+        <name>SeriesMenu</name>
+        <message>
+            <source>Details</source>
+            <translation>詳細</translation>
+        </message>
+        <message>
+            <source>Continue watching</source>
+            <translation>続きを見る</translation>
+        </message>
+        <message>
+            <source>Continue reading</source>
+            <translation>続きを読む</translation>
+        </message>
+        <message>
+            <source>Add to library</source>
+            <translation>ライブラリに追加</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>ライブラリから削除</translation>
+        </message>
+        <message>
+            <source>Remove from history</source>
+            <translation>履歴から削除</translation>
+        </message>
+        <message>
+            <source>%1 is in your library</source>
+            <translation>%1 をライブラリに追加しました</translation>
+        </message>
+        <message>
+            <source>%1 left your library</source>
+            <translation>%1 をライブラリから削除しました</translation>
+        </message>
+        <message>
+            <source>Undo</source>
+            <translation>元に戻す</translation>
+        </message>
+        <message>
+            <source>Remove %1 from your history?</source>
+            <translation>%1 を履歴から削除しますか？</translation>
+        </message>
+        <message>
+            <source>Your place in it is forgotten here and on your other synced devices. Your library and downloads are kept.</source>
+            <translation>この端末と同期中の他の端末で、読んだ・見た位置が消去されます。ライブラリとダウンロードは残ります。</translation>
+        </message>
+        <message>
+            <source>Remove</source>
+            <translation>削除</translation>
+        </message>
+    </context>
 </TS>

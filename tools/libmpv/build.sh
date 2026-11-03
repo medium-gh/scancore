@@ -80,7 +80,8 @@ macos_min=13.0      # macOS: the app's minimum version
 
 # ---------------------------------------------------------------- versions
 # name version url sha256 ("-" while bumping a version: the build prints
-# the new file's checksum into build/libmpv/checksums.txt)
+# the new file's checksum into build/libmpv/checksums.txt). A url may name
+# mirrors after "|", tried in turn when the first cannot be reached.
 sources=(
     "mbedtls 3.6.7 https://github.com/Mbed-TLS/mbedtls/releases/download/mbedtls-3.6.7/mbedtls-3.6.7.tar.bz2 a7e8bcbec0e6f761b4af24f25677626b35f762f68eef79c08677a363212d11f6"
     "dav1d 1.5.4 https://downloads.videolan.org/pub/videolan/dav1d/1.5.4/dav1d-1.5.4.tar.xz 686616b7c69eb88d44459391ab25cac13b6647a3b288835c5784e71c1514a5c5"
@@ -91,7 +92,7 @@ sources=(
     "harfbuzz 14.6.0 https://github.com/harfbuzz/harfbuzz/releases/download/14.6.0/harfbuzz-14.6.0.tar.xz d07a007327277708a2a73ae437887cdbaf282937f6d03ca5467723e9099af586"
     "unibreak 8.0 https://github.com/adah1972/libunibreak/releases/download/libunibreak_8_0/libunibreak-8.0.tar.gz 9c4fad6e517338a098373acc9f35579ae2c325e6446666fb9ac2666ba15ceba4"
     "libass 0.17.5 https://github.com/libass/libass/releases/download/0.17.5/libass-0.17.5.tar.xz 2dca25c0e0c837ddf00b52011b3f82cac1e4ddd3ad018227806b0c2288864acc"
-    "ffmpeg 9.0.2 https://ffmpeg.org/releases/ffmpeg-9.0.2.tar.xz 8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e002e"
+    "ffmpeg 9.0.2 https://ffmpeg.org/releases/ffmpeg-9.0.2.tar.xz|https://src.fedoraproject.org/repo/pkgs/ffmpeg/ffmpeg-9.0.2.tar.xz/sha512/7756f8434371b9bc1d01cf578bf49014e058b0869c3c1df05030f5f4035f1def64b2e7dba3cf340da4dc8dd9239dd5f894530c9e45793ac27876807079aa546a/ffmpeg-9.0.2.tar.xz 8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e002e"
     "mpv 0.41.0 https://github.com/mpv-player/mpv/archive/refs/tags/v0.41.0.tar.gz ee21092a5ee427353392360929dc64645c54479aefdb5babc5cfbb5fad626209"
     "zlib 1.3.1 https://github.com/madler/zlib/releases/download/v1.3.1/zlib-1.3.1.tar.gz 9a93b2b7dfdac77ceba5a558a580e74667dd6fede4585b91eefb60f03b72df23"
     "gperf 3.1 https://ftp.gnu.org/pub/gnu/gperf/gperf-3.1.tar.gz 588546b945bba4b70b6a3a616e80b4ab466e3f33024a352fc2198112cdbb3ae2"
@@ -101,8 +102,17 @@ sources=(
 libplacebo_tag=v7.360.1
 libplacebo_commit=cee9b076f2c63104ccfd497fa79c39a867293ec4
 
-download() { # url file
-    if command -v curl >/dev/null; then curl -fsSL --retry 3 -o "$2" "$1"; else wget -q -O "$2" "$1"; fi
+download() { # url[|mirror…] file
+    local url
+    for url in ${1//|/ }; do
+        if command -v curl >/dev/null; then
+            curl -fsSL --retry 3 --connect-timeout 30 -o "$2" "$url" && return
+        else
+            wget -q -O "$2" "$url" && return
+        fi
+        echo "  $url failed" >&2
+    done
+    return 1
 }
 
 sha256() { if command -v sha256sum >/dev/null; then sha256sum "$1" | cut -d' ' -f1; else shasum -a 256 "$1" | cut -d' ' -f1; fi; }

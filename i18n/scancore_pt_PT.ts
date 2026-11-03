@@ -13746,4 +13746,55 @@
             <translation> (neural)</translation>
         </message>
     </context>
+    <context>
+        <name>SeriesMenu</name>
+        <message>
+            <source>Details</source>
+            <translation>Detalhes</translation>
+        </message>
+        <message>
+            <source>Continue watching</source>
+            <translation>Continuar a ver</translation>
+        </message>
+        <message>
+            <source>Continue reading</source>
+            <translation>Continuar a ler</translation>
+        </message>
+        <message>
+            <source>Add to library</source>
+            <translation>Adicionar à biblioteca</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Remover da biblioteca</translation>
+        </message>
+        <message>
+            <source>Remove from history</source>
+            <translation>Remover do histórico</translation>
+        </message>
+        <message>
+            <source>%1 is in your library</source>
+            <translation>%1 está na sua biblioteca</translation>
+        </message>
+        <message>
+            <source>%1 left your library</source>
+            <translation>%1 saiu da sua biblioteca</translation>
+        </message>
+        <message>
+            <source>Undo</source>
+            <translation>Anular</translation>
+        </message>
+        <message>
+            <source>Remove %1 from your history?</source>
+            <translation>Remover %1 do seu histórico?</translation>
+        </message>
+        <message>
+            <source>Your place in it is forgotten here and on your other synced devices. Your library and downloads are kept.</source>
+            <translation>O ponto onde ficou é esquecido aqui e nos seus outros dispositivos sincronizados. A biblioteca e as transferências mantêm-se.</translation>
+        </message>
+        <message>
+            <source>Remove</source>
+            <translation>Remover</translation>
+        </message>
+    </context>
 </TS>

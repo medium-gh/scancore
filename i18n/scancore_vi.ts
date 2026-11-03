@@ -13746,4 +13746,55 @@
             <translation> (neural)</translation>
         </message>
     </context>
+    <context>
+        <name>SeriesMenu</name>
+        <message>
+            <source>Details</source>
+            <translation>Chi tiết</translation>
+        </message>
+        <message>
+            <source>Continue watching</source>
+            <translation>Xem tiếp</translation>
+        </message>
+        <message>
+            <source>Continue reading</source>
+            <translation>Đọc tiếp</translation>
+        </message>
+        <message>
+            <source>Add to library</source>
+            <translation>Thêm vào thư viện</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Xoá khỏi thư viện</translation>
+        </message>
+        <message>
+            <source>Remove from history</source>
+            <translation>Xoá khỏi lịch sử</translation>
+        </message>
+        <message>
+            <source>%1 is in your library</source>
+            <translation>%1 đã có trong thư viện</translation>
+        </message>
+        <message>
+            <source>%1 left your library</source>
+            <translation>Đã xoá %1 khỏi thư viện</translation>
+        </message>
+        <message>
+            <source>Undo</source>
+            <translation>Hoàn tác</translation>
+        </message>
+        <message>
+            <source>Remove %1 from your history?</source>
+            <translation>Xoá %1 khỏi lịch sử?</translation>
+        </message>
+        <message>
+            <source>Your place in it is forgotten here and on your other synced devices. Your library and downloads are kept.</source>
+            <translation>Chỗ bạn đang dừng sẽ bị quên ở đây và trên các thiết bị đồng bộ khác. Thư viện và bản tải xuống vẫn được giữ.</translation>
+        </message>
+        <message>
+            <source>Remove</source>
+            <translation>Xoá</translation>
+        </message>
+    </context>
 </TS>

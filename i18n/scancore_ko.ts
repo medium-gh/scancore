@@ -13746,4 +13746,55 @@
             <translation> (뉴럴)</translation>
         </message>
     </context>
+    <context>
+        <name>SeriesMenu</name>
+        <message>
+            <source>Details</source>
+            <translation>상세 정보</translation>
+        </message>
+        <message>
+            <source>Continue watching</source>
+            <translation>이어서 보기</translation>
+        </message>
+        <message>
+            <source>Continue reading</source>
+            <translation>이어서 읽기</translation>
+        </message>
+        <message>
+            <source>Add to library</source>
+            <translation>라이브러리에 추가</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>라이브러리에서 제거</translation>
+        </message>
+        <message>
+            <source>Remove from history</source>
+            <translation>기록에서 제거</translation>
+        </message>
+        <message>
+            <source>%1 is in your library</source>
+            <translation>%1이(가) 라이브러리에 있습니다</translation>
+        </message>
+        <message>
+            <source>%1 left your library</source>
+            <translation>%1이(가) 라이브러리에서 제거되었습니다</translation>
+        </message>
+        <message>
+            <source>Undo</source>
+            <translation>실행 취소</translation>
+        </message>
+        <message>
+            <source>Remove %1 from your history?</source>
+            <translation>%1을(를) 기록에서 제거할까요?</translation>
+        </message>
+        <message>
+            <source>Your place in it is forgotten here and on your other synced devices. Your library and downloads are kept.</source>
+            <translation>이 기기와 동기화된 다른 기기에서 보던 위치가 지워집니다. 라이브러리와 다운로드는 유지됩니다.</translation>
+        </message>
+        <message>
+            <source>Remove</source>
+            <translation>제거</translation>
+        </message>
+    </context>
 </TS>

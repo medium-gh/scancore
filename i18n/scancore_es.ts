@@ -13746,4 +13746,55 @@
             <translation> (neuronal)</translation>
         </message>
     </context>
+    <context>
+        <name>SeriesMenu</name>
+        <message>
+            <source>Details</source>
+            <translation>Detalles</translation>
+        </message>
+        <message>
+            <source>Continue watching</source>
+            <translation>Seguir viendo</translation>
+        </message>
+        <message>
+            <source>Continue reading</source>
+            <translation>Seguir leyendo</translation>
+        </message>
+        <message>
+            <source>Add to library</source>
+            <translation>Añadir a la biblioteca</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Quitar de la biblioteca</translation>
+        </message>
+        <message>
+            <source>Remove from history</source>
+            <translation>Quitar del historial</translation>
+        </message>
+        <message>
+            <source>%1 is in your library</source>
+            <translation>%1 está en tu biblioteca</translation>
+        </message>
+        <message>
+            <source>%1 left your library</source>
+            <translation>%1 salió de tu biblioteca</translation>
+        </message>
+        <message>
+            <source>Undo</source>
+            <translation>Deshacer</translation>
+        </message>
+        <message>
+            <source>Remove %1 from your history?</source>
+            <translation>¿Quitar %1 de tu historial?</translation>
+        </message>
+        <message>
+            <source>Your place in it is forgotten here and on your other synced devices. Your library and downloads are kept.</source>
+            <translation>Se olvida por dónde ibas, aquí y en tus otros dispositivos sincronizados. Tu biblioteca y tus descargas se conservan.</translation>
+        </message>
+        <message>
+            <source>Remove</source>
+            <translation>Quitar</translation>
+        </message>
+    </context>
 </TS>

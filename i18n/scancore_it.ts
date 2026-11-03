@@ -13746,4 +13746,55 @@
             <translation> (neurale)</translation>
         </message>
     </context>
+    <context>
+        <name>SeriesMenu</name>
+        <message>
+            <source>Details</source>
+            <translation>Dettagli</translation>
+        </message>
+        <message>
+            <source>Continue watching</source>
+            <translation>Continua a guardare</translation>
+        </message>
+        <message>
+            <source>Continue reading</source>
+            <translation>Continua a leggere</translation>
+        </message>
+        <message>
+            <source>Add to library</source>
+            <translation>Aggiungi alla libreria</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Rimuovi dalla libreria</translation>
+        </message>
+        <message>
+            <source>Remove from history</source>
+            <translation>Rimuovi dalla cronologia</translation>
+        </message>
+        <message>
+            <source>%1 is in your library</source>
+            <translation>%1 è nella tua libreria</translation>
+        </message>
+        <message>
+            <source>%1 left your library</source>
+            <translation>%1 è uscito dalla tua libreria</translation>
+        </message>
+        <message>
+            <source>Undo</source>
+            <translation>Annulla</translation>
+        </message>
+        <message>
+            <source>Remove %1 from your history?</source>
+            <translation>Rimuovere %1 dalla cronologia?</translation>
+        </message>
+        <message>
+            <source>Your place in it is forgotten here and on your other synced devices. Your library and downloads are kept.</source>
+            <translation>Il punto in cui eri viene dimenticato qui e sugli altri dispositivi sincronizzati. Libreria e download restano.</translation>
+        </message>
+        <message>
+            <source>Remove</source>
+            <translation>Rimuovi</translation>
+        </message>
+    </context>
 </TS>

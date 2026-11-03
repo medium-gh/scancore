@@ -1,0 +1,2 @@
+• Clearing history now stays cleared: sync and the website no longer bring it back
+• Long press or right-click a comic, novel or anime for its options, including Remove from history

@@ -13746,4 +13746,55 @@
             <translation> (neural)</translation>
         </message>
     </context>
+    <context>
+        <name>SeriesMenu</name>
+        <message>
+            <source>Details</source>
+            <translation>Detail</translation>
+        </message>
+        <message>
+            <source>Continue watching</source>
+            <translation>Lanjut menonton</translation>
+        </message>
+        <message>
+            <source>Continue reading</source>
+            <translation>Lanjut membaca</translation>
+        </message>
+        <message>
+            <source>Add to library</source>
+            <translation>Tambah ke pustaka</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Hapus dari pustaka</translation>
+        </message>
+        <message>
+            <source>Remove from history</source>
+            <translation>Hapus dari riwayat</translation>
+        </message>
+        <message>
+            <source>%1 is in your library</source>
+            <translation>%1 ada di pustakamu</translation>
+        </message>
+        <message>
+            <source>%1 left your library</source>
+            <translation>%1 dihapus dari pustakamu</translation>
+        </message>
+        <message>
+            <source>Undo</source>
+            <translation>Urungkan</translation>
+        </message>
+        <message>
+            <source>Remove %1 from your history?</source>
+            <translation>Hapus %1 dari riwayatmu?</translation>
+        </message>
+        <message>
+            <source>Your place in it is forgotten here and on your other synced devices. Your library and downloads are kept.</source>
+            <translation>Posisimu di sana dilupakan di sini dan di perangkat lain yang tersinkron. Pustaka dan unduhanmu tetap ada.</translation>
+        </message>
+        <message>
+            <source>Remove</source>
+            <translation>Hapus</translation>
+        </message>
+    </context>
 </TS>

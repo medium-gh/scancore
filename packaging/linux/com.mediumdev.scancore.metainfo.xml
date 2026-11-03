@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.16.14" date="2026-11-03">
+      <description>
+        <p>Cleared history no longer comes back with sync, and a long press or right click on any series opens its options, including Remove from history.</p>
+      </description>
+    </release>
     <release version="2.16.13" date="2026-11-03">
       <description>
         <p>Aniyomi backups import in moments and keep every anime on the extension it came from.</p>

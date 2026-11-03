@@ -13738,4 +13738,55 @@
             <translation> (neuronowy)</translation>
         </message>
     </context>
+    <context>
+        <name>SeriesMenu</name>
+        <message>
+            <source>Details</source>
+            <translation>Szczegóły</translation>
+        </message>
+        <message>
+            <source>Continue watching</source>
+            <translation>Oglądaj dalej</translation>
+        </message>
+        <message>
+            <source>Continue reading</source>
+            <translation>Czytaj dalej</translation>
+        </message>
+        <message>
+            <source>Add to library</source>
+            <translation>Dodaj do biblioteki</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Usuń z biblioteki</translation>
+        </message>
+        <message>
+            <source>Remove from history</source>
+            <translation>Usuń z historii</translation>
+        </message>
+        <message>
+            <source>%1 is in your library</source>
+            <translation>%1 jest w twojej bibliotece</translation>
+        </message>
+        <message>
+            <source>%1 left your library</source>
+            <translation>%1 usunięto z biblioteki</translation>
+        </message>
+        <message>
+            <source>Undo</source>
+            <translation>Cofnij</translation>
+        </message>
+        <message>
+            <source>Remove %1 from your history?</source>
+            <translation>Usunąć %1 z historii?</translation>
+        </message>
+        <message>
+            <source>Your place in it is forgotten here and on your other synced devices. Your library and downloads are kept.</source>
+            <translation>Miejsce, w którym skończyłeś, zostanie zapomniane tutaj i na innych synchronizowanych urządzeniach. Biblioteka i pobrane pliki zostają.</translation>
+        </message>
+        <message>
+            <source>Remove</source>
+            <translation>Usuń</translation>
+        </message>
+    </context>
 </TS>

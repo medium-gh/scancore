@@ -13746,4 +13746,55 @@
             <translation> (neuronale)</translation>
         </message>
     </context>
+    <context>
+        <name>SeriesMenu</name>
+        <message>
+            <source>Details</source>
+            <translation>Détails</translation>
+        </message>
+        <message>
+            <source>Continue watching</source>
+            <translation>Reprendre le visionnage</translation>
+        </message>
+        <message>
+            <source>Continue reading</source>
+            <translation>Reprendre la lecture</translation>
+        </message>
+        <message>
+            <source>Add to library</source>
+            <translation>Ajouter à la bibliothèque</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Retirer de la bibliothèque</translation>
+        </message>
+        <message>
+            <source>Remove from history</source>
+            <translation>Retirer de l’historique</translation>
+        </message>
+        <message>
+            <source>%1 is in your library</source>
+            <translation>%1 est dans votre bibliothèque</translation>
+        </message>
+        <message>
+            <source>%1 left your library</source>
+            <translation>%1 a quitté votre bibliothèque</translation>
+        </message>
+        <message>
+            <source>Undo</source>
+            <translation>Annuler</translation>
+        </message>
+        <message>
+            <source>Remove %1 from your history?</source>
+            <translation>Retirer %1 de votre historique ?</translation>
+        </message>
+        <message>
+            <source>Your place in it is forgotten here and on your other synced devices. Your library and downloads are kept.</source>
+            <translation>Votre position y est oubliée ici et sur vos autres appareils synchronisés. Votre bibliothèque et vos téléchargements sont conservés.</translation>
+        </message>
+        <message>
+            <source>Remove</source>
+            <translation>Retirer</translation>
+        </message>
+    </context>
 </TS>

@@ -13746,4 +13746,55 @@
             <translation> (neuronal)</translation>
         </message>
     </context>
+    <context>
+        <name>SeriesMenu</name>
+        <message>
+            <source>Details</source>
+            <translation>Details</translation>
+        </message>
+        <message>
+            <source>Continue watching</source>
+            <translation>Weiterschauen</translation>
+        </message>
+        <message>
+            <source>Continue reading</source>
+            <translation>Weiterlesen</translation>
+        </message>
+        <message>
+            <source>Add to library</source>
+            <translation>Zur Bibliothek hinzufügen</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Aus der Bibliothek entfernen</translation>
+        </message>
+        <message>
+            <source>Remove from history</source>
+            <translation>Aus dem Verlauf entfernen</translation>
+        </message>
+        <message>
+            <source>%1 is in your library</source>
+            <translation>%1 ist in deiner Bibliothek</translation>
+        </message>
+        <message>
+            <source>%1 left your library</source>
+            <translation>%1 ist nicht mehr in deiner Bibliothek</translation>
+        </message>
+        <message>
+            <source>Undo</source>
+            <translation>Rückgängig</translation>
+        </message>
+        <message>
+            <source>Remove %1 from your history?</source>
+            <translation>%1 aus deinem Verlauf entfernen?</translation>
+        </message>
+        <message>
+            <source>Your place in it is forgotten here and on your other synced devices. Your library and downloads are kept.</source>
+            <translation>Deine Stelle darin wird hier und auf deinen anderen synchronisierten Geräten vergessen. Bibliothek und Downloads bleiben erhalten.</translation>
+        </message>
+        <message>
+            <source>Remove</source>
+            <translation>Entfernen</translation>
+        </message>
+    </context>
 </TS>

@@ -2,6 +2,13 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.14 — 2026-11-03
+
+History that stays cleared, and options on every cover.
+
+- **Clearing history** (all of it, one kind, or one series) now sticks. Before, the next sync brought it back: comic history from the website, anime progress from the website, and everything from your other devices. The clearing now syncs too, so your other devices drop the same history; anything you read or watch afterwards shows up as usual.
+- **Long press or right-click** a comic, novel or anime (Home, Library, History, browsing) for its options: Details, Continue, Add to or Remove from library, and **Remove from history**.
+
 ## 2.16.13 — 2026-11-03
 
 Faster Aniyomi imports that keep anime on their own extension.

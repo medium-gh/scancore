@@ -107,6 +107,8 @@ modules:
     sources:
       - type: archive
         url: https://ffmpeg.org/releases/ffmpeg-9.0.2.tar.xz
+        mirror-urls:
+          - https://src.fedoraproject.org/repo/pkgs/ffmpeg/ffmpeg-9.0.2.tar.xz/sha512/7756f8434371b9bc1d01cf578bf49014e058b0869c3c1df05030f5f4035f1def64b2e7dba3cf340da4dc8dd9239dd5f894530c9e45793ac27876807079aa546a/ffmpeg-9.0.2.tar.xz
         sha256: 8c3850283eb25fa026482078a04051e0be17347b09ef81a0849bec15a96e002e
   - name: mpv
     buildsystem: meson
@@ -166,7 +168,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/medium-gh/scancore.git
-        tag: v2.16.13
+        tag: v2.16.14
       - type: git
         url: https://github.com/lexbor/lexbor.git
         tag: v2.7.0

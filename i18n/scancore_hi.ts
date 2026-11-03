@@ -13738,4 +13738,55 @@
             <translation> (न्यूरल)</translation>
         </message>
     </context>
+    <context>
+        <name>SeriesMenu</name>
+        <message>
+            <source>Details</source>
+            <translation>विवरण</translation>
+        </message>
+        <message>
+            <source>Continue watching</source>
+            <translation>देखना जारी रखें</translation>
+        </message>
+        <message>
+            <source>Continue reading</source>
+            <translation>पढ़ना जारी रखें</translation>
+        </message>
+        <message>
+            <source>Add to library</source>
+            <translation>लाइब्रेरी में जोड़ें</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>लाइब्रेरी से हटाएँ</translation>
+        </message>
+        <message>
+            <source>Remove from history</source>
+            <translation>इतिहास से हटाएँ</translation>
+        </message>
+        <message>
+            <source>%1 is in your library</source>
+            <translation>%1 आपकी लाइब्रेरी में है</translation>
+        </message>
+        <message>
+            <source>%1 left your library</source>
+            <translation>%1 आपकी लाइब्रेरी से हट गया</translation>
+        </message>
+        <message>
+            <source>Undo</source>
+            <translation>पूर्ववत करें</translation>
+        </message>
+        <message>
+            <source>Remove %1 from your history?</source>
+            <translation>%1 को अपने इतिहास से हटाएँ?</translation>
+        </message>
+        <message>
+            <source>Your place in it is forgotten here and on your other synced devices. Your library and downloads are kept.</source>
+            <translation>आप कहाँ तक पहुँचे थे, यह यहाँ और आपके दूसरे सिंक किए गए डिवाइसों पर भुला दिया जाएगा। आपकी लाइब्रेरी और डाउनलोड बने रहेंगे।</translation>
+        </message>
+        <message>
+            <source>Remove</source>
+            <translation>हटाएँ</translation>
+        </message>
+    </context>
 </TS>

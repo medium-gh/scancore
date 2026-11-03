@@ -13746,4 +13746,55 @@
             <translation> (神经)</translation>
         </message>
     </context>
+    <context>
+        <name>SeriesMenu</name>
+        <message>
+            <source>Details</source>
+            <translation>详情</translation>
+        </message>
+        <message>
+            <source>Continue watching</source>
+            <translation>继续观看</translation>
+        </message>
+        <message>
+            <source>Continue reading</source>
+            <translation>继续阅读</translation>
+        </message>
+        <message>
+            <source>Add to library</source>
+            <translation>加入书库</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>移出书库</translation>
+        </message>
+        <message>
+            <source>Remove from history</source>
+            <translation>从历史记录中移除</translation>
+        </message>
+        <message>
+            <source>%1 is in your library</source>
+            <translation>%1 已在书库中</translation>
+        </message>
+        <message>
+            <source>%1 left your library</source>
+            <translation>%1 已移出书库</translation>
+        </message>
+        <message>
+            <source>Undo</source>
+            <translation>撤销</translation>
+        </message>
+        <message>
+            <source>Remove %1 from your history?</source>
+            <translation>要从历史记录中移除 %1 吗？</translation>
+        </message>
+        <message>
+            <source>Your place in it is forgotten here and on your other synced devices. Your library and downloads are kept.</source>
+            <translation>此设备和其他已同步设备上的阅读/观看位置将被清除。书库和下载内容会保留。</translation>
+        </message>
+        <message>
+            <source>Remove</source>
+            <translation>移除</translation>
+        </message>
+    </context>
 </TS>
