@@ -87,10 +87,14 @@ jobs:
           DATE: ${{ steps.pick.outputs.date }}
         run: |
           mkdir dist
+          # The version the packages carry, as release.yml reads it.
+          VERSION=$(git show "$SHA:CMakeLists.txt" | sed -nE '/^project\(/,/\)/ s/^[[:space:]]*VERSION[[:space:]]+([0-9]+\.[0-9]+\.[0-9]+).*/\1/p' | head -1)
+          LABEL=$(git show "$SHA:CMakeLists.txt" | sed -nE 's/^set\(SCANCORE_PRERELEASE "([^"]*)"\)/\1/p' | head -1)
+          VERSION="$VERSION${LABEL:+-$LABEL}"
           # SCANCORE-2.16.12-windows-x64-setup.exe -> SCANCORE-nightly-20261103-ffe111a-windows-x64-setup.exe
           for FILE in artifacts/SCANCORE-*; do
-            NAME=$(basename "$FILE" | sed -E "s/^SCANCORE-[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?-/SCANCORE-nightly-$DATE-$SHORT-/")
-            cp "$FILE" "dist/$NAME"
+            BASE=$(basename "$FILE")
+            cp "$FILE" "dist/SCANCORE-nightly-$DATE-$SHORT-${BASE#SCANCORE-$VERSION-}"
           done
           ls -l dist
           STABLE=$(git describe --tags --abbrev=0 --match 'v[0-9]*' "$SHA" 2>/dev/null || true)
