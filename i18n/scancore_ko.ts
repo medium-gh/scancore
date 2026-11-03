@@ -901,6 +901,14 @@
     <context>
         <name>AnimeDetails</name>
         <message>
+            <source>Install %1</source>
+            <translation>%1 설치</translation>
+        </message>
+        <message>
+            <source> installed. Trust it under Installed to use it.</source>
+            <translation> 설치됨. 사용하려면 설치됨 탭에서 신뢰하세요.</translation>
+        </message>
+        <message>
             <source>Watch</source>
             <translation>보기</translation>
         </message>

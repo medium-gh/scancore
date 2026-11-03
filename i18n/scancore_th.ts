@@ -901,6 +901,14 @@
     <context>
         <name>AnimeDetails</name>
         <message>
+            <source>Install %1</source>
+            <translation>ติดตั้ง %1</translation>
+        </message>
+        <message>
+            <source> installed. Trust it under Installed to use it.</source>
+            <translation> ติดตั้งแล้ว เชื่อถือในส่วนที่ติดตั้งแล้วเพื่อใช้งาน</translation>
+        </message>
+        <message>
             <source>Watch</source>
             <translation>ดู</translation>
         </message>

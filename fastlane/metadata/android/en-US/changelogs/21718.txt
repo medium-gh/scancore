@@ -1,0 +1,2 @@
+• Aniyomi backups import in moments
+• Imported anime stay on the extension they came from, with an Install button when it is missing

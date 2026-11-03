@@ -2,6 +2,12 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.13 — 2026-11-03
+
+Faster Aniyomi imports that keep anime on their own extension.
+
+- **Aniyomi imports** no longer take minutes: an anime whose extension is installed comes back from the episode list in the backup, the way Aniyomi restores it, instead of asking the site for each one (200 anime now take a fraction of a second). A site that failed used to send its anime off to be looked for on other sources and AniList, though often only that extension has them; now they stay on it, switched off or not. Anime from an extension one of your repositories offers but that is not installed stay on it too, and their page has an **Install** button that brings their episodes back. Only anime from extensions no repository here has are still looked up on AniList.
+
 ## 2.16.12 — 2026-11-03
 
 Keiyoushi's extensions on computers, new-episode notifications, a music library and a Retro music player. Desktop copies download Extensions runtime 11 with it.

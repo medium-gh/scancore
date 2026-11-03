@@ -901,6 +901,14 @@
     <context>
         <name>AnimeDetails</name>
         <message>
+            <source>Install %1</source>
+            <translation>Pasang %1</translation>
+        </message>
+        <message>
+            <source> installed. Trust it under Installed to use it.</source>
+            <translation> terpasang. Percayai di Terpasang untuk memakainya.</translation>
+        </message>
+        <message>
             <source>Watch</source>
             <translation>Tonton</translation>
         </message>

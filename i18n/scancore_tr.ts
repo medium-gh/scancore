@@ -901,6 +901,14 @@
     <context>
         <name>AnimeDetails</name>
         <message>
+            <source>Install %1</source>
+            <translation>%1 yükle</translation>
+        </message>
+        <message>
+            <source> installed. Trust it under Installed to use it.</source>
+            <translation> yüklendi. Kullanmak için Yüklü altında ona güven.</translation>
+        </message>
+        <message>
             <source>Watch</source>
             <translation>İzle</translation>
         </message>

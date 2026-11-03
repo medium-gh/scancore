@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.16.13" date="2026-11-03">
+      <description>
+        <p>Aniyomi backups import in moments and keep every anime on the extension it came from.</p>
+      </description>
+    </release>
     <release version="2.16.12" date="2026-11-03">
       <description>
         <p>Keiyoushi extensions work again on computers, notifications for new episodes, a music library, a Retro music player, studio pages and your own greeting on Home.</p>

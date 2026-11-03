@@ -901,6 +901,14 @@
     <context>
         <name>AnimeDetails</name>
         <message>
+            <source>Install %1</source>
+            <translation>Cài %1</translation>
+        </message>
+        <message>
+            <source> installed. Trust it under Installed to use it.</source>
+            <translation> đã cài. Hãy tin cậy nó trong Đã cài để dùng.</translation>
+        </message>
+        <message>
             <source>Watch</source>
             <translation>Xem</translation>
         </message>

@@ -901,6 +901,14 @@
     <context>
         <name>AnimeDetails</name>
         <message>
+            <source>Install %1</source>
+            <translation>Zainstaluj %1</translation>
+        </message>
+        <message>
+            <source> installed. Trust it under Installed to use it.</source>
+            <translation> zainstalowano. Zaufaj mu w Zainstalowane, aby go używać.</translation>
+        </message>
+        <message>
             <source>Watch</source>
             <translation>Oglądaj</translation>
         </message>
