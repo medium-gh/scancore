@@ -280,6 +280,12 @@ QJsonObject Sync::snapshot() {
         units.insert(row.value("unit_key").toString(), row.value("removed_at").toLongLong());
         bookmarksRemoved.insert(row.value("series_id").toString(), units);
     }
+    // History taken out: {scope: when}, so it goes on every device.
+    QJsonObject historyCleared;
+    const auto cleared = Library::historyCleared();
+    for (auto it = cleared.begin(); it != cleared.end(); ++it)
+        if (!it.key().contains(QLatin1String(":local:")))
+            historyCleared.insert(it.key(), it.value());
     // Each series' own settings: {series: [settings, changed]}.
     QJsonObject seriesSettings;
     for (const auto &value : Database::query(QStringLiteral("SELECT series_id, value, changed_at FROM series_settings WHERE series_id NOT LIKE '%:local:%'"))) {
@@ -298,6 +304,7 @@ QJsonObject Sync::snapshot() {
             {"library", library},
             {"removed", removed},
             {"progress", progress},
+            {"historyCleared", historyCleared},
             {"bookmarks", bookmarks},
             {"bookmarksRemoved", bookmarksRemoved},
             {"seriesSettings", seriesSettings},
@@ -338,7 +345,7 @@ bool Sync::mergeUnit(const QJsonObject &payload) {
     if (id.isEmpty() || key.isEmpty() || p.size() < 7 || id.contains(QLatin1String(":local:")))
         return false;
     const qint64 at = p.at(6).toInteger();
-    if (at <= migration::movedAt(id, migration::moves()))
+    if (at <= migration::movedAt(id, migration::moves()) || at <= Library::clearedAt(id, Library::historyCleared()))
         return false;
     const auto local = Database::scalar(QStringLiteral("SELECT updated_at FROM progress WHERE series_id = ? AND unit_key = ?"), {id, key});
     if (local.isValid() && at <= local.toLongLong())
@@ -441,7 +448,10 @@ int Sync::merge(const QJsonObject &s, bool own) {
             ++changes;
         }
 
-        // Progress: the latest save of each chapter or episode wins.
+        // History taken out there, then progress: the latest save of each
+        // chapter or episode wins, unless its history was taken out since.
+        changes += Library::applyHistoryCleared(s.value("historyCleared").toObject().toVariantMap());
+        const auto cleared = Library::historyCleared();
         QHash<QString, qint64> localProgress;
         for (const auto &value : Database::query(QStringLiteral("SELECT series_id, unit_key, updated_at FROM progress"))) {
             const auto row = value.toMap();
@@ -451,7 +461,7 @@ int Sync::merge(const QJsonObject &s, bool own) {
         const auto moves = migration::moves();
         for (auto it = progress.begin(); it != progress.end(); ++it) {
             const auto units = it.value().toObject();
-            const qint64 movedAway = migration::movedAt(it.key(), moves);
+            const qint64 movedAway = std::max(migration::movedAt(it.key(), moves), Library::clearedAt(it.key(), cleared));
             bool known = false;
             for (auto unit = units.begin(); unit != units.end(); ++unit) {
                 const auto p = unit.value().toArray();

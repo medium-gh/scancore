@@ -228,6 +228,12 @@ const char *const kMigrations[] = {
         PRIMARY KEY (day, song)
     );
     )",
+    // 11: history taken out (2.16.14), so sync and the website do not bring
+    // it back: progress saved until cleared_at is gone. scope is a series
+    // id, "<media>:*" for one kind's whole history, or "*" for all of it.
+    R"(
+    CREATE TABLE history_cleared (scope TEXT PRIMARY KEY, cleared_at INTEGER NOT NULL);
+    )",
 };
 
 QSqlDatabase connection() {

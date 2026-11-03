@@ -38,6 +38,15 @@ AbstractButton {
     focusPolicy: Qt.TabFocus
 
     onClicked: opened(item, cover)
+    // A long press or right click: the series' options (Details, Continue,
+    // remove from the library or history).
+    property bool hasMenu: true
+    onPressAndHold: if (hasMenu) Router.seriesMenu(item, card, card.width / 2, card.width * card.coverRatio / 2)
+    TapHandler {
+        enabled: card.hasMenu
+        acceptedButtons: Qt.RightButton
+        onTapped: (point) => Router.seriesMenu(card.item, card, point.position.x, point.position.y)
+    }
 
     // Entrance: rise and fade in, staggered by order.
     opacity: 0

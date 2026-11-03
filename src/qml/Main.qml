@@ -370,6 +370,8 @@ ApplicationWindow {
             }
         }
 
+        function seriesMenu(item, anchor, x, y) { seriesActions.show(item, anchor, x, y) }
+
         function openPalette() { commandPalette.open() }
 
         function openShortcuts() { shortcutsSheet.open() }
@@ -756,6 +758,7 @@ ApplicationWindow {
         onTriggered: otherDataAsk.open()
     }
     AddRepositoryDialog { id: repositorySheet }
+    SeriesMenu { id: seriesActions }
     NotificationsPanel { id: notificationsPanel }
     Timer { interval: 1500; running: true; onTriggered: shell.settled = true }
     Timer {

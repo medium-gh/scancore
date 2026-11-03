@@ -361,6 +361,8 @@ int pullAnimeProgress() {
     qint64 newest = since;
     qint64 newestWritten = 0;
     int pulled = 0;
+    // The website keeps a show's progress after its history was taken out here.
+    const auto cleared = Library::historyCleared();
     for (const auto &value : getJson(QStringLiteral("/api/anime/progress")).value("progress").toArray()) {
         const auto latest = value.toObject();
         const auto updated = isoSeconds(latest.value("updatedAt"));
@@ -369,6 +371,8 @@ int pullAnimeProgress() {
             continue;
         newest = std::max(newest, updated);
         const auto id = Library::idFor(QStringLiteral("anime"), QStringLiteral("anilist"), QString::number(anilistId));
+        if (updated <= Library::clearedAt(id, cleared))
+            continue;
         if (!Database::scalar(QStringLiteral("SELECT 1 FROM series WHERE id = ?"), {id}).isValid()) {
             const auto anime = latest.value("anime").toObject();
             const auto cover = anime.value("coverImage").toObject();
@@ -390,7 +394,7 @@ int pullAnimeProgress() {
             const double seconds = episode.value("seconds").toDouble();
             const bool completed = episode.value("completed").toBool();
             const auto at = isoSeconds(episode.value("updatedAt"));
-            if (number <= 0)
+            if (number <= 0 || at <= Library::clearedAt(id, cleared))
                 continue;
             const double percent = completed ? 1.0 : (duration > 0 ? std::min(1.0, seconds / duration) : 0.0);
             const auto position =
@@ -744,6 +748,7 @@ void Account::clearAccountData() {
         // Files from the device's own folders never reach the account.
         for (const auto *table : {"library", "library_removed", "progress", "bookmarks", "bookmarks_removed", "series_settings"})
             Database::query(QStringLiteral("DELETE FROM %1 WHERE series_id NOT LIKE '%:local:%'").arg(QLatin1String(table)));
+        Database::query(QStringLiteral("DELETE FROM history_cleared WHERE scope NOT LIKE '%:local:%'"));
         Database::query(QStringLiteral("DELETE FROM activity"));
         Database::query(QStringLiteral("DELETE FROM notifications WHERE kind = 'comments'"));
     });
@@ -882,6 +887,8 @@ QVariantMap Account::importAll(const QJsonObject &session) {
     // for a series since moved to another source.
     qint64 newestPulledComic = 0;
     const auto moves = migration::moves();
+    // The website keeps a comic's history after it was taken out here.
+    const auto cleared = Library::historyCleared();
     for (const auto &value : session.value("history").toArray()) {
         const auto entry = value.toObject();
         const auto comic = entry.value("comic").toObject();
@@ -893,7 +900,7 @@ QVariantMap Account::importAll(const QJsonObject &session) {
             continue;
         const auto id = Library::idFor(QStringLiteral("comic"), source->key(), url);
         const auto updated = qint64(entry.value("updatedAt").toDouble() / 1000);
-        if (updated <= migration::movedAt(id, moves))
+        if (updated <= migration::movedAt(id, moves) || updated <= Library::clearedAt(id, cleared))
             continue;
         const auto local = Database::scalar(QStringLiteral("SELECT MAX(updated_at) FROM progress WHERE series_id = ?"), {id});
         if (local.isValid() && local.toLongLong() >= updated)

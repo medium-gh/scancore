@@ -65,6 +65,12 @@ Item {
             hoverEnabled: true
             focusPolicy: Qt.TabFocus
             onClicked: list.opened(row.entry, cover)
+            // Its options, as on a cover card.
+            onPressAndHold: if (row.entry) Router.seriesMenu(row.entry, row, row.width / 2, row.height / 2)
+            TapHandler {
+                acceptedButtons: Qt.RightButton
+                onTapped: (point) => { if (row.entry) Router.seriesMenu(row.entry, row, point.position.x, point.position.y) }
+            }
 
             background: Rectangle {
                 x: -10

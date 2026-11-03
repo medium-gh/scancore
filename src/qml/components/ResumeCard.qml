@@ -199,10 +199,17 @@ Item {
         }
 
         HoverHandler { id: hover }
-        // Phones: the whole card continues.
+        // Phones: the whole card continues. A long press anywhere: its
+        // options (remove from history…), as on every cover.
         TapHandler {
-            enabled: Theme.compact
-            onTapped: Router.resume(card.entry)
+            id: tap
+            onTapped: if (Theme.compact) Router.resume(card.entry)
+            onLongPressed: Router.seriesMenu(card.entry, panel, tap.point.position.x, tap.point.position.y)
+        }
+        // A right click: the same options.
+        TapHandler {
+            acceptedButtons: Qt.RightButton
+            onTapped: (point) => Router.seriesMenu(card.entry, panel, point.position.x, point.position.y)
         }
     }
 }

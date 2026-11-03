@@ -2,6 +2,7 @@
 
 #include "core/Task.h"
 
+#include <QHash>
 #include <QObject>
 #include <QQmlEngine>
 #include <QVariantMap>
@@ -124,6 +125,14 @@ public:
     static QString categoryNamed(const QString &name);
     static void storeUnits(const QString &seriesId, const QVariantList &units);
     static QVariantList cachedUnits(const QString &seriesId);
+    // History taken out (forget, clearHistory): {scope: when}, scope being a
+    // series id, "<media>:*" or "*". Progress saved until then, from sync or
+    // the website, is not taken back; any thread.
+    static QHash<QString, qint64> historyCleared();
+    static qint64 clearedAt(const QString &seriesId, const QHash<QString, qint64> &cleared);
+    // Another device's clearings: the newer ones are kept and remove what
+    // they cover here. How many progress rows went.
+    static int applyHistoryCleared(const QVariantMap &remote);
     void notifyChanged();
 
 signals:

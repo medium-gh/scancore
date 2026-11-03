@@ -359,6 +359,10 @@ QtObject {
             toast(name + qsTr(" is on"), "success")
     }
 
+    // A series' options at (x, y) of anchor: a long press or right click
+    // on its cover.
+    function seriesMenu(item, anchor, x, y) { if (shell) shell.seriesMenu(item, anchor, x, y) }
+
     // Resume an item from history or the library at its last unit.
     function resume(entry) {
         if (!shell || !entry) return

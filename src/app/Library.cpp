@@ -606,15 +606,93 @@ Task *Library::continueItems(const QString &media, int limit) {
     });
 }
 
+namespace {
+
+// The progress rows a clearing covers: "*", "<media>:*" or one series.
+QString clearedWhere(const QString &scope) {
+    if (scope == QLatin1String("*"))
+        return QStringLiteral("1");
+    if (scope.endsWith(QLatin1String(":*")))
+        return QStringLiteral("series_id LIKE ? || ':%'");
+    return QStringLiteral("series_id = ?");
+}
+QVariantList clearedArgs(const QString &scope) {
+    if (scope == QLatin1String("*"))
+        return {};
+    if (scope.endsWith(QLatin1String(":*")))
+        return {scope.chopped(2)};
+    return {scope};
+}
+
+// Takes out the history a scope covers, saved until `at`, and keeps the
+// clearing (with sync, the other devices take it out too). A wider clearing
+// makes the narrower ones it covers redundant. How many rows went.
+int clearScope(const QString &scope, qint64 at) {
+    auto args = clearedArgs(scope);
+    args.append(at);
+    Database::query(QStringLiteral("DELETE FROM progress WHERE %1 AND updated_at <= ?").arg(clearedWhere(scope)), args);
+    const int removed = Database::scalar(QStringLiteral("SELECT changes()")).toInt();
+    Database::query(QStringLiteral("INSERT INTO history_cleared(scope, cleared_at) VALUES(?, ?) "
+                                   "ON CONFLICT(scope) DO UPDATE SET cleared_at = MAX(cleared_at, excluded.cleared_at)"),
+                    {scope, at});
+    if (scope == QLatin1String("*"))
+        Database::query(QStringLiteral("DELETE FROM history_cleared WHERE scope != '*' AND cleared_at <= ?"), {at});
+    else if (scope.endsWith(QLatin1String(":*")))
+        Database::query(QStringLiteral("DELETE FROM history_cleared WHERE scope LIKE ? || ':%' AND scope != ? AND cleared_at <= ?"),
+                        {scope.chopped(2), scope, at});
+    return removed;
+}
+
+} // namespace
+
 void Library::forget(const QString &seriesId) {
-    Database::exec(QStringLiteral("DELETE FROM progress WHERE series_id = ?"), {seriesId});
+    if (seriesId.isEmpty())
+        return;
+    Database::transaction([&] { clearScope(seriesId, Database::now()); });
     notifyChanged();
 }
 
 void Library::clearHistory(const QString &media) {
-    const auto m = media.isNull() ? QStringLiteral("") : media; // a null QString would bind as NULL
-    Database::exec(QStringLiteral("DELETE FROM progress WHERE (? = '' OR series_id LIKE ? || ':%')"), {m, m});
+    Database::transaction([&] { clearScope(media.isEmpty() ? QStringLiteral("*") : media + QStringLiteral(":*"), Database::now()); });
     notifyChanged();
+}
+
+QHash<QString, qint64> Library::historyCleared() {
+    QHash<QString, qint64> out;
+    for (const auto &value : Database::query(QStringLiteral("SELECT scope, cleared_at FROM history_cleared"))) {
+        const auto row = value.toMap();
+        out.insert(row.value(QStringLiteral("scope")).toString(), row.value(QStringLiteral("cleared_at")).toLongLong());
+    }
+    return out;
+}
+
+qint64 Library::clearedAt(const QString &seriesId, const QHash<QString, qint64> &cleared) {
+    if (cleared.isEmpty())
+        return -1;
+    return std::max({cleared.value(seriesId, -1), cleared.value(seriesId.section(QLatin1Char(':'), 0, 0) + QStringLiteral(":*"), -1),
+                     cleared.value(QStringLiteral("*"), -1)});
+}
+
+int Library::applyHistoryCleared(const QVariantMap &remote) {
+    if (remote.isEmpty())
+        return 0;
+    const auto local = historyCleared();
+    int removed = 0;
+    // "*" first, then whole kinds, then series: a wider one may make the
+    // rest redundant.
+    QStringList scopes = remote.keys();
+    std::stable_sort(scopes.begin(), scopes.end(), [](const QString &a, const QString &b) {
+        const auto rank = [](const QString &s) { return s == QLatin1String("*") ? 0 : s.endsWith(QLatin1String(":*")) ? 1 : 2; };
+        return rank(a) < rank(b);
+    });
+    for (const auto &scope : std::as_const(scopes)) {
+        const qint64 at = remote.value(scope).toLongLong();
+        // Not newer than what is cleared here already, this or a wider one.
+        if (scope.isEmpty() || at <= 0 || at <= clearedAt(scope, local) || scope.contains(QLatin1String(":local:")))
+            continue;
+        removed += clearScope(scope, at);
+    }
+    return removed;
 }
 
 void Library::recordProgress(const QVariantMap &series, const QVariantMap &unit, const QVariantMap &position,

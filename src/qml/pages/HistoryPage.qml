@@ -167,6 +167,11 @@ Item {
                 height: 76
                 hoverEnabled: true
                 onClicked: Router.resume(e)
+                onPressAndHold: Router.seriesMenu(e, item, item.width / 2, item.height / 2)
+                TapHandler {
+                    acceptedButtons: Qt.RightButton
+                    onTapped: (point) => Router.seriesMenu(item.e, item, point.position.x, point.position.y)
+                }
                 background: Rectangle {
                     x: Theme.gutter - 12
                     width: item.width - 2 * Theme.gutter + 24
