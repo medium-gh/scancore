@@ -7,8 +7,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 
 // System notifications for SCANCORE's notification area
 // (src/app/Notifications.cpp): new chapters, announcements and updates.
@@ -19,14 +22,49 @@ public final class Notify {
 
     private Notify() {}
 
+    // Whether they show: the permission (Android 13 and later), and neither
+    // the app's notifications nor their channel switched off in Settings.
     public static boolean allowed(Context context) {
-        return Build.VERSION.SDK_INT < 33 || context.checkSelfPermission(PERMISSION) == PackageManager.PERMISSION_GRANTED;
+        if (Build.VERSION.SDK_INT >= 33 && context.checkSelfPermission(PERMISSION) != PackageManager.PERMISSION_GRANTED)
+            return false;
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (manager == null) return true;
+        if (!manager.areNotificationsEnabled()) return false;
+        if (Build.VERSION.SDK_INT >= 26) {
+            NotificationChannel channel = manager.getNotificationChannel(CHANNEL);
+            if (channel != null && channel.getImportance() == NotificationManager.IMPORTANCE_NONE) return false;
+        }
+        return true;
     }
 
-    // Android 13 and later ask the reader once.
+    // Asks for the permission while Android still shows its prompt (the
+    // first time, and once more after a refusal); after that, or when they
+    // were switched off in Settings, opens SCANCORE's notification settings.
     public static void ask(Context context) {
-        if (Build.VERSION.SDK_INT >= 33 && context instanceof Activity && !allowed(context))
-            ((Activity) context).requestPermissions(new String[] {PERMISSION}, 4711);
+        if (allowed(context)) return;
+        if (Build.VERSION.SDK_INT >= 33 && context instanceof Activity
+                && context.checkSelfPermission(PERMISSION) != PackageManager.PERMISSION_GRANTED) {
+            Activity activity = (Activity) context;
+            SharedPreferences prefs = context.getSharedPreferences("scancore_notify", Context.MODE_PRIVATE);
+            if (!prefs.getBoolean("asked", false) || activity.shouldShowRequestPermissionRationale(PERMISSION)) {
+                prefs.edit().putBoolean("asked", true).apply();
+                activity.requestPermissions(new String[] {PERMISSION}, 4711);
+                return;
+            }
+        }
+        Intent settings;
+        if (Build.VERSION.SDK_INT >= 26) {
+            settings = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            settings.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
+        } else {
+            settings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + context.getPackageName()));
+        }
+        if (!(context instanceof Activity)) settings.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            context.startActivity(settings);
+        } catch (Exception e) {
+            // No settings screen for it on this device.
+        }
     }
 
     public static void show(Context context, String title, String body, String tag, String channelName) {

@@ -373,6 +373,31 @@ SettingsPane {
     SettingsGroup {
         title: qsTr("Pages")
         note: qsTr("Home, Comics, Novels and Anime each have an Edit page button: move, hide and restyle their sections there.")
+        // Home's greeting: the time of day's, with a name, or your own words.
+        SettingRow {
+            iconName: "user"
+            title: qsTr("Your name on Home")
+            description: qsTr("Said after the greeting: “Good evening, Sam”.")
+            InlineField {
+                width: 180
+                text: App.settings.homeName || ""
+                placeholderText: qsTr("No name")
+                maximumLength: 32
+                onEditingFinished: App.setSetting("homeName", text.trim())
+            }
+        }
+        SettingRow {
+            iconName: "type"
+            title: qsTr("Your own greeting")
+            description: qsTr("Shown on Home instead of “Good morning”; {time} puts that back in, {name} your name.")
+            InlineField {
+                width: 220
+                text: App.settings.homeGreeting || ""
+                placeholderText: qsTr("Time of day")
+                maximumLength: 60
+                onEditingFinished: App.setSetting("homeGreeting", text.trim())
+            }
+        }
         SettingRow {
             iconName: "rows-3"
             title: qsTr("Spacing")

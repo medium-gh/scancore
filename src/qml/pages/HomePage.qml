@@ -65,9 +65,14 @@ Item {
         defaults: ["greeting", "resume", "continue", "story", "updates", "comics", "anime", "novels"]
     }
 
+    // The time of day's, or the reader's own words (Settings → Interface).
     function greeting() {
         const h = new Date().getHours()
-        return h < 5 ? qsTr("Up late") : h < 12 ? qsTr("Good morning") : h < 18 ? qsTr("Good afternoon") : qsTr("Good evening")
+        const time = h < 5 ? qsTr("Up late") : h < 12 ? qsTr("Good morning") : h < 18 ? qsTr("Good afternoon") : qsTr("Good evening")
+        const name = typeof App.settings.homeName === "string" ? App.settings.homeName.trim() : ""
+        const own = typeof App.settings.homeGreeting === "string" ? App.settings.homeGreeting.trim() : ""
+        if (own) return own.replace(/\{time\}/g, time).replace(/\{name\}/g, name).replace(/\s+([,!.?])/g, "$1").replace(/,\s*$/, "").trim()
+        return name ? qsTr("%1, %2").arg(time).arg(name) : time
     }
 
     SmoothFlickable {
@@ -121,7 +126,13 @@ Item {
                                 font.letterSpacing: 1.2
                             }
                             Text {
+                                id: greetingText
                                 text: page.greeting()
+                                // A long greeting of your own shrinks to fit.
+                                width: Math.min(implicitWidth, page.width - 2 * Theme.gutter)
+                                fontSizeMode: Text.HorizontalFit
+                                minimumPixelSize: 18
+                                elide: Text.ElideRight
                                 color: Theme.text
                                 font.family: Theme.fontDisplay
                                 font.pixelSize: Theme.compact ? 32 : 42

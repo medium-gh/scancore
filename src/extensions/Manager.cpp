@@ -518,6 +518,18 @@ bool inLanguage(const QString &lang, const QString &language) {
     return base == language || base == QLatin1String("all") || base == QLatin1String("multi");
 }
 
+// On computers a Mihon extension that also comes as a Java jar is installed
+// from the jar: the host runs it as it is, while converting the APK's
+// Dalvik code fails for builds minified as Keiyoushi's are since lib 1.6.
+bool usesJar(const Package &p) {
+#ifdef Q_OS_ANDROID
+    Q_UNUSED(p)
+    return false;
+#else
+    return p.kind == Kind::Mihon && !p.jarUrl.isEmpty();
+#endif
+}
+
 QString libProblem(const Package &p) {
     switch (libSupport(p.kind, p.lib)) {
     case LibSupport::Supported: return {};
@@ -871,7 +883,7 @@ Installed Manager::install(Kind kind, const QString &pkg) {
     else if (kind == Kind::Echo)
         Runtime::installEcho();
 
-    const QUrl fileUrl(package.fileUrl);
+    const QUrl fileUrl(usesJar(package) ? package.jarUrl : package.fileUrl);
     if (!allowedHost(fileUrl))
         throw Error(QStringLiteral("%1 is not offered over https.").arg(package.name));
     Request request;
@@ -898,7 +910,7 @@ Installed Manager::install(Kind kind, const QString &pkg) {
 
     const auto folder = QStringLiteral("%1/%2/%3").arg(g_storage, kindName(kind), pkg);
     QDir().mkpath(folder);
-    const auto path = QStringLiteral("%1/%2.%3").arg(folder).arg(package.versionCode).arg(kind == Kind::CloudStream ? "cs3" : kind == Kind::Echo ? "eapk" : isPluginKind(kind) ? "js" : "apk");
+    const auto path = QStringLiteral("%1/%2.%3").arg(folder).arg(package.versionCode).arg(kind == Kind::CloudStream ? "cs3" : kind == Kind::Echo ? "eapk" : isPluginKind(kind) ? "js" : usesJar(package) ? "jar" : "apk");
     {
         QFile::setPermissions(path, QFile::ReadOwner | QFile::WriteOwner);
         QSaveFile file(path);
@@ -992,7 +1004,11 @@ QList<Installed> Manager::installed(std::optional<Kind> kind) {
                 continue;
             i.trusted = isTrusted(s, i);
             i.lib = libSupport(i.package.kind, i.package.lib);
-            if (const auto *p = newest.value(id(i.package.kind, i.package.pkg)); p && p->versionCode > i.package.versionCode)
+            // An APK installed before its repository offered the jar is
+            // replaced by it, at the same version.
+            if (const auto *p = newest.value(id(i.package.kind, i.package.pkg));
+                p && (p->versionCode > i.package.versionCode ||
+                      (p->versionCode == i.package.versionCode && usesJar(*p) && i.path.endsWith(QLatin1String(".apk")))))
                 i.update = *p;
             out.append(i);
         }

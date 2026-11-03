@@ -62,8 +62,8 @@ public:
             QByteArray body;
             if (m_overrides.contains(path))
                 body = m_overrides.value(path);
-            else if (path.contains(QLatin1String("/apk/")) || path.startsWith(QLatin1String("apk/")))
-                body = fixture(path.section(QLatin1Char('/'), -1) == QLatin1String("store-comics.apk")
+            else if (path.contains(QLatin1String("/apk/")) || path.startsWith(QLatin1String("apk/")) || path.startsWith(QLatin1String("jar/")))
+                body = fixture(path.section(QLatin1Char('/'), -1).startsWith(QLatin1String("store-comics."))
                                    ? QStringLiteral("tiny-alpha.apk")
                                    : path.section(QLatin1Char('/'), -1));
             else
@@ -243,6 +243,7 @@ private slots:
         QCOMPARE(p.lib, QStringLiteral("1.6"));
         QCOMPARE(p.warning, ContentWarning::Mixed);
         QCOMPARE(p.fileUrl, QStringLiteral("https://repo.test/apk/store-comics.apk"));
+        QCOMPARE(p.jarUrl, QStringLiteral("https://repo.test/jar/store-comics.jar"));
         QCOMPARE(p.sources[0].id, QStringLiteral("9007199254740993"));
         QCOMPARE(p.lang, QStringLiteral("pt-BR"));
 
@@ -250,7 +251,7 @@ private slots:
         // sources 9) for the extension.
         const auto source = field(1, quint64(4242)) + field(2, QByteArray("Proto Anime")) + field(3, QByteArray("en"));
         const auto extension = field(1, QByteArray("Proto Anime")) + field(2, QByteArray("test.proto.anime")) +
-                               field(3, field(1, QByteArray("apk/p.apk")) + field(2, QByteArray("icon/p.png"))) +
+                               field(3, field(1, QByteArray("apk/p.apk")) + field(2, QByteArray("icon/p.png")) + field(501, QByteArray("jar/p.jar"))) +
                                field(4, QByteArray("16")) + field(5, quint64(9)) + field(6, QByteArray("16.9")) +
                                field(7, quint64(1)) + field(8, quint64(1)) + field(9, source);
         const auto store = field(1, QByteArray("Proto Store")) + field(2, QByteArray("PS")) + field(3, key("beta").toUtf8()) +
@@ -263,6 +264,7 @@ private slots:
         QVERIFY(proto.packages[0].torrent);
         QCOMPARE(proto.packages[0].sources[0].id, QStringLiteral("4242"));
         QCOMPARE(proto.packages[0].fileUrl, QStringLiteral("https://repo.test/apk/p.apk"));
+        QCOMPARE(proto.packages[0].jarUrl, QStringLiteral("https://repo.test/jar/p.jar"));
     }
 
     void pluginLists() {

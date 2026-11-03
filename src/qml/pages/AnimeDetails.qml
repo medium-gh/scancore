@@ -220,6 +220,14 @@ Item {
                 primaryDetail: page.resumeInfo.detail
                 busy: page.episodesTask ? page.episodesTask.loading : false
                 saved: page.saved
+                // AniList's studios and genres open what else they have.
+                authorLinks: page.fromSource ? [] : (page.media.studios || [])
+                genreLinks: !page.fromSource
+                onAuthorClicked: (name) => {
+                    const i = (page.media.studios || []).indexOf(name)
+                    Router.openAnimeBrowse({ studio: name, studioId: (page.media.studioIds || [])[i] || 0 })
+                }
+                onGenreClicked: (genre) => Router.openAnimeBrowse({ genres: [genre] })
                 onPrimary: page.watch(page.resumeInfo.index)
                 onToggleSaved: {
                     if (!page.saved && !page.series.id) {

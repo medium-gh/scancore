@@ -16,7 +16,10 @@ Item {
     readonly property int selectedCount: Object.keys(selection).length
     onMediaChanged: { selecting = false; selection = ({}) }
 
-    readonly property string media: App.settings.libraryMedia || "comic"
+    readonly property string media: {
+        const m = App.settings.libraryMedia || "comic"
+        return m === "music" && !Router.sectionShown("music") ? "comic" : m
+    }
     // A list hidden or removed (on another device too) shows All.
     readonly property string category: {
         const c = App.settings.libraryCategory || "all"
@@ -66,6 +69,19 @@ Item {
     readonly property bool checking: checkTask ? checkTask.loading : false
     readonly property var mediaOptions: [{ value: "comic", label: qsTr("Comics"), icon: "book-open" },
         { value: "novel", label: qsTr("Novels"), icon: "book-text" }, { value: "anime", label: qsTr("Anime"), icon: "tv" }]
+        .concat(Router.sectionShown("music") ? [{ value: "music", label: qsTr("Music"), icon: "volume-2" }] : [])
+    // Songs saved from Music: openings, endings, files and plugins' songs.
+    readonly property bool songs: media === "music"
+    readonly property var savedSongs: {
+        App.dependOn(Music.libraryRevision)
+        if (!songs) return []
+        const q = filter.toLowerCase()
+        const all = Music.library()
+        return q ? all.filter(s => (s.title + " " + (s.artists || []).join(" ") + " " + (s.anime || s.album || "")).toLowerCase().includes(q)) : all
+    }
+    // Rows on screen; more come 50 at a time (a Repeater of hundreds is
+    // slow to build and to tear down on phones).
+    property int songsShown: 50
     readonly property var sortOptions: [{ value: "updates", label: qsTr("New chapters first") },
         { value: "recent", label: media === "anime" ? qsTr("Recently watched") : qsTr("Recently read") },
         { value: "added", label: qsTr("Recently added") }, { value: "title", label: qsTr("Title A–Z") },
@@ -224,7 +240,7 @@ Item {
                 subtitle: page.all.length + qsTr(" saved")
                     + (Library.unreadUpdates > 0 ? " · " + Library.unreadUpdates + qsTr(" new chapters") : "")
                 ScButton {
-                    visible: !Theme.compact
+                    visible: !Theme.compact && !page.songs
                     text: page.selecting ? qsTr("Done") : qsTr("Select")
                     iconName: page.selecting ? "x" : "list-checks"
                     variant: "ghost"
@@ -246,7 +262,7 @@ Item {
                 }
                 // Phones: the same two as icons, so the title keeps its row.
                 IconButton {
-                    visible: Theme.compact
+                    visible: Theme.compact && !page.songs
                     diameter: 40
                     filled: !page.selecting
                     iconName: page.selecting ? "x" : "list-checks"
@@ -354,7 +370,8 @@ Item {
                 x: Theme.gutter
                 width: parent.width - 2 * Theme.gutter
                 fill: true
-                options: page.mediaOptions
+                // Four (with Music) only fit a phone as words.
+                options: page.mediaOptions.length > 3 ? page.mediaOptions.map(o => ({ value: o.value, label: o.label })) : page.mediaOptions
                 value: page.media
                 onPicked: (v) => App.setSetting("libraryMedia", v)
             }
@@ -366,13 +383,14 @@ Item {
                 width: parent.width - 2 * Theme.gutter
                 spacing: 8
                 SearchField {
-                    width: parent.width - 2 * (40 + parent.spacing)
-                    placeholderText: qsTr("Filter library")
+                    width: parent.width - (page.songs ? 0 : 2 * (40 + parent.spacing))
+                    placeholderText: page.songs ? qsTr("Filter songs") : qsTr("Filter library")
                     text: page.filter
                     onTextChanged: page.filter = text
                 }
                 IconButton {
                     id: sortButton
+                    visible: !page.songs
                     anchors.verticalCenter: parent.verticalCenter
                     diameter: 40
                     filled: true
@@ -384,6 +402,7 @@ Item {
                 }
                 IconButton {
                     id: viewButton
+                    visible: !page.songs
                     anchors.verticalCenter: parent.verticalCenter
                     diameter: 40
                     filled: true
@@ -413,12 +432,14 @@ Item {
                     onTextChanged: page.filter = text
                 }
                 Select {
+                    visible: !page.songs
                     implicitWidth: 196
                     model: page.sortOptions
                     value: page.sort
                     onPicked: (v) => App.setSetting("librarySort", v)
                 }
                 Segmented {
+                    visible: !page.songs
                     options: page.viewOptions.map(o => ({ value: o.value, icon: o.icon }))
                     value: page.view
                     onPicked: (v) => App.setSetting("libraryView", v)
@@ -426,6 +447,7 @@ Item {
             }
 
             ChipRow {
+                visible: !page.songs
                 Chip {
                     text: qsTr("All")
                     detail: String(page.counts.all || 0)
@@ -516,9 +538,63 @@ Item {
                 }
             }
 
+            // Music: the songs saved, played as one list.
+            Column {
+                visible: page.songs
+                width: parent.width
+                Row {
+                    visible: page.savedSongs.length > 0
+                    x: Theme.gutter
+                    spacing: 10
+                    bottomPadding: 6
+                    Text {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: page.savedSongs.length === 1 ? qsTr("1 song") : qsTr("%1 songs").arg(page.savedSongs.length)
+                        color: Theme.textMuted
+                        font.family: Theme.fontSans
+                        font.pixelSize: Theme.textMd
+                    }
+                    ScButton {
+                        anchors.verticalCenter: parent.verticalCenter
+                        compact: true
+                        variant: "ghost"
+                        iconName: "play"
+                        text: qsTr("Play all")
+                        onClicked: MusicQueue.playList(page.savedSongs, 0)
+                    }
+                }
+                Repeater {
+                    model: page.savedSongs.slice(0, page.songsShown)
+                    SongRow {
+                        required property var modelData
+                        required property int index
+                        x: Theme.gutter - 8
+                        width: Math.min(parent.width - 2 * Theme.gutter + 16, 776)
+                        song: modelData
+                        onPlayed: MusicQueue.playList(page.savedSongs, index)
+                    }
+                }
+                ScButton {
+                    visible: page.savedSongs.length > page.songsShown
+                    x: Theme.gutter
+                    variant: "ghost"
+                    compact: true
+                    text: qsTr("Show %1 more").arg(Math.min(50, page.savedSongs.length - page.songsShown))
+                    onClicked: page.songsShown += 50
+                }
+                StateView {
+                    width: parent.width
+                    visible: page.savedSongs.length === 0
+                    empty: true
+                    emptyTitle: page.filter ? qsTr("Nothing matches") : qsTr("No songs saved yet")
+                    emptyText: qsTr("In Music, an anime's page or Now Playing, choose “Save to library” on a song to keep it here.")
+                    emptyIcon: "volume-2"
+                }
+            }
+
             CoverGrid {
-                visible: page.view !== "list"
-                items: page.view !== "list" ? page.entries : []
+                visible: page.view !== "list" && !page.songs
+                items: page.view !== "list" && !page.songs ? page.entries : []
                 titlesInside: page.view === "compact"
                 minCardWidth: page.view === "compact" ? Math.round((Theme.compact ? 84 : 120) * Theme.coverScale)
                                                       : Math.round((Theme.compact ? 104 : 150) * Theme.coverScale)
@@ -529,8 +605,8 @@ Item {
                 onOpened: (it, cover) => page.selecting ? page.toggle(it) : Router.openSeries(it, cover)
             }
             CoverList {
-                visible: page.view === "list"
-                items: page.view === "list" ? page.entries : []
+                visible: page.view === "list" && !page.songs
+                items: page.view === "list" && !page.songs ? page.entries : []
                 badgeFor: (it) => it.newUnits > 0 ? "+" + it.newUnits : ""
                 progressFor: (it) => it.unitKey ? (it.completed ? 1 : (it.percent || 0)) : -1
                 subtitleFor: (it) => [page.subtitle(it), it.sourceLabel || ""].filter(s => s).join(" · ")
@@ -539,6 +615,7 @@ Item {
             }
 
             StateView {
+                visible: !page.songs
                 width: parent.width
                 task: page.all.length === 0 ? page.task : null
                 empty: page.task && page.task.ok && page.entries.length === 0

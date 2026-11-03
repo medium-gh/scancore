@@ -36,6 +36,9 @@ public:
     // {id: cover}. A replaced cover gets a new address and the old one
     // stops working.
     static QHash<int, QString> currentCovers(const QList<int> &ids);
+    // How many episodes of these anime have aired, by AniList (worker
+    // threads): {id: episodes}; those AniList did not answer for are left out.
+    static QHash<int, int> airedEpisodes(const QList<int> &ids);
 
     bool webPlayerAvailable() const;
     bool nativePlayerAvailable() const;

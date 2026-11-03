@@ -394,19 +394,39 @@ bool storeFound(const Item &item, Tally &outcome, bool searchEverywhere) {
         }
     }
     // Anime: an installed extension of the same name (another version or
-    // language of it has another id) at the backup's address. Those without
-    // one are found on AniList (storeAnimeOnAniList).
+    // language of it has another id) at the backup's address; then the
+    // title searched on the extension it came from and those, which name
+    // it as the backup does. Many anime share a title on AniList, so only
+    // those found nowhere here go there (storeAnimeOnAniList).
     if (anime) {
-        if (item.url.isEmpty() || item.sourceName.isEmpty())
-            return false;
-        for (const auto &source : anime::Registry::all()) {
-            if (!source->enabled() || source->key() == item.extensionKey || !sameSource(source, item.sourceName))
+        QList<std::shared_ptr<ext::AnimeSource>> named;
+        if (const auto own = anime::Registry::byKey(item.extensionKey); own && own->enabled())
+            named.append(own);
+        if (!item.sourceName.isEmpty())
+            for (const auto &source : anime::Registry::all())
+                if (source->enabled() && source->key() != item.extensionKey && sameSource(source, item.sourceName))
+                    named.append(source);
+        const auto found = [&] {
+            outcome.progress += store(series, item.category, units, item);
+            stored(series, item, outcome);
+            return true;
+        };
+        if (!item.url.isEmpty())
+            for (const auto &source : named)
+                if (source->key() != item.extensionKey && tryUrl(ext::wrapUrl(source->key(), item.url), source->key(), {}, {}))
+                    return found();
+        for (const auto &source : named) {
+            if (CancelScope::cancelled())
+                return false;
+            QList<ext::AnimeItem> results;
+            try {
+                results = source->search(item.title());
+            } catch (const Error &) {
                 continue;
-            if (tryUrl(ext::wrapUrl(source->key(), item.url), source->key(), {}, {})) {
-                outcome.progress += store(series, item.category, units, item);
-                stored(series, item, outcome);
-                return true;
             }
+            for (const auto &result : results)
+                if (wanted.contains(titleKey(result.title)) && tryUrl(result.url, source->key(), result.title, result.cover))
+                    return found();
         }
         return false;
     }
@@ -546,7 +566,7 @@ void storeAnimeOnAniList(const QList<Item> &items, Tally &outcome) {
         const auto batch = unknown.mid(i, kPerRequest);
         for (int j = 0; j < batch.size(); ++j) {
             params.append(QStringLiteral("$q%1: String").arg(j));
-            fields.append(QStringLiteral("s%1: Page(perPage: 6) { media(search: $q%1, type: ANIME) { id title { romaji english native userPreferred } synonyms } }").arg(j));
+            fields.append(QStringLiteral("s%1: Page(perPage: 6) { media(search: $q%1, type: ANIME) { id episodes title { romaji english native userPreferred } synonyms } }").arg(j));
             variables.insert(QStringLiteral("q%1").arg(j), items[batch[j]].title());
         }
         QJsonObject data;
@@ -563,11 +583,31 @@ void storeAnimeOnAniList(const QList<Item> &items, Tally &outcome) {
             for (const auto &t : item.titles)
                 if (const auto key = titleKey(t); !key.isEmpty())
                     wanted.insert(key);
+            // Several anime can carry the title (a remake, a film, a
+            // recap): the one named so by its main titles rather than a
+            // synonym, then one with at least the episodes watched, then
+            // AniList's order.
+            double watched = item.count;
+            for (const double n : item.numbers)
+                watched = std::max(watched, n);
+            const auto main = titleKey(item.title());
+            int best = -1;
             for (const auto &value : data.value(QStringLiteral("s%1").arg(j)).toObject().value("media").toArray()) {
-                const auto titles = titlesOf(value.toObject());
-                if (std::any_of(titles.begin(), titles.end(), [&](const QString &t) { return wanted.contains(titleKey(t)); })) {
-                    foundIds.insert(batch[j], value.toObject().value("id").toInt());
-                    break;
+                const auto media = value.toObject();
+                const auto titles = titlesOf(media);
+                if (!std::any_of(titles.begin(), titles.end(), [&](const QString &t) { return wanted.contains(titleKey(t)); }))
+                    continue;
+                const auto t = media.value("title").toObject();
+                int score = 0;
+                for (const auto *k : {"romaji", "english", "native", "userPreferred"})
+                    if (titleKey(t.value(QLatin1String(k)).toString()) == main)
+                        score = 2;
+                const int episodes = media.value("episodes").toInt();
+                if (episodes == 0 || episodes >= watched)
+                    score += 1;
+                if (score > best) {
+                    best = score;
+                    foundIds.insert(batch[j], media.value("id").toInt());
                 }
             }
         }

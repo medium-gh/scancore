@@ -32,6 +32,9 @@ AbstractButton {
         menu.openAt(row, px, py, [
             { text: qsTr("Play next"), icon: "skip-forward", run: () => MusicQueue.playNext(row.song) },
             { text: qsTr("Add to queue"), icon: "list", run: () => MusicQueue.addToQueue(row.song) },
+            Music.isSaved(row.song.id)
+                ? { text: qsTr("Remove from library"), icon: "heart", run: () => Music.setSaved(row.song, false) }
+                : { text: qsTr("Save to library"), icon: "heart", run: () => { Music.setSaved(row.song, true); Router.toast(qsTr("Saved to your library"), "success") } },
             { text: qsTr("Watch the video"), icon: "tv", enabled: !!row.song.video, run: () => Router.openNowPlaying(row.song, true) }
         ])
     }
@@ -39,7 +42,7 @@ AbstractButton {
 
     background: Rectangle {
         radius: Theme.retro ? 0 : Theme.radiusMd
-        color: row.isCurrent ? Theme.alpha(Theme.accent, Theme.dark ? 0.14 : 0.09)
+        color: row.isCurrent && !Theme.retro ? Theme.alpha(Theme.accent, Theme.dark ? 0.14 : 0.09)
              : row.hovered || row.activeFocus ? Theme.surface2 : "transparent"
     }
     contentItem: Item {
@@ -88,13 +91,14 @@ AbstractButton {
             anchors.rightMargin: 8
             anchors.verticalCenter: parent.verticalCenter
             spacing: 2
+            // Retro: Windows Phone's lists, the title larger and plain.
             Text {
                 width: parent.width
                 text: row.song.title || ""
-                color: row.isCurrent ? Theme.accent : row.ink
+                color: row.isCurrent ? (Theme.retro ? Theme.tile : Theme.accent) : row.ink
                 font.family: Theme.fontSans
-                font.pixelSize: Theme.textMd
-                font.weight: Font.DemiBold
+                font.pixelSize: Theme.retro ? Theme.textLg : Theme.textMd
+                font.weight: Theme.retro ? Font.Normal : Font.DemiBold
                 elide: Text.ElideRight
             }
             Text {

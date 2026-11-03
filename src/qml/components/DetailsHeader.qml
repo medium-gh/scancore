@@ -19,8 +19,14 @@ Item {
     property bool stacked: Theme.compact
     readonly property alias coverItem: cover
     default property alias extraActions: actionsRow.data
+    // Names in the author line that open something (an anime's studios),
+    // and whether its genres do.
+    property var authorLinks: []
+    property bool genreLinks: false
     signal primary()
     signal toggleSaved()
+    signal authorClicked(string name)
+    signal genreClicked(string genre)
 
     width: parent ? parent.width : 900
     implicitHeight: Math.max(info.y + info.height, coverBox.y + coverBox.height) + 34
@@ -170,11 +176,30 @@ Item {
             }
         }
         Text {
-            visible: !!header.series.author
+            visible: !!header.series.author && header.authorLinks.length === 0
             text: header.series.author || ""
             color: Theme.textMuted
             font.family: Theme.fontSans
             font.pixelSize: Theme.textMd
+        }
+        Flow {
+            visible: header.authorLinks.length > 0
+            width: parent.width
+            Repeater {
+                model: header.authorLinks
+                Text {
+                    id: authorLink
+                    required property string modelData
+                    required property int index
+                    text: modelData + (index < header.authorLinks.length - 1 ? ", " : "")
+                    color: authorHover.hovered ? Theme.text : Theme.textMuted
+                    font.family: Theme.fontSans
+                    font.pixelSize: Theme.textMd
+                    font.underline: authorHover.hovered
+                    HoverHandler { id: authorHover; cursorShape: Qt.PointingHandCursor }
+                    TapHandler { onTapped: header.authorClicked(authorLink.modelData) }
+                }
+            }
         }
 
         Flow {
@@ -245,12 +270,15 @@ Item {
             Repeater {
                 model: (header.series.genres || []).slice(0, 14)
                 Text {
+                    id: genreTag
                     required property var modelData
                     text: "#" + String(modelData).toLowerCase().replace(/\s+/g, "-")
-                    color: Theme.textFaint
+                    color: header.genreLinks && genreHover.hovered ? Theme.text : Theme.textFaint
                     font.family: Theme.fontSans
                     font.pixelSize: Theme.textSm
                     rightPadding: 6
+                    HoverHandler { id: genreHover; enabled: header.genreLinks; cursorShape: Qt.PointingHandCursor }
+                    TapHandler { enabled: header.genreLinks; onTapped: header.genreClicked(String(genreTag.modelData)) }
                 }
             }
         }

@@ -61,6 +61,7 @@ struct Package {
     QString lang;         // one language, or "all"
     ContentWarning warning = ContentWarning::Safe;
     QString fileUrl;      // the APK, or the plugin's JavaScript
+    QString jarUrl;       // the same extension as a signed Java jar (Keiyoushi's stores)
     QString iconUrl;
     QString site;         // LNReader: the site the plugin reads
     bool torrent = false; // Aniyomi: needs a torrent client, which SCANCORE has not

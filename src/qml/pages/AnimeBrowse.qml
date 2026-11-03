@@ -2,15 +2,19 @@ import QtQuick
 import QtQuick.Controls.Basic
 import Scancore
 
-// AniList search with genre, year, format, status and sort filters.
+// AniList search with genre, year, format, status and sort filters; or,
+// opened from an anime's studio, everything that studio made.
 Item {
     id: page
     property var initialFilters: ({})
+    readonly property string studio: initialFilters.studio || ""
+    readonly property int studioId: initialFilters.studioId || 0
+    readonly property bool byStudio: studio !== "" || studioId > 0
     property string q: initialFilters.q || ""
     property var genres: initialFilters.genres || []
     property string format: ""
     property string status: ""
-    property string sort: ""
+    property string sort: byStudio ? "POPULARITY_DESC" : ""
     property int yearFrom: 0
     property int yearTo: 0
     property int pageNumber: 1
@@ -25,8 +29,9 @@ Item {
             pageNumber = 1
             results = []
         }
-        task = Anime.search({ q: q, genres: genres, format: format, status: status, sort: sort,
-                              yearFrom: yearFrom, yearTo: yearTo, page: pageNumber })
+        task = byStudio ? Anime.search({ studio: studio, studioId: studioId, sort: sort, page: pageNumber })
+            : Anime.search({ q: q, genres: genres, format: format, status: status, sort: sort,
+                             yearFrom: yearFrom, yearTo: yearTo, page: pageNumber })
     }
     function search(text) {
         field.text = text
@@ -62,8 +67,8 @@ Item {
             spacing: 20
 
             PageHeader {
-                title: qsTr("Browse anime")
-                subtitle: qsTr("Search AniList by title, genre, year and more")
+                title: page.byStudio ? page.studio : qsTr("Browse anime")
+                subtitle: page.byStudio ? qsTr("Anime by this studio") : qsTr("Search AniList by title, genre, year and more")
                 showBack: true
             }
 
@@ -73,6 +78,7 @@ Item {
                 spacing: 10
                 SearchField {
                     id: field
+                    visible: !page.byStudio
                     width: Math.min(360, parent.width)
                     text: page.q
                     placeholderText: qsTr("Search titles")
@@ -81,11 +87,12 @@ Item {
                 Select {
                     model: [{ value: "", label: qsTr("Best match") }, { value: "POPULARITY_DESC", label: qsTr("Most popular") },
                             { value: "TRENDING_DESC", label: qsTr("Trending") }, { value: "SCORE_DESC", label: qsTr("Highest rated") },
-                            { value: "START_DATE_DESC", label: qsTr("Newest") }, { value: "FAVOURITES_DESC", label: qsTr("Most favourited") }]
+                            { value: "START_DATE_DESC", label: qsTr("Newest") }, { value: "FAVOURITES_DESC", label: qsTr("Most favourited") }].slice(page.byStudio ? 1 : 0)
                     value: page.sort
                     onPicked: (v) => { page.sort = v; page.run(true) }
                 }
                 Select {
+                    visible: !page.byStudio
                     model: [{ value: "", label: qsTr("Any format") }, { value: "TV", label: "TV" }, { value: "MOVIE", label: qsTr("Movie") },
                             { value: "OVA", label: "OVA" }, { value: "ONA", label: "ONA" }, { value: "SPECIAL", label: qsTr("Special") },
                             { value: "TV_SHORT", label: qsTr("TV Short") }]
@@ -93,12 +100,14 @@ Item {
                     onPicked: (v) => { page.format = v; page.run(true) }
                 }
                 Select {
+                    visible: !page.byStudio
                     model: [{ value: "", label: qsTr("Any status") }, { value: "RELEASING", label: qsTr("Airing") },
                             { value: "FINISHED", label: qsTr("Finished") }, { value: "NOT_YET_RELEASED", label: qsTr("Upcoming") }]
                     value: page.status
                     onPicked: (v) => { page.status = v; page.run(true) }
                 }
                 Select {
+                    visible: !page.byStudio
                     implicitWidth: 120
                     model: page.years
                     value: page.yearFrom
@@ -106,6 +115,7 @@ Item {
                     onPicked: (v) => { page.yearFrom = v; page.run(true) }
                 }
                 Select {
+                    visible: !page.byStudio
                     implicitWidth: 120
                     model: page.years
                     value: page.yearTo
@@ -115,11 +125,12 @@ Item {
             }
 
             Flow {
+                visible: !page.byStudio
                 x: Theme.gutter
                 width: parent.width - 2 * Theme.gutter
                 spacing: 8
                 Repeater {
-                    model: Anime.genres()
+                    model: page.byStudio ? [] : Anime.genres()
                     Chip {
                         required property string modelData
                         text: modelData

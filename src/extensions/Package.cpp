@@ -72,6 +72,7 @@ QJsonObject Package::toJson() const {
             {"lang", lang},
             {"warning", int(warning)},
             {"fileUrl", fileUrl},
+            {"jarUrl", jarUrl},
             {"iconUrl", iconUrl},
             {"site", site},
             {"torrent", torrent},
@@ -89,6 +90,7 @@ Package Package::fromJson(const QJsonObject &o) {
     p.lang = o.value("lang").toString();
     p.warning = ContentWarning(std::clamp(o.value("warning").toInt(), 0, 2));
     p.fileUrl = o.value("fileUrl").toString();
+    p.jarUrl = o.value("jarUrl").toString();
     p.iconUrl = o.value("iconUrl").toString();
     p.site = o.value("site").toString();
     p.torrent = o.value("torrent").toBool();

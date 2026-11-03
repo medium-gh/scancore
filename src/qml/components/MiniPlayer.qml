@@ -20,9 +20,10 @@ AbstractButton {
         onActiveChanged: if (!active && translation.y < -40) Router.openNowPlaying()
     }
 
+    // Retro: a flat strip like the app bar, with ring buttons.
     background: GlassPanel {
         radius: Theme.retro ? 0 : Theme.radiusLg
-        fill: Theme.retro ? Theme.surface2 : Theme.surface
+        fill: Theme.retro ? Theme.sidebar : Theme.surface
         border.width: Theme.retro ? 0 : 1
         border.color: Theme.borderStrong
         // How far into the song.
@@ -39,10 +40,10 @@ AbstractButton {
     contentItem: Item {
         Cover {
             id: art
-            x: 8
+            x: Theme.retro ? 0 : 8
             anchors.verticalCenter: parent.verticalCenter
-            width: 44
-            height: 44
+            width: Theme.retro ? mini.height : 44
+            height: width
             radius: Theme.retro ? 0 : Theme.radiusSm
             source: mini.song ? mini.song.cover || "" : ""
             title: mini.song ? mini.song.anime || mini.song.album || mini.song.title || "" : ""
@@ -58,8 +59,8 @@ AbstractButton {
                 text: mini.song ? mini.song.title : ""
                 color: Theme.text
                 font.family: Theme.fontSans
-                font.pixelSize: Theme.textMd
-                font.weight: Font.DemiBold
+                font.pixelSize: Theme.retro ? Theme.textLg : Theme.textMd
+                font.weight: Theme.retro ? Font.Normal : Font.DemiBold
                 elide: Text.ElideRight
             }
             Text {
@@ -76,7 +77,26 @@ AbstractButton {
             anchors.right: parent.right
             anchors.rightMargin: 6
             anchors.verticalCenter: parent.verticalCenter
+            spacing: Theme.retro ? 10 : 0
+            RingButton {
+                visible: Theme.retro
+                anchors.verticalCenter: parent.verticalCenter
+                iconName: MusicQueue.busy ? "loader-circle" : AudioPlayer.paused ? "play" : "pause"
+                diameter: 38
+                Accessible.name: AudioPlayer.paused ? qsTr("Play") : qsTr("Pause")
+                onClicked: AudioPlayer.toggle()
+            }
+            RingButton {
+                visible: Theme.retro
+                anchors.verticalCenter: parent.verticalCenter
+                iconName: "skip-forward"
+                diameter: 38
+                enabled: MusicQueue.hasNext
+                Accessible.name: qsTr("Next")
+                onClicked: MusicQueue.next()
+            }
             IconButton {
+                visible: !Theme.retro
                 iconName: MusicQueue.busy ? "loader-circle" : AudioPlayer.paused ? "play" : "pause"
                 iconSize: 20
                 diameter: 42
@@ -84,6 +104,7 @@ AbstractButton {
                 onClicked: AudioPlayer.toggle()
             }
             IconButton {
+                visible: !Theme.retro
                 iconName: "skip-forward"
                 diameter: 42
                 enabled: MusicQueue.hasNext

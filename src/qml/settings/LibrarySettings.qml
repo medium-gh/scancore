@@ -11,8 +11,8 @@ SettingsPane {
         title: qsTr("Updates")
         SettingRow {
             iconName: "refresh-cw"
-            title: qsTr("Check for new chapters")
-            description: qsTr("Saved comics and novels are checked in the background while SCANCORE is open.")
+            title: qsTr("Check for new chapters and episodes")
+            description: qsTr("Saved comics, novels and anime are checked in the background while SCANCORE is open.")
             Select {
                 model: [{ value: 0, label: qsTr("Never") }, { value: 1, label: qsTr("Every hour") }, { value: 2, label: qsTr("Every 2 hours") },
                         { value: 6, label: qsTr("Every 6 hours") }, { value: 24, label: qsTr("Once a day") }]
@@ -22,9 +22,33 @@ SettingsPane {
         }
         SettingRow {
             iconName: "bell"
-            title: qsTr("Notify me about new chapters")
+            title: qsTr("Notify me about new chapters and episodes")
             description: qsTr("They are always listed under Notifications; this also shows them in the system's notifications.")
-            Toggle { checked: App.settings.notifyUpdates !== false; onToggled: App.setSetting("notifyUpdates", checked) }
+            Toggle {
+                checked: App.settings.notifyUpdates !== false
+                onToggled: {
+                    App.setSetting("notifyUpdates", checked)
+                    if (checked && !Notifications.systemAllowed()) Notifications.askPermission()
+                }
+            }
+        }
+        // Switched on here but not allowed by the system: nothing would show.
+        SettingRow {
+            readonly property bool blocked: {
+                App.dependOn(Qt.application.state)
+                return App.platform === "android" && App.settings.notifyUpdates !== false && !Notifications.systemAllowed()
+            }
+            visible: blocked
+            iconName: "bell"
+            iconTint: Theme.danger
+            title: qsTr("Android is not showing SCANCORE's notifications")
+            description: qsTr("Allow them, or switch them back on in Android's settings for SCANCORE.")
+            ScButton {
+                text: qsTr("Allow")
+                variant: "primary"
+                compact: true
+                onClicked: Notifications.askPermission()
+            }
         }
         SettingRow {
             iconName: "list"

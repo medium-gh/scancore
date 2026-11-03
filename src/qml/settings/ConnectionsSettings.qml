@@ -16,7 +16,10 @@ SettingsPane {
     property string importing: ""
     property var matchTask: null
     property var exportTask: null
-    property bool showAllWaiting: false
+    // Rows of the waiting list on screen: a big import leaves thousands,
+    // and a page of every one of them took seconds to build and to tear
+    // down on phones (#33), so more come 50 at a time.
+    property int waitingShown: 6
     readonly property var waiting: Importer.unmatched
 
     function imported(task, what) {
@@ -300,7 +303,7 @@ SettingsPane {
             }
         }
         Repeater {
-            model: pane.showAllWaiting ? pane.waiting : pane.waiting.slice(0, 6)
+            model: pane.waiting.slice(0, pane.waitingShown)
             SettingRow {
                 required property var modelData
                 iconName: modelData.media === "novel" ? "book-text" : modelData.media === "anime" ? "tv" : "book-open"
@@ -320,13 +323,13 @@ SettingsPane {
             height: 56
             Rectangle { x: 16; width: parent.width - 16; height: 1; color: Theme.border }
             ScButton {
-                visible: pane.waiting.length > 6 && !pane.showAllWaiting
+                visible: pane.waiting.length > pane.waitingShown
                 x: 12
                 anchors.verticalCenter: parent.verticalCenter
-                text: qsTr("Show all ") + pane.waiting.length
+                text: qsTr("Show %1 more").arg(Math.min(50, pane.waiting.length - pane.waitingShown))
                 variant: "ghost"
                 compact: true
-                onClicked: pane.showAllWaiting = true
+                onClicked: pane.waitingShown += 50
             }
             ScButton {
                 anchors.right: parent.right

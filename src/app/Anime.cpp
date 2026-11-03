@@ -61,7 +61,7 @@ const char *kMediaFields = R"(
   coverImage { extraLarge large medium color }
   trailer { id site thumbnail }
   nextAiringEpisode { airingAt timeUntilAiring episode }
-  studios(isMain: true) { nodes { name } }
+  studios(isMain: true) { nodes { id name } }
   relations { edges { relationType node { id type format title { romaji english } coverImage { large } } } }
 )";
 
@@ -441,6 +441,39 @@ QHash<int, QString> Anime::currentCovers(const QList<int> &ids) {
     return out;
 }
 
+QHash<int, int> Anime::airedEpisodes(const QList<int> &ids) {
+    QHash<int, int> out;
+    for (qsizetype from = 0; from < ids.size(); from += 50) {
+        QJsonArray page;
+        for (const int id : ids.mid(from, 50))
+            page.append(id);
+        QJsonArray media;
+        try {
+            media = graphql(QStringLiteral("query ($ids: [Int]) { Page(perPage: 50) { media(id_in: $ids, type: ANIME) "
+                                           "{ id status episodes nextAiringEpisode { episode } } } }"),
+                            {{"ids", page}}, {}, 0)
+                        .value("Page").toObject().value("media").toArray();
+        } catch (const Error &e) {
+            if (e.status() == 499)
+                throw;
+            continue;
+        }
+        for (const auto &value : media) {
+            const auto m = value.toObject();
+            const auto next = m.value("nextAiringEpisode").toObject();
+            const QString status = m.value("status").toString();
+            // Airing: the one before the next; finished: all of them; not
+            // yet aired: none.
+            const int aired = !next.isEmpty() ? next.value("episode").toInt() - 1
+                              : status == QLatin1String("FINISHED") ? m.value("episodes").toInt()
+                                                                    : 0;
+            if (aired > 0 || status == QLatin1String("NOT_YET_RELEASED"))
+                out.insert(m.value("id").toInt(), std::max(0, aired));
+        }
+    }
+    return out;
+}
+
 Task *Anime::anilistIdFor(int malId) {
     return Task::run([malId]() -> QVariant {
         const int id = orFallback<int>(
@@ -552,8 +585,38 @@ Task *Anime::home() {
     });
 }
 
+// Everything a studio made, by AniList: by its id, or its name when the
+// details came from a cache older than the ids (or from Kitsu).
+static QVariantMap studioMedia(const QVariantMap &filters) {
+    auto sort = filters.value("sort").toString();
+    if (sort.isEmpty() || sort == QLatin1String("SEARCH_MATCH"))
+        sort = QStringLiteral("POPULARITY_DESC");
+    QJsonObject vars{{"page", std::max(1, filters.value("page").toInt())}, {"sort", QJsonArray{sort}}};
+    if (const int id = filters.value("studioId").toInt(); id > 0)
+        vars.insert("id", id);
+    else
+        vars.insert("search", filters.value("studio").toString());
+    const auto data = graphql(QStringLiteral("query ($id: Int, $search: String, $page: Int, $sort: [MediaSort]) { Studio(id: $id, "
+                                             "search: $search) { id name media(page: $page, perPage: 40, sort: $sort, isMain: true) "
+                                             "{ pageInfo { hasNextPage } nodes { type %1 } } } }")
+                                  .arg(QString::fromLatin1(kCardFields)),
+                              vars, QStringLiteral("anilist:studio:") + QJsonDocument(vars).toJson(QJsonDocument::Compact), 3600);
+    const auto studio = data.value("Studio").toObject();
+    const auto media = studio.value("media").toObject();
+    const bool adult = filters.value("adult").toBool();
+    QJsonArray anime;
+    for (const auto &value : media.value("nodes").toArray())
+        if (value.toObject().value("type").toString() == QLatin1String("ANIME") && (adult || !value.toObject().value("isAdult").toBool()))
+            anime.append(value);
+    return {{"results", cards(anime)},
+            {"hasNextPage", media.value("pageInfo").toObject().value("hasNextPage").toBool()},
+            {"studio", studio.value("name").toString()}};
+}
+
 Task *Anime::search(const QVariantMap &filters) {
     return Task::run([filters]() -> QVariant {
+        if (filters.value("studioId").toInt() > 0 || !filters.value("studio").toString().isEmpty())
+            return studioMedia(filters);
         const auto q = filters.value("q").toString().simplified();
         auto sort = filters.value("sort").toString();
         if (sort.isEmpty() || (sort == QLatin1String("SEARCH_MATCH") && q.isEmpty()))
@@ -619,9 +682,13 @@ Task *Anime::media(int anilistId) {
         titles.removeDuplicates();
         map.insert("titles", titles);
         QStringList studios;
-        for (const auto &s : m.value("studios").toObject().value("nodes").toArray())
+        QVariantList studioIds;
+        for (const auto &s : m.value("studios").toObject().value("nodes").toArray()) {
             studios.append(s.toObject().value("name").toString());
+            studioIds.append(s.toObject().value("id").toInt());
+        }
         map.insert("studios", studios);
+        map.insert("studioIds", studioIds);
         map.insert("released", releasedCount(m));
         const auto trailer = m.value("trailer").toObject();
         if (trailer.value("site").toString() == QLatin1String("youtube"))

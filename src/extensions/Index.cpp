@@ -126,6 +126,8 @@ Package storeExtension(const QJsonObject &o, const QUrl &from, std::optional<Kin
     p.pkg = o.value("packageName").toString();
     const auto resources = o.value("resources").toObject();
     p.fileUrl = resolved(from, resources.value("apkUrl").toString());
+    if (const auto jar = resources.value("jarUrl").toString(); !jar.isEmpty())
+        p.jarUrl = resolved(from, jar);
     p.iconUrl = resolved(from, resources.value("iconUrl").toString());
     p.lib = o.value("extensionLib").toString();
     p.kind = hint.value_or(kindForLib(p.lib));
@@ -188,6 +190,8 @@ QJsonObject protoExtension(QByteArrayView data) {
                     resources.insert("apkUrl", r.text());
                 else if (r.field() == 2)
                     resources.insert("iconUrl", r.text());
+                else if (r.field() == 501) // Keiyoushi's addition
+                    resources.insert("jarUrl", r.text());
                 else
                     r.skip();
             }

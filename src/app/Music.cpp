@@ -12,6 +12,7 @@
 #include <QCollator>
 #include <QCryptographicHash>
 #include <QDate>
+#include <QDateTime>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -195,6 +196,39 @@ Music::Music(QObject *parent) : QObject(parent) {}
 Music *Music::instance() {
     static auto *music = new Music();
     return music;
+}
+
+namespace {
+const QString kLibrary = QStringLiteral("music.library");
+} // namespace
+
+QVariantList Music::library() const { return Database::pref(kLibrary).toList(); }
+
+bool Music::isSaved(const QString &id) const {
+    if (id.isEmpty())
+        return false;
+    const auto all = library();
+    return std::any_of(all.begin(), all.end(), [&](const QVariant &v) { return v.toMap().value("id").toString() == id; });
+}
+
+void Music::setSaved(const QVariantMap &song, bool saved) {
+    const auto id = song.value("id").toString();
+    if (id.isEmpty())
+        return;
+    auto all = library();
+    all.erase(std::remove_if(all.begin(), all.end(), [&](const QVariant &v) { return v.toMap().value("id").toString() == id; }), all.end());
+    if (saved) {
+        auto kept = song;
+        // What only this run of the app needs (a plugin's stream, the
+        // queue's place) is not kept.
+        for (const auto *key : {"stream", "headers", "queueIndex"})
+            kept.remove(QLatin1String(key));
+        kept.insert("savedAt", QDateTime::currentMSecsSinceEpoch());
+        all.prepend(kept);
+    }
+    Database::setPref(kLibrary, all);
+    ++m_libraryRevision;
+    emit libraryChanged();
 }
 
 bool Music::animeSongsAvailable() const {

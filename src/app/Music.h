@@ -24,6 +24,8 @@ class Music : public QObject {
     // AnimeThemes plays from its own host; the sources manifest can turn it
     // off (music.animethemes = false) like the built-in sources.
     Q_PROPERTY(bool animeSongsAvailable READ animeSongsAvailable CONSTANT)
+    // Raised whenever songs are saved to or removed from the library.
+    Q_PROPERTY(int libraryRevision READ libraryRevision NOTIFY libraryChanged)
 
 public:
     static Music *instance();
@@ -62,14 +64,25 @@ public:
     // A plugin's answer as a song (public for the tests).
     static QVariantMap songOfPlugin(const QString &key, const QString &name, const QJsonObject &o);
 
+    // Songs saved to the library, the latest first: openings and endings,
+    // files of yours and plugins' songs alike, each as it was when saved.
+    int libraryRevision() const { return m_libraryRevision; }
+    Q_INVOKABLE QVariantList library() const;
+    Q_INVOKABLE bool isSaved(const QString &id) const;
+    Q_INVOKABLE void setSaved(const QVariantMap &song, bool saved);
+
     // Parsers, public for the tests.
     // "[mm:ss.xx] text" lines into [{time, text}] by time; tags and empty
     // stamps are left out, several stamps on a line repeat it.
     static QVariantList parseLrc(const QString &lrc);
     static QVariantList songsOfAnime(const QJsonObject &anime);
 
+signals:
+    void libraryChanged();
+
 private:
     explicit Music(QObject *parent = nullptr);
+    int m_libraryRevision = 0;
 };
 
 } // namespace sc
