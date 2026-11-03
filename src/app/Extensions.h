@@ -122,6 +122,9 @@ public:
     Q_INVOKABLE QVariantList availableRows(const QVariantMap &filter) const;
     // How many are available and their languages: {count, languages}.
     Q_INVOKABLE QVariantMap availableSummary() const;
+    // The extension a repository here offers for a source key
+    // ("aniyomi:<id>"), installed or not: {kind, pkg, name}; empty when none.
+    Q_INVOKABLE QVariantMap offering(const QString &sourceKey) const;
     Q_INVOKABLE sc::Task *install(const QString &kind, const QString &pkg);
     Q_INVOKABLE void uninstall(const QString &kind, const QString &pkg);
     Q_INVOKABLE void trust(const QString &kind, const QString &pkg);

@@ -551,6 +551,39 @@ Item {
                 onRetry: page.episodesTask = page.fromSource ? Anime.sourceAnime(page.sourceUrl, page.summary) : Anime.episodes(page.anilistId)
             }
 
+            // An anime from an extension not installed here (an Aniyomi
+            // import keeps them there): installs the one a repository offers,
+            // then lists its episodes.
+            ScButton {
+                id: installSource
+                readonly property string sourceKey: page.summary.source || (/^(aniyomi|cloudstream):[^:]+/.exec(page.sourceUrl) || [""])[0]
+                readonly property var offer: {
+                    App.dependOn(Extensions.revision)
+                    return page.fromSource && page.episodesTask && page.episodesTask.status === 404 ? Extensions.offering(sourceKey) : ({})
+                }
+                property var task: null
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: !!offer.pkg && page.tab === "episodes"
+                variant: "primary"
+                iconName: "download"
+                loading: !!task && task.loading
+                text: qsTr("Install %1").arg(offer.name || "")
+                onClicked: {
+                    task = Extensions.install(offer.kind, offer.pkg)
+                    task.finished.connect((r) => { if (!r.trusted) Router.toast(r.name + qsTr(" installed. Trust it under Installed to use it."), "success") })
+                    task.failed.connect((e) => Router.toast(e, "error"))
+                }
+                // Its sources are listed a moment after it is installed.
+                Connections {
+                    target: Extensions
+                    enabled: !!installSource.task && installSource.task.ok
+                    function onExtensionsChanged() {
+                        installSource.task = null
+                        page.episodesTask = Anime.sourceAnime(page.sourceUrl, page.summary)
+                    }
+                }
+            }
+
             // A source that splits the anime: each season opens on its own.
             Shelf {
                 title: qsTr("Seasons")

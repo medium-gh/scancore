@@ -323,6 +323,7 @@ private slots:
         const auto episode = [](const QString &link, float number, bool seen, qint64 at = 0, qint64 total = 0, bool bookmark = false) {
             ProtoWriter e;
             e.text(1, link);
+            e.text(2, QStringLiteral("Episode ") + link.mid(4));
             e.boolean(4, seen);
             e.boolean(5, bookmark);
             e.varint(6, quint64(at));
@@ -394,6 +395,11 @@ private slots:
             QCOMPARE(item.parts.keys(), QStringList{QStringLiteral("/ep/2")});
             QCOMPARE(item.parts.value(QStringLiteral("/ep/2")).position.value("seconds").toDouble(), 600.0);
             QCOMPARE(item.numbers, QList<double>{1.0});
+            // Every episode listed, to restore without asking the site.
+            QCOMPARE(item.episodes.size(), 2);
+            QCOMPARE(item.episodes[1].url, QStringLiteral("/ep/2"));
+            QCOMPARE(item.episodes[1].name, QStringLiteral("Episode 2"));
+            QCOMPARE(item.episodes[1].number, 2.0);
         }
         QCOMPARE(backups::categoryNamed(QStringLiteral("Reading")), QStringLiteral("reading"));
         QCOMPARE(backups::categoryNamed(QStringLiteral("Completed")), QStringLiteral("completed"));

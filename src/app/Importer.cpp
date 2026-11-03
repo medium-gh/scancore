@@ -355,9 +355,19 @@ bool sameSource(const SourcePtr &source, const QString &name) {
     return !a.isEmpty() && !b.isEmpty() && (a == b || a.startsWith(b) || b.startsWith(a));
 }
 
+// Sources the repositories added here offer, installed or not:
+// {"aniyomi:<id>", ...}.
+QSet<QString> offeredSources() {
+    QSet<QString> out;
+    for (const auto &package : ext::Manager::available())
+        for (const auto &source : package.sources)
+            out.insert(ext::kindName(package.kind) + QLatin1Char(':') + source.id);
+    return out;
+}
+
 // A comic or novel on one of SCANCORE's sources, saved with its progress;
-// false when no source has it.
-bool storeFound(const Item &item, Tally &outcome, bool searchEverywhere) {
+// false when no source has it. `offered`: offeredSources().
+bool storeFound(const Item &item, Tally &outcome, bool searchEverywhere, const QSet<QString> &offered) {
     const bool novel = item.media == QLatin1String("novel");
     const bool anime = item.media == QLatin1String("anime");
     QStringList wanted;
@@ -382,12 +392,37 @@ bool storeFound(const Item &item, Tally &outcome, bool searchEverywhere) {
         return true;
     };
 
+    // Anime on their own extension, installed here (switched off too) or
+    // offered by a repository here (their page offers to install it): the
+    // episodes the backup lists, as Aniyomi restores them, without asking
+    // the site. One request each made big libraries slow, and a site that
+    // failed sent its anime to be looked for on other sources and AniList,
+    // though often only that source has them. The library's update check
+    // fetches what is new.
+    if (anime && !item.extensionKey.isEmpty() && !item.url.isEmpty()
+        && (anime::Registry::byKey(item.extensionKey) || offered.contains(item.extensionKey))) {
+        const auto key = item.extensionKey;
+        for (const auto &e : item.episodes) {
+            const auto link = ext::wrapUrl(key, e.url);
+            const int n = int(units.size()) + 1;
+            units.append(QVariantMap{{"key", link},
+                                     {"url", link},
+                                     {"number", e.number >= 0 ? QVariant(e.number) : QVariant(n)},
+                                     {"title", e.name.trimmed().isEmpty() ? QStringLiteral("Episode %1").arg(n) : e.name.trimmed()}});
+        }
+        const auto url = ext::wrapUrl(key, item.url);
+        series = {{"id", Library::idFor(item.media, key, url)}, {"media", item.media}, {"source", key},
+                  {"sourceUrl", url}, {"title", item.title()}, {"cover", item.cover}};
+        outcome.progress += store(series, item.category, units, item);
+        stored(series, item, outcome);
+        return true;
+    }
     // The same extension or plugin installed here: the backup's own
     // address on it, as the app it came from restores it.
     if (!item.extensionKey.isEmpty() && !item.url.isEmpty()) {
         const auto key = item.extensionKey;
         const auto comicSource = novel || anime ? nullptr : comics::Registry::byKey(key);
-        if ((novel || anime || (comicSource && comicSource->enabled())) && tryUrl(ext::wrapUrl(key, item.url), key, {}, {}, true)) {
+        if ((novel || (comicSource && comicSource->enabled())) && tryUrl(ext::wrapUrl(key, item.url), key, {}, {}, true)) {
             outcome.progress += store(series, item.category, units, item);
             stored(series, item, outcome);
             return true;
@@ -499,8 +534,8 @@ int linkDownloads() {
     return result.value(QStringLiteral("chapters")).toInt();
 }
 
-// Anime whose extension is not installed here: their AniList entry (by the
-// tracker link the backup has, else by title), with the episodes watched.
+// Anime whose extension no repository here offers: their AniList entry (by
+// the tracker link the backup has, else by title), with the episodes watched.
 void storeAnimeOnAniList(const QList<Item> &items, Tally &outcome) {
     QList<int> anilistIds;
     QList<int> malIds;
@@ -656,14 +691,18 @@ void storeAnimeOnAniList(const QList<Item> &items, Tally &outcome) {
 // Comics, novels and extension anime, a few at a time so no site gets
 // flooded; anime left over are looked up on AniList.
 void storeAll(const QList<Item> &items, Tally &outcome, bool searchEverywhere) {
+    const bool fromExtensions = std::any_of(items.begin(), items.end(), [](const Item &item) {
+        return item.media == QLatin1String("anime") && !item.extensionKey.isEmpty();
+    });
+    const auto offered = fromExtensions ? offeredSources() : QSet<QString>();
     for (int i = 0; i < items.size(); i += 4) {
         if (CancelScope::cancelled())
             throw Error(QStringLiteral("Cancelled"), 499);
         QList<std::function<Tally()>> jobs;
         for (const auto &item : items.mid(i, 4))
-            jobs.append([item, searchEverywhere] {
+            jobs.append([item, searchEverywhere, &offered] {
                 Tally one;
-                if (!storeFound(item, one, searchEverywhere))
+                if (!storeFound(item, one, searchEverywhere, offered))
                     one.unmatched.append(item);
                 return one;
             });

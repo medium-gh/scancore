@@ -126,9 +126,9 @@ bool parseEntry(QByteArrayView bytes, bool anime, quint64 &source, Item &item, Q
                 m.skip();
             break;
         case 16: {
-            // BackupChapter / BackupEpisode: url 1, read or seen 4, bookmark
-            // 5, last page (or second) 6, number 9, changed 11, (episodes)
-            // total seconds 16.
+            // BackupChapter / BackupEpisode: url 1, name 2, read or seen 4,
+            // bookmark 5, last page (or second) 6, number 9, changed 11,
+            // (episodes) total seconds 16.
             Proto unit(m.bytes());
             bool read = false;
             bool bookmark = false;
@@ -137,9 +137,11 @@ bool parseEntry(QByteArrayView bytes, bool anime, quint64 &source, Item &item, Q
             double at = 0;
             double total = 0;
             QString link;
+            QString name;
             while (unit.next()) {
                 switch (unit.field()) {
                 case 1: link = unit.text(); break;
+                case 2: name = unit.text(); break;
                 case 4: read = unit.varint() != 0; break;
                 case 5: bookmark = unit.varint() != 0; break;
                 case 6: at = unit.number(); break;
@@ -149,6 +151,8 @@ bool parseEntry(QByteArrayView bytes, bool anime, quint64 &source, Item &item, Q
                 default: unit.skip();
                 }
             }
+            if (anime && !link.isEmpty())
+                item.episodes.append({link, name, number});
             if (bookmark && !link.isEmpty())
                 item.bookmarkLinks.insert(link);
             if (read) {
@@ -313,6 +317,9 @@ void mergeInto(Item &into, const Item &other) {
     if (into.cover.isEmpty())
         into.cover = other.cover;
     into.doneLinks.unite(other.doneLinks);
+    for (const auto &e : other.episodes)
+        if (std::none_of(into.episodes.cbegin(), into.episodes.cend(), [&](const Episode &own) { return own.url == e.url; }))
+            into.episodes.append(e);
     into.bookmarkLinks.unite(other.bookmarkLinks);
     for (auto it = other.parts.cbegin(); it != other.parts.cend(); ++it)
         if (!into.parts.contains(it.key()) && !into.doneLinks.contains(it.key()))

@@ -20,6 +20,14 @@ struct Part {
     QVariantMap position;
 };
 
+// An episode as an Aniyomi backup lists it: the extension's own link,
+// its name and number (-1 when it has none).
+struct Episode {
+    QString url;
+    QString name;
+    double number = -1;
+};
+
 // One series from elsewhere.
 struct Item {
     QString media; // comic, novel or anime
@@ -43,6 +51,9 @@ struct Item {
     QHash<QString, Part> parts;
     // When each was last read or watched (history), seconds.
     QHash<QString, qint64> readAt;
+    // Anime: every episode the backup lists, so one whose extension is
+    // installed comes back without asking its site.
+    QList<Episode> episodes;
     int anilistId = 0;
     int malId = 0;
     // Other trackers SCANCORE has: {"kitsu", "mangaupdates", "shikimori",

@@ -39,7 +39,8 @@ public:
     // from an extension installed here are restored onto it exactly (its
     // own links, chapters and episodes read or watched with when, bookmarks,
     // the ones part-way, date added, list, chapter list and reader
-    // settings, trackers); anime without theirs are found on AniList. The
+    // settings, trackers), and so are anime whose extension a repository
+    // here offers; other anime are found on AniList. The
     // backup's lists are made in its order. `prepare` first adds
     // repositories ([urls]) and installs extensions ([{kind, pkg}]), as
     // previewMihon offers them. Also returns {lists, inSeveral,

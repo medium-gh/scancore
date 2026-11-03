@@ -826,6 +826,14 @@ QVariantList Extensions::availableRows(const QVariantMap &filter) const {
     return out;
 }
 
+QVariantMap Extensions::offering(const QString &sourceKey) const {
+    for (const auto &package : ext::Manager::available())
+        for (const auto &source : package.sources)
+            if (ext::kindName(package.kind) + QLatin1Char(':') + source.id == sourceKey)
+                return {{"kind", ext::kindName(package.kind)}, {"pkg", package.pkg}, {"name", package.name}};
+    return {};
+}
+
 QVariantMap Extensions::availableSummary() const {
     const auto rows = available();
     QStringList languages;
