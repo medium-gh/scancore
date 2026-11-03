@@ -554,8 +554,11 @@ Task *Library::continueItems(const QString &media, int limit) {
         // row stopped at a few, and changed with every sync).
         QVariantList out;
         QSet<QString> seen;
+        // A few more than asked, so an anime with an episode waiting, watched
+        // a while ago, still comes ahead of ones caught up (see below).
+        const int wanted = limit + std::max(4, limit / 2);
         const int page = std::max(limit * 4, 50);
-        for (int offset = 0; out.size() < limit && offset < page * 20; offset += page) {
+        for (int offset = 0; out.size() < wanted && offset < page * 20; offset += page) {
             const auto rows = historyRows(media, page, offset);
             for (const auto &value : rows) {
                 const auto entry = value.toMap();
@@ -575,13 +578,31 @@ Task *Library::continueItems(const QString &media, int limit) {
                         continue;
                 }
                 out.append(entry);
-                if (out.size() >= limit)
+                if (out.size() >= wanted)
                     break;
             }
             if (rows.size() < page)
                 break;
         }
-        return out;
+        // Anime, by what there is to watch, the latest watched first in each:
+        // an episode half watched or several out already, then a new one of a
+        // show you were caught up on, then those waiting for their next
+        // episode (following a show sent it to the back with every episode).
+        const auto tier = [](const QVariant &value) {
+            const auto e = value.toMap();
+            if (e.value(QStringLiteral("media")).toString() != QLatin1String("anime"))
+                return 0;
+            const double number = e.value(QStringLiteral("unitNumber")).toString().toDouble();
+            const int known = e.value(QStringLiteral("knownUnits")).toInt();
+            if (!e.value(QStringLiteral("completed")).toBool() || known <= 0 || number <= 0)
+                return 0;
+            if (known <= number)
+                return 2;
+            const int fresh = e.value(QStringLiteral("newUnits")).toInt();
+            return fresh > 0 && known - number <= fresh ? 1 : 0;
+        };
+        std::stable_sort(out.begin(), out.end(), [&](const QVariant &a, const QVariant &b) { return tier(a) < tier(b); });
+        return out.mid(0, limit);
     });
 }
 
@@ -710,7 +731,10 @@ QVariantMap Library::progressMap(const QString &seriesId) const {
 QVariantMap Library::lastProgress(const QString &seriesId) const {
     auto row = Database::one(QStringLiteral("SELECT unit_key AS unitKey, unit_title AS unitTitle, unit_number AS unitNumber, "
                                             "unit_url AS unitUrl, position, percent, completed, updated_at AS updatedAt "
-                                            "FROM progress WHERE series_id = ? ORDER BY updated_at DESC LIMIT 1"),
+                                            "FROM progress WHERE series_id = ? "
+                                            // Episodes marked together (an import, a tracker, "mark
+                                            // as watched") share a time: the furthest of them.
+                                            "ORDER BY updated_at DESC, CAST(unit_number AS REAL) DESC, completed DESC, rowid DESC LIMIT 1"),
                              {seriesId});
     if (!row.isEmpty())
         row.insert(QStringLiteral("position"), parse(row.value(QStringLiteral("position"))));
