@@ -893,6 +893,10 @@
             <source>No anime match these filters</source>
             <translation>ไม่มีอนิเมะที่ตรงกับตัวกรองเหล่านี้</translation>
         </message>
+        <message>
+            <source>Anime by this studio</source>
+            <translation>อนิเมะของสตูดิโอนี้</translation>
+        </message>
     </context>
     <context>
         <name>AnimeDetails</name>
@@ -3235,6 +3239,10 @@
             <source> watched</source>
             <translation> ดูแล้ว</translation>
         </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>แสดงอีก %1</translation>
+        </message>
     </context>
     <context>
         <name>ContinueOn</name>
@@ -4497,6 +4505,10 @@
             <source>Your year in comics, novels, anime and music</source>
             <translation>ปีของคุณกับการ์ตูน นิยาย อนิเมะ และเพลง</translation>
         </message>
+        <message>
+            <source>%1, %2</source>
+            <translation>%1, %2</translation>
+        </message>
     </context>
     <context>
         <name>HomeWidget</name>
@@ -4946,6 +4958,30 @@
         <message>
             <source>Anime openings and endings and your own music, with lyrics, and a player that keeps going while you read. Still being built.</source>
             <translation>เพลงเปิดและเพลงปิดอนิเมะ รวมถึงเพลงของคุณเอง พร้อมเนื้อเพลง และเครื่องเล่นที่เล่นต่อไปขณะคุณอ่าน ยังอยู่ระหว่างพัฒนา</translation>
+        </message>
+        <message>
+            <source>Your name on Home</source>
+            <translation>ชื่อของคุณในหน้าแรก</translation>
+        </message>
+        <message>
+            <source>Said after the greeting: “Good evening, Sam”.</source>
+            <translation>ต่อท้ายคำทักทาย: “สวัสดีตอนเย็น Sam”</translation>
+        </message>
+        <message>
+            <source>No name</source>
+            <translation>ไม่มีชื่อ</translation>
+        </message>
+        <message>
+            <source>Your own greeting</source>
+            <translation>คำทักทายของคุณเอง</translation>
+        </message>
+        <message>
+            <source>Shown on Home instead of “Good morning”; {time} puts that back in, {name} your name.</source>
+            <translation>แสดงในหน้าแรกแทน “สวัสดีตอนเช้า”; {time} ใส่คำนั้นกลับ, {name} ใส่ชื่อคุณ</translation>
+        </message>
+        <message>
+            <source>Time of day</source>
+            <translation>ช่วงเวลา</translation>
         </message>
     </context>
     <context>
@@ -5686,6 +5722,38 @@
             <source>Hide until there is something new</source>
             <translation>ซ่อนจนกว่าจะมีอะไรใหม่</translation>
         </message>
+        <message>
+            <source>Music</source>
+            <translation>เพลง</translation>
+        </message>
+        <message>
+            <source>Filter songs</source>
+            <translation>กรองเพลง</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 เพลง</translation>
+        </message>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 เพลง</translation>
+        </message>
+        <message>
+            <source>Play all</source>
+            <translation>เล่นทั้งหมด</translation>
+        </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>แสดงอีก %1</translation>
+        </message>
+        <message>
+            <source>No songs saved yet</source>
+            <translation>ยังไม่มีเพลงที่บันทึกไว้</translation>
+        </message>
+        <message>
+            <source>In Music, an anime's page or Now Playing, choose “Save to library” on a song to keep it here.</source>
+            <translation>ในเพลง หน้าอนิเมะ หรือกำลังเล่น ให้เลือก “บันทึกลงคลัง” ที่เพลงเพื่อเก็บไว้ที่นี่</translation>
+        </message>
     </context>
     <context>
         <name>LibrarySettings</name>
@@ -5944,6 +6012,26 @@
         <message>
             <source>Use the name %1</source>
             <translation>ใช้ชื่อ %1</translation>
+        </message>
+        <message>
+            <source>Check for new chapters and episodes</source>
+            <translation>ตรวจหาตอนและอีพิโสดใหม่</translation>
+        </message>
+        <message>
+            <source>Saved comics, novels and anime are checked in the background while SCANCORE is open.</source>
+            <translation>คอมิก นิยาย และอนิเมะที่บันทึกไว้จะถูกตรวจในเบื้องหลังขณะที่ SCANCORE เปิดอยู่</translation>
+        </message>
+        <message>
+            <source>Notify me about new chapters and episodes</source>
+            <translation>แจ้งเตือนตอนและอีพิโสดใหม่</translation>
+        </message>
+        <message>
+            <source>Android is not showing SCANCORE's notifications</source>
+            <translation>Android ไม่ได้แสดงการแจ้งเตือนของ SCANCORE</translation>
+        </message>
+        <message>
+            <source>Allow them, or switch them back on in Android's settings for SCANCORE.</source>
+            <translation>อนุญาต หรือเปิดอีกครั้งในการตั้งค่า Android สำหรับ SCANCORE</translation>
         </message>
     </context>
     <context>
@@ -7243,6 +7331,14 @@
         <message>
             <source>%1 songs in the queue</source>
             <translation>%1 เพลงในคิว</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>นำออกจากคลัง</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>บันทึกลงคลัง</translation>
         </message>
     </context>
     <context>
@@ -9548,6 +9644,77 @@
         </message>
     </context>
     <context>
+        <name>RetroNowPlaying</name>
+        <message>
+            <source>Lyrics</source>
+            <translation>เนื้อเพลง</translation>
+        </message>
+        <message>
+            <source>Queue</source>
+            <translation>คิว</translation>
+        </message>
+        <message>
+            <source>Now playing</source>
+            <translation>กำลังเล่น</translation>
+        </message>
+        <message>
+            <source>Close</source>
+            <translation>ปิด</translation>
+        </message>
+        <message>
+            <source>SCANCORE · MUSIC</source>
+            <translation>SCANCORE · เพลง</translation>
+        </message>
+        <message>
+            <source>Position</source>
+            <translation>ตำแหน่ง</translation>
+        </message>
+        <message>
+            <source>Previous</source>
+            <translation>ก่อนหน้า</translation>
+        </message>
+        <message>
+            <source>Play</source>
+            <translation>เล่น</translation>
+        </message>
+        <message>
+            <source>Pause</source>
+            <translation>หยุดชั่วคราว</translation>
+        </message>
+        <message>
+            <source>Next</source>
+            <translation>ถัดไป</translation>
+        </message>
+        <message>
+            <source>shuffle</source>
+            <translation>สุ่ม</translation>
+        </message>
+        <message>
+            <source>repeat one</source>
+            <translation>เล่นซ้ำเพลงเดียว</translation>
+        </message>
+        <message>
+            <source>repeat</source>
+            <translation>เล่นซ้ำ</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>บันทึกแล้ว</translation>
+        </message>
+        <message>
+            <source>save</source>
+            <translation>บันทึก</translation>
+        </message>
+        <message>
+            <source>video</source>
+            <translation>วิดีโอ</translation>
+        </message>
+        <message>
+            <source>up next: %1</source>
+            <translation>ถัดไป: %1</translation>
+        </message>
+    </context>
+    <context>
         <name>Reviews</name>
         <message>
             <source>Review saved</source>
@@ -10738,6 +10905,18 @@
         <message>
             <source>More</source>
             <translation>เพิ่มเติม</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>นำออกจากคลัง</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>บันทึกลงคลัง</translation>
+        </message>
+        <message>
+            <source>Saved to your library</source>
+            <translation>บันทึกลงคลังแล้ว</translation>
         </message>
     </context>
     <context>
@@ -13481,6 +13660,18 @@
             <source>%1 extensions were updated</source>
             <translation>อัปเดตส่วนขยายแล้ว %1 รายการ</translation>
         </message>
+        <message>
+            <source>The page did not load.</source>
+            <translation>หน้าไม่โหลด</translation>
+        </message>
+        <message>
+            <source>This page's picture could not be read.</source>
+            <translation>ไม่สามารถอ่านรูปของหน้านี้ได้</translation>
+        </message>
+        <message>
+            <source>The page could not be saved for copying.</source>
+            <translation>ไม่สามารถบันทึกหน้าเพื่อคัดลอกได้</translation>
+        </message>
     </context>
     <context>
         <name>sc::Library</name>
@@ -13499,6 +13690,22 @@
         <message>
             <source>%1 new chapters in your library</source>
             <translation>ตอนใหม่ %1 ตอนในคลังของคุณ</translation>
+        </message>
+        <message>
+            <source>Episode %1</source>
+            <translation>ตอนที่ %1</translation>
+        </message>
+        <message>
+            <source>1 new episode</source>
+            <translation>อีพิโสดใหม่ 1 ตอน</translation>
+        </message>
+        <message>
+            <source>%1 new episodes</source>
+            <translation>อีพิโสดใหม่ %1 ตอน</translation>
+        </message>
+        <message>
+            <source>%1 new chapters and episodes in your library</source>
+            <translation>ตอนใหม่และอีพิโสดใหม่ %1 รายการในคลังของคุณ</translation>
         </message>
     </context>
     <context>

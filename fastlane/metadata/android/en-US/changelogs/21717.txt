@@ -1,2 +1,5 @@
-• Extensions like The Blank offer the site's human check for the page that needs it
-• Friends see the anime you watch
+• Keiyoushi extensions work again on computers
+• Notifications for new anime episodes
+• Save songs to your library; Retro music player
+• Tap a studio to see all its anime
+• Your own greeting on Home

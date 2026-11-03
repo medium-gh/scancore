@@ -893,6 +893,10 @@
             <source>No anime match these filters</source>
             <translation>이 필터에 맞는 애니메이션이 없습니다</translation>
         </message>
+        <message>
+            <source>Anime by this studio</source>
+            <translation>이 스튜디오의 애니</translation>
+        </message>
     </context>
     <context>
         <name>AnimeDetails</name>
@@ -3235,6 +3239,10 @@
             <source> watched</source>
             <translation> 시청함</translation>
         </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>%1개 더 보기</translation>
+        </message>
     </context>
     <context>
         <name>ContinueOn</name>
@@ -4505,6 +4513,10 @@
             <source>Your year in comics, novels, anime and music</source>
             <translation>만화, 소설, 애니메이션, 음악으로 본 나의 한 해</translation>
         </message>
+        <message>
+            <source>%1, %2</source>
+            <translation>%1, %2</translation>
+        </message>
     </context>
     <context>
         <name>HomeWidget</name>
@@ -4954,6 +4966,30 @@
         <message>
             <source>Anime openings and endings and your own music, with lyrics, and a player that keeps going while you read. Still being built.</source>
             <translation>애니 오프닝·엔딩과 내 음악을 가사와 함께, 읽는 동안에도 계속 재생됩니다. 아직 만드는 중입니다.</translation>
+        </message>
+        <message>
+            <source>Your name on Home</source>
+            <translation>홈에 표시할 이름</translation>
+        </message>
+        <message>
+            <source>Said after the greeting: “Good evening, Sam”.</source>
+            <translation>인사말 뒤에 붙습니다: “좋은 저녁이에요, Sam”.</translation>
+        </message>
+        <message>
+            <source>No name</source>
+            <translation>이름 없음</translation>
+        </message>
+        <message>
+            <source>Your own greeting</source>
+            <translation>나만의 인사말</translation>
+        </message>
+        <message>
+            <source>Shown on Home instead of “Good morning”; {time} puts that back in, {name} your name.</source>
+            <translation>홈에서 “좋은 아침이에요” 대신 표시됩니다. {time}은 그것을 다시 넣고, {name}은 이름을 넣습니다.</translation>
+        </message>
+        <message>
+            <source>Time of day</source>
+            <translation>시간대</translation>
         </message>
     </context>
     <context>
@@ -5694,6 +5730,38 @@
             <source>Hide until there is something new</source>
             <translation>새 소식이 생길 때까지 숨기기</translation>
         </message>
+        <message>
+            <source>Music</source>
+            <translation>음악</translation>
+        </message>
+        <message>
+            <source>Filter songs</source>
+            <translation>노래 필터</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>노래 1곡</translation>
+        </message>
+        <message>
+            <source>%1 songs</source>
+            <translation>노래 %1곡</translation>
+        </message>
+        <message>
+            <source>Play all</source>
+            <translation>모두 재생</translation>
+        </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>%1개 더 보기</translation>
+        </message>
+        <message>
+            <source>No songs saved yet</source>
+            <translation>저장한 노래가 아직 없습니다</translation>
+        </message>
+        <message>
+            <source>In Music, an anime's page or Now Playing, choose “Save to library” on a song to keep it here.</source>
+            <translation>음악, 애니 페이지 또는 지금 재생 중에서 노래의 “라이브러리에 저장”을 선택하면 여기에 보관됩니다.</translation>
+        </message>
     </context>
     <context>
         <name>LibrarySettings</name>
@@ -5952,6 +6020,26 @@
         <message>
             <source>Use the name %1</source>
             <translation>%1 이름 사용</translation>
+        </message>
+        <message>
+            <source>Check for new chapters and episodes</source>
+            <translation>새 챕터와 에피소드 확인</translation>
+        </message>
+        <message>
+            <source>Saved comics, novels and anime are checked in the background while SCANCORE is open.</source>
+            <translation>저장한 만화, 소설, 애니는 SCANCORE가 열려 있는 동안 백그라운드에서 확인됩니다.</translation>
+        </message>
+        <message>
+            <source>Notify me about new chapters and episodes</source>
+            <translation>새 챕터와 에피소드 알림</translation>
+        </message>
+        <message>
+            <source>Android is not showing SCANCORE's notifications</source>
+            <translation>Android가 SCANCORE 알림을 표시하지 않고 있습니다</translation>
+        </message>
+        <message>
+            <source>Allow them, or switch them back on in Android's settings for SCANCORE.</source>
+            <translation>허용하거나 Android 설정에서 SCANCORE 알림을 다시 켜세요.</translation>
         </message>
     </context>
     <context>
@@ -7251,6 +7339,14 @@
         <message>
             <source>%1 songs in the queue</source>
             <translation>대기열에 %1곡</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>라이브러리에서 제거</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>라이브러리에 저장</translation>
         </message>
     </context>
     <context>
@@ -9556,6 +9652,77 @@
         </message>
     </context>
     <context>
+        <name>RetroNowPlaying</name>
+        <message>
+            <source>Lyrics</source>
+            <translation>가사</translation>
+        </message>
+        <message>
+            <source>Queue</source>
+            <translation>대기열</translation>
+        </message>
+        <message>
+            <source>Now playing</source>
+            <translation>재생 중</translation>
+        </message>
+        <message>
+            <source>Close</source>
+            <translation>닫기</translation>
+        </message>
+        <message>
+            <source>SCANCORE · MUSIC</source>
+            <translation>SCANCORE · 음악</translation>
+        </message>
+        <message>
+            <source>Position</source>
+            <translation>재생 위치</translation>
+        </message>
+        <message>
+            <source>Previous</source>
+            <translation>이전</translation>
+        </message>
+        <message>
+            <source>Play</source>
+            <translation>재생</translation>
+        </message>
+        <message>
+            <source>Pause</source>
+            <translation>일시 정지</translation>
+        </message>
+        <message>
+            <source>Next</source>
+            <translation>다음</translation>
+        </message>
+        <message>
+            <source>shuffle</source>
+            <translation>셔플</translation>
+        </message>
+        <message>
+            <source>repeat one</source>
+            <translation>한 곡 반복</translation>
+        </message>
+        <message>
+            <source>repeat</source>
+            <translation>반복</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>저장됨</translation>
+        </message>
+        <message>
+            <source>save</source>
+            <translation>저장</translation>
+        </message>
+        <message>
+            <source>video</source>
+            <translation>동영상</translation>
+        </message>
+        <message>
+            <source>up next: %1</source>
+            <translation>다음: %1</translation>
+        </message>
+    </context>
+    <context>
         <name>Reviews</name>
         <message>
             <source>Review saved</source>
@@ -10753,6 +10920,18 @@
         <message>
             <source>More</source>
             <translation>더보기</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>라이브러리에서 제거</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>라이브러리에 저장</translation>
+        </message>
+        <message>
+            <source>Saved to your library</source>
+            <translation>라이브러리에 저장했습니다</translation>
         </message>
     </context>
     <context>
@@ -13489,6 +13668,18 @@
             <source>%1 extensions were updated</source>
             <translation>확장 프로그램 %1개를 업데이트했어요</translation>
         </message>
+        <message>
+            <source>The page did not load.</source>
+            <translation>페이지를 불러오지 못했습니다.</translation>
+        </message>
+        <message>
+            <source>This page's picture could not be read.</source>
+            <translation>이 페이지의 그림을 읽을 수 없습니다.</translation>
+        </message>
+        <message>
+            <source>The page could not be saved for copying.</source>
+            <translation>복사하기 위해 페이지를 저장할 수 없습니다.</translation>
+        </message>
     </context>
     <context>
         <name>sc::Library</name>
@@ -13507,6 +13698,22 @@
         <message>
             <source>%1 new chapters in your library</source>
             <translation>라이브러리에 새 챕터 %1개</translation>
+        </message>
+        <message>
+            <source>Episode %1</source>
+            <translation>에피소드 %1</translation>
+        </message>
+        <message>
+            <source>1 new episode</source>
+            <translation>새 에피소드 1개</translation>
+        </message>
+        <message>
+            <source>%1 new episodes</source>
+            <translation>새 에피소드 %1개</translation>
+        </message>
+        <message>
+            <source>%1 new chapters and episodes in your library</source>
+            <translation>라이브러리에 새 챕터와 에피소드 %1개</translation>
         </message>
     </context>
     <context>

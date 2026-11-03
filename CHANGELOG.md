@@ -2,6 +2,19 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.12 — 2026-11-03
+
+Keiyoushi's extensions on computers, new-episode notifications, a music library and a Retro music player. Desktop copies download Extensions runtime 11 with it.
+
+- **Keiyoushi extensions on Windows, macOS and Linux** failed after Keiyoushi's big update with "Bad type on operand stack": their new builds are minified, and converting them from Android code broke them. Computers now install the Java version Keiyoushi publishes beside each extension (checked against the repository's key, as Suwayomi does); ones already installed are offered as an update.
+- **Notifications for new episodes**: saved anime are now checked with comics and novels (AniList ones by the episodes aired so far, extension ones by their episode list). On Android, Settings → Library says when Android is not showing SCANCORE's notifications, and **Allow** asks again or opens Android's settings for them.
+- **Freezes after a big import** (#33): the "Waiting to be found" list in Settings → Connections built every title at once and took seconds to close on phones; it now shows them 50 at a time.
+- **Aniyomi imports** look for an anime on the extension it came from (and same-named ones) by its title when its address no longer opens, before AniList; on AniList, when several anime share the title, the one with that main title and at least the episodes you watched is taken.
+- **Studios**: tap the studio on an anime's page to see everything it made; its genres open a browse by genre.
+- **Music library**: save songs (openings, endings, your files, extensions' songs) from a song's menu or Now Playing; they are under Library → Music.
+- **Retro Now Playing** in the manner of Windows Phone's music app: pivots for now playing, lyrics and queue (swipe or tap), a square cover tile, a flat progress line and ring buttons; the mini player and song lists follow the Retro look too.
+- **Your own greeting** on Home, and your name after it (Settings → Interface → Pages).
+
 ## 2.16.11 — 2026-10-30
 
 The changes listed under 2.16.10, which was not published (its build stopped because the desktop Extensions runtime had to be updated first). Desktop copies download Extensions runtime 10 with it.

@@ -893,6 +893,10 @@
             <source>No anime match these filters</source>
             <translation>इन फ़िल्टर से कोई एनीमे नहीं मिला</translation>
         </message>
+        <message>
+            <source>Anime by this studio</source>
+            <translation>इस स्टूडियो के एनीमे</translation>
+        </message>
     </context>
     <context>
         <name>AnimeDetails</name>
@@ -3235,6 +3239,10 @@
             <source> watched</source>
             <translation> देखे गए</translation>
         </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>%1 और दिखाएँ</translation>
+        </message>
     </context>
     <context>
         <name>ContinueOn</name>
@@ -4497,6 +4505,10 @@
             <source>Your year in comics, novels, anime and music</source>
             <translation>कॉमिक्स, उपन्यास, एनीमे और संगीत में आपका साल</translation>
         </message>
+        <message>
+            <source>%1, %2</source>
+            <translation>%1, %2</translation>
+        </message>
     </context>
     <context>
         <name>HomeWidget</name>
@@ -4946,6 +4958,30 @@
         <message>
             <source>Anime openings and endings and your own music, with lyrics, and a player that keeps going while you read. Still being built.</source>
             <translation>एनीमे ओपनिंग और एंडिंग और आपका अपना संगीत, बोल के साथ, और एक प्लेयर जो पढ़ते समय चलता रहता है। अभी बन रहा है।</translation>
+        </message>
+        <message>
+            <source>Your name on Home</source>
+            <translation>होम पर आपका नाम</translation>
+        </message>
+        <message>
+            <source>Said after the greeting: “Good evening, Sam”.</source>
+            <translation>अभिवादन के बाद: “शुभ संध्या, Sam”।</translation>
+        </message>
+        <message>
+            <source>No name</source>
+            <translation>कोई नाम नहीं</translation>
+        </message>
+        <message>
+            <source>Your own greeting</source>
+            <translation>आपका अपना अभिवादन</translation>
+        </message>
+        <message>
+            <source>Shown on Home instead of “Good morning”; {time} puts that back in, {name} your name.</source>
+            <translation>होम पर “सुप्रभात” की जगह दिखता है; {time} उसे वापस लाता है, {name} आपका नाम।</translation>
+        </message>
+        <message>
+            <source>Time of day</source>
+            <translation>दिन का समय</translation>
         </message>
     </context>
     <context>
@@ -5686,6 +5722,38 @@
             <source>Hide until there is something new</source>
             <translation>कुछ नया आने तक छिपाएँ</translation>
         </message>
+        <message>
+            <source>Music</source>
+            <translation>संगीत</translation>
+        </message>
+        <message>
+            <source>Filter songs</source>
+            <translation>गाने छाँटें</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 गाना</translation>
+        </message>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 गाने</translation>
+        </message>
+        <message>
+            <source>Play all</source>
+            <translation>सब चलाएँ</translation>
+        </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>%1 और दिखाएँ</translation>
+        </message>
+        <message>
+            <source>No songs saved yet</source>
+            <translation>अभी कोई गाना सेव नहीं है</translation>
+        </message>
+        <message>
+            <source>In Music, an anime's page or Now Playing, choose “Save to library” on a song to keep it here.</source>
+            <translation>Music में, किसी एनीमे के पेज पर या Now Playing में, किसी गाने पर “लाइब्रेरी में सेव करें” चुनें ताकि वह यहाँ रहे।</translation>
+        </message>
     </context>
     <context>
         <name>LibrarySettings</name>
@@ -5944,6 +6012,26 @@
         <message>
             <source>Use the name %1</source>
             <translation>नाम %1 इस्तेमाल करें</translation>
+        </message>
+        <message>
+            <source>Check for new chapters and episodes</source>
+            <translation>नए चैप्टर और एपिसोड देखें</translation>
+        </message>
+        <message>
+            <source>Saved comics, novels and anime are checked in the background while SCANCORE is open.</source>
+            <translation>SCANCORE खुला रहने पर सेव की गई कॉमिक्स, उपन्यास और एनीमे पृष्ठभूमि में जाँचे जाते हैं।</translation>
+        </message>
+        <message>
+            <source>Notify me about new chapters and episodes</source>
+            <translation>नए चैप्टर और एपिसोड की सूचना दें</translation>
+        </message>
+        <message>
+            <source>Android is not showing SCANCORE's notifications</source>
+            <translation>Android, SCANCORE की सूचनाएँ नहीं दिखा रहा है</translation>
+        </message>
+        <message>
+            <source>Allow them, or switch them back on in Android's settings for SCANCORE.</source>
+            <translation>उन्हें अनुमति दें, या Android की सेटिंग में SCANCORE के लिए फिर से चालू करें।</translation>
         </message>
     </context>
     <context>
@@ -7243,6 +7331,14 @@
         <message>
             <source>%1 songs in the queue</source>
             <translation>कतार में %1 गाने</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>लाइब्रेरी से हटाएँ</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>लाइब्रेरी में सेव करें</translation>
         </message>
     </context>
     <context>
@@ -9548,6 +9644,77 @@
         </message>
     </context>
     <context>
+        <name>RetroNowPlaying</name>
+        <message>
+            <source>Lyrics</source>
+            <translation>बोल</translation>
+        </message>
+        <message>
+            <source>Queue</source>
+            <translation>कतार</translation>
+        </message>
+        <message>
+            <source>Now playing</source>
+            <translation>अभी चल रहा है</translation>
+        </message>
+        <message>
+            <source>Close</source>
+            <translation>बंद करें</translation>
+        </message>
+        <message>
+            <source>SCANCORE · MUSIC</source>
+            <translation>SCANCORE · संगीत</translation>
+        </message>
+        <message>
+            <source>Position</source>
+            <translation>स्थिति</translation>
+        </message>
+        <message>
+            <source>Previous</source>
+            <translation>पिछला</translation>
+        </message>
+        <message>
+            <source>Play</source>
+            <translation>चलाएं</translation>
+        </message>
+        <message>
+            <source>Pause</source>
+            <translation>रोकें</translation>
+        </message>
+        <message>
+            <source>Next</source>
+            <translation>अगला</translation>
+        </message>
+        <message>
+            <source>shuffle</source>
+            <translation>शफ़ल</translation>
+        </message>
+        <message>
+            <source>repeat one</source>
+            <translation>एक दोहराएँ</translation>
+        </message>
+        <message>
+            <source>repeat</source>
+            <translation>दोहराएँ</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>सेव है</translation>
+        </message>
+        <message>
+            <source>save</source>
+            <translation>सेव</translation>
+        </message>
+        <message>
+            <source>video</source>
+            <translation>वीडियो</translation>
+        </message>
+        <message>
+            <source>up next: %1</source>
+            <translation>अगला: %1</translation>
+        </message>
+    </context>
+    <context>
         <name>Reviews</name>
         <message>
             <source>Review saved</source>
@@ -10738,6 +10905,18 @@
         <message>
             <source>More</source>
             <translation>और</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>लाइब्रेरी से हटाएँ</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>लाइब्रेरी में सेव करें</translation>
+        </message>
+        <message>
+            <source>Saved to your library</source>
+            <translation>आपकी लाइब्रेरी में सेव हुआ</translation>
         </message>
     </context>
     <context>
@@ -13481,6 +13660,18 @@
             <source>%1 extensions were updated</source>
             <translation>%1 एक्सटेंशन अपडेट हुए</translation>
         </message>
+        <message>
+            <source>The page did not load.</source>
+            <translation>पेज लोड नहीं हुआ।</translation>
+        </message>
+        <message>
+            <source>This page's picture could not be read.</source>
+            <translation>इस पेज की तस्वीर पढ़ी नहीं जा सकी।</translation>
+        </message>
+        <message>
+            <source>The page could not be saved for copying.</source>
+            <translation>कॉपी करने के लिए पेज सेव नहीं हो सका।</translation>
+        </message>
     </context>
     <context>
         <name>sc::Library</name>
@@ -13499,6 +13690,22 @@
         <message>
             <source>%1 new chapters in your library</source>
             <translation>आपकी लाइब्रेरी में %1 नए चैप्टर</translation>
+        </message>
+        <message>
+            <source>Episode %1</source>
+            <translation>एपिसोड %1</translation>
+        </message>
+        <message>
+            <source>1 new episode</source>
+            <translation>1 नया एपिसोड</translation>
+        </message>
+        <message>
+            <source>%1 new episodes</source>
+            <translation>%1 नए एपिसोड</translation>
+        </message>
+        <message>
+            <source>%1 new chapters and episodes in your library</source>
+            <translation>आपकी लाइब्रेरी में %1 नए चैप्टर और एपिसोड</translation>
         </message>
     </context>
     <context>

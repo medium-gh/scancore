@@ -893,6 +893,10 @@
             <source>No anime match these filters</source>
             <translation>沒有符合這些篩選條件的動畫</translation>
         </message>
+        <message>
+            <source>Anime by this studio</source>
+            <translation>這個工作室的動畫</translation>
+        </message>
     </context>
     <context>
         <name>AnimeDetails</name>
@@ -3235,6 +3239,10 @@
             <source> watched</source>
             <translation> 已看</translation>
         </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>再顯示 %1 個</translation>
+        </message>
     </context>
     <context>
         <name>ContinueOn</name>
@@ -4505,6 +4513,10 @@
             <source>Your year in comics, novels, anime and music</source>
             <translation>你在漫畫、小說、動畫和音樂中的一年</translation>
         </message>
+        <message>
+            <source>%1, %2</source>
+            <translation>%1，%2</translation>
+        </message>
     </context>
     <context>
         <name>HomeWidget</name>
@@ -4954,6 +4966,30 @@
         <message>
             <source>Anime openings and endings and your own music, with lyrics, and a player that keeps going while you read. Still being built.</source>
             <translation>動畫片頭曲、片尾曲和你自己的音樂，附帶歌詞，閱讀時播放器也不會停。仍在開發中。</translation>
+        </message>
+        <message>
+            <source>Your name on Home</source>
+            <translation>首頁上的名字</translation>
+        </message>
+        <message>
+            <source>Said after the greeting: “Good evening, Sam”.</source>
+            <translation>接在問候語之後：「晚安，Sam」。</translation>
+        </message>
+        <message>
+            <source>No name</source>
+            <translation>無名字</translation>
+        </message>
+        <message>
+            <source>Your own greeting</source>
+            <translation>自訂問候語</translation>
+        </message>
+        <message>
+            <source>Shown on Home instead of “Good morning”; {time} puts that back in, {name} your name.</source>
+            <translation>在首頁取代「早安」顯示；{time} 放回這句問候，{name} 放入你的名字。</translation>
+        </message>
+        <message>
+            <source>Time of day</source>
+            <translation>時段問候</translation>
         </message>
     </context>
     <context>
@@ -5694,6 +5730,38 @@
             <source>Hide until there is something new</source>
             <translation>隱藏，直到有新內容</translation>
         </message>
+        <message>
+            <source>Music</source>
+            <translation>音樂</translation>
+        </message>
+        <message>
+            <source>Filter songs</source>
+            <translation>篩選歌曲</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 首歌曲</translation>
+        </message>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 首歌曲</translation>
+        </message>
+        <message>
+            <source>Play all</source>
+            <translation>全部播放</translation>
+        </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>再顯示 %1 個</translation>
+        </message>
+        <message>
+            <source>No songs saved yet</source>
+            <translation>還沒有儲存的歌曲</translation>
+        </message>
+        <message>
+            <source>In Music, an anime's page or Now Playing, choose “Save to library” on a song to keep it here.</source>
+            <translation>在音樂、動畫頁面或正在播放中，對歌曲選擇「儲存到書庫」即可保留在這裡。</translation>
+        </message>
     </context>
     <context>
         <name>LibrarySettings</name>
@@ -5952,6 +6020,26 @@
         <message>
             <source>Use the name %1</source>
             <translation>使用名稱 %1</translation>
+        </message>
+        <message>
+            <source>Check for new chapters and episodes</source>
+            <translation>檢查新章節和集數</translation>
+        </message>
+        <message>
+            <source>Saved comics, novels and anime are checked in the background while SCANCORE is open.</source>
+            <translation>SCANCORE 開著時，會在背景檢查已儲存的漫畫、小說和動畫。</translation>
+        </message>
+        <message>
+            <source>Notify me about new chapters and episodes</source>
+            <translation>有新章節和集數時通知我</translation>
+        </message>
+        <message>
+            <source>Android is not showing SCANCORE's notifications</source>
+            <translation>Android 沒有顯示 SCANCORE 的通知</translation>
+        </message>
+        <message>
+            <source>Allow them, or switch them back on in Android's settings for SCANCORE.</source>
+            <translation>請允許通知，或在 Android 設定中為 SCANCORE 重新開啟。</translation>
         </message>
     </context>
     <context>
@@ -7251,6 +7339,14 @@
         <message>
             <source>%1 songs in the queue</source>
             <translation>佇列中有 %1 首歌</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>從書庫移除</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>儲存到書庫</translation>
         </message>
     </context>
     <context>
@@ -9556,6 +9652,77 @@
         </message>
     </context>
     <context>
+        <name>RetroNowPlaying</name>
+        <message>
+            <source>Lyrics</source>
+            <translation>歌詞</translation>
+        </message>
+        <message>
+            <source>Queue</source>
+            <translation>佇列</translation>
+        </message>
+        <message>
+            <source>Now playing</source>
+            <translation>正在播放</translation>
+        </message>
+        <message>
+            <source>Close</source>
+            <translation>關閉</translation>
+        </message>
+        <message>
+            <source>SCANCORE · MUSIC</source>
+            <translation>SCANCORE · 音樂</translation>
+        </message>
+        <message>
+            <source>Position</source>
+            <translation>播放位置</translation>
+        </message>
+        <message>
+            <source>Previous</source>
+            <translation>上一頁</translation>
+        </message>
+        <message>
+            <source>Play</source>
+            <translation>播放</translation>
+        </message>
+        <message>
+            <source>Pause</source>
+            <translation>暫停</translation>
+        </message>
+        <message>
+            <source>Next</source>
+            <translation>下一頁</translation>
+        </message>
+        <message>
+            <source>shuffle</source>
+            <translation>隨機</translation>
+        </message>
+        <message>
+            <source>repeat one</source>
+            <translation>單曲重複</translation>
+        </message>
+        <message>
+            <source>repeat</source>
+            <translation>重複</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>已儲存</translation>
+        </message>
+        <message>
+            <source>save</source>
+            <translation>儲存</translation>
+        </message>
+        <message>
+            <source>video</source>
+            <translation>影片</translation>
+        </message>
+        <message>
+            <source>up next: %1</source>
+            <translation>下一首：%1</translation>
+        </message>
+    </context>
+    <context>
         <name>Reviews</name>
         <message>
             <source>Review saved</source>
@@ -10753,6 +10920,18 @@
         <message>
             <source>More</source>
             <translation>更多</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>從書庫移除</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>儲存到書庫</translation>
+        </message>
+        <message>
+            <source>Saved to your library</source>
+            <translation>已儲存到你的書庫</translation>
         </message>
     </context>
     <context>
@@ -13489,6 +13668,18 @@
             <source>%1 extensions were updated</source>
             <translation>已更新 %1 個擴充功能</translation>
         </message>
+        <message>
+            <source>The page did not load.</source>
+            <translation>頁面沒有載入。</translation>
+        </message>
+        <message>
+            <source>This page's picture could not be read.</source>
+            <translation>無法讀取此頁面的圖片。</translation>
+        </message>
+        <message>
+            <source>The page could not be saved for copying.</source>
+            <translation>無法儲存頁面以供複製。</translation>
+        </message>
     </context>
     <context>
         <name>sc::Library</name>
@@ -13507,6 +13698,22 @@
         <message>
             <source>%1 new chapters in your library</source>
             <translation>書庫中有%1個新章節</translation>
+        </message>
+        <message>
+            <source>Episode %1</source>
+            <translation>第%1集</translation>
+        </message>
+        <message>
+            <source>1 new episode</source>
+            <translation>1 集新集數</translation>
+        </message>
+        <message>
+            <source>%1 new episodes</source>
+            <translation>%1 集新集數</translation>
+        </message>
+        <message>
+            <source>%1 new chapters and episodes in your library</source>
+            <translation>你的書庫中有 %1 個新章節和集數</translation>
         </message>
     </context>
     <context>

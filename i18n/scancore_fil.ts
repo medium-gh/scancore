@@ -893,6 +893,10 @@
             <source>No anime match these filters</source>
             <translation>Walang anime na tugma sa mga filter na ito</translation>
         </message>
+        <message>
+            <source>Anime by this studio</source>
+            <translation>Anime ng studio na ito</translation>
+        </message>
     </context>
     <context>
         <name>AnimeDetails</name>
@@ -3235,6 +3239,10 @@
             <source> watched</source>
             <translation> napanood</translation>
         </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>Ipakita ang %1 pa</translation>
+        </message>
     </context>
     <context>
         <name>ContinueOn</name>
@@ -4497,6 +4505,10 @@
             <source>Your year in comics, novels, anime and music</source>
             <translation>Ang taon mo sa komiks, nobela, anime at musika</translation>
         </message>
+        <message>
+            <source>%1, %2</source>
+            <translation>%1, %2</translation>
+        </message>
     </context>
     <context>
         <name>HomeWidget</name>
@@ -4946,6 +4958,30 @@
         <message>
             <source>Anime openings and endings and your own music, with lyrics, and a player that keeps going while you read. Still being built.</source>
             <translation>Mga opening at ending ng anime at sarili mong musika, may liriko, at player na tuloy-tuloy habang nagbabasa ka. Ginagawa pa.</translation>
+        </message>
+        <message>
+            <source>Your name on Home</source>
+            <translation>Pangalan mo sa Home</translation>
+        </message>
+        <message>
+            <source>Said after the greeting: “Good evening, Sam”.</source>
+            <translation>Kasunod ng pagbati: “Magandang gabi, Sam”.</translation>
+        </message>
+        <message>
+            <source>No name</source>
+            <translation>Walang pangalan</translation>
+        </message>
+        <message>
+            <source>Your own greeting</source>
+            <translation>Sariling pagbati</translation>
+        </message>
+        <message>
+            <source>Shown on Home instead of “Good morning”; {time} puts that back in, {name} your name.</source>
+            <translation>Ipinapakita sa Home sa halip na “Magandang umaga”; ibinabalik iyon ng {time}, ng {name} ang pangalan mo.</translation>
+        </message>
+        <message>
+            <source>Time of day</source>
+            <translation>Oras ng araw</translation>
         </message>
     </context>
     <context>
@@ -5686,6 +5722,38 @@
             <source>Hide until there is something new</source>
             <translation>Itago hanggang may bago</translation>
         </message>
+        <message>
+            <source>Music</source>
+            <translation>Musika</translation>
+        </message>
+        <message>
+            <source>Filter songs</source>
+            <translation>I-filter ang mga kanta</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 kanta</translation>
+        </message>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 kanta</translation>
+        </message>
+        <message>
+            <source>Play all</source>
+            <translation>I-play lahat</translation>
+        </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>Ipakita ang %1 pa</translation>
+        </message>
+        <message>
+            <source>No songs saved yet</source>
+            <translation>Wala pang naka-save na kanta</translation>
+        </message>
+        <message>
+            <source>In Music, an anime's page or Now Playing, choose “Save to library” on a song to keep it here.</source>
+            <translation>Sa Music, sa page ng anime o sa Now Playing, piliin ang “I-save sa library” sa isang kanta para itago ito rito.</translation>
+        </message>
     </context>
     <context>
         <name>LibrarySettings</name>
@@ -5944,6 +6012,26 @@
         <message>
             <source>Use the name %1</source>
             <translation>Gamitin ang pangalang %1</translation>
+        </message>
+        <message>
+            <source>Check for new chapters and episodes</source>
+            <translation>Tingnan kung may bagong kabanata at episode</translation>
+        </message>
+        <message>
+            <source>Saved comics, novels and anime are checked in the background while SCANCORE is open.</source>
+            <translation>Tinitingnan sa background ang mga naka-save na comic, nobela at anime habang bukas ang SCANCORE.</translation>
+        </message>
+        <message>
+            <source>Notify me about new chapters and episodes</source>
+            <translation>Abisuhan ako sa mga bagong kabanata at episode</translation>
+        </message>
+        <message>
+            <source>Android is not showing SCANCORE's notifications</source>
+            <translation>Hindi ipinapakita ng Android ang mga notification ng SCANCORE</translation>
+        </message>
+        <message>
+            <source>Allow them, or switch them back on in Android's settings for SCANCORE.</source>
+            <translation>Payagan ang mga ito, o buksan muli sa settings ng Android para sa SCANCORE.</translation>
         </message>
     </context>
     <context>
@@ -7243,6 +7331,14 @@
         <message>
             <source>%1 songs in the queue</source>
             <translation>%1 kanta sa pila</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Alisin sa library</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>I-save sa library</translation>
         </message>
     </context>
     <context>
@@ -9548,6 +9644,77 @@
         </message>
     </context>
     <context>
+        <name>RetroNowPlaying</name>
+        <message>
+            <source>Lyrics</source>
+            <translation>Liriko</translation>
+        </message>
+        <message>
+            <source>Queue</source>
+            <translation>Pila</translation>
+        </message>
+        <message>
+            <source>Now playing</source>
+            <translation>Tumutugtog ngayon</translation>
+        </message>
+        <message>
+            <source>Close</source>
+            <translation>Isara</translation>
+        </message>
+        <message>
+            <source>SCANCORE · MUSIC</source>
+            <translation>SCANCORE · MUSIC</translation>
+        </message>
+        <message>
+            <source>Position</source>
+            <translation>Posisyon</translation>
+        </message>
+        <message>
+            <source>Previous</source>
+            <translation>Nakaraan</translation>
+        </message>
+        <message>
+            <source>Play</source>
+            <translation>I-play</translation>
+        </message>
+        <message>
+            <source>Pause</source>
+            <translation>I-pause</translation>
+        </message>
+        <message>
+            <source>Next</source>
+            <translation>Susunod</translation>
+        </message>
+        <message>
+            <source>shuffle</source>
+            <translation>shuffle</translation>
+        </message>
+        <message>
+            <source>repeat one</source>
+            <translation>ulitin ang isa</translation>
+        </message>
+        <message>
+            <source>repeat</source>
+            <translation>ulitin</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>naka-save</translation>
+        </message>
+        <message>
+            <source>save</source>
+            <translation>i-save</translation>
+        </message>
+        <message>
+            <source>video</source>
+            <translation>video</translation>
+        </message>
+        <message>
+            <source>up next: %1</source>
+            <translation>susunod: %1</translation>
+        </message>
+    </context>
+    <context>
         <name>Reviews</name>
         <message>
             <source>Review saved</source>
@@ -10738,6 +10905,18 @@
         <message>
             <source>More</source>
             <translation>Higit pa</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Alisin sa library</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>I-save sa library</translation>
+        </message>
+        <message>
+            <source>Saved to your library</source>
+            <translation>Na-save sa library mo</translation>
         </message>
     </context>
     <context>
@@ -13481,6 +13660,18 @@
             <source>%1 extensions were updated</source>
             <translation>%1 extension ang na-update</translation>
         </message>
+        <message>
+            <source>The page did not load.</source>
+            <translation>Hindi nag-load ang page.</translation>
+        </message>
+        <message>
+            <source>This page's picture could not be read.</source>
+            <translation>Hindi mabasa ang larawan ng page na ito.</translation>
+        </message>
+        <message>
+            <source>The page could not be saved for copying.</source>
+            <translation>Hindi ma-save ang page para kopyahin.</translation>
+        </message>
     </context>
     <context>
         <name>sc::Library</name>
@@ -13499,6 +13690,22 @@
         <message>
             <source>%1 new chapters in your library</source>
             <translation>%1 bagong kabanata sa iyong library</translation>
+        </message>
+        <message>
+            <source>Episode %1</source>
+            <translation>Episode %1</translation>
+        </message>
+        <message>
+            <source>1 new episode</source>
+            <translation>1 bagong episode</translation>
+        </message>
+        <message>
+            <source>%1 new episodes</source>
+            <translation>%1 bagong episode</translation>
+        </message>
+        <message>
+            <source>%1 new chapters and episodes in your library</source>
+            <translation>%1 bagong kabanata at episode sa library mo</translation>
         </message>
     </context>
     <context>

@@ -893,6 +893,10 @@
             <source>No anime match these filters</source>
             <translation>Kein Anime passt zu diesen Filtern</translation>
         </message>
+        <message>
+            <source>Anime by this studio</source>
+            <translation>Anime dieses Studios</translation>
+        </message>
     </context>
     <context>
         <name>AnimeDetails</name>
@@ -3235,6 +3239,10 @@
             <source> watched</source>
             <translation> gesehen</translation>
         </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>%1 weitere zeigen</translation>
+        </message>
     </context>
     <context>
         <name>ContinueOn</name>
@@ -4505,6 +4513,10 @@
             <source>Your year in comics, novels, anime and music</source>
             <translation>Dein Jahr in Comics, Romanen, Anime und Musik</translation>
         </message>
+        <message>
+            <source>%1, %2</source>
+            <translation>%1, %2</translation>
+        </message>
     </context>
     <context>
         <name>HomeWidget</name>
@@ -4954,6 +4966,30 @@
         <message>
             <source>Anime openings and endings and your own music, with lyrics, and a player that keeps going while you read. Still being built.</source>
             <translation>Anime-Openings und -Endings und deine eigene Musik, mit Songtexten, und ein Player, der beim Lesen weiterspielt. Noch im Aufbau.</translation>
+        </message>
+        <message>
+            <source>Your name on Home</source>
+            <translation>Dein Name auf der Startseite</translation>
+        </message>
+        <message>
+            <source>Said after the greeting: “Good evening, Sam”.</source>
+            <translation>Steht nach der Begrüßung: „Guten Abend, Sam“.</translation>
+        </message>
+        <message>
+            <source>No name</source>
+            <translation>Kein Name</translation>
+        </message>
+        <message>
+            <source>Your own greeting</source>
+            <translation>Eigene Begrüßung</translation>
+        </message>
+        <message>
+            <source>Shown on Home instead of “Good morning”; {time} puts that back in, {name} your name.</source>
+            <translation>Wird auf der Startseite statt „Guten Morgen“ gezeigt; {time} setzt das wieder ein, {name} deinen Namen.</translation>
+        </message>
+        <message>
+            <source>Time of day</source>
+            <translation>Tageszeit</translation>
         </message>
     </context>
     <context>
@@ -5694,6 +5730,38 @@
             <source>Hide until there is something new</source>
             <translation>Ausblenden, bis es etwas Neues gibt</translation>
         </message>
+        <message>
+            <source>Music</source>
+            <translation>Musik</translation>
+        </message>
+        <message>
+            <source>Filter songs</source>
+            <translation>Songs filtern</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 Song</translation>
+        </message>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 Songs</translation>
+        </message>
+        <message>
+            <source>Play all</source>
+            <translation>Alle abspielen</translation>
+        </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>%1 weitere zeigen</translation>
+        </message>
+        <message>
+            <source>No songs saved yet</source>
+            <translation>Noch keine Songs gespeichert</translation>
+        </message>
+        <message>
+            <source>In Music, an anime's page or Now Playing, choose “Save to library” on a song to keep it here.</source>
+            <translation>Wähle in Musik, auf der Seite eines Anime oder in „Läuft gerade“ bei einem Song „Zur Bibliothek hinzufügen“, um ihn hier zu behalten.</translation>
+        </message>
     </context>
     <context>
         <name>LibrarySettings</name>
@@ -5952,6 +6020,26 @@
         <message>
             <source>Use the name %1</source>
             <translation>Den Namen %1 verwenden</translation>
+        </message>
+        <message>
+            <source>Check for new chapters and episodes</source>
+            <translation>Nach neuen Kapiteln und Folgen suchen</translation>
+        </message>
+        <message>
+            <source>Saved comics, novels and anime are checked in the background while SCANCORE is open.</source>
+            <translation>Gespeicherte Comics, Romane und Anime werden im Hintergrund geprüft, solange SCANCORE geöffnet ist.</translation>
+        </message>
+        <message>
+            <source>Notify me about new chapters and episodes</source>
+            <translation>Über neue Kapitel und Folgen benachrichtigen</translation>
+        </message>
+        <message>
+            <source>Android is not showing SCANCORE's notifications</source>
+            <translation>Android zeigt keine Benachrichtigungen von SCANCORE</translation>
+        </message>
+        <message>
+            <source>Allow them, or switch them back on in Android's settings for SCANCORE.</source>
+            <translation>Erlaube sie oder schalte sie in den Android-Einstellungen für SCANCORE wieder ein.</translation>
         </message>
     </context>
     <context>
@@ -7251,6 +7339,14 @@
         <message>
             <source>%1 songs in the queue</source>
             <translation>%1 Titel in der Warteschlange</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Aus der Bibliothek entfernen</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>Zur Bibliothek hinzufügen</translation>
         </message>
     </context>
     <context>
@@ -9556,6 +9652,77 @@
         </message>
     </context>
     <context>
+        <name>RetroNowPlaying</name>
+        <message>
+            <source>Lyrics</source>
+            <translation>Songtext</translation>
+        </message>
+        <message>
+            <source>Queue</source>
+            <translation>Warteschlange</translation>
+        </message>
+        <message>
+            <source>Now playing</source>
+            <translation>Läuft gerade</translation>
+        </message>
+        <message>
+            <source>Close</source>
+            <translation>Schließen</translation>
+        </message>
+        <message>
+            <source>SCANCORE · MUSIC</source>
+            <translation>SCANCORE · MUSIK</translation>
+        </message>
+        <message>
+            <source>Position</source>
+            <translation>Position</translation>
+        </message>
+        <message>
+            <source>Previous</source>
+            <translation>Zurück</translation>
+        </message>
+        <message>
+            <source>Play</source>
+            <translation>Abspielen</translation>
+        </message>
+        <message>
+            <source>Pause</source>
+            <translation>Pause</translation>
+        </message>
+        <message>
+            <source>Next</source>
+            <translation>Weiter</translation>
+        </message>
+        <message>
+            <source>shuffle</source>
+            <translation>zufällig</translation>
+        </message>
+        <message>
+            <source>repeat one</source>
+            <translation>einen wiederholen</translation>
+        </message>
+        <message>
+            <source>repeat</source>
+            <translation>wiederholen</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>gespeichert</translation>
+        </message>
+        <message>
+            <source>save</source>
+            <translation>speichern</translation>
+        </message>
+        <message>
+            <source>video</source>
+            <translation>Video</translation>
+        </message>
+        <message>
+            <source>up next: %1</source>
+            <translation>als Nächstes: %1</translation>
+        </message>
+    </context>
+    <context>
         <name>Reviews</name>
         <message>
             <source>Review saved</source>
@@ -10753,6 +10920,18 @@
         <message>
             <source>More</source>
             <translation>Mehr</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Aus der Bibliothek entfernen</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>Zur Bibliothek hinzufügen</translation>
+        </message>
+        <message>
+            <source>Saved to your library</source>
+            <translation>In deiner Bibliothek gespeichert</translation>
         </message>
     </context>
     <context>
@@ -13489,6 +13668,18 @@
             <source>%1 extensions were updated</source>
             <translation>%1 Erweiterungen wurden aktualisiert</translation>
         </message>
+        <message>
+            <source>The page did not load.</source>
+            <translation>Die Seite wurde nicht geladen.</translation>
+        </message>
+        <message>
+            <source>This page's picture could not be read.</source>
+            <translation>Das Bild dieser Seite konnte nicht gelesen werden.</translation>
+        </message>
+        <message>
+            <source>The page could not be saved for copying.</source>
+            <translation>Die Seite konnte zum Kopieren nicht gespeichert werden.</translation>
+        </message>
     </context>
     <context>
         <name>sc::Library</name>
@@ -13507,6 +13698,22 @@
         <message>
             <source>%1 new chapters in your library</source>
             <translation>%1 neue Kapitel in deiner Bibliothek</translation>
+        </message>
+        <message>
+            <source>Episode %1</source>
+            <translation>Folge %1</translation>
+        </message>
+        <message>
+            <source>1 new episode</source>
+            <translation>1 neue Folge</translation>
+        </message>
+        <message>
+            <source>%1 new episodes</source>
+            <translation>%1 neue Folgen</translation>
+        </message>
+        <message>
+            <source>%1 new chapters and episodes in your library</source>
+            <translation>%1 neue Kapitel und Folgen in deiner Bibliothek</translation>
         </message>
     </context>
     <context>

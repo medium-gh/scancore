@@ -893,6 +893,10 @@
             <source>No anime match these filters</source>
             <translation>Bu filtrelere uyan anime yok</translation>
         </message>
+        <message>
+            <source>Anime by this studio</source>
+            <translation>Bu stüdyonun animeleri</translation>
+        </message>
     </context>
     <context>
         <name>AnimeDetails</name>
@@ -3235,6 +3239,10 @@
             <source> watched</source>
             <translation> izlendi</translation>
         </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>%1 tane daha göster</translation>
+        </message>
     </context>
     <context>
         <name>ContinueOn</name>
@@ -4505,6 +4513,10 @@
             <source>Your year in comics, novels, anime and music</source>
             <translation>Çizgi roman, roman, anime ve müzikle geçen yılın</translation>
         </message>
+        <message>
+            <source>%1, %2</source>
+            <translation>%1, %2</translation>
+        </message>
     </context>
     <context>
         <name>HomeWidget</name>
@@ -4954,6 +4966,30 @@
         <message>
             <source>Anime openings and endings and your own music, with lyrics, and a player that keeps going while you read. Still being built.</source>
             <translation>Anime açılış ve kapanışları ve kendi müziğin, sözleriyle; okurken çalmaya devam eden bir oynatıcı. Hâlâ yapım aşamasında.</translation>
+        </message>
+        <message>
+            <source>Your name on Home</source>
+            <translation>Ana sayfadaki adın</translation>
+        </message>
+        <message>
+            <source>Said after the greeting: “Good evening, Sam”.</source>
+            <translation>Selamlamanın ardından: “İyi akşamlar, Sam”.</translation>
+        </message>
+        <message>
+            <source>No name</source>
+            <translation>Ad yok</translation>
+        </message>
+        <message>
+            <source>Your own greeting</source>
+            <translation>Kendi selamlaman</translation>
+        </message>
+        <message>
+            <source>Shown on Home instead of “Good morning”; {time} puts that back in, {name} your name.</source>
+            <translation>Ana sayfada “Günaydın” yerine gösterilir; {time} onu geri koyar, {name} adını.</translation>
+        </message>
+        <message>
+            <source>Time of day</source>
+            <translation>Günün saati</translation>
         </message>
     </context>
     <context>
@@ -5694,6 +5730,38 @@
             <source>Hide until there is something new</source>
             <translation>Yeni bir şey olana kadar gizle</translation>
         </message>
+        <message>
+            <source>Music</source>
+            <translation>Müzik</translation>
+        </message>
+        <message>
+            <source>Filter songs</source>
+            <translation>Şarkıları filtrele</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 şarkı</translation>
+        </message>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 şarkı</translation>
+        </message>
+        <message>
+            <source>Play all</source>
+            <translation>Tümünü çal</translation>
+        </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>%1 tane daha göster</translation>
+        </message>
+        <message>
+            <source>No songs saved yet</source>
+            <translation>Henüz kaydedilmiş şarkı yok</translation>
+        </message>
+        <message>
+            <source>In Music, an anime's page or Now Playing, choose “Save to library” on a song to keep it here.</source>
+            <translation>Müzik'te, bir animenin sayfasında ya da Şimdi Çalıyor'da bir şarkıda “Kitaplığa kaydet”i seçerek burada tut.</translation>
+        </message>
     </context>
     <context>
         <name>LibrarySettings</name>
@@ -5952,6 +6020,26 @@
         <message>
             <source>Use the name %1</source>
             <translation>%1 adını kullan</translation>
+        </message>
+        <message>
+            <source>Check for new chapters and episodes</source>
+            <translation>Yeni bölümleri kontrol et</translation>
+        </message>
+        <message>
+            <source>Saved comics, novels and anime are checked in the background while SCANCORE is open.</source>
+            <translation>Kaydedilen çizgi romanlar, romanlar ve animeler SCANCORE açıkken arka planda kontrol edilir.</translation>
+        </message>
+        <message>
+            <source>Notify me about new chapters and episodes</source>
+            <translation>Yeni bölümleri bildir</translation>
+        </message>
+        <message>
+            <source>Android is not showing SCANCORE's notifications</source>
+            <translation>Android, SCANCORE bildirimlerini göstermiyor</translation>
+        </message>
+        <message>
+            <source>Allow them, or switch them back on in Android's settings for SCANCORE.</source>
+            <translation>İzin ver ya da SCANCORE için Android ayarlarından yeniden aç.</translation>
         </message>
     </context>
     <context>
@@ -7251,6 +7339,14 @@
         <message>
             <source>%1 songs in the queue</source>
             <translation>Sırada %1 şarkı</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Kitaplıktan kaldır</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>Kitaplığa kaydet</translation>
         </message>
     </context>
     <context>
@@ -9556,6 +9652,77 @@
         </message>
     </context>
     <context>
+        <name>RetroNowPlaying</name>
+        <message>
+            <source>Lyrics</source>
+            <translation>Sözler</translation>
+        </message>
+        <message>
+            <source>Queue</source>
+            <translation>Sıra</translation>
+        </message>
+        <message>
+            <source>Now playing</source>
+            <translation>Şimdi çalıyor</translation>
+        </message>
+        <message>
+            <source>Close</source>
+            <translation>Kapat</translation>
+        </message>
+        <message>
+            <source>SCANCORE · MUSIC</source>
+            <translation>SCANCORE · MÜZİK</translation>
+        </message>
+        <message>
+            <source>Position</source>
+            <translation>Konum</translation>
+        </message>
+        <message>
+            <source>Previous</source>
+            <translation>Önceki</translation>
+        </message>
+        <message>
+            <source>Play</source>
+            <translation>Oynat</translation>
+        </message>
+        <message>
+            <source>Pause</source>
+            <translation>Duraklat</translation>
+        </message>
+        <message>
+            <source>Next</source>
+            <translation>Sonraki</translation>
+        </message>
+        <message>
+            <source>shuffle</source>
+            <translation>karıştır</translation>
+        </message>
+        <message>
+            <source>repeat one</source>
+            <translation>birini tekrarla</translation>
+        </message>
+        <message>
+            <source>repeat</source>
+            <translation>tekrarla</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>kaydedildi</translation>
+        </message>
+        <message>
+            <source>save</source>
+            <translation>kaydet</translation>
+        </message>
+        <message>
+            <source>video</source>
+            <translation>video</translation>
+        </message>
+        <message>
+            <source>up next: %1</source>
+            <translation>sıradaki: %1</translation>
+        </message>
+    </context>
+    <context>
         <name>Reviews</name>
         <message>
             <source>Review saved</source>
@@ -10753,6 +10920,18 @@
         <message>
             <source>More</source>
             <translation>Daha fazla</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Kitaplıktan kaldır</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>Kitaplığa kaydet</translation>
+        </message>
+        <message>
+            <source>Saved to your library</source>
+            <translation>Kitaplığına kaydedildi</translation>
         </message>
     </context>
     <context>
@@ -13489,6 +13668,18 @@
             <source>%1 extensions were updated</source>
             <translation>%1 eklenti güncellendi</translation>
         </message>
+        <message>
+            <source>The page did not load.</source>
+            <translation>Sayfa yüklenmedi.</translation>
+        </message>
+        <message>
+            <source>This page's picture could not be read.</source>
+            <translation>Bu sayfanın resmi okunamadı.</translation>
+        </message>
+        <message>
+            <source>The page could not be saved for copying.</source>
+            <translation>Sayfa kopyalamak için kaydedilemedi.</translation>
+        </message>
     </context>
     <context>
         <name>sc::Library</name>
@@ -13507,6 +13698,22 @@
         <message>
             <source>%1 new chapters in your library</source>
             <translation>Kitaplığında %1 yeni bölüm</translation>
+        </message>
+        <message>
+            <source>Episode %1</source>
+            <translation>Bölüm %1</translation>
+        </message>
+        <message>
+            <source>1 new episode</source>
+            <translation>1 yeni bölüm</translation>
+        </message>
+        <message>
+            <source>%1 new episodes</source>
+            <translation>%1 yeni bölüm</translation>
+        </message>
+        <message>
+            <source>%1 new chapters and episodes in your library</source>
+            <translation>Kitaplığında %1 yeni bölüm ve kısım</translation>
         </message>
     </context>
     <context>

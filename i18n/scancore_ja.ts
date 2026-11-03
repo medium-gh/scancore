@@ -893,6 +893,10 @@
             <source>No anime match these filters</source>
             <translation>この条件に合うアニメはありません</translation>
         </message>
+        <message>
+            <source>Anime by this studio</source>
+            <translation>このスタジオのアニメ</translation>
+        </message>
     </context>
     <context>
         <name>AnimeDetails</name>
@@ -3235,6 +3239,10 @@
             <source> watched</source>
             <translation> 視聴済み</translation>
         </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>さらに %1 件表示</translation>
+        </message>
     </context>
     <context>
         <name>ContinueOn</name>
@@ -4505,6 +4513,10 @@
             <source>Your year in comics, novels, anime and music</source>
             <translation>コミック・小説・アニメ・音楽で振り返るあなたの1年</translation>
         </message>
+        <message>
+            <source>%1, %2</source>
+            <translation>%1、%2</translation>
+        </message>
     </context>
     <context>
         <name>HomeWidget</name>
@@ -4954,6 +4966,30 @@
         <message>
             <source>Anime openings and endings and your own music, with lyrics, and a player that keeps going while you read. Still being built.</source>
             <translation>アニメのOP・EDと手持ちの音楽を歌詞付きで。読んでいる間も再生が続きます。開発中です。</translation>
+        </message>
+        <message>
+            <source>Your name on Home</source>
+            <translation>ホームでの名前</translation>
+        </message>
+        <message>
+            <source>Said after the greeting: “Good evening, Sam”.</source>
+            <translation>あいさつの後に付きます：「こんばんは、Sam」。</translation>
+        </message>
+        <message>
+            <source>No name</source>
+            <translation>名前なし</translation>
+        </message>
+        <message>
+            <source>Your own greeting</source>
+            <translation>自分のあいさつ</translation>
+        </message>
+        <message>
+            <source>Shown on Home instead of “Good morning”; {time} puts that back in, {name} your name.</source>
+            <translation>ホームで「おはようございます」の代わりに表示されます。{time} でそれを戻し、{name} で名前を入れます。</translation>
+        </message>
+        <message>
+            <source>Time of day</source>
+            <translation>時間帯</translation>
         </message>
     </context>
     <context>
@@ -5694,6 +5730,38 @@
             <source>Hide until there is something new</source>
             <translation>新しいことがあるまで隠す</translation>
         </message>
+        <message>
+            <source>Music</source>
+            <translation>音楽</translation>
+        </message>
+        <message>
+            <source>Filter songs</source>
+            <translation>曲を絞り込む</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 曲</translation>
+        </message>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 曲</translation>
+        </message>
+        <message>
+            <source>Play all</source>
+            <translation>すべて再生</translation>
+        </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>さらに %1 件表示</translation>
+        </message>
+        <message>
+            <source>No songs saved yet</source>
+            <translation>保存した曲はまだありません</translation>
+        </message>
+        <message>
+            <source>In Music, an anime's page or Now Playing, choose “Save to library” on a song to keep it here.</source>
+            <translation>ミュージック、アニメのページ、再生中の画面で曲の「ライブラリに保存」を選ぶとここに残ります。</translation>
+        </message>
     </context>
     <context>
         <name>LibrarySettings</name>
@@ -5952,6 +6020,26 @@
         <message>
             <source>Use the name %1</source>
             <translation>%1 の名前を使う</translation>
+        </message>
+        <message>
+            <source>Check for new chapters and episodes</source>
+            <translation>新しい章とエピソードを確認</translation>
+        </message>
+        <message>
+            <source>Saved comics, novels and anime are checked in the background while SCANCORE is open.</source>
+            <translation>保存したコミック、小説、アニメは SCANCORE を開いている間バックグラウンドで確認されます。</translation>
+        </message>
+        <message>
+            <source>Notify me about new chapters and episodes</source>
+            <translation>新しい章とエピソードを通知</translation>
+        </message>
+        <message>
+            <source>Android is not showing SCANCORE's notifications</source>
+            <translation>Android が SCANCORE の通知を表示していません</translation>
+        </message>
+        <message>
+            <source>Allow them, or switch them back on in Android's settings for SCANCORE.</source>
+            <translation>許可するか、Android の SCANCORE の設定でもう一度オンにしてください。</translation>
         </message>
     </context>
     <context>
@@ -7251,6 +7339,14 @@
         <message>
             <source>%1 songs in the queue</source>
             <translation>キューに%1曲</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>ライブラリから削除</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>ライブラリに保存</translation>
         </message>
     </context>
     <context>
@@ -9556,6 +9652,77 @@
         </message>
     </context>
     <context>
+        <name>RetroNowPlaying</name>
+        <message>
+            <source>Lyrics</source>
+            <translation>歌詞</translation>
+        </message>
+        <message>
+            <source>Queue</source>
+            <translation>キュー</translation>
+        </message>
+        <message>
+            <source>Now playing</source>
+            <translation>再生中</translation>
+        </message>
+        <message>
+            <source>Close</source>
+            <translation>閉じる</translation>
+        </message>
+        <message>
+            <source>SCANCORE · MUSIC</source>
+            <translation>SCANCORE · ミュージック</translation>
+        </message>
+        <message>
+            <source>Position</source>
+            <translation>再生位置</translation>
+        </message>
+        <message>
+            <source>Previous</source>
+            <translation>前へ</translation>
+        </message>
+        <message>
+            <source>Play</source>
+            <translation>再生</translation>
+        </message>
+        <message>
+            <source>Pause</source>
+            <translation>一時停止</translation>
+        </message>
+        <message>
+            <source>Next</source>
+            <translation>次へ</translation>
+        </message>
+        <message>
+            <source>shuffle</source>
+            <translation>シャッフル</translation>
+        </message>
+        <message>
+            <source>repeat one</source>
+            <translation>1 曲リピート</translation>
+        </message>
+        <message>
+            <source>repeat</source>
+            <translation>リピート</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>保存済み</translation>
+        </message>
+        <message>
+            <source>save</source>
+            <translation>保存</translation>
+        </message>
+        <message>
+            <source>video</source>
+            <translation>ビデオ</translation>
+        </message>
+        <message>
+            <source>up next: %1</source>
+            <translation>次：%1</translation>
+        </message>
+    </context>
+    <context>
         <name>Reviews</name>
         <message>
             <source>Review saved</source>
@@ -10753,6 +10920,18 @@
         <message>
             <source>More</source>
             <translation>もっと見る</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>ライブラリから削除</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>ライブラリに保存</translation>
+        </message>
+        <message>
+            <source>Saved to your library</source>
+            <translation>ライブラリに保存しました</translation>
         </message>
     </context>
     <context>
@@ -13489,6 +13668,18 @@
             <source>%1 extensions were updated</source>
             <translation>%1 個の拡張機能を更新しました</translation>
         </message>
+        <message>
+            <source>The page did not load.</source>
+            <translation>ページを読み込めませんでした。</translation>
+        </message>
+        <message>
+            <source>This page's picture could not be read.</source>
+            <translation>このページの画像を読み取れませんでした。</translation>
+        </message>
+        <message>
+            <source>The page could not be saved for copying.</source>
+            <translation>コピー用にページを保存できませんでした。</translation>
+        </message>
     </context>
     <context>
         <name>sc::Library</name>
@@ -13507,6 +13698,22 @@
         <message>
             <source>%1 new chapters in your library</source>
             <translation>ライブラリに新しいチャプターが%1件</translation>
+        </message>
+        <message>
+            <source>Episode %1</source>
+            <translation>エピソード %1</translation>
+        </message>
+        <message>
+            <source>1 new episode</source>
+            <translation>新しいエピソード 1 件</translation>
+        </message>
+        <message>
+            <source>%1 new episodes</source>
+            <translation>新しいエピソード %1 件</translation>
+        </message>
+        <message>
+            <source>%1 new chapters and episodes in your library</source>
+            <translation>ライブラリに新しい章とエピソードが %1 件</translation>
         </message>
     </context>
     <context>

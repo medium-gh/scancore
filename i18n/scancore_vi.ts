@@ -893,6 +893,10 @@
             <source>No anime match these filters</source>
             <translation>Không có anime nào khớp các bộ lọc này</translation>
         </message>
+        <message>
+            <source>Anime by this studio</source>
+            <translation>Anime của xưởng này</translation>
+        </message>
     </context>
     <context>
         <name>AnimeDetails</name>
@@ -3235,6 +3239,10 @@
             <source> watched</source>
             <translation> đã xem</translation>
         </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>Hiện thêm %1</translation>
+        </message>
     </context>
     <context>
         <name>ContinueOn</name>
@@ -4505,6 +4513,10 @@
             <source>Your year in comics, novels, anime and music</source>
             <translation>Năm của bạn với truyện tranh, tiểu thuyết, anime và âm nhạc</translation>
         </message>
+        <message>
+            <source>%1, %2</source>
+            <translation>%1, %2</translation>
+        </message>
     </context>
     <context>
         <name>HomeWidget</name>
@@ -4954,6 +4966,30 @@
         <message>
             <source>Anime openings and endings and your own music, with lyrics, and a player that keeps going while you read. Still being built.</source>
             <translation>Nhạc mở đầu, kết thúc anime và nhạc của riêng bạn, kèm lời bài hát, cùng trình phát vẫn chạy khi bạn đọc. Vẫn đang được xây dựng.</translation>
+        </message>
+        <message>
+            <source>Your name on Home</source>
+            <translation>Tên bạn ở Trang chủ</translation>
+        </message>
+        <message>
+            <source>Said after the greeting: “Good evening, Sam”.</source>
+            <translation>Nằm sau lời chào: “Chào buổi tối, Sam”.</translation>
+        </message>
+        <message>
+            <source>No name</source>
+            <translation>Không có tên</translation>
+        </message>
+        <message>
+            <source>Your own greeting</source>
+            <translation>Lời chào của riêng bạn</translation>
+        </message>
+        <message>
+            <source>Shown on Home instead of “Good morning”; {time} puts that back in, {name} your name.</source>
+            <translation>Hiện ở Trang chủ thay cho “Chào buổi sáng”; {time} đưa lời đó trở lại, {name} là tên bạn.</translation>
+        </message>
+        <message>
+            <source>Time of day</source>
+            <translation>Thời điểm trong ngày</translation>
         </message>
     </context>
     <context>
@@ -5694,6 +5730,38 @@
             <source>Hide until there is something new</source>
             <translation>Ẩn cho đến khi có gì mới</translation>
         </message>
+        <message>
+            <source>Music</source>
+            <translation>Âm nhạc</translation>
+        </message>
+        <message>
+            <source>Filter songs</source>
+            <translation>Lọc bài hát</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 bài hát</translation>
+        </message>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 bài hát</translation>
+        </message>
+        <message>
+            <source>Play all</source>
+            <translation>Phát tất cả</translation>
+        </message>
+        <message>
+            <source>Show %1 more</source>
+            <translation>Hiện thêm %1</translation>
+        </message>
+        <message>
+            <source>No songs saved yet</source>
+            <translation>Chưa lưu bài hát nào</translation>
+        </message>
+        <message>
+            <source>In Music, an anime's page or Now Playing, choose “Save to library” on a song to keep it here.</source>
+            <translation>Trong Nhạc, trang anime hoặc Đang phát, chọn “Lưu vào thư viện” ở một bài hát để giữ nó ở đây.</translation>
+        </message>
     </context>
     <context>
         <name>LibrarySettings</name>
@@ -5952,6 +6020,26 @@
         <message>
             <source>Use the name %1</source>
             <translation>Dùng tên %1</translation>
+        </message>
+        <message>
+            <source>Check for new chapters and episodes</source>
+            <translation>Kiểm tra chương và tập mới</translation>
+        </message>
+        <message>
+            <source>Saved comics, novels and anime are checked in the background while SCANCORE is open.</source>
+            <translation>Truyện tranh, tiểu thuyết và anime đã lưu được kiểm tra ngầm khi SCANCORE đang mở.</translation>
+        </message>
+        <message>
+            <source>Notify me about new chapters and episodes</source>
+            <translation>Báo cho tôi chương và tập mới</translation>
+        </message>
+        <message>
+            <source>Android is not showing SCANCORE's notifications</source>
+            <translation>Android không hiển thị thông báo của SCANCORE</translation>
+        </message>
+        <message>
+            <source>Allow them, or switch them back on in Android's settings for SCANCORE.</source>
+            <translation>Hãy cho phép, hoặc bật lại trong cài đặt Android cho SCANCORE.</translation>
         </message>
     </context>
     <context>
@@ -7251,6 +7339,14 @@
         <message>
             <source>%1 songs in the queue</source>
             <translation>%1 bài trong hàng chờ</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Xoá khỏi thư viện</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>Lưu vào thư viện</translation>
         </message>
     </context>
     <context>
@@ -9556,6 +9652,77 @@
         </message>
     </context>
     <context>
+        <name>RetroNowPlaying</name>
+        <message>
+            <source>Lyrics</source>
+            <translation>Lời bài hát</translation>
+        </message>
+        <message>
+            <source>Queue</source>
+            <translation>Hàng chờ</translation>
+        </message>
+        <message>
+            <source>Now playing</source>
+            <translation>Đang phát</translation>
+        </message>
+        <message>
+            <source>Close</source>
+            <translation>Đóng</translation>
+        </message>
+        <message>
+            <source>SCANCORE · MUSIC</source>
+            <translation>SCANCORE · NHẠC</translation>
+        </message>
+        <message>
+            <source>Position</source>
+            <translation>Vị trí</translation>
+        </message>
+        <message>
+            <source>Previous</source>
+            <translation>Trước</translation>
+        </message>
+        <message>
+            <source>Play</source>
+            <translation>Phát</translation>
+        </message>
+        <message>
+            <source>Pause</source>
+            <translation>Tạm dừng</translation>
+        </message>
+        <message>
+            <source>Next</source>
+            <translation>Tiếp</translation>
+        </message>
+        <message>
+            <source>shuffle</source>
+            <translation>trộn bài</translation>
+        </message>
+        <message>
+            <source>repeat one</source>
+            <translation>lặp một bài</translation>
+        </message>
+        <message>
+            <source>repeat</source>
+            <translation>lặp lại</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>đã lưu</translation>
+        </message>
+        <message>
+            <source>save</source>
+            <translation>lưu</translation>
+        </message>
+        <message>
+            <source>video</source>
+            <translation>video</translation>
+        </message>
+        <message>
+            <source>up next: %1</source>
+            <translation>tiếp theo: %1</translation>
+        </message>
+    </context>
+    <context>
         <name>Reviews</name>
         <message>
             <source>Review saved</source>
@@ -10753,6 +10920,18 @@
         <message>
             <source>More</source>
             <translation>Thêm</translation>
+        </message>
+        <message>
+            <source>Remove from library</source>
+            <translation>Xoá khỏi thư viện</translation>
+        </message>
+        <message>
+            <source>Save to library</source>
+            <translation>Lưu vào thư viện</translation>
+        </message>
+        <message>
+            <source>Saved to your library</source>
+            <translation>Đã lưu vào thư viện</translation>
         </message>
     </context>
     <context>
@@ -13489,6 +13668,18 @@
             <source>%1 extensions were updated</source>
             <translation>Đã cập nhật %1 tiện ích</translation>
         </message>
+        <message>
+            <source>The page did not load.</source>
+            <translation>Trang không tải được.</translation>
+        </message>
+        <message>
+            <source>This page's picture could not be read.</source>
+            <translation>Không đọc được ảnh của trang này.</translation>
+        </message>
+        <message>
+            <source>The page could not be saved for copying.</source>
+            <translation>Không thể lưu trang để sao chép.</translation>
+        </message>
     </context>
     <context>
         <name>sc::Library</name>
@@ -13507,6 +13698,22 @@
         <message>
             <source>%1 new chapters in your library</source>
             <translation>%1 chương mới trong thư viện của bạn</translation>
+        </message>
+        <message>
+            <source>Episode %1</source>
+            <translation>Tập %1</translation>
+        </message>
+        <message>
+            <source>1 new episode</source>
+            <translation>1 tập mới</translation>
+        </message>
+        <message>
+            <source>%1 new episodes</source>
+            <translation>%1 tập mới</translation>
+        </message>
+        <message>
+            <source>%1 new chapters and episodes in your library</source>
+            <translation>%1 chương và tập mới trong thư viện</translation>
         </message>
     </context>
     <context>
