@@ -1,0 +1,125 @@
+name: Nightly
+
+# Every night, the newest commit on the pre-release branch whose test build
+# passed (release.yml builds every package on each push there) is published
+# as the rolling "nightly" pre-release: the same packages, renamed with the
+# date and commit, nothing built again. It is skipped when that commit is
+# already the nightly. Installed copies never take a pre-release as an
+# update, and the Flatpak and package manifests only follow v* tags.
+on:
+  schedule:
+    # 03:00 in India.
+    - cron: "30 21 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: Publish again even when the nightly is already this commit
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  # Reading the test build's artifacts.
+  actions: read
+
+concurrency:
+  group: nightly
+  cancel-in-progress: false
+
+jobs:
+  nightly:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: pre-release
+          fetch-depth: 0
+      - name: Newest passing test build
+        id: pick
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # The newest successful test build of pre-release with every package.
+          RUN="" SHA=""
+          for CANDIDATE in $(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/release.yml/runs?branch=pre-release&event=push&status=success&per_page=10" \
+                               -q '.workflow_runs[] | "\(.id):\(.head_sha)"'); do
+            HAVE=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/${CANDIDATE%%:*}/artifacts?per_page=100" -q '[.artifacts[] | select(.expired | not) | .name] | join(" ")')
+            MISSING=""
+            for NAME in scancore-Windows scancore-macOS scancore-AppImage scancore-Android scancore-Android-armv7 scancore-Flatpak; do
+              case " $HAVE " in *" $NAME "*) ;; *) MISSING=1 ;; esac
+            done
+            if [ -z "$MISSING" ]; then RUN=${CANDIDATE%%:*}; SHA=${CANDIDATE#*:}; break; fi
+          done
+          if [ -z "$RUN" ]; then
+            echo "::notice::No complete passing test build on pre-release: no nightly tonight."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "${{ github.event.inputs.force }}" != true ] && git tag --points-at "$SHA" | grep -q '^v[0-9]'; then
+            echo "::notice::$SHA is a release ($(git tag --points-at "$SHA" | grep '^v' | head -1)): no nightly needed."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          CURRENT=$(gh release view nightly --repo "$GITHUB_REPOSITORY" --json targetCommitish -q .targetCommitish 2>/dev/null || true)
+          OLD=$(git rev-parse -q --verify "refs/tags/nightly^{commit}" 2>/dev/null || true)
+          if [ "${{ github.event.inputs.force }}" != true ] && { [ "$CURRENT" = "$SHA" ] || [ "$OLD" = "$SHA" ]; }; then
+            echo "::notice::The nightly is already $SHA."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "run=$RUN" >> "$GITHUB_OUTPUT"
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "short=${SHA:0:7}" >> "$GITHUB_OUTPUT"
+          echo "date=$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
+          echo "Nightly from test build $RUN ($SHA)."
+      - uses: actions/download-artifact@v4
+        if: steps.pick.outputs.skip != 'true'
+        with:
+          path: artifacts
+          merge-multiple: true
+          run-id: ${{ steps.pick.outputs.run }}
+          github-token: ${{ github.token }}
+      - name: Name the packages and write the notes
+        if: steps.pick.outputs.skip != 'true'
+        env:
+          SHA: ${{ steps.pick.outputs.sha }}
+          SHORT: ${{ steps.pick.outputs.short }}
+          DATE: ${{ steps.pick.outputs.date }}
+        run: |
+          mkdir dist
+          # SCANCORE-2.16.12-windows-x64-setup.exe -> SCANCORE-nightly-20261103-ffe111a-windows-x64-setup.exe
+          for FILE in artifacts/SCANCORE-*; do
+            NAME=$(basename "$FILE" | sed -E "s/^SCANCORE-[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?-/SCANCORE-nightly-$DATE-$SHORT-/")
+            cp "$FILE" "dist/$NAME"
+          done
+          ls -l dist
+          STABLE=$(git describe --tags --abbrev=0 --match 'v[0-9]*' "$SHA" 2>/dev/null || true)
+          {
+            echo "**Nightly build of [\`$SHORT\`](https://github.com/$GITHUB_REPOSITORY/commit/$SHA), $DATE.** Untested beyond the automatic checks: for trying what is coming next. Installed copies never update to it by themselves, and it updates to the next release when that is out. Export a backup first (Settings → Storage → Back up everything)."
+            echo
+            if [ -n "$STABLE" ]; then
+              echo "Since $STABLE:"
+              echo
+              git log --format='- %s' "$STABLE..$SHA" | head -40
+              echo
+            fi
+            echo "| System | Download |"
+            echo "| --- | --- |"
+            echo "| Windows | \`windows-x64-setup.exe\` or portable \`.zip\` |"
+            echo "| macOS 13+ | \`macos-universal.dmg\` |"
+            echo "| Linux | \`linux-x86_64.AppImage\` or \`.flatpak\` |"
+            echo "| Android 9+ | \`android-arm64.apk\` (32-bit phones: \`android-armv7.apk\`) |"
+          } > notes.md
+          cat notes.md
+      - name: Publish
+        if: steps.pick.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ steps.pick.outputs.sha }}
+          DATE: ${{ steps.pick.outputs.date }}
+        run: |
+          # One rolling release: last night's files and tag make way.
+          gh release delete nightly --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes 2>/dev/null || true
+          git push --quiet origin ":refs/tags/nightly" 2>/dev/null || true
+          gh release create nightly dist/* --repo "$GITHUB_REPOSITORY" --target "$SHA" --prerelease --latest=false \
+            --title "SCANCORE nightly $DATE" --notes-file notes.md
