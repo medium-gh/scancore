@@ -52,9 +52,19 @@ class ApkLoader(
         val jar = File(cacheDir, "$pkg-$stamp.jar")
         val manifest = File(cacheDir, "$pkg-$stamp.meta")
         if (!jar.isFile || !manifest.isFile) {
-            verify(apk, signer)
-            convert(bytes, jar)
-            manifest.writeText(metadata(apk).entries.joinToString("\n") { "${it.key}=${it.value}" })
+            // Keiyoushi also publishes each extension as a signed Java jar:
+            // their builds are minified since lib 1.6, and dex2jar turns the
+            // minified code into classes Java refuses ("Bad type on operand
+            // stack"). Suwayomi installs these jars too.
+            if (path.endsWith(".jar")) {
+                val meta = verifyJar(apk, signer)
+                copyJar(apk, jar)
+                manifest.writeText(meta.entries.joinToString("\n") { "${it.key}=${it.value}" })
+            } else {
+                verify(apk, signer)
+                convert(bytes, jar)
+                manifest.writeText(metadata(apk).entries.joinToString("\n") { "${it.key}=${it.value}" })
+            }
             // Older conversions of this extension are no longer needed.
             cacheDir.listFiles { f -> f.name.startsWith("$pkg-") && !f.name.startsWith("$pkg-$stamp") }?.forEach { it.delete() }
         }
@@ -75,7 +85,7 @@ class ApkLoader(
         val loader = ChildFirstClassLoader(arrayOf(jar.toURI().toURL()), javaClass.classLoader)
         val instances =
             classes.map { name ->
-                val className = if (name.startsWith(".")) pkg + name else name
+                val className = if (name.startsWith(".")) (meta["package"]?.takeIf { it.isNotEmpty() } ?: pkg) + name else name
                 Class.forName(className, false, loader).getDeclaredConstructor().newInstance()
             }
         return if (anime) {
@@ -172,6 +182,72 @@ class ApkLoader(
             val signers = result.signerCertificates.map { sha256(it.encoded) }
             if (signer.lowercase() !in signers) throw HostError("The extension is signed with a key SCANCORE did not trust.", 403)
         }
+    }
+
+    // A jar extension: every file but the signature's own must be signed by
+    // the trusted key (Java checks each entry's digest as it is read).
+    // Returns the meta-data of its AndroidManifest.xml, which is plain XML.
+    private fun verifyJar(
+        file: File,
+        signer: String?,
+    ): Map<String, String> {
+        var manifest: ByteArray? = null
+        try {
+            java.util.jar.JarFile(file, true).use { jar ->
+                var signed = 0
+                for (entry in jar.entries()) {
+                    if (entry.isDirectory) continue
+                    val bytes = jar.getInputStream(entry).use { it.readBytes() }
+                    val name = entry.name
+                    if (name.startsWith("META-INF/") && name.count { it == '/' } == 1) continue
+                    val signers = entry.codeSigners.orEmpty().map { sha256(it.signerCertPath.certificates.first().encoded) }
+                    if (signers.isEmpty()) throw HostError("The extension has a file that is not signed ($name).", 403)
+                    if (signer != null && signer.lowercase() !in signers) {
+                        throw HostError("The extension is signed with a key SCANCORE did not trust.", 403)
+                    }
+                    if (name == "AndroidManifest.xml") manifest = bytes
+                    signed++
+                }
+                if (signed == 0) throw HostError("The extension is not signed.", 403)
+            }
+        } catch (e: SecurityException) {
+            throw HostError("The extension's signature does not check out (${e.message}).", 403)
+        }
+        val xml = manifest ?: throw HostError("The extension has no manifest.", 422)
+        val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xml.inputStream())
+        val root = doc.documentElement
+        val out = mutableMapOf("versionName" to root.getAttribute("android:versionName"), "package" to root.getAttribute("package"))
+        val nodes = doc.getElementsByTagName("meta-data")
+        for (i in 0 until nodes.length) {
+            val e = nodes.item(i) as? Element ?: continue
+            out[e.getAttribute("android:name")] = e.getAttribute("android:value").replace('\n', ' ')
+        }
+        return out
+    }
+
+    // The checked jar without its signature (the date fix below edits the
+    // classes, which a signed jar would then refuse to load).
+    private fun copyJar(
+        source: File,
+        jar: File,
+    ) {
+        cacheDir.mkdirs()
+        val temp = File(jar.path + ".part")
+        temp.delete()
+        java.util.zip.ZipInputStream(source.inputStream().buffered()).use { input ->
+            java.util.zip.ZipOutputStream(temp.outputStream().buffered()).use { output ->
+                while (true) {
+                    val entry = input.nextEntry ?: break
+                    val name = entry.name
+                    if (entry.isDirectory || name.startsWith("META-INF/") || name.contains("..")) continue
+                    output.putNextEntry(java.util.zip.ZipEntry(name))
+                    input.copyTo(output)
+                    output.closeEntry()
+                }
+            }
+        }
+        BytecodeEditor.fixAndroidClasses(temp.toPath())
+        if (!temp.renameTo(jar)) throw HostError("The extension could not be saved.", 500)
     }
 
     private fun convert(

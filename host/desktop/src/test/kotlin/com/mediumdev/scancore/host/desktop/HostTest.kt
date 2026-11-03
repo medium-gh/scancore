@@ -154,6 +154,48 @@ class HostTest {
         assertEquals("/series/1", popular["items"]!!.jsonArray[0].jsonObject["url"]!!.jsonPrimitive.content)
     }
 
+    // The same extension as a signed Java jar (Keiyoushi publishes these):
+    // loaded without dex2jar, dates still Android's; a changed jar is not.
+    @Test
+    fun loadsSignedJar() {
+        val jar = File(apk.parentFile, "testext.jar")
+        assumeTrue("No test extension jar", jar.isFile)
+        val load = { pkg: String, path: String ->
+            runBlocking { host.handle("load", buildJsonObject { put("pkg", pkg); put("apk", path); put("signer", signer) }) }
+        }
+        val source = load("com.mediumdev.scancore.testext.jar", jar.path).jsonArray.single().jsonObject
+        assertEquals("Test Source", source["name"]!!.jsonPrimitive.content)
+        val chapters =
+            runBlocking {
+                host.handle(
+                    "chapters",
+                    buildJsonObject {
+                        put("pkg", "com.mediumdev.scancore.testext.jar")
+                        put("source", source["id"]!!.jsonPrimitive.content)
+                        put("url", "/series/1")
+                    },
+                )
+            }.jsonArray
+        val expected = java.time.LocalDate.of(2026, 1, 15).atStartOfDay(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli()
+        assertEquals(expected, chapters[0].jsonObject["uploaded"]!!.jsonPrimitive.long)
+
+        // One class swapped for another's bytes after signing.
+        val tampered = Files.createTempFile("tampered", ".jar").toFile()
+        java.util.zip.ZipFile(jar).use { zip ->
+            java.util.zip.ZipOutputStream(tampered.outputStream()).use { out ->
+                val classes = zip.entries().toList().filter { it.name.endsWith(".class") }
+                for (entry in zip.entries()) {
+                    out.putNextEntry(java.util.zip.ZipEntry(entry.name))
+                    val from = if (entry.name == classes[0].name) classes[1] else entry
+                    zip.getInputStream(from).use { it.copyTo(out) }
+                    out.closeEntry()
+                }
+            }
+        }
+        val refused = runCatching { load("com.mediumdev.scancore.testext.tampered", tampered.path) }.exceptionOrNull()
+        assertTrue("$refused", refused is com.mediumdev.scancore.host.HostError && refused.status == 403)
+    }
+
     @Test
     fun searchSendsFilters() {
         val filters = call("filters").jsonArray

@@ -104,6 +104,22 @@ fun apkTask(
         // The signer's fingerprint, for the tests' trust check.
         val certificate = KeyStore.getInstance("PKCS12").apply { keystore.inputStream().use { load(it, "testpass".toCharArray()) } }.getCertificate("test")
         File(work, "signer.txt").writeText(MessageDigest.getInstance("SHA-256").digest(certificate.encoded).joinToString("") { "%02x".format(it) })
+        // The same extension as Keiyoushi's jars are: the Java classes, the
+        // manifest as plain XML and the resources, jar-signed with that key.
+        val unsignedJar = File(work, "unsigned.jar")
+        ZipOutputStream(unsignedJar.outputStream()).use { out ->
+            out.putNextEntry(ZipEntry("AndroidManifest.xml"))
+            manifest.asFile.inputStream().use { it.copyTo(out) }
+            out.closeEntry()
+            val root = classes.get().asFile
+            for (file in root.walkTopDown().filter { it.extension == "class" }) {
+                out.putNextEntry(ZipEntry(file.relativeTo(root).invariantSeparatorsPath))
+                file.inputStream().use { it.copyTo(out) }
+                out.closeEntry()
+            }
+        }
+        run(File(System.getProperty("java.home"), "bin/jarsigner").path, "-keystore", keystore.path, "-storepass", "testpass",
+            "-signedjar", File(work, fileName.substringBeforeLast('.') + ".jar").path, unsignedJar.path, "test")
     }
 }
 
