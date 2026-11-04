@@ -608,6 +608,8 @@ Task *Account::signupOptions() {
         // Sites from before 2.16.3 don't say; keep the default for them.
         if (capabilities.value("recovery").isBool())
             options.insert(QStringLiteral("recovery"), capabilities.value("recovery").toBool());
+        // People delete their own account here (sites from 2.16.15 on).
+        options.insert(QStringLiteral("accountDeletion"), capabilities.value("accountDeletion").toBool());
         // scancore.onl sends {open, accessCode, accessCodeLength, help}; a
         // SCANCORE sync server sends true or false.
         const auto signup = capabilities.value("signup");

@@ -64,6 +64,9 @@ private:
     explicit Lock(QObject *parent = nullptr);
     void stateChanged(Qt::ApplicationState state);
     void setLocked(bool locked);
+    // Wrong PINs and the wait they earned, kept across restarts (closing the
+    // app must not reset the count).
+    void setFailures(int failures, qint64 waitUntil);
 
     // The stored PIN: {salt, hash, iterations, length}.
     QVariantMap m_pin;

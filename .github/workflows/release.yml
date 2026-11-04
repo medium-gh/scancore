@@ -51,7 +51,7 @@ jobs:
       # are published as they are (its run id), or empty to build.
       reuse: ${{ steps.reuse.outputs.run }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           ref: ${{ github.event.inputs.tag || github.ref }}
       - name: Tag matches CMakeLists.txt
@@ -170,7 +170,7 @@ jobs:
             os: macos-14
             mpv: macos-universal
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           ref: ${{ github.event.inputs.tag || github.ref }}
 
@@ -184,12 +184,12 @@ jobs:
 
       - name: MSVC
         if: runner.os == 'Windows'
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1
 
       - name: libmpv
         id: mpv
         continue-on-error: true
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: libmpv-${{ matrix.mpv }}
           path: build/libmpv/${{ matrix.mpv }}
@@ -212,7 +212,7 @@ jobs:
           echo "MPV_DIR=$dir" >> "$GITHUB_ENV"
 
       - name: Qt
-        uses: jurplel/install-qt-action@v4
+        uses: jurplel/install-qt-action@b344308e4483fc892e0d27b3cd1b173ebdd95f06 # v4.5.0
         with:
           version: ${{ matrix.qt || env.QT_VERSION }}
           modules: ${{ env.QT_MODULES }}
@@ -221,7 +221,7 @@ jobs:
       # Compiled objects kept between runs (tools/ci, ci.yml): a release
       # compiles only what changed since the last one.
       - name: Compiler cache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2
         with:
           key: release-${{ matrix.name }}
           max-size: 500M
@@ -327,7 +327,7 @@ jobs:
           mv SCANCORE.dmg "dist/SCANCORE-$VERSION-macos-universal.dmg"
           security delete-keychain "$KEYCHAIN"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: scancore-${{ matrix.name }}
           path: |
@@ -353,7 +353,7 @@ jobs:
           - { name: Windows, os: windows-2022 }
           - { name: macOS, os: macos-14 }
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           ref: ${{ github.event.inputs.tag || github.ref }}
           sparse-checkout: |
@@ -361,7 +361,7 @@ jobs:
             tests/fixtures/smoke
             tests/fixtures/video
           sparse-checkout-cone-mode: false
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: scancore-${{ matrix.name }}
           path: package
@@ -390,7 +390,7 @@ jobs:
           grep -E 'SMOKE|Smoke.qml|rror' smoke/log.txt || true
           hdiutil detach /Volumes/SCANCORE || true
           exit $status
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: scancore-smoke-${{ matrix.name }}
@@ -406,7 +406,7 @@ jobs:
     if: ${{ !cancelled() && needs.version.result == 'success' && needs.version.outputs.reuse == '' && needs.webengine.result == 'success' && needs.webengine.outputs.available == 'true' }}
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           ref: ${{ github.event.inputs.tag || github.ref }}
 
@@ -440,7 +440,7 @@ jobs:
           sudo ldconfig
 
       - name: Qt
-        uses: jurplel/install-qt-action@v4
+        uses: jurplel/install-qt-action@b344308e4483fc892e0d27b3cd1b173ebdd95f06 # v4.5.0
         with:
           version: ${{ needs.version.outputs.linuxQt }}
           modules: ${{ env.QT_MODULES }}
@@ -458,7 +458,7 @@ jobs:
       - name: libmpv
         id: mpv
         continue-on-error: true
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: libmpv-linux-x86_64
           path: build/libmpv/linux-x86_64
@@ -466,7 +466,7 @@ jobs:
       # Compiled objects kept between runs (tools/ci, ci.yml): a release
       # compiles only what changed since the last one.
       - name: Compiler cache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2
         with:
           key: release-AppImage
           max-size: 500M
@@ -531,7 +531,7 @@ jobs:
       # A test build keeps it (the tag publishes it from there); a release
       # hands it to appimage-release.
       - name: Keep the AppImage
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: scancore-AppImage
           path: dist/*.AppImage
@@ -544,14 +544,32 @@ jobs:
     if: ${{ !cancelled() && needs.version.outputs.test != 'true' && needs.version.outputs.reuse == '' && needs.appimage.result == 'success' && needs.publish.result == 'success' }}
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: scancore-AppImage
           path: dist
+      # Each package gets an Ed25519 signature (<file>.sig, base64), which
+      # the app's updater checks before it installs anything: no key, no
+      # release (an unsigned one could not update installed apps).
+      - name: Sign packages
+        env:
+          RELEASE_SIGNING_KEY: ${{ secrets.RELEASE_SIGNING_KEY }}
+        run: |
+          if [ -z "$RELEASE_SIGNING_KEY" ]; then
+            echo "::error::The RELEASE_SIGNING_KEY secret is not set; the app installs only signed updates."
+            exit 1
+          fi
+          umask 077
+          printf 'dist/*.AppImage\n' "$RELEASE_SIGNING_KEY" > "$RUNNER_TEMP/signing.pem"
+          for f in dist/*.AppImage; do
+            case "$f" in *.sig) continue ;; esac
+            openssl pkeyutl -sign -inkey "$RUNNER_TEMP/signing.pem" -rawin -in "$f" | base64 -w0 > "$f.sig"
+          done
+          rm -f "$RUNNER_TEMP/signing.pem"
       - name: Upload
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "${{ github.event.inputs.tag || github.ref_name }}" dist/*.AppImage --repo "$GITHUB_REPOSITORY" --clobber
+        run: gh release upload "${{ github.event.inputs.tag || github.ref_name }}" dist/*.AppImage dist/*.AppImage.sig --repo "$GITHUB_REPOSITORY" --clobber
 
   # A test build checks the Flatpak manifest here first (everything in it,
   # with the app built from this commit instead of the pinned tag) and keeps
@@ -563,7 +581,7 @@ jobs:
     if: needs.version.outputs.test == 'true'
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
       - name: Install Flatpak build tools
         timeout-minutes: 20
         run: |
@@ -573,7 +591,7 @@ jobs:
       # minutes, ffmpeg most of it) are built again only when their part of
       # the manifest changes, and --ccache keeps the app's compiled objects.
       - name: Flatpak build cache
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .flatpak-builder
           key: flatpak-${{ hashFiles('com.mediumdev.scancore.yml') }}-${{ github.sha }}
@@ -597,7 +615,7 @@ jobs:
           mkdir -p dist
           flatpak build-bundle --runtime-repo=https://dl.flathub.org/repo/flathub.flatpakrepo \
             repo "dist/SCANCORE-${{ needs.version.outputs.version }}-linux-x86_64.flatpak" com.mediumdev.scancore master
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: scancore-Flatpak
           path: dist/*.flatpak
@@ -617,14 +635,14 @@ jobs:
           - { name: arm64, qtArch: android_arm64_v8a, mpv: android-arm64, artifact: scancore-Android }
           - { name: armv7, qtArch: android_armv7, mpv: android-armv7, artifact: scancore-Android-armv7 }
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           ref: ${{ github.event.inputs.tag || github.ref }}
 
       - name: Version
         run: echo "VERSION=${{ needs.version.outputs.version }}" >> "$GITHUB_ENV"
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
         with:
           distribution: temurin
           java-version: 17
@@ -637,13 +655,13 @@ jobs:
           echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/27.2.12479018" >> "$GITHUB_ENV"
 
       - name: Qt (host)
-        uses: jurplel/install-qt-action@v4
+        uses: jurplel/install-qt-action@b344308e4483fc892e0d27b3cd1b173ebdd95f06 # v4.5.0
         with:
           version: 6.11.2
           cache: true
 
       - name: Qt (Android)
-        uses: jurplel/install-qt-action@v4
+        uses: jurplel/install-qt-action@b344308e4483fc892e0d27b3cd1b173ebdd95f06 # v4.5.0
         with:
           version: 6.11.2
           # Qt 6.7+ publishes Android packages under the all_os host.
@@ -657,7 +675,7 @@ jobs:
       # only when the script changes.
       - name: libmpv cache
         id: libmpv
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: build/libmpv/${{ matrix.mpv }}
           key: libmpv-${{ matrix.mpv }}-${{ hashFiles('tools/libmpv/build.sh') }}
@@ -672,7 +690,7 @@ jobs:
       # Compiled objects kept between runs (tools/ci, ci.yml): a release
       # compiles only what changed since the last one.
       - name: Compiler cache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@5ebbd400eff9e74630f759d94ddd7b6c26299639 # v1.2
         with:
           key: release-Android-${{ matrix.name }}
           max-size: 500M
@@ -696,7 +714,7 @@ jobs:
           cp build/src/android-build/build/outputs/apk/release/android-build-release-signed.apk \
             "dist/SCANCORE-$VERSION-android-${{ matrix.name }}.apk"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ${{ matrix.artifact }}
           path: dist/*.apk
@@ -710,18 +728,18 @@ jobs:
     # Pinned: ubuntu-latest moves to a new release from 19 October 2026.
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           ref: ${{ github.event.inputs.tag || github.ref }}
           sparse-checkout: CHANGELOG.md
           sparse-checkout-cone-mode: false
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         if: needs.version.outputs.reuse == ''
         with:
           path: artifacts
           merge-multiple: true
       # Every package from the test build of this commit, as it was built.
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         if: needs.version.outputs.reuse != ''
         with:
           path: artifacts
@@ -757,8 +775,26 @@ jobs:
           | Android 9+ | \`android-arm64.apk\` (32-bit phones: \`android-armv7.apk\`) |
           EOF
           cat notes.md
+      # Each package gets an Ed25519 signature (<file>.sig, base64), which
+      # the app's updater checks before it installs anything: no key, no
+      # release (an unsigned one could not update installed apps).
+      - name: Sign packages
+        env:
+          RELEASE_SIGNING_KEY: ${{ secrets.RELEASE_SIGNING_KEY }}
+        run: |
+          if [ -z "$RELEASE_SIGNING_KEY" ]; then
+            echo "::error::The RELEASE_SIGNING_KEY secret is not set; the app installs only signed updates."
+            exit 1
+          fi
+          umask 077
+          printf 'artifacts/SCANCORE-*\n' "$RELEASE_SIGNING_KEY" > "$RUNNER_TEMP/signing.pem"
+          for f in artifacts/SCANCORE-*; do
+            case "$f" in *.sig) continue ;; esac
+            openssl pkeyutl -sign -inkey "$RUNNER_TEMP/signing.pem" -rawin -in "$f" | base64 -w0 > "$f.sig"
+          done
+          rm -f "$RUNNER_TEMP/signing.pem"
       - name: Publish release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           tag_name: ${{ github.event.inputs.tag || github.ref_name }}
           name: SCANCORE ${{ github.event.inputs.tag || github.ref_name }}
@@ -777,7 +813,7 @@ jobs:
     if: ${{ !cancelled() && needs.publish.result == 'success' && needs.version.outputs.prerelease != 'true' }}
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           ref: ${{ github.event.inputs.tag || github.ref }}
       - name: Write and attach the manifests

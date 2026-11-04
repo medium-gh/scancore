@@ -49,6 +49,7 @@ Column {
                 width: Math.min(implicitWidth, shelf.width - Theme.gutter - actions.width - Theme.gutter)
                 elide: Text.ElideRight
                 text: shelf.title
+                textFormat: Text.PlainText
                 color: Theme.text
                 font.family: Theme.fontDisplay
                 font.pixelSize: Theme.textXl
@@ -58,6 +59,7 @@ Column {
             Text {
                 visible: shelf.subtitle.length > 0
                 text: shelf.subtitle
+                textFormat: Text.PlainText
                 color: Theme.textFaint
                 font.family: Theme.fontSans
                 font.pixelSize: Theme.textSm

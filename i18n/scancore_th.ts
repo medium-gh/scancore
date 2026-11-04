@@ -438,6 +438,26 @@
             <source>Sign out anyway</source>
             <translation>ออกจากระบบต่อไป</translation>
         </message>
+        <message>
+            <source>Delete account…</source>
+            <translation>ลบบัญชี…</translation>
+        </message>
+        <message>
+            <source>Delete your account on %1?</source>
+            <translation>ลบบัญชีของคุณบน %1 หรือไม่</translation>
+        </message>
+        <message>
+            <source>Your account goes with its library, reading progress, history, synced devices, lists and follows. Comments stay as “[deleted]”. This cannot be undone. Enter your password to go on.</source>
+            <translation>คลังเก็บ ความคืบหน้าการอ่าน ประวัติ อุปกรณ์ที่ซิงค์ รายการ และการติดตามจะถูกลบไปพร้อมบัญชี ความคิดเห็นจะยังอยู่เป็น “[deleted]” ย้อนกลับไม่ได้ ใส่รหัสผ่านเพื่อดำเนินการต่อ</translation>
+        </message>
+        <message>
+            <source>Delete account</source>
+            <translation>ลบบัญชี</translation>
+        </message>
+        <message>
+            <source>Your account is deleted.</source>
+            <translation>ลบบัญชีของคุณแล้ว</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>

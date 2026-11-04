@@ -438,6 +438,26 @@
             <source>Sign out anyway</source>
             <translation>फिर भी साइन आउट करें</translation>
         </message>
+        <message>
+            <source>Delete account…</source>
+            <translation>खाता हटाएँ…</translation>
+        </message>
+        <message>
+            <source>Delete your account on %1?</source>
+            <translation>%1 पर अपना खाता हटाएँ?</translation>
+        </message>
+        <message>
+            <source>Your account goes with its library, reading progress, history, synced devices, lists and follows. Comments stay as “[deleted]”. This cannot be undone. Enter your password to go on.</source>
+            <translation>खाते के साथ उसकी लाइब्रेरी, पढ़ने की प्रगति, इतिहास, सिंक किए डिवाइस, सूचियाँ और फ़ॉलो भी हट जाएँगे। टिप्पणियाँ “[deleted]” के रूप में रहेंगी। इसे वापस नहीं किया जा सकता। आगे बढ़ने के लिए अपना पासवर्ड डालें।</translation>
+        </message>
+        <message>
+            <source>Delete account</source>
+            <translation>खाता हटाएँ</translation>
+        </message>
+        <message>
+            <source>Your account is deleted.</source>
+            <translation>आपका खाता हटा दिया गया।</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>

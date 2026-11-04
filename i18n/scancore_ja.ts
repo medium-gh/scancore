@@ -438,6 +438,26 @@
             <source>Sign out anyway</source>
             <translation>それでもサインアウト</translation>
         </message>
+        <message>
+            <source>Delete account…</source>
+            <translation>アカウントを削除…</translation>
+        </message>
+        <message>
+            <source>Delete your account on %1?</source>
+            <translation>%1 のアカウントを削除しますか？</translation>
+        </message>
+        <message>
+            <source>Your account goes with its library, reading progress, history, synced devices, lists and follows. Comments stay as “[deleted]”. This cannot be undone. Enter your password to go on.</source>
+            <translation>ライブラリ、読書の進み具合、履歴、同期したデバイス、リスト、フォローもアカウントと一緒に削除されます。コメントは「[deleted]」として残ります。元に戻せません。続けるにはパスワードを入力してください。</translation>
+        </message>
+        <message>
+            <source>Delete account</source>
+            <translation>アカウントを削除</translation>
+        </message>
+        <message>
+            <source>Your account is deleted.</source>
+            <translation>アカウントを削除しました。</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>

@@ -8,8 +8,10 @@
 
 #include <QElapsedTimer>
 #include <QFile>
+#include <QHostAddress>
 #include <QJsonDocument>
 #include <QTemporaryDir>
+#include <QUrlQuery>
 #include <QtTest>
 
 using namespace sc;
@@ -57,6 +59,9 @@ private slots:
                          "<li data-path=\"/novel/1/c2\" data-time=\"\">Chapter 2</li>";
             } else if (path == QLatin1String("/novel/1/c1")) {
                 r.body = "<p>It began.</p><p>It went on.</p>";
+            } else if (path == QLatin1String("/hop")) {
+                r.status = 302;
+                r.headers = {{"Location", QUrlQuery(request.url).queryItemValue(QStringLiteral("to"), QUrl::FullyDecoded).toUtf8()}};
             } else {
                 r.status = 404;
             }
@@ -199,6 +204,23 @@ private slots:
                 QVERIFY(e.message().contains(QLatin1String("own site")));
             }
         }
+        // Nor by a redirect from a site they may reach: every hop is asked.
+        for (const auto *to : {"https://scancore.onl/api/auth/session", "https://127.0.0.1:9/", "https://[::ffff:127.0.0.1]/"}) {
+            try {
+                Runtime::call(m_plugin, QStringLiteral("reach"),
+                              {QStringLiteral("https://novels.test/hop?to=") + QString::fromLatin1(QUrl::toPercentEncoding(QString::fromLatin1(to)))});
+                QFAIL("followed a redirect it may not");
+            } catch (const Error &e) {
+                QVERIFY2(e.message().contains(QLatin1String("own site")) || e.message().contains(QLatin1String("this device")),
+                         qPrintable(e.message()));
+            }
+        }
+        // Addresses that are this device or its network, however written.
+        for (const auto *local : {"127.0.0.1", "10.1.2.3", "100.101.15.55", "169.254.1.1", "172.20.0.1", "192.168.1.1", "0.0.0.0",
+                                  "::1", "::", "::ffff:127.0.0.1", "fe80::1", "fd7a:115c:a1e0::1", "64:ff9b::a00:1"})
+            QVERIFY2(Http::isLocalAddress(QHostAddress(QString::fromLatin1(local))), local);
+        for (const auto *global : {"1.1.1.1", "104.16.1.1", "2606:4700::1111"})
+            QVERIFY2(!Http::isLocalAddress(QHostAddress(QString::fromLatin1(global))), global);
         Database::setPref(QStringLiteral("account.site"), QString());
         CookieJar::refreshProtected();
         // A plugin that never returns is stopped at its limit, and the

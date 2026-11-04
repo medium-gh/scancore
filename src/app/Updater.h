@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+
 #include <QObject>
 #include <QPointer>
 #include <QQmlEngine>
@@ -60,6 +62,9 @@ signals:
     void progressChanged();
 
 private:
+    // Checks the downloaded file against the release's signature, then
+    // `ready`; a file that does not match is deleted.
+    void checkSignature(const QString &path, const std::function<void()> &ready);
     // Private so QML uses create(): Qt builds its own instance of a
     // singleton it can default-construct, and C++ and QML would then
     // work on different objects.
@@ -78,6 +83,8 @@ private:
     QString m_notes;
     QString m_pageUrl;
     QString m_assetUrl;
+    // The asset's Ed25519 signature (<asset>.sig on the release).
+    QString m_signatureUrl;
     QString m_error;
     qint64 m_size = 0;
     double m_progress = 0;

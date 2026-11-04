@@ -438,6 +438,26 @@
             <source>Sign out anyway</source>
             <translation>Esci comunque</translation>
         </message>
+        <message>
+            <source>Delete account…</source>
+            <translation>Elimina account…</translation>
+        </message>
+        <message>
+            <source>Delete your account on %1?</source>
+            <translation>Eliminare il tuo account su %1?</translation>
+        </message>
+        <message>
+            <source>Your account goes with its library, reading progress, history, synced devices, lists and follows. Comments stay as “[deleted]”. This cannot be undone. Enter your password to go on.</source>
+            <translation>Con l’account se ne vanno la libreria, i progressi di lettura, la cronologia, i dispositivi sincronizzati, le liste e i seguiti. I commenti restano come «[deleted]». Non si può annullare. Inserisci la password per continuare.</translation>
+        </message>
+        <message>
+            <source>Delete account</source>
+            <translation>Elimina account</translation>
+        </message>
+        <message>
+            <source>Your account is deleted.</source>
+            <translation>Il tuo account è stato eliminato.</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>

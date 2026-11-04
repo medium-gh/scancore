@@ -438,6 +438,26 @@
             <source>Sign out anyway</source>
             <translation>仍然登出</translation>
         </message>
+        <message>
+            <source>Delete account…</source>
+            <translation>刪除帳號…</translation>
+        </message>
+        <message>
+            <source>Delete your account on %1?</source>
+            <translation>刪除你在 %1 的帳號？</translation>
+        </message>
+        <message>
+            <source>Your account goes with its library, reading progress, history, synced devices, lists and follows. Comments stay as “[deleted]”. This cannot be undone. Enter your password to go on.</source>
+            <translation>帳號連同書庫、閱讀進度、紀錄、已同步的裝置、清單和追蹤都會被刪除。留言會保留為「[deleted]」。此動作無法復原。輸入密碼以繼續。</translation>
+        </message>
+        <message>
+            <source>Delete account</source>
+            <translation>刪除帳號</translation>
+        </message>
+        <message>
+            <source>Your account is deleted.</source>
+            <translation>你的帳號已刪除。</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>

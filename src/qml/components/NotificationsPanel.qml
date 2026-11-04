@@ -169,6 +169,7 @@ Popup {
                         Text {
                             width: parent.width
                             text: row.modelData.title || ""
+                            textFormat: Text.PlainText
                             color: Theme.text
                             font.family: Theme.fontSans
                             font.pixelSize: Theme.textMd
@@ -179,6 +180,7 @@ Popup {
                             width: parent.width
                             visible: text.length > 0
                             text: row.modelData.body || ""
+                            textFormat: Text.PlainText
                             color: Theme.textMuted
                             font.family: Theme.fontSans
                             font.pixelSize: Theme.textSm

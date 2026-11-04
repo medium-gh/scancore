@@ -10,6 +10,7 @@
 #include <QRandomGenerator>
 #include <QRegularExpression>
 #include <QTcpSocket>
+#include <QTimer>
 
 namespace sc {
 
@@ -99,12 +100,37 @@ bool parseRange(const QByteArray &range, qint64 size, qint64 &from, qint64 &to) 
 
 } // namespace
 
+bool CastProxy::Share::allows(const QUrl &url) const {
+    const auto key = url.toEncoded();
+    return allowed.contains(key) || older.contains(key);
+}
+
+void CastProxy::Share::allow(const QUrl &url) {
+    if (allowed.size() >= 20000) {
+        older = std::move(allowed);
+        allowed = {};
+    }
+    allowed.insert(url.toEncoded());
+}
+
 CastProxy::CastProxy(QObject *parent) : QObject(parent), m_network(new QNetworkAccessManager(this)) {
     m_network->setRedirectPolicy(QNetworkRequest::NoLessSafeRedirectPolicy);
     connect(&m_server, &QTcpServer::newConnection, this, [this] {
         while (auto *socket = m_server.nextPendingConnection()) {
+            // A few receivers fetch at once; more is someone else.
+            if (m_server.findChildren<QTcpSocket *>().size() > 64) {
+                socket->abort();
+                socket->deleteLater();
+                continue;
+            }
             connect(socket, &QTcpSocket::disconnected, socket, &QObject::deleteLater);
             connect(socket, &QTcpSocket::readyRead, this, [this, socket] { serve(socket); });
+            // The request's head comes within a few seconds, or the
+            // connection goes.
+            QTimer::singleShot(15000, socket, [socket] {
+                if (!socket->property("served").toBool())
+                    socket->abort();
+            });
         }
     });
 }
@@ -150,13 +176,24 @@ QString CastProxy::share(const QUrl &url, const Headers &headers, const QHostAdd
     m_host = base(device);
     if (m_host.isEmpty())
         return {};
-    const auto token = QString::number(QRandomGenerator::global()->generate64(), 36);
+    // 128 random bits from the system's generator: tokens are seen on the
+    // network, never guessed.
+    quint64 bits[2];
+    QRandomGenerator::system()->fillRange(bits);
+    const auto token = QString::number(bits[0], 36) + QString::number(bits[1], 36);
     if (url.isLocalFile()) {
         const QFileInfo file(url.toLocalFile());
-        m_shares.insert(token, {headers, file.absolutePath()});
+        Share share;
+        share.headers = headers;
+        share.folder = file.absolutePath();
+        share.file = file.fileName();
+        m_shares.insert(token, share);
         return QStringLiteral("%1/f/%2/%3").arg(m_host, token, QString::fromLatin1(QUrl::toPercentEncoding(file.fileName())));
     }
-    m_shares.insert(token, {headers, {}});
+    Share share;
+    share.headers = headers;
+    share.allow(url);
+    m_shares.insert(token, share);
     return wrap(token, url);
 }
 
@@ -190,6 +227,7 @@ void CastProxy::serve(QTcpSocket *socket) {
         return;
     }
     disconnect(socket, &QTcpSocket::readyRead, this, nullptr);
+    socket->setProperty("served", true);
     const auto lines = buffer.left(end).split('\n');
     const auto request = lines.value(0).trimmed().split(' ');
     const auto method = request.value(0);
@@ -211,12 +249,21 @@ void CastProxy::serve(QTcpSocket *socket) {
         const auto relative = QDir::cleanPath(QUrl::fromPercentEncoding(parts.mid(2).join(QLatin1Char('/')).toLatin1()));
         if (relative.startsWith(QLatin1String("..")) || QDir::isAbsolutePath(relative))
             return respond(socket, 403);
+        // The shared file only; a downloaded playlist also its parts beside
+        // it (media, keys and subtitles; no other files of the folder).
+        const bool playlist = share.file.endsWith(QLatin1String(".m3u8"), Qt::CaseInsensitive);
+        const bool part = typeFor(relative) != "application/octet-stream" ||
+                          QFileInfo(relative).suffix().compare(QLatin1String("key"), Qt::CaseInsensitive) == 0;
+        if (relative != share.file && (!playlist || !part))
+            return respond(socket, 403);
         return sendFile(socket, share.folder + QLatin1Char('/') + relative, range, head);
     }
     if (parts[0] == QLatin1String("r") && share.folder.isEmpty()) {
         const QUrl target = QUrl::fromEncoded(QByteArray::fromBase64(parts[2].toLatin1(), QByteArray::Base64UrlEncoding));
         if (!target.isValid() || (target.scheme() != QLatin1String("https") && target.scheme() != QLatin1String("http")))
             return respond(socket, 400);
+        if (!share.allows(target))
+            return respond(socket, 403);
         return relay(socket, parts[1], target, range, head);
     }
     respond(socket, 404);
@@ -324,7 +371,11 @@ void CastProxy::relay(QTcpSocket *socket, const QString &token, const QUrl &targ
                 type = "text/vtt; charset=utf-8";
             } else if (body.startsWith("#EXTM3U")) {
                 const auto final = reply->url();
-                body = rewritePlaylist(body, final, [&](const QUrl &u) { return wrap(token, u); });
+                body = rewritePlaylist(body, final, [&](const QUrl &u) {
+                    if (const auto share = m_shares.find(token); share != m_shares.end())
+                        share->allow(u);
+                    return wrap(token, u);
+                });
             }
             return respond(client, status ? status : 502, type, head ? QByteArray() : body);
         }

@@ -160,6 +160,51 @@ SettingsPane {
         }
     }
 
+    // Deleting the account on the site (when it can), with its password;
+    // then this device signs out and lets go of the account's data.
+    property bool canDelete: false
+    property var deleting: null
+    function checkDeletion() {
+        if (!Account.signedIn) { canDelete = false; return }
+        const t = Account.signupOptions()
+        t.finished.connect((options) => { pane.canDelete = !!(options && options.accountDeletion) })
+    }
+    Component.onCompleted: checkDeletion()
+    Connections {
+        target: Account
+        function onChanged() { pane.checkDeletion() }
+    }
+    ScButton {
+        visible: Account.signedIn && pane.canDelete
+        text: qsTr("Delete account…")
+        iconName: "trash-2"
+        variant: "ghost"
+        loading: pane.deleting !== null
+        enabled: pane.deleting === null
+        onClicked: deleteConfirm.open()
+    }
+    ConfirmDialog {
+        id: deleteConfirm
+        heading: qsTr("Delete your account on %1?").arg(pane.host)
+        message: qsTr("Your account goes with its library, reading progress, history, synced devices, lists and follows. Comments stay as “[deleted]”. This cannot be undone. Enter your password to go on.")
+        asksText: true
+        secret: true
+        placeholder: qsTr("Password")
+        onOpened: value = ""
+        confirmText: qsTr("Delete account")
+        destructive: true
+        onConfirmed: {
+            pane.deleting = Account.request("DELETE", "/api/auth/account", { password: value })
+            value = ""
+            pane.deleting.finished.connect(() => {
+                pane.deleting = null
+                Account.signOut(false)
+                Router.toast(qsTr("Your account is deleted."), "success")
+            })
+            pane.deleting.failed.connect((error) => { pane.deleting = null; Router.toast(error, "error") })
+        }
+    }
+
     // Signing out takes the account's library, progress and lists off this
     // device (they stay in the account), after a last sync so nothing
     // unsent is lost; or keeps them here.

@@ -10,6 +10,8 @@
 #include <QRandomGenerator>
 #include <QRegularExpression>
 
+#include <algorithm>
+
 #ifdef Q_OS_ANDROID
 #include <QJniEnvironment>
 #include <QJniObject>
@@ -20,6 +22,7 @@ namespace sc {
 namespace {
 
 const QString kPinPref = QStringLiteral("lock.pin");
+const QString kFailuresPref = QStringLiteral("lock.failures");
 constexpr int kIterations = 60000;
 
 #ifdef Q_OS_ANDROID
@@ -63,6 +66,11 @@ Lock *Lock::instance() {
 
 Lock::Lock(QObject *parent) : QObject(parent) {
     m_pin = Database::pref(kPinPref).toMap();
+    const auto failures = Database::pref(kFailuresPref).toMap();
+    m_failures = failures.value(QStringLiteral("count")).toInt();
+    // A clock set back cannot stretch the wait past its longest.
+    m_waitUntil = std::min(failures.value(QStringLiteral("until")).toLongLong(),
+                           QDateTime::currentMSecsSinceEpoch() + lock::backoff(1000) * 1000LL);
     m_locked = enabled();
     m_tick.setInterval(1000);
     connect(&m_tick, &QTimer::timeout, this, [this] {
@@ -70,6 +78,9 @@ Lock::Lock(QObject *parent) : QObject(parent) {
             m_tick.stop();
         emit changed();
     });
+    // A wait earned before the app closed goes on counting down.
+    if (wait() > 0)
+        m_tick.start();
     connect(qGuiApp, &QGuiApplication::applicationStateChanged, this, &Lock::stateChanged);
 }
 
@@ -80,6 +91,12 @@ int Lock::length() const { return m_pin.value(QStringLiteral("length")).toInt();
 int Lock::wait() const {
     const auto left = m_waitUntil - QDateTime::currentMSecsSinceEpoch();
     return left > 0 ? int((left + 999) / 1000) : 0;
+}
+
+void Lock::setFailures(int failures, qint64 waitUntil) {
+    m_failures = failures;
+    m_waitUntil = waitUntil;
+    Database::setPref(kFailuresPref, failures ? QVariant(QVariantMap{{"count", failures}, {"until", waitUntil}}) : QVariant());
 }
 
 void Lock::setLocked(bool locked) {
@@ -131,16 +148,15 @@ Task *Lock::unlock(const QString &pin) {
         if (task->loading())
             return;
         if (task->result().toBool()) {
-            m_failures = 0;
-            m_waitUntil = 0;
+            setFailures(0, 0);
             setLocked(false);
             return;
         }
-        ++m_failures;
-        if (const int seconds = lock::backoff(m_failures)) {
-            m_waitUntil = QDateTime::currentMSecsSinceEpoch() + seconds * 1000LL;
+        const int failures = m_failures + 1;
+        const int seconds = lock::backoff(failures);
+        setFailures(failures, seconds ? QDateTime::currentMSecsSinceEpoch() + seconds * 1000LL : 0);
+        if (seconds)
             m_tick.start();
-        }
         emit changed();
     });
     return task;
@@ -162,8 +178,7 @@ Task *Lock::setPin(const QString &pin) {
                             {"iterations", kIterations},
                             {"length", length}};
         Database::setPref(kPinPref, m_pin);
-        m_failures = 0;
-        m_waitUntil = 0;
+        setFailures(0, 0);
         emit changed();
     });
     return task;
@@ -172,8 +187,7 @@ Task *Lock::setPin(const QString &pin) {
 void Lock::removePin() {
     m_pin.clear();
     Database::setPref(kPinPref, QVariant());
-    m_failures = 0;
-    m_waitUntil = 0;
+    setFailures(0, 0);
     m_leftAt = 0;
     m_locked = false;
     emit changed();
@@ -207,8 +221,7 @@ void Lock::useBiometric() {
 void Lock::biometricResult(bool ok) {
     QMetaObject::invokeMethod(this, [this, ok] {
         if (ok) {
-            m_failures = 0;
-            m_waitUntil = 0;
+            setFailures(0, 0);
             setLocked(false);
         } else {
             emit biometricFailed();

@@ -348,6 +348,7 @@ Column {
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
                     text: c.user.username
+                    textFormat: Text.PlainText
                     color: Theme.text
                     font.family: Theme.fontSans
                     font.pixelSize: Theme.textSm

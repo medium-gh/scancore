@@ -27,6 +27,7 @@ Item {
             anchors.margins: 12
             visible: image.status === Image.Error || root.source.length === 0
             text: root.title
+            textFormat: Text.PlainText
             color: Theme.textFaint
             font.family: Theme.fontDisplay
             font.pixelSize: 13

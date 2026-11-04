@@ -14,6 +14,8 @@ Dialog {
     property bool asksText: false
     property alias value: field.text
     property string placeholder
+    // The text field hides what is typed (a password).
+    property bool secret: false
     // A switch under the message (keep something, say): its state is
     // `optionOn`.
     property string option
@@ -87,7 +89,8 @@ Dialog {
             visible: dialog.asksText
             width: parent.width
             placeholderText: dialog.placeholder
-            maximumLength: 60
+            maximumLength: dialog.secret ? 128 : 60
+            echoMode: dialog.secret ? TextInput.Password : TextInput.Normal
             onAccepted: dialog.confirm()
         }
         Item {

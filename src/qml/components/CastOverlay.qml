@@ -44,6 +44,7 @@ Rectangle {
             width: parent.width
             horizontalAlignment: Text.AlignHCenter
             text: root.title + " · " + root.stateText
+            textFormat: Text.PlainText
             color: Cast.state === "error" ? Theme.danger : "#a1a1aa"
             font.family: Theme.fontSans
             font.pixelSize: Theme.textSm

@@ -46,6 +46,7 @@ Drawer {
                 width: parent.width - close.width - 8
                 Text {
                     text: panel.label
+                    textFormat: Text.PlainText
                     color: Theme.text
                     font.family: Theme.fontDisplay
                     font.pixelSize: Theme.textXl
@@ -54,6 +55,7 @@ Drawer {
                 Text {
                     width: parent.width
                     text: panel.title
+                    textFormat: Text.PlainText
                     elide: Text.ElideRight
                     color: Theme.textFaint
                     font.family: Theme.fontSans

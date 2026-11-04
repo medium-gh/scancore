@@ -235,6 +235,7 @@ Column {
                     spacing: 8
                     Text {
                         text: modelData.user.username
+                        textFormat: Text.PlainText
                         color: Theme.text
                         font.family: Theme.fontSans
                         font.pixelSize: Theme.textSm

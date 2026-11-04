@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 11 and older: what Google's backup and adb backup take. The
+     library and settings go; sign-in cookies, extension code, downloads and
+     updates stay on the device (sign in again on a new phone). -->
+<full-backup-content>
+    <exclude domain="file" path="cookies.txt" />
+    <exclude domain="file" path="extensions/" />
+    <exclude domain="file" path="downloads/" />
+    <exclude domain="file" path="updates/" />
+</full-backup-content>

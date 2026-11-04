@@ -75,6 +75,7 @@ Item {
         Text {
             width: parent.width
             text: row.title
+            textFormat: Text.PlainText
             color: row.danger ? Theme.danger : Theme.text
             font.family: Theme.fontSans
             font.pixelSize: Theme.textMd
@@ -85,6 +86,7 @@ Item {
             width: parent.width
             visible: text.length > 0
             text: row.description
+            textFormat: Text.PlainText
             color: Theme.textMuted
             font.family: Theme.fontSans
             font.pixelSize: Theme.textSm

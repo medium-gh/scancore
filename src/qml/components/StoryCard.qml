@@ -49,6 +49,7 @@ Rectangle {
         Text {
             width: parent.width
             text: card.fromAnime ? qsTr("You finished %1").arg(card.entry.animeTitle) : qsTr("Caught up on %1").arg(card.entry.comicTitle)
+            textFormat: Text.PlainText
             color: Theme.textMuted
             font.family: Theme.fontSans
             font.pixelSize: Theme.textSm
@@ -58,6 +59,7 @@ Rectangle {
             width: parent.width
             text: card.fromAnime ? qsTr("%1 continues from %2").arg(card.kind).arg(card.where)
                                  : qsTr("Its novel goes further")
+            textFormat: Text.PlainText
             color: Theme.text
             font.family: Theme.fontDisplay
             font.pixelSize: Theme.textLg
@@ -70,6 +72,7 @@ Rectangle {
             width: parent.width
             visible: text.length > 0
             text: card.fromAnime && card.entry.done > 0 ? qsTr("You are at chapter %1").arg(card.entry.done) : (card.entry.title || "")
+            textFormat: Text.PlainText
             color: Theme.textMuted
             font.family: Theme.fontSans
             font.pixelSize: Theme.textSm

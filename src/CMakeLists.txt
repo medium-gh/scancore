@@ -12,6 +12,7 @@ add_library(scancore_core STATIC
     core/Text.cpp
     core/Epub.cpp
     core/Aes.cpp
+    core/Ed25519.cpp
     core/translation/Layout.cpp
     core/translation/Cloud.cpp
     core/translation/Onnx.cpp

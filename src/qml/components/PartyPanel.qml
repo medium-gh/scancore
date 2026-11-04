@@ -202,6 +202,7 @@ Drawer {
                         width: parent.width - openButton.width - 10
                         anchors.verticalCenter: parent.verticalCenter
                         text: Party.state.anime ? qsTr("The host is watching %1, episode %2").arg(Party.state.anime.title).arg(Party.state.episode) : ""
+                        textFormat: Text.PlainText
                         wrapMode: Text.Wrap
                         color: Theme.text
                         font.family: Theme.fontSans
@@ -285,6 +286,7 @@ Drawer {
                 Text {
                     visible: !modelData.mine
                     text: modelData.name
+                    textFormat: Text.PlainText
                     color: Theme.textFaint
                     font.family: Theme.fontSans
                     font.pixelSize: Theme.textXs
@@ -301,6 +303,7 @@ Drawer {
                         y: 7
                         width: parent.width - 24
                         text: modelData.text
+                        textFormat: Text.PlainText
                         wrapMode: Text.Wrap
                         color: Theme.text
                         font.family: Theme.fontSans

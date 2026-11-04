@@ -438,6 +438,26 @@
             <source>Sign out anyway</source>
             <translation>그래도 로그아웃</translation>
         </message>
+        <message>
+            <source>Delete account…</source>
+            <translation>계정 삭제…</translation>
+        </message>
+        <message>
+            <source>Delete your account on %1?</source>
+            <translation>%1의 계정을 삭제할까요?</translation>
+        </message>
+        <message>
+            <source>Your account goes with its library, reading progress, history, synced devices, lists and follows. Comments stay as “[deleted]”. This cannot be undone. Enter your password to go on.</source>
+            <translation>계정과 함께 라이브러리, 읽기 진행 상황, 기록, 동기화된 기기, 목록, 팔로우가 삭제됩니다. 댓글은 “[deleted]”로 남습니다. 되돌릴 수 없습니다. 계속하려면 비밀번호를 입력하세요.</translation>
+        </message>
+        <message>
+            <source>Delete account</source>
+            <translation>계정 삭제</translation>
+        </message>
+        <message>
+            <source>Your account is deleted.</source>
+            <translation>계정이 삭제되었습니다.</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>

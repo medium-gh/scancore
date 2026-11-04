@@ -181,6 +181,15 @@ void changed() {
         callback();
 }
 
+// Whether `repoUrl` may give `installed` its updates: its own repository,
+// or any while that one is no longer added.
+bool updateSource(const State &state, const Installed &installed, const QString &repoUrl) {
+    if (installed.repoUrl.isEmpty() || installed.repoUrl == repoUrl)
+        return true;
+    return std::none_of(state.repos.begin(), state.repos.end(),
+                        [&](const RepoState &r) { return r.repo.url == installed.repoUrl; });
+}
+
 // Signed with a repository's key, or trusted by hand at this version and key.
 bool isTrusted(const State &state, const Installed &i) {
     if (isUnsignedKind(i.package.kind))
@@ -860,11 +869,23 @@ QList<Package> Manager::autoInstallSelection(const QList<Package> &packages, con
 
 Installed Manager::install(Kind kind, const QString &pkg) {
     BusyPackage busy(id(kind, pkg));
-    const auto repoUrl = repositoryOf(kind, pkg);
+    // An installed extension updates from its own repository (see
+    // updateSource); a new one from whichever offers the newest version.
+    QString repoUrl;
     std::optional<Package> listed;
-    for (const auto &p : available(kind))
-        if (p.pkg == pkg)
-            listed = p;
+    reading([&](const State &s) {
+        const auto current = s.installed.value(id(kind, pkg));
+        for (const auto &r : s.repos) {
+            if (r.repo.kind != kind || !updateSource(s, current, r.repo.url))
+                continue;
+            for (const auto &p : r.packages)
+                if (p.pkg == pkg && (!listed || p.versionCode > listed->versionCode)) {
+                    listed = p;
+                    repoUrl = r.repo.url;
+                }
+        }
+        return 0;
+    });
     if (!listed)
         throw Error(QStringLiteral("No repository lists that extension."));
     if (!resolveEcho(*listed))
@@ -984,6 +1005,9 @@ QList<Installed> Manager::installed(std::optional<Kind> kind) {
         // The newest version the repositories offer of each installed
         // package, in one pass over them (hundreds installed, thousands
         // offered: Extensions and Sources ask often).
+        // Updates come from the repository an extension was installed from
+        // while it is still added: another repository listing the same
+        // package cannot take it over.
         QHash<QString, const Package *> newest;
         for (const auto &i : s.installed)
             if (!kind || i.package.kind == *kind)
@@ -992,8 +1016,11 @@ QList<Installed> Manager::installed(std::optional<Kind> kind) {
             if (kind && r.repo.kind != *kind)
                 continue;
             for (const auto &p : r.packages) {
-                const auto it = newest.find(id(p.kind, p.pkg));
-                if (it != newest.end() && (!*it || p.versionCode > (*it)->versionCode))
+                const auto key = id(p.kind, p.pkg);
+                const auto it = newest.find(key);
+                if (it == newest.end() || !updateSource(s, s.installed.value(key), r.repo.url))
+                    continue;
+                if (!*it || p.versionCode > (*it)->versionCode)
                     *it = &p;
             }
         }

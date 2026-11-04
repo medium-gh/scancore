@@ -1,4 +1,5 @@
 #include "core/Aes.h"
+#include "core/Ed25519.h"
 #include "core/Epub.h"
 #include "core/Text.h"
 #include "core/translation/Cloud.h"
@@ -33,6 +34,31 @@ class TextTests : public QObject {
     }
 
 private slots:
+    // Release signatures: RFC 8032's first vector and one OpenSSL made;
+    // any changed byte, or another key, fails.
+    void verifiesEd25519() {
+        const auto hex = [](const char *text) { return QByteArray::fromHex(text); };
+        QVERIFY(ed25519::verify(hex("e5564300c360ac729086e2cc806e828a84877f1eb8e5d974d873e065224901555fb8821590a33bacc61e39701cf9b46bd25bf5f0595bbe24655141438e7a100b"),
+                                hex("d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a"), QByteArray()));
+        const auto key = hex("98ba2a5ebb4df5e2efe69124548cf3d7ac5bd5e61c0c4e6a2d584e58f668da76");
+        const auto signature = hex("75112aa29e726537afebf9450af0edcc8d0b8cf83541a5300d9b8a822a3737318b9ecfcc82fcf063f914982bd3341042ced86ba89775631245310e7956599c0f");
+        QVERIFY(ed25519::verify(signature, key, QByteArray("abc")));
+        QBuffer device;
+        device.setData("abc");
+        QVERIFY(device.open(QIODevice::ReadOnly));
+        QVERIFY(ed25519::verify(signature, key, device));
+        QVERIFY(!ed25519::verify(signature, key, QByteArray("abd")));
+        for (const int at : {0, 31, 32, 63}) {
+            auto changed = signature;
+            changed[at] = char(changed[at] ^ 1);
+            QVERIFY(!ed25519::verify(changed, key, QByteArray("abc")));
+        }
+        auto otherKey = key;
+        otherKey[3] = char(otherKey[3] ^ 4);
+        QVERIFY(!ed25519::verify(signature, otherKey, QByteArray("abc")));
+        QVERIFY(!ed25519::verify(signature.left(63), key, QByteArray("abc")));
+    }
+
     // One number per chapter whichever source names it, so it shares one
     // discussion and moves between sources by number (v3 plan, section 5).
     void chapterNumbers() {

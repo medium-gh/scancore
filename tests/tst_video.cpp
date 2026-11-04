@@ -399,6 +399,38 @@ private slots:
         QCOMPARE(part.port(), shared.port());
         QCOMPARE(get(part), ts(40));
         QCOMPARE(server.lastHeaders.value("referer"), QByteArray("https://site.test/"));
+
+        // A share relays its own addresses (and its playlists' parts) only:
+        // its token is no way to any other address, on this device or not.
+        const auto status = [&](const QUrl &url) {
+            auto *reply = client.get(QNetworkRequest(url));
+            QSignalSpy done(reply, &QNetworkReply::finished);
+            done.wait(10000);
+            reply->deleteLater();
+            return reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+        };
+        const auto token = part.path().split(QLatin1Char('/')).value(2);
+        auto forged = part;
+        forged.setPath(QStringLiteral("/r/%1/%2/media").arg(
+            token, QString::fromLatin1(QUrl(base + QStringLiteral("/media")).toEncoded().toBase64(
+                       QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals))));
+        QCOMPARE(status(forged), 403);
+
+        // A shared file is served, not the rest of its folder.
+        QTemporaryDir folder;
+        QFile movie(folder.filePath(QStringLiteral("movie.mp4")));
+        QVERIFY(movie.open(QIODevice::WriteOnly));
+        movie.write("not really a movie");
+        movie.close();
+        QFile other(folder.filePath(QStringLiteral("notes.mp4")));
+        QVERIFY(other.open(QIODevice::WriteOnly));
+        other.write("private");
+        other.close();
+        const QUrl file(proxy.share(QUrl::fromLocalFile(movie.fileName()), {}, QHostAddress(QHostAddress::LocalHost)));
+        QCOMPARE(get(file), QByteArray("not really a movie"));
+        auto sibling = file;
+        sibling.setPath(file.path().section(QLatin1Char('/'), 0, -2) + QStringLiteral("/notes.mp4"));
+        QCOMPARE(status(sibling), 403);
     }
 
     void savesFromNetwork() {

@@ -99,8 +99,9 @@ void untarGz(const QByteArray &data, const QString &to, const Keep &keep) {
         if (type == '5') {
             QDir().mkpath(path);
         } else if (type == '2') {
-            // Only links to a file beside them (libfoo.so -> libfoo.so.1).
-            if (link.contains(QLatin1Char('/')))
+            // Only links to a file beside them (libfoo.so -> libfoo.so.1);
+            // never to the folder itself or above it.
+            if (link.isEmpty() || link.contains(QLatin1Char('/')) || link == QLatin1String(".") || link == QLatin1String(".."))
                 continue;
             QDir().mkpath(QFileInfo(path).absolutePath());
             QFile::remove(path);

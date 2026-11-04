@@ -258,6 +258,7 @@ Item {
                                             width: Math.min(implicitWidth, parent.width - face.width - when.width - 16)
                                             elide: Text.ElideRight
                                             text: entry.modelData.user.username
+                                            textFormat: Text.PlainText
                                             color: Theme.text
                                             font.family: Theme.fontSans
                                             font.pixelSize: Theme.textSm
@@ -276,6 +277,7 @@ Item {
                                         width: parent.width
                                         elide: Text.ElideRight
                                         text: entry.modelData.series.title + (entry.modelData.unit ? " · " + entry.modelData.unit : "")
+                                        textFormat: Text.PlainText
                                         color: Theme.textMuted
                                         font.family: Theme.fontSans
                                         font.pixelSize: Theme.textSm
@@ -298,6 +300,7 @@ Item {
                                     Text {
                                         width: parent.width
                                         text: entry.modelData.body
+                                        textFormat: Text.PlainText
                                         color: Theme.text
                                         font.family: Theme.fontSans
                                         font.pixelSize: Theme.textSm

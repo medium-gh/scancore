@@ -108,10 +108,13 @@ void CookieJar::save() const {
     QSaveFile file(m_path);
     if (!file.open(QIODevice::WriteOnly))
         return;
+    // Sign-ins live here (SCANCORE's own site among them): this user's alone.
+    file.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner);
     for (const auto &cookie : allCookies())
         if (!cookie.isSessionCookie())
             file.write(cookie.toRawForm(QNetworkCookie::Full) + '\n');
-    file.commit();
+    if (file.commit())
+        QFile::setPermissions(m_path, QFileDevice::ReadOwner | QFileDevice::WriteOwner);
 }
 
 } // namespace sc

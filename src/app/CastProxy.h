@@ -3,6 +3,7 @@
 #include "core/Http.h"
 
 #include <QHash>
+#include <QSet>
 #include <QHostAddress>
 #include <QObject>
 #include <QTcpServer>
@@ -40,6 +41,14 @@ private:
     struct Share {
         Headers headers;
         QString folder; // a download's folder, for local files
+        QString file;   // the shared file in it
+        // What /r/ may relay for this share: the shared address and those
+        // in the playlists relayed for it (two generations, so a live
+        // stream's new parts keep coming while old ones age out). Nothing
+        // else, so the token is not a way to anywhere.
+        QSet<QByteArray> allowed, older;
+        bool allows(const QUrl &url) const;
+        void allow(const QUrl &url);
     };
     bool ensureListening();
     void serve(QTcpSocket *socket);

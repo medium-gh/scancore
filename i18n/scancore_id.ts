@@ -438,6 +438,26 @@
             <source>Sign out anyway</source>
             <translation>Tetap keluar</translation>
         </message>
+        <message>
+            <source>Delete account…</source>
+            <translation>Hapus akun…</translation>
+        </message>
+        <message>
+            <source>Delete your account on %1?</source>
+            <translation>Hapus akunmu di %1?</translation>
+        </message>
+        <message>
+            <source>Your account goes with its library, reading progress, history, synced devices, lists and follows. Comments stay as “[deleted]”. This cannot be undone. Enter your password to go on.</source>
+            <translation>Akunmu terhapus beserta pustaka, kemajuan membaca, riwayat, perangkat yang disinkronkan, daftar, dan ikutan. Komentar tetap ada sebagai “[deleted]”. Ini tidak bisa dibatalkan. Masukkan kata sandimu untuk lanjut.</translation>
+        </message>
+        <message>
+            <source>Delete account</source>
+            <translation>Hapus akun</translation>
+        </message>
+        <message>
+            <source>Your account is deleted.</source>
+            <translation>Akunmu sudah dihapus.</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>

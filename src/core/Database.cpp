@@ -3,6 +3,7 @@
 #include "Http.h"
 
 #include <QDateTime>
+#include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -296,6 +297,10 @@ void Database::open(const QString &path) {
         QSqlQuery(db).exec(QStringLiteral("PRAGMA user_version = %1").arg(version + 1));
         db.commit();
     }
+    // The library holds sign-ins (trackers, servers): this user's alone.
+    for (const auto *suffix : {"", "-wal", "-shm"})
+        if (QFile::exists(path + QLatin1String(suffix)))
+            QFile::setPermissions(path + QLatin1String(suffix), QFileDevice::ReadOwner | QFileDevice::WriteOwner);
 }
 
 QString Database::path() { return g_path; }

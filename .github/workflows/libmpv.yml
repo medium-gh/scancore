@@ -24,8 +24,8 @@ jobs:
     name: Linux
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/cache@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         id: cache
         with:
           path: build/libmpv/linux-x86_64
@@ -39,7 +39,7 @@ jobs:
             libpulse-dev libasound2-dev libx11-dev libxext-dev libxss-dev libxpresent-dev libxrandr-dev
           pipx install meson
           tools/libmpv/build.sh linux-x86_64
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: libmpv-linux-x86_64
           path: |
@@ -55,8 +55,8 @@ jobs:
     steps:
       - name: Tools
         run: pacman -Syu --noconfirm --needed git mingw-w64-gcc meson ninja nasm python-jinja pkgconf
-      - uses: actions/checkout@v5
-      - uses: actions/cache@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         id: cache
         with:
           path: build/libmpv/windows-x64
@@ -64,7 +64,7 @@ jobs:
       - name: Build
         if: steps.cache.outputs.cache-hit != 'true'
         run: tools/libmpv/build.sh windows-x64
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: libmpv-windows-x64
           path: |
@@ -78,8 +78,8 @@ jobs:
     name: macOS
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/cache@v4
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         id: cache
         with:
           path: build/libmpv/macos-universal
@@ -90,7 +90,7 @@ jobs:
           brew install meson ninja nasm pkgconf
           python3 -m pip install --break-system-packages jinja2
           tools/libmpv/build.sh macos-universal
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: libmpv-macos-universal
           path: build/libmpv/macos-universal

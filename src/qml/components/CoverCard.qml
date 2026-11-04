@@ -142,6 +142,7 @@ AbstractButton {
                     id: badgeText
                     anchors.centerIn: parent
                     text: card.badge
+                    textFormat: Text.PlainText
                     color: Theme.accentInk
                     font.family: Theme.fontSans
                     font.pixelSize: 11
@@ -170,6 +171,7 @@ AbstractButton {
                     anchors.margins: 8
                     anchors.bottomMargin: card.progress >= 0 ? 16 : 8
                     text: card.title
+                    textFormat: Text.PlainText
                     color: "white"
                     font.family: Theme.fontSans
                     font.pixelSize: Theme.textSm
@@ -211,6 +213,7 @@ AbstractButton {
             Text {
                 width: parent.width
                 text: card.title
+                textFormat: Text.PlainText
                 color: Theme.text
                 font.family: Theme.fontSans
                 font.pixelSize: Theme.textMd
@@ -224,6 +227,7 @@ AbstractButton {
                 visible: text.length > 0
                 width: parent.width
                 text: card.subtitle
+                textFormat: Text.PlainText
                 color: Theme.textMuted
                 font.family: Theme.fontSans
                 font.pixelSize: Theme.textSm

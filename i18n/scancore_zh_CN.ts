@@ -438,6 +438,26 @@
             <source>Sign out anyway</source>
             <translation>仍然退出登录</translation>
         </message>
+        <message>
+            <source>Delete account…</source>
+            <translation>删除账户…</translation>
+        </message>
+        <message>
+            <source>Delete your account on %1?</source>
+            <translation>删除你在 %1 的账户？</translation>
+        </message>
+        <message>
+            <source>Your account goes with its library, reading progress, history, synced devices, lists and follows. Comments stay as “[deleted]”. This cannot be undone. Enter your password to go on.</source>
+            <translation>账户连同书库、阅读进度、历史、已同步的设备、列表和关注都会被删除。评论会保留为“[deleted]”。此操作无法撤销。输入密码以继续。</translation>
+        </message>
+        <message>
+            <source>Delete account</source>
+            <translation>删除账户</translation>
+        </message>
+        <message>
+            <source>Your account is deleted.</source>
+            <translation>你的账户已删除。</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>

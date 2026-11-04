@@ -7,6 +7,8 @@
 
 #include <QCoreApplication>
 #include <QFile>
+#include <QHostAddress>
+#include <QHostInfo>
 #include <QLoggingCategory>
 #include <QRegularExpression>
 #include <QJsonDocument>
@@ -197,6 +199,28 @@ QString refusal(const QUrl &url) {
                        R"(172\.(1[6-9]|2\d|3[01])\.\d+\.\d+|0\.0\.0\.0|\[?::1\]?|\[?f[cd][0-9a-f:]*\]?)$)"));
     if (privateHost.match(host).hasMatch())
         return QStringLiteral("Plugins cannot reach this device or its network.");
+    return {};
+}
+
+// refusal(), and where the name leads: an address written another way
+// (2130706433, ::ffff:127.0.0.1) or a public name that resolves to this
+// device or its network is refused too. Asked for every redirect as well
+// (Request::guard), so a site cannot send a plugin on to such places, or to
+// SCANCORE's own site with the account's session.
+QString reachRefusal(const QUrl &url) {
+    if (const auto refused = refusal(url); !refused.isEmpty())
+        return refused;
+    const auto host = url.host().toLower();
+    if (host.endsWith(QLatin1String(".test")) || loopbackAllowed())
+        return {};
+    QList<QHostAddress> addresses;
+    if (QHostAddress literal(host); !literal.isNull())
+        addresses.append(literal);
+    else
+        addresses = QHostInfo::fromName(host).addresses();
+    for (const auto &address : std::as_const(addresses))
+        if (Http::isLocalAddress(address))
+            return QStringLiteral("Plugins cannot reach this device or its network.");
     return {};
 }
 
@@ -401,6 +425,7 @@ int Native::fetch(const QString &url, const QString &method, const QVariantMap &
         request.headers.append({"Content-Type", contentType});
 
     const auto refused = refusal(request.url);
+    request.guard = reachRefusal;
     const auto cancel = std::make_shared<std::atomic_bool>(false);
     m_fetches.insert(id, cancel);
     QPointer<Native> self(this);

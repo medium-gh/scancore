@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QByteArray>
+#include <QHostAddress>
 #include <QJsonDocument>
 #include <QList>
 #include <QPair>
@@ -62,6 +63,10 @@ struct Request {
     int timeoutMs = 15000;
     qint64 maxBytes = 16 * 1024 * 1024;
     Lane lane = Lane::Pages;
+    // Asked for every address the request goes to (the first, and each
+    // redirect's): empty to go on, else why not. Set, redirects are followed
+    // here rather than by Qt, so none slips past it.
+    std::function<QString(const QUrl &)> guard;
 };
 
 struct Response {
@@ -83,6 +88,10 @@ struct Response {
 
 class Http {
 public:
+    // Whether an address is this device or its network (loopback, private,
+    // link-local, carrier-grade NAT, unique-local, multicast, unspecified,
+    // or IPv4 inside IPv6), rather than somewhere on the internet.
+    static bool isLocalAddress(const QHostAddress &address);
     static constexpr const char *BrowserUA =
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
         "(KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36";

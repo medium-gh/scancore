@@ -62,19 +62,19 @@ jobs:
           # uses the system's, which has html5lib.
           /usr/bin/python3 -c "import html5lib"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 20
 
       - name: Qt
-        uses: jurplel/install-qt-action@v4
+        uses: jurplel/install-qt-action@b344308e4483fc892e0d27b3cd1b173ebdd95f06 # v4.5.0
         with:
           version: ${{ inputs.qt }}
           modules: qtwebchannel qtpositioning
           cache: true
 
       - name: Restore compiled objects
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .ccache
           key: qtwebengine-ccache-${{ inputs.qt }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ inputs.part }}
@@ -143,7 +143,7 @@ jobs:
 
       - name: Keep compiled objects
         if: ${{ always() && steps.build.outcome != 'skipped' }}
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: .ccache
           key: qtwebengine-ccache-${{ inputs.qt }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ inputs.part }}

@@ -1,6 +1,7 @@
 #include "Updater.h"
 
 #include "App.h"
+#include "core/Ed25519.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -12,6 +13,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QProcess>
+#include <QRegularExpression>
 #include <QStandardPaths>
 #include <QVersionNumber>
 
@@ -26,7 +28,11 @@ namespace sc {
 
 namespace {
 const QUrl kLatest(QStringLiteral("https://api.github.com/repos/medium-gh/scancore/releases/latest"));
-}
+// Releases are signed with this key (the Release workflow's
+// RELEASE_SIGNING_KEY): an installer someone swapped on GitHub, or one
+// without a signature, is never run.
+const QByteArray kReleaseKey = QByteArray::fromHex("79f296044adac851512ffa7657849d3386e8640990c56946bbd12f2667caf115");
+} // namespace
 
 Updater::Updater(QObject *parent) : QObject(parent), m_nam(new QNetworkAccessManager(this)) {
     m_nam->setRedirectPolicy(QNetworkRequest::NoLessSafeRedirectPolicy);
@@ -138,15 +144,22 @@ void Updater::check(bool quiet) {
         // A pre-release (2.0.0-beta.1) is older than its release; GitHub's
         // latest release is never a pre-release.
         const bool prerelease = suffix < running.size();
-        m_version = tag;
+        // Names a file and goes into the macOS install script: version
+        // characters only.
+        static const QRegularExpression unsafe(QStringLiteral("[^0-9A-Za-z.+-]"));
+        m_version = QString(tag).remove(unsafe);
         m_notes = release.value("body").toString();
         m_pageUrl = release.value("html_url").toString();
         m_assetUrl.clear();
+        m_signatureUrl.clear();
         for (const auto &value : release.value("assets").toArray()) {
             const auto asset = value.toObject();
-            if (asset.value("name").toString().endsWith(assetSuffix())) {
+            const auto name = asset.value("name").toString();
+            if (name.endsWith(assetSuffix())) {
                 m_assetUrl = asset.value("browser_download_url").toString();
                 m_size = qint64(asset.value("size").toDouble());
+            } else if (name.endsWith(assetSuffix() + QStringLiteral(".sig"))) {
+                m_signatureUrl = asset.value("browser_download_url").toString();
             }
         }
         if (latest.isNull() || latest < current || (latest == current && !prerelease)) {
@@ -164,10 +177,16 @@ void Updater::download() {
     if (m_assetUrl.isEmpty() || m_state == QLatin1String("downloading"))
         return;
     const auto path = downloadPath();
+    if (m_signatureUrl.isEmpty()) {
+        setState(QStringLiteral("error"), QStringLiteral("This release is not signed, so SCANCORE will not install it. Download it from the release page."));
+        return;
+    }
     if (QFileInfo(path).size() == m_size && m_size > 0) {
-        m_progress = 1;
-        emit progressChanged();
-        setState(QStringLiteral("ready"));
+        checkSignature(path, [this] {
+            m_progress = 1;
+            emit progressChanged();
+            setState(QStringLiteral("ready"));
+        });
         return;
     }
     m_file = new QFile(path + QStringLiteral(".part"), this);
@@ -201,13 +220,37 @@ void Updater::download() {
         m_file->rename(path);
         m_file->deleteLater();
         m_file = nullptr;
-        setState(QStringLiteral("ready"));
+        checkSignature(path, [this] { setState(QStringLiteral("ready")); });
+    });
+}
+
+void Updater::checkSignature(const QString &path, const std::function<void()> &ready) {
+    QNetworkRequest request{QUrl(m_signatureUrl)};
+    request.setHeader(QNetworkRequest::UserAgentHeader, QByteArray("SCANCORE/") + QCoreApplication::applicationVersion().toUtf8());
+    auto *reply = m_nam->get(request);
+    connect(reply, &QNetworkReply::finished, this, [this, reply, path, ready] {
+        reply->deleteLater();
+        const auto signature = reply->readAll();
+        QFile file(path);
+        const bool good = reply->error() == QNetworkReply::NoError && file.open(QIODevice::ReadOnly) &&
+                          ed25519::verify(signature.trimmed().size() == 88 ? QByteArray::fromBase64(signature.trimmed()) : signature,
+                                          kReleaseKey, file);
+        file.close();
+        if (!good) {
+            QFile::remove(path);
+            setState(QStringLiteral("error"),
+                     reply->error() == QNetworkReply::NoError
+                         ? QStringLiteral("The update's signature does not match, so it was not installed.")
+                         : QStringLiteral("Could not check the update's signature. It will be retried later."));
+            return;
+        }
+        ready();
     });
 }
 
 void Updater::install() {
     const auto path = downloadPath();
-    if (!QFileInfo::exists(path)) {
+    if (!QFileInfo::exists(path) || m_state != QLatin1String("ready")) {
         download();
         return;
     }

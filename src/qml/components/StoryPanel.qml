@@ -143,6 +143,7 @@ Column {
                     Text {
                         width: parent.width
                         text: qsTr("After %1, continue from %2").arg(seasonRow.modelData.anime.title).arg(panel.where(seasonRow.modelData.point))
+                        textFormat: Text.PlainText
                         color: Theme.text
                         font.family: Theme.fontSans
                         font.pixelSize: Theme.textMd
@@ -153,6 +154,7 @@ Column {
                         width: parent.width
                         text: (seasonRow.modelData.point.seeded ? qsTr("From SCANCORE's list") : qsTr("Suggested by readers"))
                             + " · " + (seasonRow.modelData.point.score === 1 ? qsTr("1 vote") : qsTr("%1 votes").arg(seasonRow.modelData.point.score))
+                        textFormat: Text.PlainText
                         color: Theme.textMuted
                         font.family: Theme.fontSans
                         font.pixelSize: Theme.textSm
@@ -246,6 +248,7 @@ Column {
                         Text {
                             width: parent.width
                             text: qsTr("%1 continues from %2").arg(panel.kindOf(pointRow.form, pointRow.modelData.media)).arg(panel.where(pointRow.modelData))
+                            textFormat: Text.PlainText
                             color: Theme.text
                             font.family: Theme.fontSans
                             font.pixelSize: Theme.textMd
@@ -257,6 +260,7 @@ Column {
                             text: [pointRow.form ? pointRow.form.title : "",
                                    pointRow.modelData.seeded ? qsTr("From SCANCORE's list") : pointRow.modelData.submitted ? qsTr("Your suggestion") : qsTr("Suggested by readers")]
                                 .filter(s => s).join(" · ")
+                            textFormat: Text.PlainText
                             color: Theme.textMuted
                             font.family: Theme.fontSans
                             font.pixelSize: Theme.textSm

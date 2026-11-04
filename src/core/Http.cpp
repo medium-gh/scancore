@@ -211,6 +211,9 @@ Response sendOnce(const Request &request) {
         req.setAttribute(QNetworkRequest::CookieSaveControlAttribute, QNetworkRequest::Manual);
     }
     req.setAttribute(QNetworkRequest::Http2AllowedAttribute, true);
+    // A guarded request's redirects come back here, each to be asked first.
+    if (request.guard)
+        req.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy);
     req.setTransferTimeout(request.timeoutMs);
     for (const auto &[name, value] : request.headers) {
         if (name.compare("User-Agent", Qt::CaseInsensitive) == 0)
@@ -298,11 +301,9 @@ bool waitBeforeRetry() {
     return !CancelScope::cancelled();
 }
 
-} // namespace
-
 // GETs are retried once after a dropped connection or a passing gateway
 // error, which otherwise surface as a failed page that works on Try again.
-Response Http::send(const Request &request) {
+Response sendRetrying(const Request &request) {
     const bool idempotent = request.method == "GET";
     try {
         auto response = sendOnce(request);
@@ -314,6 +315,76 @@ Response Http::send(const Request &request) {
             throw;
     }
     return sendOnce(request);
+}
+
+QHostAddress subnet(const char *text, int &length) {
+    const auto [address, bits] = QHostAddress::parseSubnet(QString::fromLatin1(text));
+    length = bits;
+    return address;
+}
+
+} // namespace
+
+bool Http::isLocalAddress(const QHostAddress &given) {
+    QHostAddress address = given;
+    bool v4 = false;
+    // IPv4 written inside IPv6 (::ffff:127.0.0.1) is that IPv4 address.
+    if (const quint32 ipv4 = address.toIPv4Address(&v4); v4)
+        address = QHostAddress(ipv4);
+    if (address.isNull() || address.isLoopback() || address.isLinkLocal() || address.isMulticast() ||
+        address.isBroadcast() || address.isUniqueLocalUnicast() || address.isSiteLocal())
+        return true;
+    static const char *const kNetworks[] = {
+        "0.0.0.0/8",     "10.0.0.0/8",     "100.64.0.0/10", "127.0.0.0/8", "169.254.0.0/16", "172.16.0.0/12",
+        "192.0.0.0/24",  "192.168.0.0/16", "198.18.0.0/15", "224.0.0.0/4", "240.0.0.0/4",
+        "::/128",        "::1/128",        "fc00::/7",      "fe80::/10",
+        // NAT64, 6to4 and Teredo carry IPv4 addresses (any of the above).
+        "64:ff9b::/96",  "2002::/16",      "2001::/32",
+    };
+    for (const auto *network : kNetworks) {
+        int length = 0;
+        const auto base = subnet(network, length);
+        if (address.protocol() == base.protocol() && address.isInSubnet(base, length))
+            return true;
+    }
+    return false;
+}
+
+namespace {
+
+// Redirects of a guarded request, followed by hand so the guard sees each
+// address; as Qt's own policy, never from https down to http.
+Response sendGuarded(const Request &request) {
+    if (const auto refused = request.guard(request.url); !refused.isEmpty())
+        throw Error(refused, 403);
+    Request hop = request;
+    for (int redirects = 0;; ++redirects) {
+        auto response = sendRetrying(hop);
+        const int status = response.status;
+        const auto location = response.header("Location");
+        if ((status != 301 && status != 302 && status != 303 && status != 307 && status != 308) || location.isEmpty())
+            return response;
+        if (redirects == 10)
+            throw Error(QStringLiteral("%1 redirected too many times.").arg(request.url.host()), 502);
+        const auto next = hop.url.resolved(QUrl::fromEncoded(location));
+        if (hop.url.scheme() == QLatin1String("https") && next.scheme() != QLatin1String("https"))
+            throw Error(QStringLiteral("%1 redirected to an insecure address.").arg(hop.url.host()), 502);
+        if (const auto refused = request.guard(next); !refused.isEmpty())
+            throw Error(refused, 403);
+        // As browsers: 303 (and 301/302 after a POST) go on as a GET.
+        if (status == 303 || ((status == 301 || status == 302) && hop.method == "POST")) {
+            hop.method = "GET";
+            hop.body.clear();
+            hop.headers.removeIf([](const auto &header) { return header.first.compare("Content-Type", Qt::CaseInsensitive) == 0; });
+        }
+        hop.url = next;
+    }
+}
+
+} // namespace
+
+Response Http::send(const Request &request) {
+    return request.guard ? sendGuarded(request) : sendRetrying(request);
 }
 
 Response Http::get(const QUrl &url, const Headers &headers, int timeoutMs) {

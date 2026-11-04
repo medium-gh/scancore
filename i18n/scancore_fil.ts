@@ -438,6 +438,26 @@
             <source>Sign out anyway</source>
             <translation>Mag-sign out pa rin</translation>
         </message>
+        <message>
+            <source>Delete account…</source>
+            <translation>Burahin ang account…</translation>
+        </message>
+        <message>
+            <source>Delete your account on %1?</source>
+            <translation>Burahin ang account mo sa %1?</translation>
+        </message>
+        <message>
+            <source>Your account goes with its library, reading progress, history, synced devices, lists and follows. Comments stay as “[deleted]”. This cannot be undone. Enter your password to go on.</source>
+            <translation>Kasama ng account ang library, progreso sa pagbasa, kasaysayan, mga naka-sync na device, listahan at mga sinusundan. Mananatili ang mga komento bilang “[deleted]”. Hindi na ito mababawi. Ilagay ang password mo para magpatuloy.</translation>
+        </message>
+        <message>
+            <source>Delete account</source>
+            <translation>Burahin ang account</translation>
+        </message>
+        <message>
+            <source>Your account is deleted.</source>
+            <translation>Nabura na ang account mo.</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>

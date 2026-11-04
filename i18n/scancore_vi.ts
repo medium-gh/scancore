@@ -438,6 +438,26 @@
             <source>Sign out anyway</source>
             <translation>Vẫn đăng xuất</translation>
         </message>
+        <message>
+            <source>Delete account…</source>
+            <translation>Xóa tài khoản…</translation>
+        </message>
+        <message>
+            <source>Delete your account on %1?</source>
+            <translation>Xóa tài khoản của bạn trên %1?</translation>
+        </message>
+        <message>
+            <source>Your account goes with its library, reading progress, history, synced devices, lists and follows. Comments stay as “[deleted]”. This cannot be undone. Enter your password to go on.</source>
+            <translation>Tài khoản bị xóa cùng thư viện, tiến độ đọc, lịch sử, thiết bị đã đồng bộ, danh sách và lượt theo dõi. Bình luận vẫn còn dưới dạng “[deleted]”. Không thể hoàn tác. Nhập mật khẩu để tiếp tục.</translation>
+        </message>
+        <message>
+            <source>Delete account</source>
+            <translation>Xóa tài khoản</translation>
+        </message>
+        <message>
+            <source>Your account is deleted.</source>
+            <translation>Đã xóa tài khoản của bạn.</translation>
+        </message>
     </context>
     <context>
         <name>ActivityPage</name>

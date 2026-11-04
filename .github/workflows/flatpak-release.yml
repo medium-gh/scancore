@@ -24,7 +24,7 @@ jobs:
       # The manifest on main (or, run by hand, on the branch it is run from),
       # so a manual run can add a bundle to an older release with today's
       # manifest fixes.
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && github.ref || 'main' }}
 
