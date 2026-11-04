@@ -2,7 +2,20 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
-## 2.16.14 — 2026-11-03
+## 2.16.15 — 2026-11-04
+
+Security fixes from a review of the app and scancore.onl.
+
+- **Plugins** (LNReader and music) could reach SCANCORE's own site with your session, and this device or your network, by being redirected there. Every redirect is now checked, and so is where a site's name actually leads.
+- **Casting**: the small server your TV fetches from relayed any address to anyone on the network who saw a cast's link, with the video site's cookies. It now relays only the video it shared, and a shared file no longer exposes the rest of its folder.
+- **Other people's text** (comments and replies in notifications, the Latest feed, party chat, friends, shared lists, story suggestions) is always shown as plain text. Before, a comment could make the app load an image from someone's server, showing them your address.
+- **Updates** install only when their signature matches SCANCORE's release key; an altered or unsigned download is deleted, never run.
+- **Extensions** update only from the repository they were installed from, so another repository listing the same extension cannot replace it.
+- **App lock**: the wait after wrong PINs no longer resets when the app restarts.
+- **Delete account** in Settings → Account removes your scancore.onl account (or your own server's) with its library, history and synced devices.
+- Android backups leave out sign-in cookies, extensions and downloads; the cookie and library files are readable only by you on computers.
+
+
 
 History that stays cleared, and options on every cover.
 

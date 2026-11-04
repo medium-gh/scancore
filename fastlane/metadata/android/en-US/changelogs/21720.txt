@@ -1,0 +1,2 @@
+• Safer: plugins, casting and other people's comments can no longer reach your account or network
+• Updates install only when signed; delete your scancore.onl account from Settings → Account
