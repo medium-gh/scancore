@@ -13,9 +13,21 @@ import Scancore
 Connections {
     property Flickable flick
     target: flick
+    // A plain Flickable has no orientation (or its signal).
+    ignoreUnknownSignals: true
     enabled: Theme.touch && !Motion.reduced
-    readonly property bool horizontal: !!flick && (flick.flickableDirection === Flickable.HorizontalFlick
-                                                    || (flick.orientation !== undefined && flick.orientation === Qt.Horizontal))
+    // Read when the list or its orientation changes, not bound: a ListView
+    // rewrites its flickableDirection while it sets its orientation, and a
+    // binding on both looped for every shelf and chip row (#35).
+    property bool horizontal: false
+    function readDirection() {
+        horizontal = !!flick && (flick.orientation !== undefined ? flick.orientation === Qt.Horizontal
+                                                                 : flick.flickableDirection === Flickable.HorizontalFlick)
+    }
+    onFlickChanged: readDirection()
+    Component.onCompleted: readDirection()
+    function onOrientationChanged() { readDirection() }
+    function onFlickableDirectionChanged() { readDirection() }
     // The finger's last positions, and the fling that last ran (to add to).
     property var state: ({ samples: [], v: 0, decel: 0, at: 0, pressedAt: 0 })
 
