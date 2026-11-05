@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.16.16" date="2026-11-05">
+      <description>
+        <p>A tap opens a series again instead of its options, which stay on long press and right click. Includes the security fixes of 2.16.15, which was never published.</p>
+      </description>
+    </release>
     <release version="2.16.15" date="2026-11-04">
       <description>
         <p>Security fixes: plugins, casting and comments from others can no longer reach your account or your network, updates install only when signed, and your scancore.onl account can be deleted from Settings → Account.</p>

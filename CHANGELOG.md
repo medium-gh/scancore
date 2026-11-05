@@ -2,6 +2,13 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.16 — 2026-11-05
+
+Taps open a series again, and the security fixes of 2.16.15, which was never published.
+
+- **Series options** open only on a long press or right click. On touch screens a plain tap on a comic, novel or anime opened them too.
+- **Includes everything in 2.16.15** below: its release stopped before publishing, because the signing step could not read the key.
+
 ## 2.16.15 — 2026-11-04
 
 Security fixes from a review of the app and scancore.onl.

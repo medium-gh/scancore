@@ -69,6 +69,8 @@ Item {
             onPressAndHold: if (row.entry) Router.seriesMenu(row.entry, row, row.width / 2, row.height / 2)
             TapHandler {
                 acceptedButtons: Qt.RightButton
+                // Mice only: touch taps ignore acceptedButtons (a tap would open it).
+                acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
                 onTapped: (point) => { if (row.entry) Router.seriesMenu(row.entry, row, point.position.x, point.position.y) }
             }
 

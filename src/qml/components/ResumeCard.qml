@@ -209,6 +209,8 @@ Item {
         // A right click: the same options.
         TapHandler {
             acceptedButtons: Qt.RightButton
+            // Mice only: touch taps ignore acceptedButtons (a tap would open it).
+            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
             onTapped: (point) => Router.seriesMenu(card.entry, panel, point.position.x, point.position.y)
         }
     }

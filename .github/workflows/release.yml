@@ -559,8 +559,10 @@ jobs:
             echo "::error::The RELEASE_SIGNING_KEY secret is not set; the app installs only signed updates."
             exit 1
           fi
+          # openssl failing must stop here, not leave an empty .sig for the upload.
+          set -o pipefail
           umask 077
-          printf 'dist/*.AppImage\n' "$RELEASE_SIGNING_KEY" > "$RUNNER_TEMP/signing.pem"
+          printf '%s\n' "$RELEASE_SIGNING_KEY" > "$RUNNER_TEMP/signing.pem"
           for f in dist/*.AppImage; do
             case "$f" in *.sig) continue ;; esac
             openssl pkeyutl -sign -inkey "$RUNNER_TEMP/signing.pem" -rawin -in "$f" | base64 -w0 > "$f.sig"
@@ -786,8 +788,10 @@ jobs:
             echo "::error::The RELEASE_SIGNING_KEY secret is not set; the app installs only signed updates."
             exit 1
           fi
+          # openssl failing must stop here, not leave an empty .sig for the upload.
+          set -o pipefail
           umask 077
-          printf 'artifacts/SCANCORE-*\n' "$RELEASE_SIGNING_KEY" > "$RUNNER_TEMP/signing.pem"
+          printf '%s\n' "$RELEASE_SIGNING_KEY" > "$RUNNER_TEMP/signing.pem"
           for f in artifacts/SCANCORE-*; do
             case "$f" in *.sig) continue ;; esac
             openssl pkeyutl -sign -inkey "$RUNNER_TEMP/signing.pem" -rawin -in "$f" | base64 -w0 > "$f.sig"

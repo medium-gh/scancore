@@ -45,6 +45,8 @@ AbstractButton {
     TapHandler {
         enabled: card.hasMenu
         acceptedButtons: Qt.RightButton
+        // Mice only: touch taps ignore acceptedButtons (a tap would open it).
+        acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
         onTapped: (point) => Router.seriesMenu(card.item, card, point.position.x, point.position.y)
     }
 
