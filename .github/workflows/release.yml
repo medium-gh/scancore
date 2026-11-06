@@ -167,7 +167,7 @@ jobs:
             qt: 6.10.3
             mpv: windows-x64
           - name: macOS
-            os: macos-14
+            os: macos-15
             mpv: macos-universal
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -351,7 +351,7 @@ jobs:
       matrix:
         include:
           - { name: Windows, os: windows-2022 }
-          - { name: macOS, os: macos-14 }
+          - { name: macOS, os: macos-15 }
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:

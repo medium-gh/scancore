@@ -50,7 +50,7 @@ jobs:
             # aqtinstall cannot read the Windows 6.11 repository layout yet.
             qt: 6.10.3
           - name: macOS
-            os: macos-14
+            os: macos-15
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
