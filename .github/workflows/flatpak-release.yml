@@ -96,6 +96,25 @@ jobs:
           flatpak build-bundle --runtime-repo=https://dl.flathub.org/repo/flathub.flatpakrepo \
             repo "dist/SCANCORE-$VERSION-linux-x86_64.flatpak" com.mediumdev.scancore master
 
+      # Signed as the Release workflow signs every other package (<file>.sig,
+      # Ed25519, base64): a release built here had a Flatpak without one.
+      - name: Sign bundle
+        if: steps.tested.outputs.published != 'true'
+        env:
+          RELEASE_SIGNING_KEY: ${{ secrets.RELEASE_SIGNING_KEY }}
+        run: |
+          if [ -z "$RELEASE_SIGNING_KEY" ]; then
+            echo "::error::The RELEASE_SIGNING_KEY secret is not set."
+            exit 1
+          fi
+          set -o pipefail
+          umask 077
+          printf '%s\n' "$RELEASE_SIGNING_KEY" > "$RUNNER_TEMP/signing.pem"
+          for f in dist/*.flatpak; do
+            openssl pkeyutl -sign -inkey "$RUNNER_TEMP/signing.pem" -rawin -in "$f" | base64 -w0 > "$f.sig"
+          done
+          rm -f "$RUNNER_TEMP/signing.pem"
+
       - name: Upload to GitHub release
         if: steps.tested.outputs.published != 'true'
         env:
@@ -106,7 +125,7 @@ jobs:
           # so wait for that release instead of failing on a timing race.
           for attempt in $(seq 1 60); do
             if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-              gh release upload "$RELEASE_TAG" dist/*.flatpak --repo "$GITHUB_REPOSITORY" --clobber
+              gh release upload "$RELEASE_TAG" dist/*.flatpak dist/*.flatpak.sig --repo "$GITHUB_REPOSITORY" --clobber
               exit 0
             fi
             echo "Waiting for release $RELEASE_TAG (attempt $attempt/60)..."

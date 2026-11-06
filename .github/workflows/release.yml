@@ -236,13 +236,22 @@ jobs:
         run: |
           EXTRA=""
           if [ "$RUNNER_OS" = "macOS" ]; then EXTRA="-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0"; fi
+          # Windows: symbols (build/bin/scancore.pdb, kept as an artifact,
+          # not shipped) to read SCANCORE's frames in crash and hang reports.
+          # Embedded (/Z7) debug info, which ccache can cache.
+          WIN_LINK=""
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            EXTRA="-DCMAKE_MSVC_DEBUG_INFORMATION_FORMAT=Embedded"
+            WIN_LINK="/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF"
+          fi
           # SCANCORE_WITH_EXTENSION_HOST=OFF: users download the Extensions
           # runtime; the host from host/ is for development builds.
           # AVIF: the libavif built with libmpv (MPV_DIR); the step fails
           # rather than ship packages that cannot show AVIF covers.
           cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DSCANCORE_BUILD_TESTS=OFF \
             -DSCANCORE_WITH_EXTENSION_HOST=OFF -DCMAKE_INSTALL_PREFIX=/usr \
-            -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache $EXTRA
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache $EXTRA \
+            ${WIN_LINK:+"-DCMAKE_EXE_LINKER_FLAGS_RELEASE=$WIN_LINK"}
           if [ -n "${MPV_DIR:-}" ] && ! grep -q "SCANCORE_HAVE_AVIF" build/build.ninja; then
             echo "::error::libavif from libmpv was not linked"
             exit 1
@@ -250,6 +259,15 @@ jobs:
           cmake --build build --parallel
 
       # ---------------------------------------------------------------- Windows
+      - name: Windows symbols
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: scancore-windows-symbols
+          path: build/bin/scancore.pdb
+          retention-days: 90
+          if-no-files-found: error
+
       - name: Windows installer
         if: runner.os == 'Windows'
         shell: pwsh
