@@ -2,6 +2,12 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.22 — 2026-11-06
+
+The Comics page keeps its sites in one menu.
+
+- **Sources menu**: with Comick as the catalogue, "All sources" already finds every site's titles, so the sites no longer take a chip each under the search box. They are in one **Sources** menu (the site you pick keeps its chip while you browse it). With another catalogue the chips stay as they were.
+
 ## 2.16.21 — 2026-11-06
 
 Updating from inside the app works on Windows again, and SCANCORE no longer freezes there for minutes at a time.

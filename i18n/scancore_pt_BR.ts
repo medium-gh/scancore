@@ -2620,6 +2620,10 @@
     <context>
         <name>ComicsPage</name>
         <message>
+            <source>Sources</source>
+            <translation>Fontes</translation>
+        </message>
+        <message>
             <source>Comics</source>
             <translation>Quadrinhos</translation>
         </message>

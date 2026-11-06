@@ -2620,6 +2620,10 @@
     <context>
         <name>ComicsPage</name>
         <message>
+            <source>Sources</source>
+            <translation>แหล่ง</translation>
+        </message>
+        <message>
             <source>Comick</source>
             <translation>Comick</translation>
         </message>
