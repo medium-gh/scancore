@@ -1148,6 +1148,30 @@
             <source>Downloads come from an anime extension. Pick one to download from.</source>
             <translation>下載來自動畫擴充功能。請選擇一個來下載。</translation>
         </message>
+        <message>
+            <source>Mark unwatched</source>
+            <translation>標為未看</translation>
+        </message>
+        <message>
+            <source>Mark watched</source>
+            <translation>標為已看</translation>
+        </message>
+        <message>
+            <source>Earlier ones watched</source>
+            <translation>之前的標為已看</translation>
+        </message>
+        <message>
+            <source>Earlier ones unwatched</source>
+            <translation>之前的標為未看</translation>
+        </message>
+        <message>
+            <source>Remove download</source>
+            <translation>刪除下載</translation>
+        </message>
+        <message>
+            <source>Watched: mark unwatched</source>
+            <translation>已看：標為未看</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3680,6 +3704,42 @@
         <message>
             <source>Stop reading these from Mihon's folder (the files stay)</source>
             <translation>不再從 Mihon 資料夾讀取這些（檔案會保留）</translation>
+        </message>
+        <message>
+            <source>Delete %1 downloads?</source>
+            <translation>刪除 %1 個下載？</translation>
+        </message>
+        <message>
+            <source>Every downloaded episode of %1 is deleted from this device.</source>
+            <translation>%1 已下載的所有集數都會從此裝置刪除。</translation>
+        </message>
+        <message>
+            <source>Every downloaded chapter of %1 is deleted from this device.</source>
+            <translation>%1 已下載的所有章節都會從此裝置刪除。</translation>
+        </message>
+        <message>
+            <source>1 episode</source>
+            <translation>1 集</translation>
+        </message>
+        <message>
+            <source>%1 episodes</source>
+            <translation>%1 集</translation>
+        </message>
+        <message>
+            <source>1 chapter</source>
+            <translation>1 章</translation>
+        </message>
+        <message>
+            <source>%1 downloading</source>
+            <translation>%1 個下載中</translation>
+        </message>
+        <message>
+            <source>%1 failed</source>
+            <translation>%1 個失敗</translation>
+        </message>
+        <message>
+            <source>Delete all</source>
+            <translation>全部刪除</translation>
         </message>
     </context>
     <context>

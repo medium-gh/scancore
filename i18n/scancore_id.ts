@@ -1148,6 +1148,30 @@
             <source>Downloads come from an anime extension. Pick one to download from.</source>
             <translation>Unduhan berasal dari ekstensi anime. Pilih satu untuk mengunduh.</translation>
         </message>
+        <message>
+            <source>Mark unwatched</source>
+            <translation>Tandai belum ditonton</translation>
+        </message>
+        <message>
+            <source>Mark watched</source>
+            <translation>Tandai sudah ditonton</translation>
+        </message>
+        <message>
+            <source>Earlier ones watched</source>
+            <translation>Sebelumnya sudah ditonton</translation>
+        </message>
+        <message>
+            <source>Earlier ones unwatched</source>
+            <translation>Sebelumnya belum ditonton</translation>
+        </message>
+        <message>
+            <source>Remove download</source>
+            <translation>Hapus unduhan</translation>
+        </message>
+        <message>
+            <source>Watched: mark unwatched</source>
+            <translation>Sudah ditonton: tandai belum ditonton</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3680,6 +3704,42 @@
         <message>
             <source>Stop reading these from Mihon's folder (the files stay)</source>
             <translation>Berhenti membaca ini dari folder Mihon (berkasnya tetap ada)</translation>
+        </message>
+        <message>
+            <source>Delete %1 downloads?</source>
+            <translation>Hapus %1 unduhan?</translation>
+        </message>
+        <message>
+            <source>Every downloaded episode of %1 is deleted from this device.</source>
+            <translation>Semua episode %1 yang diunduh akan dihapus dari perangkat ini.</translation>
+        </message>
+        <message>
+            <source>Every downloaded chapter of %1 is deleted from this device.</source>
+            <translation>Semua bab %1 yang diunduh akan dihapus dari perangkat ini.</translation>
+        </message>
+        <message>
+            <source>1 episode</source>
+            <translation>1 episode</translation>
+        </message>
+        <message>
+            <source>%1 episodes</source>
+            <translation>%1 episode</translation>
+        </message>
+        <message>
+            <source>1 chapter</source>
+            <translation>1 bab</translation>
+        </message>
+        <message>
+            <source>%1 downloading</source>
+            <translation>%1 sedang diunduh</translation>
+        </message>
+        <message>
+            <source>%1 failed</source>
+            <translation>%1 gagal</translation>
+        </message>
+        <message>
+            <source>Delete all</source>
+            <translation>Hapus semua</translation>
         </message>
     </context>
     <context>

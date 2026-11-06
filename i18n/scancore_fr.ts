@@ -1148,6 +1148,30 @@
             <source>Downloads come from an anime extension. Pick one to download from.</source>
             <translation>Les téléchargements passent par une extension d’anime. Choisissez-en une pour télécharger.</translation>
         </message>
+        <message>
+            <source>Mark unwatched</source>
+            <translation>Marquer comme non vu</translation>
+        </message>
+        <message>
+            <source>Mark watched</source>
+            <translation>Marquer comme vu</translation>
+        </message>
+        <message>
+            <source>Earlier ones watched</source>
+            <translation>Précédents vus</translation>
+        </message>
+        <message>
+            <source>Earlier ones unwatched</source>
+            <translation>Précédents non vus</translation>
+        </message>
+        <message>
+            <source>Remove download</source>
+            <translation>Supprimer le téléchargement</translation>
+        </message>
+        <message>
+            <source>Watched: mark unwatched</source>
+            <translation>Vu : marquer comme non vu</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3680,6 +3704,42 @@
         <message>
             <source>Stop reading these from Mihon's folder (the files stay)</source>
             <translation>Ne plus les lire depuis le dossier de Mihon (les fichiers restent)</translation>
+        </message>
+        <message>
+            <source>Delete %1 downloads?</source>
+            <translation>Supprimer %1 téléchargements ?</translation>
+        </message>
+        <message>
+            <source>Every downloaded episode of %1 is deleted from this device.</source>
+            <translation>Tous les épisodes téléchargés de %1 seront supprimés de cet appareil.</translation>
+        </message>
+        <message>
+            <source>Every downloaded chapter of %1 is deleted from this device.</source>
+            <translation>Tous les chapitres téléchargés de %1 seront supprimés de cet appareil.</translation>
+        </message>
+        <message>
+            <source>1 episode</source>
+            <translation>1 épisode</translation>
+        </message>
+        <message>
+            <source>%1 episodes</source>
+            <translation>%1 épisodes</translation>
+        </message>
+        <message>
+            <source>1 chapter</source>
+            <translation>1 chapitre</translation>
+        </message>
+        <message>
+            <source>%1 downloading</source>
+            <translation>%1 en cours</translation>
+        </message>
+        <message>
+            <source>%1 failed</source>
+            <translation>%1 en échec</translation>
+        </message>
+        <message>
+            <source>Delete all</source>
+            <translation>Tout supprimer</translation>
         </message>
     </context>
     <context>

@@ -1,0 +1,3 @@
+• New chapters and episodes are notified even while SCANCORE is closed
+• Mark single episodes watched, or all before one, without playing them
+• Downloads are grouped by series

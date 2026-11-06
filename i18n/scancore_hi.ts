@@ -1148,6 +1148,30 @@
             <source>Downloads come from an anime extension. Pick one to download from.</source>
             <translation>डाउनलोड किसी एनीमे एक्सटेंशन से होते हैं। डाउनलोड के लिए एक चुनें।</translation>
         </message>
+        <message>
+            <source>Mark unwatched</source>
+            <translation>अनदेखा चिह्नित करें</translation>
+        </message>
+        <message>
+            <source>Mark watched</source>
+            <translation>देखा हुआ चिह्नित करें</translation>
+        </message>
+        <message>
+            <source>Earlier ones watched</source>
+            <translation>पिछले देखे गए</translation>
+        </message>
+        <message>
+            <source>Earlier ones unwatched</source>
+            <translation>पिछले अनदेखे</translation>
+        </message>
+        <message>
+            <source>Remove download</source>
+            <translation>डाउनलोड हटाएँ</translation>
+        </message>
+        <message>
+            <source>Watched: mark unwatched</source>
+            <translation>देखा गया: अनदेखा चिह्नित करें</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3672,6 +3696,42 @@
         <message>
             <source>Stop reading these from Mihon's folder (the files stay)</source>
             <translation>इन्हें Mihon के फ़ोल्डर से पढ़ना बंद करें (फ़ाइलें बनी रहेंगी)</translation>
+        </message>
+        <message>
+            <source>Delete %1 downloads?</source>
+            <translation>%1 डाउनलोड हटाएँ?</translation>
+        </message>
+        <message>
+            <source>Every downloaded episode of %1 is deleted from this device.</source>
+            <translation>%1 के सभी डाउनलोड किए गए एपिसोड इस डिवाइस से हटा दिए जाएँगे।</translation>
+        </message>
+        <message>
+            <source>Every downloaded chapter of %1 is deleted from this device.</source>
+            <translation>%1 के सभी डाउनलोड किए गए अध्याय इस डिवाइस से हटा दिए जाएँगे।</translation>
+        </message>
+        <message>
+            <source>1 episode</source>
+            <translation>1 एपिसोड</translation>
+        </message>
+        <message>
+            <source>%1 episodes</source>
+            <translation>%1 एपिसोड</translation>
+        </message>
+        <message>
+            <source>1 chapter</source>
+            <translation>1 अध्याय</translation>
+        </message>
+        <message>
+            <source>%1 downloading</source>
+            <translation>%1 डाउनलोड हो रहे हैं</translation>
+        </message>
+        <message>
+            <source>%1 failed</source>
+            <translation>%1 विफल</translation>
+        </message>
+        <message>
+            <source>Delete all</source>
+            <translation>सभी हटाएँ</translation>
         </message>
     </context>
     <context>

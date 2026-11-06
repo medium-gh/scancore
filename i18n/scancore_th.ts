@@ -1148,6 +1148,30 @@
             <source>Downloads come from an anime extension. Pick one to download from.</source>
             <translation>การดาวน์โหลดมาจากส่วนขยายอนิเมะ เลือกส่วนขยายที่จะดาวน์โหลด</translation>
         </message>
+        <message>
+            <source>Mark unwatched</source>
+            <translation>ทำเครื่องหมายว่ายังไม่ดู</translation>
+        </message>
+        <message>
+            <source>Mark watched</source>
+            <translation>ทำเครื่องหมายว่าดูแล้ว</translation>
+        </message>
+        <message>
+            <source>Earlier ones watched</source>
+            <translation>ตอนก่อนหน้าดูแล้ว</translation>
+        </message>
+        <message>
+            <source>Earlier ones unwatched</source>
+            <translation>ตอนก่อนหน้ายังไม่ดู</translation>
+        </message>
+        <message>
+            <source>Remove download</source>
+            <translation>ลบการดาวน์โหลด</translation>
+        </message>
+        <message>
+            <source>Watched: mark unwatched</source>
+            <translation>ดูแล้ว: ทำเครื่องหมายว่ายังไม่ดู</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3672,6 +3696,42 @@
         <message>
             <source>Stop reading these from Mihon's folder (the files stay)</source>
             <translation>หยุดอ่านจากโฟลเดอร์ของ Mihon (ไฟล์ยังอยู่)</translation>
+        </message>
+        <message>
+            <source>Delete %1 downloads?</source>
+            <translation>ลบการดาวน์โหลด %1 รายการไหม</translation>
+        </message>
+        <message>
+            <source>Every downloaded episode of %1 is deleted from this device.</source>
+            <translation>ตอนที่ดาวน์โหลดไว้ทั้งหมดของ %1 จะถูกลบออกจากอุปกรณ์นี้</translation>
+        </message>
+        <message>
+            <source>Every downloaded chapter of %1 is deleted from this device.</source>
+            <translation>บทที่ดาวน์โหลดไว้ทั้งหมดของ %1 จะถูกลบออกจากอุปกรณ์นี้</translation>
+        </message>
+        <message>
+            <source>1 episode</source>
+            <translation>1 ตอน</translation>
+        </message>
+        <message>
+            <source>%1 episodes</source>
+            <translation>%1 ตอน</translation>
+        </message>
+        <message>
+            <source>1 chapter</source>
+            <translation>1 บท</translation>
+        </message>
+        <message>
+            <source>%1 downloading</source>
+            <translation>กำลังดาวน์โหลด %1</translation>
+        </message>
+        <message>
+            <source>%1 failed</source>
+            <translation>ล้มเหลว %1</translation>
+        </message>
+        <message>
+            <source>Delete all</source>
+            <translation>ลบทั้งหมด</translation>
         </message>
     </context>
     <context>

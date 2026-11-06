@@ -1148,6 +1148,30 @@
             <source>Downloads come from an anime extension. Pick one to download from.</source>
             <translation>Pobieranie odbywa się przez rozszerzenie anime. Wybierz jedno, z którego pobierać.</translation>
         </message>
+        <message>
+            <source>Mark unwatched</source>
+            <translation>Oznacz jako nieobejrzany</translation>
+        </message>
+        <message>
+            <source>Mark watched</source>
+            <translation>Oznacz jako obejrzany</translation>
+        </message>
+        <message>
+            <source>Earlier ones watched</source>
+            <translation>Wcześniejsze obejrzane</translation>
+        </message>
+        <message>
+            <source>Earlier ones unwatched</source>
+            <translation>Wcześniejsze nieobejrzane</translation>
+        </message>
+        <message>
+            <source>Remove download</source>
+            <translation>Usuń pobrane</translation>
+        </message>
+        <message>
+            <source>Watched: mark unwatched</source>
+            <translation>Obejrzany: oznacz jako nieobejrzany</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3672,6 +3696,42 @@
         <message>
             <source>Stop reading these from Mihon's folder (the files stay)</source>
             <translation>Przestań czytać je z folderu Mihona (pliki zostają)</translation>
+        </message>
+        <message>
+            <source>Delete %1 downloads?</source>
+            <translation>Usunąć pobrane (%1)?</translation>
+        </message>
+        <message>
+            <source>Every downloaded episode of %1 is deleted from this device.</source>
+            <translation>Wszystkie pobrane odcinki %1 zostaną usunięte z tego urządzenia.</translation>
+        </message>
+        <message>
+            <source>Every downloaded chapter of %1 is deleted from this device.</source>
+            <translation>Wszystkie pobrane rozdziały %1 zostaną usunięte z tego urządzenia.</translation>
+        </message>
+        <message>
+            <source>1 episode</source>
+            <translation>1 odcinek</translation>
+        </message>
+        <message>
+            <source>%1 episodes</source>
+            <translation>Odcinki: %1</translation>
+        </message>
+        <message>
+            <source>1 chapter</source>
+            <translation>1 rozdział</translation>
+        </message>
+        <message>
+            <source>%1 downloading</source>
+            <translation>Pobieranie: %1</translation>
+        </message>
+        <message>
+            <source>%1 failed</source>
+            <translation>Nieudane: %1</translation>
+        </message>
+        <message>
+            <source>Delete all</source>
+            <translation>Usuń wszystko</translation>
         </message>
     </context>
     <context>

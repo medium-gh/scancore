@@ -1148,6 +1148,30 @@
             <source>Downloads come from an anime extension. Pick one to download from.</source>
             <translation>Tải xuống đến từ một tiện ích anime. Hãy chọn một tiện ích để tải.</translation>
         </message>
+        <message>
+            <source>Mark unwatched</source>
+            <translation>Đánh dấu chưa xem</translation>
+        </message>
+        <message>
+            <source>Mark watched</source>
+            <translation>Đánh dấu đã xem</translation>
+        </message>
+        <message>
+            <source>Earlier ones watched</source>
+            <translation>Các tập trước đã xem</translation>
+        </message>
+        <message>
+            <source>Earlier ones unwatched</source>
+            <translation>Các tập trước chưa xem</translation>
+        </message>
+        <message>
+            <source>Remove download</source>
+            <translation>Xóa bản tải xuống</translation>
+        </message>
+        <message>
+            <source>Watched: mark unwatched</source>
+            <translation>Đã xem: đánh dấu chưa xem</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3680,6 +3704,42 @@
         <message>
             <source>Stop reading these from Mihon's folder (the files stay)</source>
             <translation>Ngừng đọc các chương này từ thư mục của Mihon (tệp vẫn còn)</translation>
+        </message>
+        <message>
+            <source>Delete %1 downloads?</source>
+            <translation>Xóa %1 bản tải xuống?</translation>
+        </message>
+        <message>
+            <source>Every downloaded episode of %1 is deleted from this device.</source>
+            <translation>Mọi tập đã tải của %1 sẽ bị xóa khỏi thiết bị này.</translation>
+        </message>
+        <message>
+            <source>Every downloaded chapter of %1 is deleted from this device.</source>
+            <translation>Mọi chương đã tải của %1 sẽ bị xóa khỏi thiết bị này.</translation>
+        </message>
+        <message>
+            <source>1 episode</source>
+            <translation>1 tập</translation>
+        </message>
+        <message>
+            <source>%1 episodes</source>
+            <translation>%1 tập</translation>
+        </message>
+        <message>
+            <source>1 chapter</source>
+            <translation>1 chương</translation>
+        </message>
+        <message>
+            <source>%1 downloading</source>
+            <translation>%1 đang tải</translation>
+        </message>
+        <message>
+            <source>%1 failed</source>
+            <translation>%1 lỗi</translation>
+        </message>
+        <message>
+            <source>Delete all</source>
+            <translation>Xóa tất cả</translation>
         </message>
     </context>
     <context>

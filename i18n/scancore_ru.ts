@@ -1148,6 +1148,30 @@
             <source>Downloads come from an anime extension. Pick one to download from.</source>
             <translation>Загрузки идут через расширение для аниме. Выберите, откуда загружать.</translation>
         </message>
+        <message>
+            <source>Mark unwatched</source>
+            <translation>Отметить непросмотренной</translation>
+        </message>
+        <message>
+            <source>Mark watched</source>
+            <translation>Отметить просмотренной</translation>
+        </message>
+        <message>
+            <source>Earlier ones watched</source>
+            <translation>Предыдущие просмотрены</translation>
+        </message>
+        <message>
+            <source>Earlier ones unwatched</source>
+            <translation>Предыдущие не просмотрены</translation>
+        </message>
+        <message>
+            <source>Remove download</source>
+            <translation>Удалить загрузку</translation>
+        </message>
+        <message>
+            <source>Watched: mark unwatched</source>
+            <translation>Просмотрена: отметить непросмотренной</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3680,6 +3704,42 @@
         <message>
             <source>Stop reading these from Mihon's folder (the files stay)</source>
             <translation>Не читать их из папки Mihon (файлы останутся)</translation>
+        </message>
+        <message>
+            <source>Delete %1 downloads?</source>
+            <translation>Удалить загрузки (%1)?</translation>
+        </message>
+        <message>
+            <source>Every downloaded episode of %1 is deleted from this device.</source>
+            <translation>Все загруженные серии «%1» будут удалены с этого устройства.</translation>
+        </message>
+        <message>
+            <source>Every downloaded chapter of %1 is deleted from this device.</source>
+            <translation>Все загруженные главы «%1» будут удалены с этого устройства.</translation>
+        </message>
+        <message>
+            <source>1 episode</source>
+            <translation>1 серия</translation>
+        </message>
+        <message>
+            <source>%1 episodes</source>
+            <translation>Серий: %1</translation>
+        </message>
+        <message>
+            <source>1 chapter</source>
+            <translation>1 глава</translation>
+        </message>
+        <message>
+            <source>%1 downloading</source>
+            <translation>Загружается: %1</translation>
+        </message>
+        <message>
+            <source>%1 failed</source>
+            <translation>Ошибок: %1</translation>
+        </message>
+        <message>
+            <source>Delete all</source>
+            <translation>Удалить все</translation>
         </message>
     </context>
     <context>

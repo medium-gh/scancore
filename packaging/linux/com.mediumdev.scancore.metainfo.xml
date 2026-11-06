@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.16.17" date="2026-11-06">
+      <description>
+        <p>Single anime episodes can be marked watched, downloads are grouped by series, and on Android new chapters and episodes are notified while the app is closed.</p>
+      </description>
+    </release>
     <release version="2.16.16" date="2026-11-05">
       <description>
         <p>A tap opens a series again instead of its options, which stay on long press and right click. Includes the security fixes of 2.16.15, which was never published.</p>

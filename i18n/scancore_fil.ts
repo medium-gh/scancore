@@ -1148,6 +1148,30 @@
             <source>Downloads come from an anime extension. Pick one to download from.</source>
             <translation>Galing sa anime extension ang mga download. Pumili ng isa na pagda-downloadan.</translation>
         </message>
+        <message>
+            <source>Mark unwatched</source>
+            <translation>Markahang hindi pa napanood</translation>
+        </message>
+        <message>
+            <source>Mark watched</source>
+            <translation>Markahang napanood</translation>
+        </message>
+        <message>
+            <source>Earlier ones watched</source>
+            <translation>Napanood ang mga nauna</translation>
+        </message>
+        <message>
+            <source>Earlier ones unwatched</source>
+            <translation>Hindi pa napanood ang mga nauna</translation>
+        </message>
+        <message>
+            <source>Remove download</source>
+            <translation>Alisin ang download</translation>
+        </message>
+        <message>
+            <source>Watched: mark unwatched</source>
+            <translation>Napanood: markahang hindi pa napanood</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3672,6 +3696,42 @@
         <message>
             <source>Stop reading these from Mihon's folder (the files stay)</source>
             <translation>Ihinto ang pagbasa ng mga ito mula sa folder ng Mihon (mananatili ang mga file)</translation>
+        </message>
+        <message>
+            <source>Delete %1 downloads?</source>
+            <translation>Burahin ang %1 download?</translation>
+        </message>
+        <message>
+            <source>Every downloaded episode of %1 is deleted from this device.</source>
+            <translation>Mabubura sa device na ito ang lahat ng na-download na episode ng %1.</translation>
+        </message>
+        <message>
+            <source>Every downloaded chapter of %1 is deleted from this device.</source>
+            <translation>Mabubura sa device na ito ang lahat ng na-download na kabanata ng %1.</translation>
+        </message>
+        <message>
+            <source>1 episode</source>
+            <translation>1 episode</translation>
+        </message>
+        <message>
+            <source>%1 episodes</source>
+            <translation>%1 episode</translation>
+        </message>
+        <message>
+            <source>1 chapter</source>
+            <translation>1 kabanata</translation>
+        </message>
+        <message>
+            <source>%1 downloading</source>
+            <translation>%1 dina-download</translation>
+        </message>
+        <message>
+            <source>%1 failed</source>
+            <translation>%1 nabigo</translation>
+        </message>
+        <message>
+            <source>Delete all</source>
+            <translation>Burahin lahat</translation>
         </message>
     </context>
     <context>

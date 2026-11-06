@@ -1148,6 +1148,30 @@
             <source>Downloads come from an anime extension. Pick one to download from.</source>
             <translation>다운로드는 애니메이션 확장 프로그램에서 받습니다. 받을 곳을 하나 고르세요.</translation>
         </message>
+        <message>
+            <source>Mark unwatched</source>
+            <translation>안 본 것으로 표시</translation>
+        </message>
+        <message>
+            <source>Mark watched</source>
+            <translation>본 것으로 표시</translation>
+        </message>
+        <message>
+            <source>Earlier ones watched</source>
+            <translation>이전 화 모두 본 것으로</translation>
+        </message>
+        <message>
+            <source>Earlier ones unwatched</source>
+            <translation>이전 화 모두 안 본 것으로</translation>
+        </message>
+        <message>
+            <source>Remove download</source>
+            <translation>다운로드 삭제</translation>
+        </message>
+        <message>
+            <source>Watched: mark unwatched</source>
+            <translation>봤음: 안 본 것으로 표시</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3680,6 +3704,42 @@
         <message>
             <source>Stop reading these from Mihon's folder (the files stay)</source>
             <translation>Mihon 폴더에서 그만 읽기(파일은 남아요)</translation>
+        </message>
+        <message>
+            <source>Delete %1 downloads?</source>
+            <translation>다운로드 %1개를 삭제할까요?</translation>
+        </message>
+        <message>
+            <source>Every downloaded episode of %1 is deleted from this device.</source>
+            <translation>%1의 다운로드한 에피소드가 모두 이 기기에서 삭제됩니다.</translation>
+        </message>
+        <message>
+            <source>Every downloaded chapter of %1 is deleted from this device.</source>
+            <translation>%1의 다운로드한 챕터가 모두 이 기기에서 삭제됩니다.</translation>
+        </message>
+        <message>
+            <source>1 episode</source>
+            <translation>1화</translation>
+        </message>
+        <message>
+            <source>%1 episodes</source>
+            <translation>%1화</translation>
+        </message>
+        <message>
+            <source>1 chapter</source>
+            <translation>1챕터</translation>
+        </message>
+        <message>
+            <source>%1 downloading</source>
+            <translation>%1개 다운로드 중</translation>
+        </message>
+        <message>
+            <source>%1 failed</source>
+            <translation>%1개 실패</translation>
+        </message>
+        <message>
+            <source>Delete all</source>
+            <translation>모두 삭제</translation>
         </message>
     </context>
     <context>

@@ -1148,6 +1148,30 @@
             <source>Downloads come from an anime extension. Pick one to download from.</source>
             <translation>ダウンロードはアニメ拡張機能から行います。ダウンロード元を選んでください。</translation>
         </message>
+        <message>
+            <source>Mark unwatched</source>
+            <translation>未視聴にする</translation>
+        </message>
+        <message>
+            <source>Mark watched</source>
+            <translation>視聴済みにする</translation>
+        </message>
+        <message>
+            <source>Earlier ones watched</source>
+            <translation>これより前を視聴済みに</translation>
+        </message>
+        <message>
+            <source>Earlier ones unwatched</source>
+            <translation>これより前を未視聴に</translation>
+        </message>
+        <message>
+            <source>Remove download</source>
+            <translation>ダウンロードを削除</translation>
+        </message>
+        <message>
+            <source>Watched: mark unwatched</source>
+            <translation>視聴済み：未視聴にする</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3680,6 +3704,42 @@
         <message>
             <source>Stop reading these from Mihon's folder (the files stay)</source>
             <translation>Mihon のフォルダーから読むのをやめる（ファイルは残ります）</translation>
+        </message>
+        <message>
+            <source>Delete %1 downloads?</source>
+            <translation>%1 件のダウンロードを削除しますか？</translation>
+        </message>
+        <message>
+            <source>Every downloaded episode of %1 is deleted from this device.</source>
+            <translation>%1 のダウンロード済みエピソードがすべてこの端末から削除されます。</translation>
+        </message>
+        <message>
+            <source>Every downloaded chapter of %1 is deleted from this device.</source>
+            <translation>%1 のダウンロード済みチャプターがすべてこの端末から削除されます。</translation>
+        </message>
+        <message>
+            <source>1 episode</source>
+            <translation>1 話</translation>
+        </message>
+        <message>
+            <source>%1 episodes</source>
+            <translation>%1 話</translation>
+        </message>
+        <message>
+            <source>1 chapter</source>
+            <translation>1 章</translation>
+        </message>
+        <message>
+            <source>%1 downloading</source>
+            <translation>%1 件ダウンロード中</translation>
+        </message>
+        <message>
+            <source>%1 failed</source>
+            <translation>%1 件失敗</translation>
+        </message>
+        <message>
+            <source>Delete all</source>
+            <translation>すべて削除</translation>
         </message>
     </context>
     <context>

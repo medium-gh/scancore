@@ -2,6 +2,15 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.17 — 2026-11-06
+
+New chapters and episodes are found on Android while SCANCORE is closed, single episodes can be marked watched, and downloads are grouped by series.
+
+- **Notifications on Android** no longer need SCANCORE open. Android ends apps soon after they leave the screen, and the library checks stopped with it; the system now runs the check every few hours (Settings → Library), also after a restart, and notifies new chapters and episodes. Chapters picked up for automatic downloads download the next time SCANCORE opens.
+- **Mark an episode watched** with the circle beside it, without playing it. A long press or right click on an episode marks it, or all those before it, watched or not, and downloads it.
+- **Downloads** list each series once: tap it to see its chapters or episodes, retry the failed ones or delete them all.
+- **Lists** no longer re-check their scroll direction over and over (#35).
+
 ## 2.16.16 — 2026-11-05
 
 Taps open a series again, and the security fixes of 2.16.15, which was never published.

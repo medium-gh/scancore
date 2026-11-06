@@ -1148,6 +1148,30 @@
             <source>Downloads come from an anime extension. Pick one to download from.</source>
             <translation>Os downloads vêm de uma extensão de anime. Escolha uma para baixar.</translation>
         </message>
+        <message>
+            <source>Mark unwatched</source>
+            <translation>Marcar como não assistido</translation>
+        </message>
+        <message>
+            <source>Mark watched</source>
+            <translation>Marcar como assistido</translation>
+        </message>
+        <message>
+            <source>Earlier ones watched</source>
+            <translation>Anteriores assistidos</translation>
+        </message>
+        <message>
+            <source>Earlier ones unwatched</source>
+            <translation>Anteriores não assistidos</translation>
+        </message>
+        <message>
+            <source>Remove download</source>
+            <translation>Remover download</translation>
+        </message>
+        <message>
+            <source>Watched: mark unwatched</source>
+            <translation>Assistido: marcar como não assistido</translation>
+        </message>
     </context>
     <context>
         <name>AnimePage</name>
@@ -3680,6 +3704,42 @@
         <message>
             <source>Stop reading these from Mihon's folder (the files stay)</source>
             <translation>Parar de ler estes pela pasta do Mihon (os arquivos ficam)</translation>
+        </message>
+        <message>
+            <source>Delete %1 downloads?</source>
+            <translation>Excluir %1 downloads?</translation>
+        </message>
+        <message>
+            <source>Every downloaded episode of %1 is deleted from this device.</source>
+            <translation>Todos os episódios baixados de %1 serão excluídos deste dispositivo.</translation>
+        </message>
+        <message>
+            <source>Every downloaded chapter of %1 is deleted from this device.</source>
+            <translation>Todos os capítulos baixados de %1 serão excluídos deste dispositivo.</translation>
+        </message>
+        <message>
+            <source>1 episode</source>
+            <translation>1 episódio</translation>
+        </message>
+        <message>
+            <source>%1 episodes</source>
+            <translation>%1 episódios</translation>
+        </message>
+        <message>
+            <source>1 chapter</source>
+            <translation>1 capítulo</translation>
+        </message>
+        <message>
+            <source>%1 downloading</source>
+            <translation>%1 baixando</translation>
+        </message>
+        <message>
+            <source>%1 failed</source>
+            <translation>%1 com falha</translation>
+        </message>
+        <message>
+            <source>Delete all</source>
+            <translation>Excluir tudo</translation>
         </message>
     </context>
     <context>
