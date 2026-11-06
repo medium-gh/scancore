@@ -255,31 +255,117 @@ void onSignal(int signal, siginfo_t *info, void *context) {
 #else
 wchar_t g_widePath[1024];
 
+// The exported function at or before `rva` in a loaded module (Qt's and
+// the system's functions are exported), read from its export table.
+const char *nearestExport(HMODULE module, DWORD rva, DWORD *offset) {
+    const auto base = reinterpret_cast<const BYTE *>(module);
+    const auto *dos = reinterpret_cast<const IMAGE_DOS_HEADER *>(base);
+    const auto *nt = reinterpret_cast<const IMAGE_NT_HEADERS *>(base + dos->e_lfanew);
+    const auto &dir = nt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
+    if (!dir.VirtualAddress)
+        return nullptr;
+    const auto *exports = reinterpret_cast<const IMAGE_EXPORT_DIRECTORY *>(base + dir.VirtualAddress);
+    const auto *names = reinterpret_cast<const DWORD *>(base + exports->AddressOfNames);
+    const auto *ordinals = reinterpret_cast<const WORD *>(base + exports->AddressOfNameOrdinals);
+    const auto *functions = reinterpret_cast<const DWORD *>(base + exports->AddressOfFunctions);
+    const char *best = nullptr;
+    DWORD bestRva = 0;
+    for (DWORD i = 0; i < exports->NumberOfNames; ++i) {
+        const DWORD at = functions[ordinals[i]];
+        if (at <= rva && at >= bestRva && (at < dir.VirtualAddress || at >= dir.VirtualAddress + dir.Size)) {
+            bestRva = at;
+            best = reinterpret_cast<const char *>(base + names[i]);
+        }
+    }
+    *offset = rva - bestRva;
+    return best;
+}
+
+// "#n 0xpc module+0xoffset (export+0xoffset)"
+void putFrame(Handle fd, int index, uintptr_t pc, bool withExport) {
+    put(fd, "#");
+    putNumber(fd, index);
+    put(fd, " ");
+    putHex(fd, pc);
+    HMODULE module = nullptr;
+    if (GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                           reinterpret_cast<LPCWSTR>(pc), &module)) {
+        char name[MAX_PATH];
+        const DWORD n = GetModuleFileNameA(module, name, MAX_PATH);
+        const char *base = name;
+        for (DWORD k = 0; k < n; ++k)
+            if (name[k] == '\\')
+                base = name + k + 1;
+        put(fd, " ");
+        put(fd, base);
+        put(fd, "+");
+        putHex(fd, pc - uintptr_t(module));
+        DWORD offset = 0;
+        // SCANCORE's own frames need its symbols (scancore.pdb); its few
+        // exports would only mislead.
+        if (const char *function = withExport && module != GetModuleHandleW(nullptr)
+                                       ? nearestExport(module, DWORD(pc - uintptr_t(module)), &offset)
+                                       : nullptr) {
+            put(fd, " (");
+            put(fd, function);
+            put(fd, "+");
+            putHex(fd, offset);
+            put(fd, ")");
+        }
+    }
+    put(fd, "\n");
+}
+
 void putStack(Handle fd) {
     void *frames[64];
     const USHORT count = RtlCaptureStackBackTrace(0, 64, frames, nullptr);
-    for (USHORT i = 0; i < count; ++i) {
-        const auto pc = uintptr_t(frames[i]);
-        put(fd, "#");
-        putNumber(fd, i);
-        put(fd, " ");
-        putHex(fd, pc);
-        HMODULE module = nullptr;
-        if (GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-                               reinterpret_cast<LPCWSTR>(frames[i]), &module)) {
-            char name[MAX_PATH];
-            const DWORD n = GetModuleFileNameA(module, name, MAX_PATH);
-            const char *base = name;
-            for (DWORD k = 0; k < n; ++k)
-                if (name[k] == '\\')
-                    base = name + k + 1;
-            put(fd, " ");
-            put(fd, base);
-            put(fd, "+");
-            putHex(fd, pc - uintptr_t(module));
-        }
-        put(fd, "\n");
+    for (USHORT i = 0; i < count; ++i)
+        putFrame(fd, i, uintptr_t(frames[i]), false);
+}
+
+// Another thread's stack: stopped just long enough to unwind it (nothing
+// that could take a lock it holds runs meanwhile), then written out.
+void putThreadStack(Handle fd, DWORD threadId) {
+    HANDLE thread = OpenThread(THREAD_SUSPEND_RESUME | THREAD_GET_CONTEXT | THREAD_QUERY_INFORMATION, FALSE, threadId);
+    if (!thread) {
+        put(fd, "(no access)\n");
+        return;
     }
+    DWORD64 frames[64];
+    int count = 0;
+    if (SuspendThread(thread) != DWORD(-1)) {
+        CONTEXT context{};
+        context.ContextFlags = CONTEXT_FULL;
+#if defined(_M_X64)
+        if (GetThreadContext(thread, &context)) {
+            while (count < 64 && context.Rip) {
+                frames[count++] = context.Rip;
+                DWORD64 imageBase = 0;
+                if (auto *entry = RtlLookupFunctionEntry(context.Rip, &imageBase, nullptr)) {
+                    void *handlerData = nullptr;
+                    DWORD64 establisher = 0;
+                    RtlVirtualUnwind(UNW_FLAG_NHANDLER, imageBase, context.Rip, entry, &context, &handlerData, &establisher, nullptr);
+                } else {
+                    // A leaf function: the return address is on top (read
+                    // so that a bad stack ends the walk, not the app).
+                    DWORD64 ret = 0;
+                    SIZE_T got = 0;
+                    if (!ReadProcessMemory(GetCurrentProcess(), reinterpret_cast<LPCVOID>(context.Rsp), &ret, sizeof ret, &got) ||
+                        got != sizeof ret)
+                        break;
+                    context.Rip = ret;
+                    context.Rsp += 8;
+                }
+            }
+        }
+#endif
+        ResumeThread(thread);
+    }
+    CloseHandle(thread);
+    for (int i = 0; i < count; ++i)
+        putFrame(fd, i, uintptr_t(frames[i]), true);
+    if (count == 0)
+        put(fd, "(no stack)\n");
 }
 
 void writeReport(const char *what, uintptr_t address) {
@@ -342,10 +428,15 @@ QStringList seenList() { return Database::pref(QStringLiteral("crash.seen")).toS
 qint64 monotonicMs() { return QDeadlineTimer::current().deadline(); }
 
 // The interface's thread beats once a second while the app is in use; the
-// watchdog reports a gap of kHang.
+// watchdog reports a gap of kHang, and quitting that takes kQuitHang.
 constexpr qint64 kHang = 8000;
+constexpr qint64 kQuitHang = 15000;
 std::atomic<qint64> g_beat{0};
 std::atomic_bool g_watching{false};
+std::atomic_bool g_quitting{false};
+std::atomic<qint64> g_quitSince{0};
+// Kept from start-up: while quitting, the application object may be gone.
+const QString *g_hangFolder = nullptr;
 
 // Threads that may wait on something that does not answer (Busy).
 struct BusySlot {
@@ -353,9 +444,15 @@ struct BusySlot {
     std::atomic<qint64> since{0};
 #ifndef Q_OS_WIN
     pthread_t thread{};
+#else
+    std::atomic<DWORD> thread{0};
 #endif
 };
 BusySlot g_busy[8];
+
+#ifdef Q_OS_WIN
+DWORD g_guiThread = 0;
+#endif
 
 #ifndef Q_OS_WIN
 pthread_t g_guiThread{};
@@ -393,15 +490,18 @@ void putStackOf(int fd, pthread_t thread) {
 }
 #endif
 
-void writeHangReport(qint64 stuckMs) {
-    QDir().mkpath(folder());
-    const auto path = folder() + QStringLiteral("/crash-%1-%2-hang.txt")
-                                     .arg(QDateTime::currentDateTime().toString(QStringLiteral("yyyyMMdd-HHmmss")))
-                                     .arg(QCoreApplication::applicationPid());
+void writeHangReport(qint64 stuckMs, bool quitting) {
+    const auto dir = g_hangFolder ? *g_hangFolder : folder();
+    QDir().mkpath(dir);
+    const auto path = dir + QStringLiteral("/crash-%1-%2-hang.txt")
+                                .arg(QDateTime::currentDateTime().toString(QStringLiteral("yyyyMMdd-HHmmss")))
+                                .arg(QCoreApplication::applicationPid());
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate))
         return;
-    QByteArray head = QByteArray(g_header).replace("crash report", "hang report") + "What: the app stopped answering for " + QByteArray::number(stuckMs / 1000) + " s\n";
+    QByteArray head = QByteArray(g_header).replace("crash report", "hang report") +
+                      (quitting ? "What: quitting took more than " : "What: the app stopped answering for ") +
+                      QByteArray::number(stuckMs / 1000) + " s\n";
     const qint64 now = monotonicMs();
     for (const auto &slot : g_busy)
         if (const char *what = slot.what.load())
@@ -421,9 +521,26 @@ void writeHangReport(qint64 stuckMs) {
         }
     putLog(fd);
 #else
+    file.close();
+    const HANDLE fd = CreateFileW(reinterpret_cast<LPCWSTR>(path.utf16()), FILE_APPEND_DATA, FILE_SHARE_READ, nullptr, OPEN_EXISTING,
+                                  FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (fd == INVALID_HANDLE_VALUE)
+        return;
+    put(fd, "\nInterface thread:\n");
+    putThreadStack(fd, g_guiThread);
+    for (const auto &slot : g_busy)
+        if (const char *what = slot.what.load())
+            if (const DWORD thread = slot.thread.load(); thread && thread != g_guiThread) {
+                put(fd, "\nBusy thread (");
+                put(fd, what);
+                put(fd, "):\n");
+                putThreadStack(fd, thread);
+            }
     QByteArray log;
     ringCopy([&log](const char *data, size_t size) { log.append(data, qsizetype(size)); }, true);
-    file.write("\nRecent log:\n" + log);
+    put(fd, "\nRecent log:\n");
+    put(fd, log.constData(), size_t(log.size()));
+    CloseHandle(fd);
 #endif
 }
 
@@ -437,6 +554,8 @@ Busy::Busy(const char *what) {
             continue;
 #ifndef Q_OS_WIN
         slot.thread = pthread_self();
+#else
+        slot.thread = GetCurrentThreadId();
 #endif
         slot.since = monotonicMs();
         m_slot = i;
@@ -457,35 +576,55 @@ void watchHangs() {
     action.sa_flags = SA_RESTART | SA_ONSTACK;
     sigemptyset(&action.sa_mask);
     sigaction(kStackSignal, &action, nullptr);
+#else
+    g_guiThread = GetCurrentThreadId();
 #endif
+    g_hangFolder = new QString(folder());
     g_beat = monotonicMs();
     auto *beat = new QTimer(QCoreApplication::instance());
     beat->setInterval(1000);
     QObject::connect(beat, &QTimer::timeout, [] { g_beat = monotonicMs(); });
     beat->start();
     // Only while in use: Android stops the interface's thread in the
-    // background, and a suspended computer stops every clock but this one.
+    // background. On a computer, also while another window is in front: a
+    // freeze that starts then is still one when the user comes back (and a
+    // frozen app never hears that it is in front again).
     const auto follow = [](Qt::ApplicationState state) {
         g_beat = monotonicMs();
-        g_watching = state == Qt::ApplicationActive;
+#ifdef Q_OS_ANDROID
+        g_watching = !g_quitting && state == Qt::ApplicationActive;
+#else
+        g_watching = !g_quitting && state != Qt::ApplicationSuspended;
+#endif
     };
     QObject::connect(qGuiApp, &QGuiApplication::applicationStateChanged, qGuiApp, follow);
     follow(qGuiApp->applicationState());
-    // Quitting waits for work still running (a page loading): not a hang.
-    static std::atomic_bool quitting{false};
+    // Quitting waits a bounded time for work still running (a page
+    // loading): not a hang, unless it takes longer than kQuitHang (an
+    // installer updating SCANCORE waits for it to end).
     QObject::connect(qGuiApp, &QCoreApplication::aboutToQuit, [] {
-        quitting = true;
+        g_quitSince = monotonicMs();
+        g_quitting = true;
         g_watching = false;
     });
-    QObject::connect(qGuiApp, &QGuiApplication::applicationStateChanged, qGuiApp, [] {
-        if (quitting)
-            g_watching = false;
-    });
     std::thread([] {
-        bool reported = false;
+        bool reported = false, quitReported = false;
+        qint64 last = monotonicMs();
         while (true) {
             std::this_thread::sleep_for(std::chrono::seconds(1));
-            const qint64 stuck = monotonicMs() - g_beat.load();
+            const qint64 now = monotonicMs();
+            // The computer slept: every clock jumped, nothing hung.
+            if (now - last > 5000)
+                g_beat = now;
+            last = now;
+            if (g_quitting) {
+                if (!quitReported && now - g_quitSince.load() > kQuitHang) {
+                    quitReported = true;
+                    writeHangReport(now - g_quitSince.load(), true);
+                }
+                continue;
+            }
+            const qint64 stuck = now - g_beat.load();
             if (!g_watching || stuck < kHang) {
                 reported = false;
                 continue;
@@ -493,7 +632,7 @@ void watchHangs() {
             if (!reported) {
                 reported = true;
                 qWarning("The interface has not answered for %lld s; writing a hang report", stuck / 1000);
-                writeHangReport(stuck);
+                writeHangReport(stuck, false);
             }
         }
     }).detach();
