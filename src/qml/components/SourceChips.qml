@@ -21,9 +21,14 @@ Item {
     property real inset: Theme.gutter
     // Wrapping is fine for a handful; past this the chips scroll.
     property int wrapLimit: 30
+    // A last chip that opens a menu (the caller's), when set: the Comics
+    // page folds its sites into one.
+    property string moreLabel: ""
     signal picked(string key)
+    signal more(Item chip)
 
     readonly property var entries: [{ key: "all", label: allLabel }].concat(sources)
+        .concat(moreLabel ? [{ key: "\u0001more", label: moreLabel }] : [])
     readonly property bool scrolls: Theme.compact || entries.length > wrapLimit
 
     width: parent ? parent.width : 400
@@ -39,11 +44,13 @@ Item {
 
     component SourceChip: Chip {
         required property var modelData
-        text: root.label(modelData)
-        selected: root.ticked ? (modelData.key === "all" ? root.ticked.length === 0 : root.ticked.indexOf(modelData.key) >= 0)
-                              : root.current === modelData.key
-        detail: modelData.key === "all" ? "" : root.detail(modelData.key)
-        onClicked: root.picked(modelData.key)
+        readonly property bool isMore: modelData.key === "\u0001more"
+        text: isMore ? modelData.label : root.label(modelData)
+        trailingIcon: isMore ? "chevron-down" : ""
+        selected: !isMore && (root.ticked ? (modelData.key === "all" ? root.ticked.length === 0 : root.ticked.indexOf(modelData.key) >= 0)
+                                          : root.current === modelData.key)
+        detail: modelData.key === "all" || isMore ? "" : root.detail(modelData.key)
+        onClicked: isMore ? root.more(this) : root.picked(modelData.key)
     }
 
     ListView {

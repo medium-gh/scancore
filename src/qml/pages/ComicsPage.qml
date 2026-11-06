@@ -153,6 +153,16 @@ Item {
         return map
     }
     readonly property var sources: { App.dependOn(Extensions.revision); return Comics.sources().filter(s => s.enabled && (!s.nsfw || App.settings.showNsfwSources)) }
+    // With Comick as the catalogue, "All sources" finds every site's titles
+    // through it, so the sites (still where chapters are read) fold into one
+    // Sources menu instead of a chip each; the one picked keeps its chip.
+    readonly property bool foldSources: (App.settings.catalogComic || "comick") === "comick"
+    function pickSource(key) {
+        page.source = key
+        App.setSetting("comicSource", key)
+        page.run(page.query)
+    }
+    ActionMenu { id: sourceMenu; implicitWidth: 280 }
 
     SmoothFlickable {
         id: flick
@@ -267,15 +277,19 @@ Item {
                 key: "sources"
                 label: qsTr("Source chips")
                 SourceChips {
-                    sources: page.sources
+                    sources: page.foldSources ? page.sources.filter(s => s.key === "local" || s.key === page.source) : page.sources
                     current: page.source
                     providers: page.providerMap
                     showLanguage: true
-                    onPicked: (key) => {
-                        page.source = key
-                        App.setSetting("comicSource", key)
-                        page.run(page.query)
-                    }
+                    moreLabel: page.foldSources ? qsTr("Sources") : ""
+                    onPicked: (key) => page.pickSource(key)
+                    onMore: (chip) => sourceMenu.openAt(chip, 0, chip.height + 4, page.sources.filter(s => s.key !== "local").map(s => {
+                        const p = page.providerMap[s.key]
+                        return { text: (s.language && s.language !== "en" ? s.label + " · " + s.language.toUpperCase() : s.label)
+                                       + (p && p.ok ? "  (" + p.count + ")" : ""),
+                                 checked: s.key === page.source,
+                                 run: () => page.pickSource(s.key) }
+                    }))
                 }
             }
 
