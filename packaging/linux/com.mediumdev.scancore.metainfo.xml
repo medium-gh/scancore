@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.16.20" date="2026-11-06">
+      <description>
+        <p>Covers no longer stay stuck loading: they ask again by themselves.</p>
+      </description>
+    </release>
     <release version="2.16.19" date="2026-11-06">
       <description>
         <p>Missing covers come back by themselves instead of staying blank, and AVIF covers show on Android 9 to 11.</p>

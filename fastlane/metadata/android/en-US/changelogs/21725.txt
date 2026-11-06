@@ -1,0 +1,1 @@
+• Covers no longer stay stuck loading: they try again by themselves

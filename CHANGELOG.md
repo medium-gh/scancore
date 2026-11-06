@@ -2,6 +2,12 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.20 — 2026-11-06
+
+Covers no longer stay stuck loading.
+
+- **Covers stuck loading**: a cover whose site never answered kept loading until you left the page and came back. It now asks again by itself after 20 seconds (then 40 and 60), which matters most for sources that limit how fast they can be read.
+
 ## 2.16.19 — 2026-11-06
 
 Covers that went missing come back by themselves, and AVIF covers show on older Android phones.
