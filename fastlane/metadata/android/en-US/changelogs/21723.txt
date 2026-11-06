@@ -1,0 +1,1 @@
+• Covers in AVIF (atsu.moe and others) now show on Windows and macOS too

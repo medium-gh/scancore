@@ -2,6 +2,12 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.18 — 2026-11-06
+
+Covers in AVIF show on Windows and macOS.
+
+- **Missing covers on Windows and macOS**: some sources (atsu.moe among them) give their covers as AVIF pictures, which only the Linux and Android apps could read; the rest showed the title instead. Both now carry an AVIF decoder, for covers and chapter pages alike.
+
 ## 2.16.17 — 2026-11-06
 
 New chapters and episodes are found on Android while SCANCORE is closed, single episodes can be marked watched, and downloads are grouped by series.

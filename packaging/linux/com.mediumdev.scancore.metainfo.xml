@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.16.18" date="2026-11-06">
+      <description>
+        <p>Covers and pages in AVIF show on Windows and macOS.</p>
+      </description>
+    </release>
     <release version="2.16.17" date="2026-11-06">
       <description>
         <p>Single anime episodes can be marked watched, downloads are grouped by series, and on Android new chapters and episodes are notified while the app is closed.</p>
