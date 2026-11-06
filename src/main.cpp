@@ -10,6 +10,7 @@
 #include "app/Presence.h"
 #include "app/CrashLog.h"
 #include "app/HomeWidget.h"
+#include "app/Library.h"
 #include "app/SingleInstance.h"
 #include "app/Sync.h"
 #include "app/Updater.h"
@@ -32,6 +33,7 @@
 #ifdef Q_OS_ANDROID
 #include <QFileOpenEvent>
 #include <QGuiApplication>
+#include <QtCore/private/qandroidextras_p.h>
 #else
 #include <QApplication>
 #include <QMenu>
@@ -46,6 +48,7 @@
 #include <QFile>
 #include <QFontDatabase>
 #include <QIcon>
+#include <QJsonDocument>
 #include <QOpenGLContext>
 #include <QSurfaceFormat>
 #include <QQmlApplicationEngine>
@@ -242,6 +245,53 @@ void watchExtensions() {
     ext::Manager::setChangedCallback([] { QMetaObject::invokeMethod(rebuild, qOverload<>(&QTimer::start)); });
 }
 
+#ifdef Q_OS_ANDROID
+// Android's library check while SCANCORE is closed (LibraryCheckJob.java
+// starts LibraryCheckService, which runs main with --library-check in a
+// process of its own): storage, extensions and the check, no interface. New
+// chapters are noted and notified as when SCANCORE checks; downloads they
+// start wait for SCANCORE to run.
+int checkLibrary(int &argc, char **argv) {
+    // A binder, so the job sees this process end (it waits for that).
+    QAndroidService app(argc, argv, [](const QAndroidIntent &) { return new QAndroidBinder; });
+    QCoreApplication::setOrganizationName(QStringLiteral("Medium Dev"));
+    QCoreApplication::setOrganizationDomain(QStringLiteral("mediumdev.com"));
+    QCoreApplication::setApplicationName(QStringLiteral("SCANCORE"));
+    QCoreApplication::setApplicationVersion(QStringLiteral(SCANCORE_VERSION));
+    App::setWindowless(true);
+    try {
+        openStorage();
+        Extensions::instance()->startHost();
+    } catch (const Error &e) {
+        qCritical().noquote() << "Library check:" << e.message();
+        return 1;
+    }
+    // Ended a little before Android stops the job (about ten minutes).
+    QTimer::singleShot(9 * 60 * 1000, &app, [] {
+        qWarning("Library check: out of time");
+        CancelScope::cancelAll();
+        QCoreApplication::quit();
+    });
+    auto *task = Library::instance()->checkUpdates(true);
+    QObject::connect(task, &Task::changed, &app, [task] {
+        if (task->loading())
+            return;
+        qInfo().noquote() << "Library check:" << (task->ok() ? QJsonDocument::fromVariant(task->result()).toJson(QJsonDocument::Compact)
+                                                             : task->error().toUtf8());
+        // Notifications are kept from the pool, then shown from here.
+        QTimer::singleShot(0, [] {
+            Task::waitAll(5000);
+            QCoreApplication::processEvents();
+            QCoreApplication::quit();
+        });
+    });
+    const int code = app.exec();
+    Extensions::instance()->stopHost();
+    CookieJar::shared().save();
+    return code;
+}
+#endif
+
 } // namespace
 
 // Development hook: SCANCORE_PROFILE=1 logs how long start-up takes, step
@@ -269,6 +319,11 @@ int main(int argc, char *argv[]) {
     } endProcess;
 #endif
     g_startClock.start();
+#if defined(Q_OS_ANDROID)
+    for (int i = 1; i < argc; ++i)
+        if (qstrcmp(argv[i], "--library-check") == 0)
+            return g_exitCode = checkLibrary(argc, argv);
+#endif
     // Where Qt hashes through OpenSSL 3 (Arch's own Qt, for one), every hash
     // loads OpenSSL's default provider and unloads it when done; the last
     // unload frees it while another thread may be using it (decoding the

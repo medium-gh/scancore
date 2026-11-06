@@ -221,14 +221,23 @@ const QVariantMap kDefaults{
 
 } // namespace
 
+namespace {
+bool g_windowless = false;
+}
+
+void App::setWindowless(bool on) { g_windowless = on; }
+bool App::windowless() { return g_windowless; }
+
 App::App(QObject *parent) : QObject(parent) {
     // Settings restored before the event loop runs are not changes.
     QTimer::singleShot(0, this, [this] {
         m_running = true;
-        platform::setFastestRefresh(m_settings.value(QStringLiteral("highRefresh"), true).toBool());
+        if (!g_windowless)
+            platform::setFastestRefresh(m_settings.value(QStringLiteral("highRefresh"), true).toBool());
     });
     // Qt's surface can come a moment after the window: ask again for it.
-    QTimer::singleShot(2500, this, [this] { platform::setFastestRefresh(m_settings.value(QStringLiteral("highRefresh"), true).toBool()); });
+    if (!g_windowless)
+        QTimer::singleShot(2500, this, [this] { platform::setFastestRefresh(m_settings.value(QStringLiteral("highRefresh"), true).toBool()); });
     m_settings = kDefaults;
     for (auto it = kDefaults.begin(); it != kDefaults.end(); ++it)
         m_settings.insert(it.key(), Database::pref(QStringLiteral("setting.") + it.key(), it.value()));
@@ -267,15 +276,16 @@ App::App(QObject *parent) : QObject(parent) {
 #ifdef Q_OS_ANDROID
     // The reader may change it in the system's settings while away.
     m_batteryRestricted = platform::batteryRestricted();
-    connect(qGuiApp, &QGuiApplication::applicationStateChanged, this, [this](Qt::ApplicationState state) {
-        if (state != Qt::ApplicationActive)
-            return;
-        const bool restricted = platform::batteryRestricted();
-        if (restricted != m_batteryRestricted) {
-            m_batteryRestricted = restricted;
-            emit batteryChanged();
-        }
-    });
+    if (!g_windowless)
+        connect(qGuiApp, &QGuiApplication::applicationStateChanged, this, [this](Qt::ApplicationState state) {
+            if (state != Qt::ApplicationActive)
+                return;
+            const bool restricted = platform::batteryRestricted();
+            if (restricted != m_batteryRestricted) {
+                m_batteryRestricted = restricted;
+                emit batteryChanged();
+            }
+        });
 #endif
 }
 
@@ -364,7 +374,8 @@ void App::setSetting(const QString &key, const QVariant &input) {
         return;
     m_settings.insert(key, value);
     Database::setPref(QStringLiteral("setting.") + key, value);
-    if (key == QLatin1String("libraryCheckHours"))
+    if (key == QLatin1String("libraryCheckHours") || key == QLatin1String("updateOnlyUnmetered") ||
+        key == QLatin1String("updateOnlyCharging"))
         scheduleLibraryCheck();
     if (key == QLatin1String("announcements")) {
         if (value.toBool())
@@ -750,6 +761,10 @@ Task *App::importBackup(const QUrl &file) {
 
 void App::scheduleLibraryCheck() {
     const int hours = m_settings.value(QStringLiteral("libraryCheckHours")).toInt();
+    // Android ends SCANCORE soon after it leaves the screen, and this timer
+    // with it: the system's job checks from then on.
+    platform::scheduleLibraryChecks(hours, m_settings.value(QStringLiteral("updateOnlyUnmetered")).toBool(),
+                                    m_settings.value(QStringLiteral("updateOnlyCharging")).toBool());
     if (hours <= 0) {
         m_libraryTimer.stop();
         return;
@@ -771,6 +786,20 @@ void App::startBackgroundWork() {
     // Live progress with the account's other open apps.
     QTimer::singleShot(5000, this, [] { Live::instance()->update(); });
     scheduleLibraryCheck();
+    // The system's job, come while SCANCORE runs: checked here, unless the
+    // timer just did.
+    platform::setLibraryCheck([this] {
+        const qint64 hours = m_settings.value(QStringLiteral("libraryCheckHours")).toInt();
+        const qint64 last = Database::pref(QStringLiteral("library.lastAutoCheck"), 0).toLongLong();
+        if (hours <= 0 || Database::now() - last < hours * 3600 - 1800)
+            return false;
+        auto *task = Library::instance()->checkUpdates(true);
+        connect(task, &Task::changed, this, [task] {
+            if (!task->loading())
+                platform::libraryCheckDone();
+        });
+        return true;
+    });
     QTimer::singleShot(4000, this, [this] {
         refreshSources();
         if (m_settings.value(QStringLiteral("libraryCheckHours")).toInt() > 0)

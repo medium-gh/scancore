@@ -37,6 +37,10 @@ public:
 
     static App *instance();
     static App *create(QQmlEngine *, QJSEngine *) { return instance(); }
+    // Android's library check while SCANCORE is closed (main.cpp): no
+    // window, no interface, and it ends when the check does.
+    static void setWindowless(bool on);
+    static bool windowless();
 
     QString version() const;
     QString platform() const;

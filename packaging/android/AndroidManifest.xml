@@ -23,6 +23,8 @@
          controls on the lock screen (ReadAloudService). -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <!-- Library update checks carry on after a restart (LibraryCheckJob). -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- %%INSERT_PERMISSIONS -->
     <!-- Reading novels aloud: Android 11+ only lets apps see the
          text-to-speech engines they declare they look for. -->
@@ -122,6 +124,24 @@
             android:name="com.mediumdev.scancore.ReadAloudService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="false" />
+
+        <!-- Library update checks while SCANCORE is closed: the system's
+             job, and SCANCORE without a window in a process of its own. -->
+        <service
+            android:name="com.mediumdev.scancore.LibraryCheckJob"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false" />
+        <service
+            android:name="com.mediumdev.scancore.LibraryCheckService"
+            android:process=":check"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="-- %%INSERT_APP_LIB_NAME%% --" />
+            <meta-data
+                android:name="android.app.arguments"
+                android:value="--library-check" />
+        </service>
 
         <provider
             android:name="androidx.core.content.FileProvider"

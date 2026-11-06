@@ -39,6 +39,8 @@ void Task::finishAll(int msecs) {
     pool().waitForDone(msecs);
 }
 
+bool Task::waitAll(int msecs) { return pool().waitForDone(msecs); }
+
 Task::Task(QObject *parent) : QObject(parent), m_cancel(std::make_shared<std::atomic_bool>(false)) {}
 
 Task::~Task() { m_cancel->store(true); }

@@ -27,6 +27,15 @@ void askBatteryUnrestricted();
 // tell, so nothing waits for it.
 bool charging();
 
+// Android: the system's job that checks the library every `hours` hours
+// while SCANCORE is closed (LibraryCheckJob.java); 0 cancels it. When it
+// comes while SCANCORE runs, `check` runs on the GUI thread and answers
+// whether it started a check, then calls libraryCheckDone() when that is
+// over (a SCANCORE closing leaves it to one of its own).
+void scheduleLibraryChecks(int hours, bool unmetered, bool charging);
+void setLibraryCheck(std::function<bool()> check);
+void libraryCheckDone();
+
 // A system notification (Android); false where there is none here, so the
 // caller can use the tray instead. `tag` replaces an earlier one with it.
 bool notify(const QString &title, const QString &body, const QString &tag);

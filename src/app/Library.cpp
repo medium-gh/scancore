@@ -927,9 +927,13 @@ Task *Library::checkUpdates(bool automatic) {
         else if (settings.value(QStringLiteral("updateOnlyCharging")).toBool() && !platform::charging())
             waitFor = QStringLiteral("charging");
     }
-    return Task::run([this, rules, autoDownload, waitFor]() -> QVariant {
+    return Task::run([this, rules, autoDownload, waitFor, automatic]() -> QVariant {
         if (!waitFor.isEmpty())
             return QVariantMap{{"checked", 0}, {"newUnits", 0}, {"waiting", waitFor}};
+        // When the last check by itself began: Android's job skips one so
+        // close to it (App::startBackgroundWork).
+        if (automatic)
+            Database::setPref(QStringLiteral("library.lastAutoCheck"), Database::now());
         const auto all = Database::query(QStringLiteral(
             "SELECT s.id, s.media, s.source, s.source_url, s.title, s.status, l.category, l.known_units, l.last_checked, "
             "(SELECT COUNT(*) FROM progress p WHERE p.series_id = s.id) AS touched, "
@@ -1049,7 +1053,10 @@ Task *Library::checkUpdates(bool automatic) {
             const auto category = row.value(QStringLiteral("category")).toString();
             if (!anime && autoDownload.contains(category.isEmpty() ? QStringLiteral("reading") : category)) {
                 const QVariantMap series{{"id", id}, {"media", row.value(QStringLiteral("media"))}, {"title", title}};
-                QMetaObject::invokeMethod(Downloads::instance(), [series, fresh] { Downloads::instance()->enqueue(series, fresh); });
+                if (App::windowless())
+                    Downloads::queue(series, fresh);
+                else
+                    QMetaObject::invokeMethod(Downloads::instance(), [series, fresh] { Downloads::instance()->enqueue(series, fresh); });
             }
         }
         // One notification for the whole check, when chosen.

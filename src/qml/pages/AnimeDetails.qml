@@ -115,6 +115,30 @@ Item {
         return episodes.filter(e => !(progress[e.key] && progress[e.key].completed) && !downloadStates[e.key])
     }
     ActionMenu { id: downloadMenu }
+    // An episode marked by hand, and those before it.
+    function watched(ep) { return !!(progress[ep.key] && progress[ep.key].completed) }
+    function markWatched(ep, on) { Library.markUnits(series, [ep], on) }
+    function episodeMenu(anchor, x, y, ep) {
+        const index = episodes.findIndex(e => e.key === ep.key)
+        const seen = watched(ep)
+        const job = downloadStates[ep.key] || null
+        const items = [
+            { text: seen ? qsTr("Mark unwatched") : qsTr("Mark watched"), icon: seen ? "eye-off" : "eye",
+              run: () => markWatched(ep, !seen) },
+            { text: qsTr("Earlier ones watched"), icon: "check-check", enabled: index > 0,
+              run: () => Library.markUnits(series, episodes.slice(0, index), true) },
+            { text: qsTr("Earlier ones unwatched"), icon: "undo-2", enabled: index > 0,
+              run: () => Library.markUnits(series, episodes.slice(0, index), false) }
+        ]
+        if (canDownload || job) {
+            items.push(null)
+            items.push(job && job.status === "done"
+                ? { text: qsTr("Remove download"), icon: "trash", danger: true, run: () => Downloads.removeUnit(seriesId, ep.key) }
+                : { text: qsTr("Download"), icon: "download", enabled: !job || job.status === "failed", run: () => download([ep]) })
+        }
+        episodeActions.openAt(anchor, x, y, items)
+    }
+    ActionMenu { id: episodeActions }
     WatchFromDialog {
         id: downloadFrom
         onChosen: (picked) => {
@@ -436,6 +460,15 @@ Item {
                         // By key: a Repeater hands its delegates copies of the
                         // model's objects, so indexOf(modelData) is always -1.
                         onClicked: page.watch(page.episodes.findIndex(e => e.key === modelData.key))
+                        // A long press or right click: mark it (or those
+                        // before it) watched, download it.
+                        onPressAndHold: page.episodeMenu(ep, ep.width / 2, ep.width * 9 / 32, modelData)
+                        TapHandler {
+                            acceptedButtons: Qt.RightButton
+                            // Mice only: touch taps ignore acceptedButtons.
+                            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                            onTapped: (point) => page.episodeMenu(ep, point.position.x, point.position.y, ep.modelData)
+                        }
                         background: null
                         contentItem: Column {
                             spacing: 8
@@ -516,22 +549,46 @@ Item {
                                     }
                                 }
                             }
-                            Text {
+                            Item {
                                 width: ep.width
-                                text: ep.modelData.title
-                                color: Theme.text
-                                font.family: Theme.fontSans
-                                font.pixelSize: Theme.textSm
-                                font.weight: Font.DemiBold
-                                elide: Text.ElideRight
-                            }
-                            Text {
-                                width: ep.width
-                                text: ep.modelData.airDate ? App.relativeTime(ep.modelData.airDate)
-                                    : ep.modelData.released ? App.relativeTime(ep.modelData.released) : ep.modelData.filler ? qsTr("Filler") : ""
-                                color: Theme.textFaint
-                                font.family: Theme.fontSans
-                                font.pixelSize: Theme.textXs
+                                height: Math.max(epText.implicitHeight, watchedButton.height)
+                                Column {
+                                    id: epText
+                                    width: parent.width - watchedButton.width - 6
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    spacing: 8
+                                    Text {
+                                        width: parent.width
+                                        text: ep.modelData.title
+                                        color: Theme.text
+                                        font.family: Theme.fontSans
+                                        font.pixelSize: Theme.textSm
+                                        font.weight: Font.DemiBold
+                                        elide: Text.ElideRight
+                                    }
+                                    Text {
+                                        width: parent.width
+                                        text: ep.modelData.airDate ? App.relativeTime(ep.modelData.airDate)
+                                            : ep.modelData.released ? App.relativeTime(ep.modelData.released) : ep.modelData.filler ? qsTr("Filler") : ""
+                                        color: Theme.textFaint
+                                        font.family: Theme.fontSans
+                                        font.pixelSize: Theme.textXs
+                                    }
+                                }
+                                // Watched, or not, without playing it.
+                                IconButton {
+                                    id: watchedButton
+                                    readonly property bool on: !!(ep.state && ep.state.completed)
+                                    anchors.right: parent.right
+                                    anchors.rightMargin: -4
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    diameter: 32
+                                    iconSize: 16
+                                    iconName: on ? "circle-check" : "circle"
+                                    iconColor: on ? Theme.accent : Theme.textFaint
+                                    tip: on ? qsTr("Watched: mark unwatched") : qsTr("Mark as watched")
+                                    onClicked: page.markWatched(ep.modelData, !on)
+                                }
                             }
                         }
                     }

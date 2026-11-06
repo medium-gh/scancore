@@ -30,6 +30,9 @@ public:
     int pending() const;
 
     Q_INVOKABLE void enqueue(const QVariantMap &series, const QVariantList &units);
+    // Only the queue, for SCANCORE to download when it next runs (Android's
+    // check while it is closed); false when nothing could be kept.
+    static bool queue(const QVariantMap &series, const QVariantList &units);
     Q_INVOKABLE sc::Task *items();
     Q_INVOKABLE QVariantMap states(const QString &seriesId) const;
     Q_INVOKABLE void remove(int id);

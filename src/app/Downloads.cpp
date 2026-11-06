@@ -168,9 +168,16 @@ QString Downloads::unitFolder(const QString &seriesId, const QString &unitKey) {
 }
 
 void Downloads::enqueue(const QVariantMap &series, const QVariantList &units) {
+    if (!queue(series, units))
+        return;
+    notify();
+    pump();
+}
+
+bool Downloads::queue(const QVariantMap &series, const QVariantList &units) {
     const auto seriesId = series.value(QStringLiteral("id")).toString();
     if (seriesId.isEmpty())
-        return;
+        return false;
     // Called from QML: a storage failure is reported, not thrown through
     // the interface (which ends the app).
     try {
@@ -197,10 +204,9 @@ void Downloads::enqueue(const QVariantMap &series, const QVariantList &units) {
         });
     } catch (const Error &e) {
         qWarning() << "Downloads: not queued:" << e.message();
-        return;
+        return false;
     }
-    notify();
-    pump();
+    return true;
 }
 
 void Downloads::pump() {

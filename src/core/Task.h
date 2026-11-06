@@ -46,6 +46,8 @@ public:
     // it and the SQLite driver are torn down. Tasks asked for after this
     // never start.
     static void finishAll(int msecs);
+    // Waits up to `msecs` for all work, started or not, to end.
+    static bool waitAll(int msecs);
 
     ~Task() override;
 

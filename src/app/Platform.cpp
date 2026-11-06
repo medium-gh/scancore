@@ -42,6 +42,24 @@ constexpr auto kImagesClass = "com/mediumdev/scancore/Images";
 constexpr auto kExternalPlayerClass = "com/mediumdev/scancore/ExternalPlayer";
 constexpr auto kMulticastClass = "com/mediumdev/scancore/Multicast";
 constexpr auto kShareClass = "com/mediumdev/scancore/Share";
+constexpr auto kLibraryCheckClass = "com/mediumdev/scancore/LibraryCheckJob";
+
+std::function<bool()> g_libraryCheck;
+
+// On Android's main thread: whether this SCANCORE takes the check.
+jboolean jniLibraryCheck(JNIEnv *, jclass) {
+    auto *app = QCoreApplication::instance();
+    if (!app || QCoreApplication::closingDown() || !g_libraryCheck)
+        return false;
+    QMetaObject::invokeMethod(
+        app,
+        [] {
+            if (!g_libraryCheck || !g_libraryCheck())
+                libraryCheckDone();
+        },
+        Qt::QueuedConnection);
+    return true;
+}
 
 void jniVolumeKey(JNIEnv *, jclass, jboolean down) {
     QMetaObject::invokeMethod(
@@ -151,6 +169,40 @@ bool registerBrowserCheck() {
 void setSiteCheckDone(std::function<void(const QString &)> done) { g_siteCheckDone = std::move(done); }
 
 void setVolumeKeyPressed(std::function<void(bool)> pressed) { g_volumeKey = std::move(pressed); }
+
+void scheduleLibraryChecks(int hours, bool unmetered, bool charging) {
+#ifdef Q_OS_ANDROID
+    QJniObject::callStaticMethod<void>(kLibraryCheckClass, "schedule", "(Landroid/content/Context;IZZ)V",
+                                       QNativeInterface::QAndroidApplication::context().object(), jint(hours), jboolean(unmetered),
+                                       jboolean(charging));
+#else
+    Q_UNUSED(hours)
+    Q_UNUSED(unmetered)
+    Q_UNUSED(charging)
+#endif
+}
+
+void setLibraryCheck(std::function<bool()> check) {
+#ifdef Q_OS_ANDROID
+    g_libraryCheck = std::move(check);
+    static const bool registered = [] {
+        const JNINativeMethod methods[] = {
+            {"nativeCheck", "()Z", reinterpret_cast<void *>(jniLibraryCheck)},
+        };
+        QJniEnvironment env;
+        return env.registerNativeMethods(kLibraryCheckClass, methods, 1);
+    }();
+    Q_UNUSED(registered)
+#else
+    Q_UNUSED(check)
+#endif
+}
+
+void libraryCheckDone() {
+#ifdef Q_OS_ANDROID
+    QJniObject::callStaticMethod<void>(kLibraryCheckClass, "finished", "()V");
+#endif
+}
 
 QImage decodeImage(const QByteArray &data) {
 #ifdef Q_OS_ANDROID
