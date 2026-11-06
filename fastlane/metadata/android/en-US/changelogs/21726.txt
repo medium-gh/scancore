@@ -1,0 +1,1 @@
+• Updating from inside the app works on Windows again, and SCANCORE no longer freezes there for minutes

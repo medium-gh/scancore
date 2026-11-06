@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.16.21" date="2026-11-06">
+      <description>
+        <p>Updating from inside the app works on Windows again, and SCANCORE no longer freezes there for minutes at a time.</p>
+      </description>
+    </release>
     <release version="2.16.20" date="2026-11-06">
       <description>
         <p>Covers no longer stay stuck loading: they ask again by themselves.</p>

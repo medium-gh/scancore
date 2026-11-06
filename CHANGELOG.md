@@ -2,6 +2,14 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.21 — 2026-11-06
+
+Updating from inside the app works on Windows again, and SCANCORE no longer freezes there for minutes at a time.
+
+- **Updating on Windows**: after "Restart to update", the installer waited for SCANCORE to close, which could take minutes; Windows marked it "Not Responding" and the update failed. SCANCORE now closes within a second or two, and the installer closes it by force if an older copy does not (updating from 2.16.20 or earlier can take about half a minute).
+- **"Not Responding" on Windows**: for a minute or two after loading pages and covers, opening the video player (or anything else that waited for background work to end) could freeze the whole app. Background work that finishes no longer holds everything else up.
+- **Hang reports** on Windows now show where the app was stuck (Settings → About), and quitting that takes too long leaves one too.
+
 ## 2.16.20 — 2026-11-06
 
 Covers no longer stay stuck loading.
