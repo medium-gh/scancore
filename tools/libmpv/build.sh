@@ -325,6 +325,11 @@ if [ $os != linux ] && ! done_mark libavif; then
         rm -rf _build
         cc=${CC%% *} cflags=$(echo "$CC" | cut -s -d' ' -f2-)
         platform=()
+        # Android's ABI name (kept out of the case below: macOS's bash 3.2
+        # cannot parse a case inside $() inside a case).
+        abi=$cpu
+        [ $cpu = aarch64 ] && abi=arm64-v8a
+        [ $cpu = arm ] && abi=armeabi-v7a
         case $os in
         windows) platform=(-DCMAKE_SYSTEM_NAME=Windows -DCMAKE_RC_COMPILER="$WINDRES"
             -DCMAKE_SHARED_LINKER_FLAGS="$LDFLAGS -Wl,--exclude-libs,ALL") ;;
@@ -333,7 +338,7 @@ if [ $os != linux ] && ! done_mark libavif; then
         # The NDK's own CMake setup; an APK only carries lib*.so names, so
         # no versioned soname.
         android) platform=(-DCMAKE_TOOLCHAIN_FILE="$ndk/build/cmake/android.toolchain.cmake" -DANDROID_PLATFORM=$api
-            -DANDROID_ABI=$(case $cpu in aarch64) echo arm64-v8a ;; arm) echo armeabi-v7a ;; *) echo $cpu ;; esac)
+            -DANDROID_ABI=$abi
             -DCMAKE_PLATFORM_NO_VERSIONED_SONAME=ON -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=BOTH
             -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=BOTH -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=BOTH
             -DCMAKE_SHARED_LINKER_FLAGS="$LDFLAGS -Wl,--exclude-libs,ALL") ;;
