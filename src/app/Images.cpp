@@ -89,6 +89,10 @@ QImage decodeAvif(const QByteArray &data) {
             out = QImage();
     }
     avifDecoderDestroy(decoder);
+#ifdef Q_OS_ANDROID
+    if (out.isNull())
+        out = platform::decodeImage(data);
+#endif
     return out;
 #elif defined(Q_OS_ANDROID)
     return platform::decodeImage(data);
@@ -210,12 +214,22 @@ public:
             error = QStringLiteral("Cancelled");
         } else {
             CancelScope scope(m_cancel);
-            try {
-                image = decode(ImageCache::fetch(m_url, m_referer), m_size);
-            } catch (const Error &e) {
-                error = e.message();
-            } catch (const std::exception &e) {
-                error = QString::fromUtf8(e.what());
+            // Kept but unreadable (a page a site sent instead): dropped and
+            // downloaded once more, rather than failing for good.
+            for (int attempt = 0; attempt < 2 && image.isNull() && !m_cancel->load(); ++attempt) {
+                QByteArray data;
+                error.clear();
+                try {
+                    data = ImageCache::fetch(m_url, m_referer);
+                    image = decode(data, m_size);
+                } catch (const Error &e) {
+                    error = e.message();
+                } catch (const std::exception &e) {
+                    error = QString::fromUtf8(e.what());
+                }
+                if (!image.isNull() || data.isEmpty())
+                    break;
+                ImageCache::forget(m_url);
             }
         }
         QMutexLocker lock(&m_state->mutex);
@@ -688,8 +702,9 @@ void PanelImage::start(bool keep) {
         QSize size;
         QString error;
         bool full = true;
+        QByteArray data;
         try {
-            const auto data = ImageCache::fetch(source, referer);
+            data = ImageCache::fetch(source, referer);
             if (cancel->load())
                 return;
             if (preload) {
@@ -739,6 +754,9 @@ void PanelImage::start(bool keep) {
         }
         if (cancel->load())
             return;
+        // As for covers: an unreadable page is downloaded again next time.
+        if (!error.isEmpty() && !data.isEmpty())
+            ImageCache::forget(source);
         QMetaObject::invokeMethod(
             QCoreApplication::instance(),
             [self, generation, keep, target, full, zoomed, tiles, size, error] {

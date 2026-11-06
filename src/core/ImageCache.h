@@ -14,6 +14,9 @@ public:
     static void init(const QString &dir, qint64 budgetBytes);
     // Blocking; returns the image bytes from disk or the network.
     static QByteArray fetch(const QString &url, const QString &referer);
+    // Drops what is kept for `url` (it could not be decoded), so the next
+    // fetch downloads it again.
+    static void forget(const QString &url);
     static void setBudget(qint64 bytes);
     static qint64 sizeOnDisk();
     static void clear();

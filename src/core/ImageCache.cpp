@@ -90,6 +90,22 @@ void ImageCache::setRefererWriter(const QString &scheme, RefererWriter writer) {
     g_refererWriters.insert(scheme, std::move(writer));
 }
 
+void ImageCache::forget(const QString &url) {
+    if (url.startsWith(QLatin1String("file:")) || url.startsWith(QLatin1String("content:")) || url.startsWith(QLatin1Char('/')) ||
+        url.startsWith(QLatin1String("pdfpage:")))
+        return;
+    QFile::remove(pathFor(url));
+}
+
+namespace {
+// A page (a browser check, "image not available") where a picture was
+// expected: extensions' clients hand over whatever the site answered.
+bool looksLikePage(const QByteArray &data) {
+    const auto start = data.left(256).trimmed().toLower();
+    return start.startsWith('<') && (start.contains("<html") || start.contains("<!doctype") || start.contains("<head"));
+}
+} // namespace
+
 QByteArray ImageCache::fetch(const QString &url, const QString &referer) {
     if (url.startsWith(QLatin1String("pdfpage:")))
         return local::renderPdfPage(url);
@@ -125,19 +141,23 @@ QByteArray ImageCache::fetch(const QString &url, const QString &referer) {
     });
 
     QDir().mkpath(QFileInfo(path).absolutePath());
+    // What an extension wrote is kept only when it is a picture.
+    const auto written = [&]() {
+        auto data = readFile(path);
+        if (data.isEmpty() || looksLikePage(data)) {
+            QFile::remove(path);
+            throw Error(data.isEmpty() ? QStringLiteral("Image unavailable.") : QStringLiteral("The site returned a page instead of an image."),
+                        502);
+        }
+        return data;
+    };
     if (const auto writer = writerFor(url)) {
         writer(url, path);
-        auto data = readFile(path);
-        if (data.isEmpty())
-            throw Error(QStringLiteral("Image unavailable."), 502);
-        return data;
+        return written();
     }
     if (const auto writer = refererWriterFor(referer)) {
         writer(url, referer, path);
-        auto data = readFile(path);
-        if (data.isEmpty())
-            throw Error(QStringLiteral("Image unavailable."), 502);
-        return data;
+        return written();
     }
 
     Request request;

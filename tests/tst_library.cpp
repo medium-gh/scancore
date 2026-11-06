@@ -4,6 +4,7 @@
 #include "core/Backups.h"
 #include "core/Database.h"
 #include "core/Http.h"
+#include "core/ImageCache.h"
 #include "core/ListOrder.h"
 #include "core/Migration.h"
 #include "core/Proto.h"
@@ -569,6 +570,38 @@ private slots:
         QCOMPARE(item.parts.value(QStringLiteral("c/2")).percent, 0.4);
         QCOMPARE(item.bookmarkLinks, QSet<QString>{QStringLiteral("c/2")});
         QVERIFY_THROWS_EXCEPTION(Error, backups::parseLNReader(QByteArray("not a zip")));
+    }
+
+    // Covers an extension fetched: a page a site sent instead (a browser
+    // check) is not kept, and what could not be decoded is downloaded
+    // again (missing covers that stayed missing on one device).
+    void imageCacheKeepsOnlyPictures() {
+        ImageCache::init(m_dir.filePath(QStringLiteral("images")), 64 * 1024 * 1024);
+        QByteArray answer = "<!DOCTYPE html><html><head><title>Just a moment...</title></head></html>";
+        int calls = 0;
+        ImageCache::setRefererWriter(QStringLiteral("testsource"), [&](const QString &, const QString &, const QString &path) {
+            ++calls;
+            QFile file(path);
+            QVERIFY(file.open(QIODevice::WriteOnly));
+            file.write(answer);
+        });
+        const auto url = QStringLiteral("https://example.test/cover.avif");
+        bool refused = false;
+        try {
+            ImageCache::fetch(url, QStringLiteral("testsource:x"));
+        } catch (const Error &e) {
+            refused = e.status() == 502;
+        }
+        QVERIFY(refused);
+        answer = QByteArray("\x89PNG\r\n\x1a\n", 8) + "picture";
+        QCOMPARE(ImageCache::fetch(url, QStringLiteral("testsource:x")), answer);
+        QCOMPARE(calls, 2);
+        // Kept now; forgotten, it is fetched again.
+        QCOMPARE(ImageCache::fetch(url, QStringLiteral("testsource:x")), answer);
+        QCOMPARE(calls, 2);
+        ImageCache::forget(url);
+        QCOMPARE(ImageCache::fetch(url, QStringLiteral("testsource:x")), answer);
+        QCOMPARE(calls, 3);
     }
 
     void refusesNothingToMoveTo() {

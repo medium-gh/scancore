@@ -12,15 +12,17 @@
 #   tools/libmpv/build.sh macos-universal   arm64 + x86_64 (on a Mac)
 #
 # The result goes to build/libmpv/<target>/ (SCANCORE_LIBMPV_DIR to change
-# the base), with include/ and lib/ for CMake's MPV_DIR:
+# the base; SCANCORE_JOBS=4 for fewer parallel compiles), with include/ and
+# lib/ for CMake's MPV_DIR:
 #   Android  libmpv.so and FFmpeg's shared libraries (the app hands the Java
 #            VM to libavcodec, so it stays its own library)
 #   Linux    libmpv.so
 #   Windows  bin/libmpv-2.dll, lib/libmpv.dll.a and lib/mpv.def (for MSVC)
 #   macOS    libmpv.2.dylib (universal)
-# Windows and macOS also get libavif, for AVIF covers and pages (Qt has no
-# decoder for them; Linux and Android have their own): bin/libavif-16.dll
-# with lib/avif.def, or libavif.16.dylib, with dav1d inside.
+# Windows, macOS and Android also get libavif, for AVIF covers and pages (Qt
+# has no decoder for them, Android's own reads them only from Android 12;
+# Linux takes the system's): bin/libavif.dll with lib/avif.def,
+# libavif.16.dylib or libavif.so, with dav1d inside.
 # and licenses/, the licence texts of what is linked in.
 # Everything else is linked into libmpv, with its symbols kept inside: the
 # app's own Qt may load another FFmpeg or FreeType beside it.
@@ -80,7 +82,9 @@ cache=$base/cache
 work=$base/work/$target
 prefix=$base/$target
 tools=$base/host-tools
-cores=$(nproc 2>/dev/null || sysctl -n hw.ncpu)
+# SCANCORE_JOBS caps parallel compiles (a laptop stays cool); all cores by
+# default.
+cores=${SCANCORE_JOBS:-$(nproc 2>/dev/null || sysctl -n hw.ncpu)}
 api=28              # Android: the app's minimum version
 macos_min=13.0      # macOS: the app's minimum version
 
@@ -312,9 +316,9 @@ if ! done_mark dav1d; then
     mark dav1d
 fi
 
-# AVIF covers and pages (Windows, macOS): libavif as a library of its own,
-# decoding with the dav1d above, linked inside it.
-if { [ $os = windows ] || [ $os = macos ]; } && ! done_mark libavif; then
+# AVIF covers and pages (Windows, macOS, Android): libavif as a library of
+# its own, decoding with the dav1d above, linked inside it.
+if [ $os != linux ] && ! done_mark libavif; then
     fetch libavif
     (
         cd "$work/libavif"
@@ -326,9 +330,18 @@ if { [ $os = windows ] || [ $os = macos ]; } && ! done_mark libavif; then
             -DCMAKE_SHARED_LINKER_FLAGS="$LDFLAGS -Wl,--exclude-libs,ALL") ;;
         macos) platform=(-DCMAKE_OSX_ARCHITECTURES=$carch -DCMAKE_OSX_DEPLOYMENT_TARGET=$macos_min
             -DCMAKE_INSTALL_NAME_DIR=@rpath -DCMAKE_SHARED_LINKER_FLAGS="$LDFLAGS") ;;
+        # The NDK's own CMake setup; an APK only carries lib*.so names, so
+        # no versioned soname.
+        android) platform=(-DCMAKE_TOOLCHAIN_FILE="$ndk/build/cmake/android.toolchain.cmake" -DANDROID_PLATFORM=$api
+            -DANDROID_ABI=$(case $cpu in aarch64) echo arm64-v8a ;; arm) echo armeabi-v7a ;; *) echo $cpu ;; esac)
+            -DCMAKE_PLATFORM_NO_VERSIONED_SONAME=ON -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=BOTH
+            -DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=BOTH -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=BOTH
+            -DCMAKE_SHARED_LINKER_FLAGS="$LDFLAGS -Wl,--exclude-libs,ALL") ;;
         esac
+        compiler=()
+        [ $os = android ] || compiler=(-DCMAKE_C_COMPILER="$cc" -DCMAKE_C_FLAGS="$cflags")
         env -u CC -u CXX cmake -S . -B _build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$prefix" \
-            -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_C_COMPILER="$cc" -DCMAKE_C_FLAGS="$cflags" -DCMAKE_FIND_ROOT_PATH="$prefix" \
+            -DCMAKE_INSTALL_LIBDIR=lib "${compiler[@]}" -DCMAKE_FIND_ROOT_PATH="$prefix" \
             -DBUILD_SHARED_LIBS=ON -DAVIF_CODEC_DAV1D=SYSTEM -DAVIF_LIBYUV=OFF -DAVIF_LIBSHARPYUV=OFF -DAVIF_LIBXML2=OFF \
             -DAVIF_BUILD_APPS=OFF -DAVIF_BUILD_TESTS=OFF "${platform[@]}"
         ninja -C _build -j"$cores"
@@ -513,7 +526,7 @@ done
 cd "$prefix"
 case $os in
 android)
-    for lib in libmpv libavcodec libavformat libavutil libavfilter libswresample libswscale; do
+    for lib in libmpv libavcodec libavformat libavutil libavfilter libswresample libswscale libavif; do
         [ -f lib/$lib.so ] || { echo "$lib.so was not built" >&2; exit 1; }
         "$STRIP" --strip-unneeded lib/$lib.so
         # An APK only carries lib*.so names: no versioned sonames.

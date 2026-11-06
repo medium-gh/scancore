@@ -367,15 +367,16 @@ if(SCANCORE_HAVE_ANDROID_HOST)
     add_dependencies(scancore_host_libs scancore_host)
     add_dependencies(scancore scancore_host_libs)
 endif()
-# AVIF images (Images.cpp): libavif when there is one; Android decodes them
-# with the system (Avif.java), and Qt may also have an image plugin for them.
-# Windows and macOS: the libavif tools/libmpv/build.sh makes beside libmpv
-# (AVIF_DIR, else MPV_DIR), which the packages ship with it.
-if(SCANCORE_WITH_AVIF AND NOT ANDROID)
+# AVIF images (Images.cpp): libavif when there is one, and Qt may also have
+# an image plugin for them. Windows, macOS and Android: the libavif
+# tools/libmpv/build.sh makes beside libmpv (AVIF_DIR, else MPV_DIR), which
+# the packages ship with it (on Android with libmpv's other libraries).
+# Android's own decoder (Images.java) remains for Android 12 and later.
+if(SCANCORE_WITH_AVIF)
     if(NOT DEFINED AVIF_DIR AND DEFINED ENV{AVIF_DIR})
         set(AVIF_DIR $ENV{AVIF_DIR})
     endif()
-    if(NOT DEFINED AVIF_DIR AND (WIN32 OR APPLE) AND DEFINED MPV_DIR)
+    if(NOT DEFINED AVIF_DIR AND (WIN32 OR APPLE OR ANDROID) AND DEFINED MPV_DIR)
         set(AVIF_DIR ${MPV_DIR})
     endif()
     if(DEFINED AVIF_DIR)
@@ -390,7 +391,7 @@ if(SCANCORE_WITH_AVIF AND NOT ANDROID)
             set(SCANCORE_AVIF_LINKED ON)
         endif()
     endif()
-    if(NOT AVIF_FOUND)
+    if(NOT AVIF_FOUND AND NOT ANDROID)
         find_package(PkgConfig QUIET)
         if(PkgConfig_FOUND)
             pkg_check_modules(AVIF QUIET IMPORTED_TARGET libavif)
