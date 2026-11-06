@@ -61,6 +61,13 @@ if(result MATCHES "timeout")
     endif()
     string(SUBSTRING "${output}" ${from} -1 tail)
     message("The app did not finish within ${LIMIT} s. Its last output:\n${tail}")
+    # The app's own hang reports (quitting that hangs leaves one after 15 s,
+    # with the stuck thread's stack): CI keeps no files, so they go here.
+    file(GLOB_RECURSE reports "${WORK}/*/crash-*-hang.txt")
+    foreach(report IN LISTS reports)
+        file(READ "${report}" text LIMIT 12000)
+        message("Hang report ${report}:\n${text}")
+    endforeach()
 endif()
 if(NOT result EQUAL 0)
     message(FATAL_ERROR "The probe failed, or the app did not finish (${result}); log: ${WORK}.log")
