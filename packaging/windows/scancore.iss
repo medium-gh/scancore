@@ -28,6 +28,12 @@ ArchitecturesInstallIn64BitMode=x64compatible
 PrivilegesRequiredOverridesAllowed=dialog
 WizardStyle=modern
 ChangesAssociations=yes
+; A running SCANCORE (an in-app update quits it as the installer starts) is
+; closed through the Restart Manager, and ended if it does not close: up
+; to 2.16.20 quitting could take minutes. [Run] starts the new version, so
+; the Restart Manager starts nothing again.
+CloseApplications=force
+RestartApplications=no
 LicenseFile=..\..\LICENSE
 
 [Tasks]

@@ -12,8 +12,12 @@ namespace sc {
 namespace {
 
 QThreadPool &pool() {
+    // Never deleted: owned by the application, the pool waited (as the app
+    // was destroyed after main) for every worker without a time limit, so
+    // one waiting on a site that never answers kept the process from
+    // ending. finishAll gives work a bounded time instead.
     static QThreadPool *instance = [] {
-        auto *p = new QThreadPool(QCoreApplication::instance());
+        auto *p = new QThreadPool;
         // Workers mostly wait on the network, so allow more than the core count.
         p->setMaxThreadCount(std::max(16, QThread::idealThreadCount() * 2));
         p->setExpiryTimeout(60000);
@@ -33,10 +37,10 @@ constexpr qsizetype kDigestFrom = 50;
 // Set once the app quits: work asked for after that never starts.
 static std::atomic_bool g_finished = false;
 
-void Task::finishAll(int msecs) {
+bool Task::finishAll(int msecs) {
     g_finished = true;
     pool().clear();
-    pool().waitForDone(msecs);
+    return pool().waitForDone(msecs);
 }
 
 bool Task::waitAll(int msecs) { return pool().waitForDone(msecs); }

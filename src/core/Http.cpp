@@ -8,6 +8,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QRegularExpression>
+#include <QThreadStorage>
 #include <QTimer>
 
 #include <chrono>
@@ -75,16 +76,25 @@ Limiter &limiter(Lane lane) {
 }
 
 QNetworkAccessManager &manager() {
-    thread_local std::unique_ptr<QNetworkAccessManager> nam;
-    if (!nam) {
-        nam = std::make_unique<QNetworkAccessManager>();
+    // One per thread, deleted as its thread finishes. Not a thread_local:
+    // Windows runs those destructors while holding the loader lock, and a
+    // manager's destructor waits up to 5 s for its own network thread,
+    // which cannot end while that lock is held. Every worker leaving the
+    // pool (60 s idle, or at quit) then held the lock for 5 s, one after
+    // another: quitting took minutes (the in-app update's installer gave
+    // up on SCANCORE) and anything waiting on a thread to end, the
+    // interface included, waited too. QThreadStorage deletes it before.
+    static QThreadStorage<QNetworkAccessManager *> managers;
+    if (!managers.hasLocalData()) {
+        auto *nam = new QNetworkAccessManager;
         // The jar lives on the main thread (created at startup), so managers
         // on worker threads use it without taking ownership.
         nam->setCookieJar(&CookieJar::shared());
         nam->setRedirectPolicy(QNetworkRequest::NoLessSafeRedirectPolicy);
         nam->setAutoDeleteReplies(false);
+        managers.setLocalData(nam);
     }
-    return *nam;
+    return *managers.localData();
 }
 
 struct Slot {

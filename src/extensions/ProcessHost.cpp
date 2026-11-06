@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QProcess>
+#include <QSemaphore>
 #include <QStandardPaths>
 #include <QThread>
 #include <QTimer>
@@ -205,7 +206,19 @@ void ProcessHost::stop() {
     auto state = m_state;
     if (!state->thread)
         return;
-    QMetaObject::invokeMethod(state->context, [state] { state->shutdown(); }, Qt::BlockingQueuedConnection);
+    if (QThread::currentThread() == state->thread) {
+        state->shutdown();
+    } else {
+        // A bounded wait: the host's thread may be starting Java (up to
+        // 15 s) when the interface asks, and quitting must not hang on it.
+        auto done = std::make_shared<QSemaphore>();
+        QMetaObject::invokeMethod(state->context, [state, done] {
+            state->shutdown();
+            done->release();
+        }, Qt::QueuedConnection);
+        if (!done->tryAcquire(1, 7000))
+            qWarning("The extension host did not stop in time");
+    }
     state->failAll(QStringLiteral("The extension host was stopped."));
 }
 

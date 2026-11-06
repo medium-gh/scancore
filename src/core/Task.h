@@ -44,8 +44,8 @@ public:
     // When the app quits: drops tasks not started yet and waits up to
     // `msecs` for running ones, so none is left reading the database while
     // it and the SQLite driver are torn down. Tasks asked for after this
-    // never start.
-    static void finishAll(int msecs);
+    // never start. False when some is still running after that.
+    static bool finishAll(int msecs);
     // Waits up to `msecs` for all work, started or not, to end.
     static bool waitAll(int msecs);
 

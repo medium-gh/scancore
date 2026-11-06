@@ -16,6 +16,8 @@ endforeach()
 set(ENV{XDG_DATA_HOME} "${WORK}/data")
 set(ENV{XDG_CACHE_HOME} "${WORK}/cache")
 set(ENV{XDG_CONFIG_HOME} "${WORK}/config")
+# Windows ignores XDG_*: Qt's test folders (%APPDATA%\qttest) instead.
+set(ENV{SCANCORE_TEST_PROFILE} 1)
 if(NOT DEFINED ENV{QT_QPA_PLATFORM})
     set(ENV{QT_QPA_PLATFORM} offscreen)
 endif()

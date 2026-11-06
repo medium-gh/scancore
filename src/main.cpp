@@ -57,6 +57,8 @@
 #include <QStandardPaths>
 #include <QTimer>
 
+#include <cstdio>
+#include <cstdlib>
 #include <stdexcept>
 #include <QUrl>
 
@@ -393,6 +395,11 @@ int main(int argc, char *argv[]) {
     // Development hook for testing updates.
     if (qEnvironmentVariableIsSet("SCANCORE_PRETEND_VERSION"))
         Application::setApplicationVersion(qEnvironmentVariable("SCANCORE_PRETEND_VERSION"));
+    // Development hook: SCANCORE_TEST_PROFILE=1 keeps every file in Qt's test
+    // folders (on Windows %APPDATA%\qttest and %LOCALAPPDATA%\qttest), which
+    // XDG_* variables do on Linux, so tests never open the real library.
+    if (qEnvironmentVariableIsSet("SCANCORE_TEST_PROFILE"))
+        QStandardPaths::setTestModeEnabled(true);
     Application::setDesktopFileName(QStringLiteral("com.mediumdev.scancore"));
     moveOldFolders();
     // Crash reports (Settings → About), and the recent log they carry.
@@ -540,17 +547,29 @@ int main(int argc, char *argv[]) {
     appState->startBackgroundWork();
     Updater::instance()->startAutomatic();
 
+    // A hang (the interface not answering, or quitting taking too long)
+    // leaves a report like a crash. First, so it sees quitting start.
+    sc::crashlog::watchHangs();
+    // Every wait here is bounded: an installer updating SCANCORE (Windows'
+    // Restart Manager) and the system shutting down wait for the process
+    // to end.
+    static bool workLeft = false;
     QObject::connect(&app, &Application::aboutToQuit, [] {
-        Extensions::instance()->stopHost();
         CancelScope::cancelAll();
-        Task::finishAll(3000);
+        Extensions::instance()->stopHost();
+        workLeft = !Task::finishAll(3000);
         CookieJar::shared().save();
     });
-    // A hang (the interface not answering) leaves a report like a crash.
-    sc::crashlog::watchHangs();
     const int code = app.exec();
 #if defined(Q_OS_ANDROID)
     g_exitCode = code;
 #endif
+    // Work still running (a site that never answers) would meet the
+    // database and Qt torn down under it: end here, everything is saved.
+    if (workLeft && !Task::waitAll(0)) {
+        qWarning("Quitting with work still running");
+        std::fflush(nullptr);
+        std::_Exit(code);
+    }
     return code;
 }
