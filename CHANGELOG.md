@@ -2,6 +2,13 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.19 — 2026-11-06
+
+Covers that went missing come back by themselves, and AVIF covers show on older Android phones.
+
+- **Covers stuck missing on one device**: when a site answered a cover with a page (a browser check, "image not available") instead of the picture, SCANCORE kept that page as the cover and showed the title from then on. Such answers are no longer kept, and a cover that cannot be read is downloaded again the next time it is shown.
+- **AVIF covers on Android 9 to 11**: Android reads AVIF only from Android 12; SCANCORE now carries its own decoder there too, as on Windows and macOS.
+
 ## 2.16.18 — 2026-11-06
 
 Covers in AVIF show on Windows and macOS.

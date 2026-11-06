@@ -1,0 +1,2 @@
+• Missing covers come back by themselves instead of staying blank
+• AVIF covers now show on Android 9 to 11 too
