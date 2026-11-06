@@ -206,8 +206,13 @@ jobs:
             # MSVC links through an import library made from mpv's exports.
             # Dash options: Git Bash rewrites "/nologo" into a path.
             lib -nologo -def:"$(cygpath -w "$dir/lib/mpv.def")" -machine:x64 -out:"$(cygpath -w "$dir/lib/mpv.lib")"
+            # The same for libavif (AVIF covers and pages), built beside it.
+            if [ -f "$dir/lib/avif.def" ]; then
+              lib -nologo -def:"$(cygpath -w "$dir/lib/avif.def")" -machine:x64 -out:"$(cygpath -w "$dir/lib/avif.lib")"
+            fi
           else
             ln -sf libmpv.2.dylib "$dir/lib/libmpv.dylib"
+            [ -f "$dir/lib/libavif.16.dylib" ] && ln -sf libavif.16.dylib "$dir/lib/libavif.dylib"
           fi
           echo "MPV_DIR=$dir" >> "$GITHUB_ENV"
 
@@ -233,10 +238,15 @@ jobs:
           if [ "$RUNNER_OS" = "macOS" ]; then EXTRA="-DCMAKE_OSX_ARCHITECTURES=arm64;x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0"; fi
           # SCANCORE_WITH_EXTENSION_HOST=OFF: users download the Extensions
           # runtime; the host from host/ is for development builds.
-          # AVIF: no universal (arm64 + x86_64) libavif to link here yet.
+          # AVIF: the libavif built with libmpv (MPV_DIR); the step fails
+          # rather than ship packages that cannot show AVIF covers.
           cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DSCANCORE_BUILD_TESTS=OFF \
-            -DSCANCORE_WITH_EXTENSION_HOST=OFF -DSCANCORE_WITH_AVIF=OFF -DCMAKE_INSTALL_PREFIX=/usr \
+            -DSCANCORE_WITH_EXTENSION_HOST=OFF -DCMAKE_INSTALL_PREFIX=/usr \
             -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache $EXTRA
+          if [ -n "${MPV_DIR:-}" ] && ! grep -q "SCANCORE_HAVE_AVIF" build/build.ninja; then
+            echo "::error::libavif from libmpv was not linked"
+            exit 1
+          fi
           cmake --build build --parallel
 
       # ---------------------------------------------------------------- Windows
@@ -248,6 +258,7 @@ jobs:
           Copy-Item build\bin\scancore.exe dist\windows\
           if ($env:MPV_DIR) {
             Copy-Item "$env:MPV_DIR\bin\libmpv-2.dll" dist\windows\
+            Copy-Item "$env:MPV_DIR\bin\libavif*.dll" dist\windows\
             Copy-Item -Recurse "$env:MPV_DIR\licenses" dist\windows\licenses
           }
           windeployqt --release --qmldir src\qml --no-translations --compiler-runtime dist\windows\scancore.exe
@@ -279,7 +290,7 @@ jobs:
           if [ -n "${MPV_DIR:-}" ]; then
             # The player's libmpv (@rpath/libmpv.2.dylib) beside Qt's frameworks.
             mkdir -p SCANCORE.app/Contents/Frameworks
-            cp "$MPV_DIR/lib/libmpv.2.dylib" SCANCORE.app/Contents/Frameworks/
+            cp "$MPV_DIR/lib/libmpv.2.dylib" "$MPV_DIR/lib/libavif.16.dylib" SCANCORE.app/Contents/Frameworks/
             mkdir -p SCANCORE.app/Contents/Resources
             cp -R "$MPV_DIR/licenses" SCANCORE.app/Contents/Resources/licenses
             otool -l SCANCORE.app/Contents/MacOS/scancore | grep -q '@executable_path/../Frameworks' || \

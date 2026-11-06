@@ -18,6 +18,9 @@
 #   Linux    libmpv.so
 #   Windows  bin/libmpv-2.dll, lib/libmpv.dll.a and lib/mpv.def (for MSVC)
 #   macOS    libmpv.2.dylib (universal)
+# Windows and macOS also get libavif, for AVIF covers and pages (Qt has no
+# decoder for them; Linux and Android have their own): bin/libavif-16.dll
+# with lib/avif.def, or libavif.16.dylib, with dav1d inside.
 # and licenses/, the licence texts of what is linked in.
 # Everything else is linked into libmpv, with its symbols kept inside: the
 # app's own Qt may load another FFmpeg or FreeType beside it.
@@ -47,10 +50,13 @@ if [ "$target" = macos-universal ]; then
     rm -rf "$out" && mkdir -p "$out/lib"
     cp -R "$base/macos-arm64/include" "$out/include"
     cp -R "$base/macos-arm64/licenses" "$out/licenses"
-    lipo -create "$base/macos-arm64/lib/libmpv.2.dylib" "$base/macos-x86_64/lib/libmpv.2.dylib" -output "$out/lib/libmpv.2.dylib"
+    for lib in libmpv.2 libavif.16; do
+        lipo -create "$base/macos-arm64/lib/$lib.dylib" "$base/macos-x86_64/lib/$lib.dylib" -output "$out/lib/$lib.dylib"
+        codesign --force -s - "$out/lib/$lib.dylib"
+        lipo -info "$out/lib/$lib.dylib" >&2
+    done
     ln -sf libmpv.2.dylib "$out/lib/libmpv.dylib"
-    codesign --force -s - "$out/lib/libmpv.2.dylib"
-    lipo -info "$out/lib/libmpv.2.dylib" >&2
+    ln -sf libavif.16.dylib "$out/lib/libavif.dylib"
     exit 0
 fi
 
@@ -85,6 +91,7 @@ macos_min=13.0      # macOS: the app's minimum version
 sources=(
     "mbedtls 3.6.7 https://github.com/Mbed-TLS/mbedtls/releases/download/mbedtls-3.6.7/mbedtls-3.6.7.tar.bz2 a7e8bcbec0e6f761b4af24f25677626b35f762f68eef79c08677a363212d11f6"
     "dav1d 1.5.4 https://downloads.videolan.org/pub/videolan/dav1d/1.5.4/dav1d-1.5.4.tar.xz 686616b7c69eb88d44459391ab25cac13b6647a3b288835c5784e71c1514a5c5"
+    "libavif 1.3.0 https://github.com/AOMediaCodec/libavif/archive/refs/tags/v1.3.0.tar.gz 0a545e953cc049bf5bcf4ee467306a2f113a75110edf59e61248873101cd26c1"
     "libxml2 2.15.4 https://download.gnome.org/sources/libxml2/2.15/libxml2-2.15.4.tar.xz 98087fd181d9070724f3fbc65c7377db03038eb92bd882374daff44940138821"
     "freetype 2.15.0 https://download.savannah.gnu.org/releases/freetype/freetype-2.15.0.tar.xz 93cd47eb719c325107f2d3cf087d06299e944c3b48a40b55537302304dea1dd5"
     "fontconfig 2.18.3 https://gitlab.freedesktop.org/fontconfig/fontconfig/-/archive/2.18.3/fontconfig-2.18.3.tar.gz 9ae01e1d53acdef56010c5451cd34aa41d325b2faccd8606448d8fa01b2496b3"
@@ -305,6 +312,31 @@ if ! done_mark dav1d; then
     mark dav1d
 fi
 
+# AVIF covers and pages (Windows, macOS): libavif as a library of its own,
+# decoding with the dav1d above, linked inside it.
+if { [ $os = windows ] || [ $os = macos ]; } && ! done_mark libavif; then
+    fetch libavif
+    (
+        cd "$work/libavif"
+        rm -rf _build
+        cc=${CC%% *} cflags=$(echo "$CC" | cut -s -d' ' -f2-)
+        platform=()
+        case $os in
+        windows) platform=(-DCMAKE_SYSTEM_NAME=Windows -DCMAKE_RC_COMPILER="$WINDRES"
+            -DCMAKE_SHARED_LINKER_FLAGS="$LDFLAGS -Wl,--exclude-libs,ALL") ;;
+        macos) platform=(-DCMAKE_OSX_ARCHITECTURES=$carch -DCMAKE_OSX_DEPLOYMENT_TARGET=$macos_min
+            -DCMAKE_INSTALL_NAME_DIR=@rpath -DCMAKE_SHARED_LINKER_FLAGS="$LDFLAGS") ;;
+        esac
+        env -u CC -u CXX cmake -S . -B _build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$prefix" \
+            -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_C_COMPILER="$cc" -DCMAKE_C_FLAGS="$cflags" -DCMAKE_FIND_ROOT_PATH="$prefix" \
+            -DBUILD_SHARED_LIBS=ON -DAVIF_CODEC_DAV1D=SYSTEM -DAVIF_LIBYUV=OFF -DAVIF_LIBSHARPYUV=OFF -DAVIF_LIBXML2=OFF \
+            -DAVIF_BUILD_APPS=OFF -DAVIF_BUILD_TESTS=OFF "${platform[@]}"
+        ninja -C _build -j"$cores"
+        ninja -C _build install
+    )
+    mark libavif
+fi
+
 # Subtitles: libass with FreeType, FriBidi and HarfBuzz, and fonts from
 # fontconfig (Android, Linux), DirectWrite (Windows) or Core Text (macOS).
 # Linux takes them all from the system.
@@ -503,13 +535,25 @@ windows)
     fi
     { echo "LIBRARY libmpv-2.dll"; echo "EXPORTS"; echo "$exports" | sed 's/^/    /'; } >lib/mpv.def
     echo "needs: $($triple-objdump -p bin/libmpv-2.dll | grep 'DLL Name' | awk '{print $3}' | sort -u | tr '\n' ' ')" >&2
+    # libavif the same way: only avif* leaves it, lib/avif.def for MSVC.
+    avif=$(cd bin && ls libavif*.dll | head -1)
+    [ -n "$avif" ] || { echo "libavif was not built" >&2; exit 1; }
+    "$STRIP" --strip-unneeded "bin/$avif"
+    exports=$($triple-objdump -p "bin/$avif" | sed -n '/\[Ordinal\/Name Pointer\] Table/,/^$/p' | awk '/^\t\[/ { print $NF }')
+    if echo "$exports" | grep -v '^avif'; then
+        echo "$avif exports more than avif* (above)" >&2
+        exit 1
+    fi
+    { echo "LIBRARY $avif"; echo "EXPORTS"; echo "$exports" | sed 's/^/    /'; } >lib/avif.def
+    echo "$avif needs: $($triple-objdump -p "bin/$avif" | grep 'DLL Name' | awk '{print $3}' | sort -u | tr '\n' ' ')" >&2
     ;;
 macos)
     # Found inside the app bundle.
     install_name_tool -id @rpath/libmpv.2.dylib lib/libmpv.2.dylib
+    install_name_tool -id @rpath/libavif.16.dylib lib/libavif.16.dylib
     # The edit voids the linker's ad-hoc signature, without which arm64
     # Macs refuse to load the library.
-    codesign --force -s - lib/libmpv.2.dylib
+    codesign --force -s - lib/libmpv.2.dylib lib/libavif.16.dylib
     ;;
 esac
 echo "libmpv for $target in $prefix (include/, lib/)" >&2
