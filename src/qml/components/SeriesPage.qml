@@ -270,6 +270,9 @@ Item {
     Component.onCompleted: {
         // A value from here on, not a binding that follows every change.
         libraryRevision = Library.revision
+        // Opening a series sees its new chapters (the badges go) without
+        // marking any read.
+        if (seriesId) Library.markSeen(seriesId)
         if (autoResume && storedChapters.length > 0) {
             autoResume = false
             Qt.callLater(() => page.openAt(page.resumeInfo.index))

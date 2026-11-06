@@ -253,6 +253,15 @@ Item {
                     variant: "ghost"
                     onClicked: Router.openUpcoming()
                 }
+                // New chapters and episodes seen without reading them: the
+                // badges go, nothing is marked read.
+                ScButton {
+                    visible: !Theme.compact && Library.unreadUpdates > 0
+                    text: qsTr("Clear updates")
+                    iconName: "check-check"
+                    variant: "ghost"
+                    onClicked: Library.markAllSeen()
+                }
                 ScButton {
                     visible: !Theme.compact
                     text: page.checking ? qsTr("Checking…") : qsTr("Check for updates")
@@ -279,6 +288,15 @@ Item {
                     tip: qsTr("Upcoming", "release radar")
                     Accessible.name: tip
                     onClicked: Router.openUpcoming()
+                }
+                IconButton {
+                    visible: Theme.compact && Library.unreadUpdates > 0
+                    diameter: 40
+                    filled: true
+                    iconName: "check-check"
+                    tip: qsTr("Clear updates")
+                    Accessible.name: tip
+                    onClicked: Library.markAllSeen()
                 }
                 IconButton {
                     id: checkButton

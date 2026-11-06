@@ -44,7 +44,12 @@ Item {
     }
     onVisibleChanged: if (visible) { libraryRevision = Library.revision; providerRevision++ }
     // A value from here on, not a binding that follows every change.
-    Component.onCompleted: libraryRevision = Library.revision
+    Component.onCompleted: {
+        libraryRevision = Library.revision
+        // Opening a show sees its new episodes (the badges go) without
+        // marking any watched.
+        if (seriesId) Library.markSeen(seriesId)
+    }
     readonly property var progress: { App.dependOn(page.libraryRevision); return Library.progressMap(seriesId) }
     readonly property bool saved: { App.dependOn(page.libraryRevision); return Library.isSaved(seriesId) }
     property bool descending: false

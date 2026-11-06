@@ -62,6 +62,9 @@ public:
     Q_INVOKABLE bool isFavourite(const QString &seriesId) const;
     Q_INVOKABLE void setFavourite(const QString &seriesId, bool favourite);
     Q_INVOKABLE void markSeen(const QString &seriesId);
+    // Every series' new chapters and episodes seen at once (the Library
+    // badge back to 0); nothing is marked read or watched.
+    Q_INVOKABLE void markAllSeen();
 
     // brief: only what the library page shows (no description, genres,
     // extra or reading position).

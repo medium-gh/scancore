@@ -474,9 +474,21 @@ void Library::setFavourite(const QString &seriesId, bool favourite) {
 }
 
 void Library::markSeen(const QString &seriesId) {
+    // Every series page opening calls this: nothing to see, no change (the
+    // pages listening reload on one).
+    if (Database::scalar(QStringLiteral("SELECT new_units FROM library WHERE series_id = ?"), {seriesId}).toInt() <= 0)
+        return;
     Database::exec(QStringLiteral("UPDATE library SET new_units = 0, known_units = "
                                   "(SELECT COUNT(*) FROM units WHERE series_id = ?) WHERE series_id = ? AND new_units > 0"),
                    {seriesId, seriesId});
+    notifyChanged();
+}
+
+void Library::markAllSeen() {
+    if (unreadUpdates() <= 0)
+        return;
+    Database::exec(QStringLiteral("UPDATE library SET new_units = 0, known_units = "
+                                  "(SELECT COUNT(*) FROM units WHERE units.series_id = library.series_id) WHERE new_units > 0"));
     notifyChanged();
 }
 

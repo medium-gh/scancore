@@ -312,6 +312,9 @@ Item {
                 Shelf {
                     title: qsTr("New in your library")
                     items: page.updates
+                    // Seen without reading: the shelf and the badges go.
+                    actionText: qsTr("Clear")
+                    onAction: Library.markAllSeen()
                     badgeFor: (it) => "+" + it.newUnits
                     subtitleFor: (it) => it.latestTitle || ""
                     onOpened: (it, cover) => Router.openSeries(it, cover)
