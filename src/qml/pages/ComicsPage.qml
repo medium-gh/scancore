@@ -13,8 +13,18 @@ Item {
     property int browsePage: 0
     property bool browseHasNext: true
     property int browseGeneration: 0
-    readonly property bool browsingSource: source !== "all" && source !== "local" && query.length === 0
-        && sources.some(s => s.key === source && s.canBrowse)
+    // One site picked (not All sources, not this device) that can be browsed.
+    readonly property bool sitePicked: source !== "all" && source !== "local" && sources.some(s => s.key === source && s.canBrowse)
+    // That site's own search filters (an extension's, as in Mihon), when
+    // Comick's are not in use: [] for sites without any.
+    property var siteFilterDefaults: []
+    property var siteFilterStates: []
+    readonly property var siteFiltersTask: sitePicked ? Comics.filters(source) : null
+    readonly property int siteFilterCount: sitePicked && siteFilterDefaults.length ? siteSheet.changes(siteFilterStates, siteFilterDefaults) : 0
+    readonly property bool siteFiltering: siteFilterCount > 0
+    // The site's own lists: popular with an empty search box, its search
+    // with words once filters are set (pages as the list scrolls).
+    readonly property bool browsingSource: sitePicked && (query.length === 0 || siteFiltering)
     // The results so far: sources answer one by one, so the grid fills
     // while the slower ones are still searching.
     readonly property var found: browsingSource ? ({ comics: browseItems, providers: [] })
@@ -82,7 +92,7 @@ Item {
         if (!browsingSource || (browseTask && browseTask.loading) || !browseHasNext) return
         const generation = browseGeneration
         const next = browsePage + 1
-        browseTask = Comics.browse(source, "popular", next)
+        browseTask = siteFiltering ? Comics.browse(source, "search", next, query, siteFilterStates) : Comics.browse(source, "popular", next)
         browseTask.finished.connect((result) => {
             if (generation !== page.browseGeneration) return
             const seen = new Set(page.browseItems.map(item => item.id))
@@ -120,7 +130,7 @@ Item {
         if (query.length > 0) recent.remember(query)
         catalogFailed = false
         searchTask = (query.length > 0 || filtering) && useCatalog ? Comics.catalog(query, catalogFilters)
-            : query.length > 0 || source === "local" ? Comics.search(query, source) : null
+            : (query.length > 0 && !browsingSource) || source === "local" ? Comics.search(query, source) : null
         extensionTask = query.length > 0 && useCatalog && hasExtensions ? Comics.search(query, "extensions") : null
         if (browsingSource) moreSource()
         flick.scrollTo(0)
@@ -145,6 +155,25 @@ Item {
             page.run(field.text)
         }
     }
+    // A picked site's own filters (SourcePage shows the same sheet).
+    FilterSheet {
+        id: siteSheet
+        onFiltersApplied: (states) => {
+            page.siteFilterStates = states
+            page.run(field.text)
+        }
+    }
+    Connections {
+        target: page.siteFiltersTask
+        function onFinished(list) {
+            page.siteFilterDefaults = list || []
+            if (!page.siteFilterStates.length) page.siteFilterStates = page.siteFilterDefaults
+        }
+    }
+    function clearSiteFilters() {
+        page.siteFilterStates = page.siteFilterDefaults
+        page.run(field.text)
+    }
 
     // Each source's entry in the running search, by key, for the chips.
     readonly property var providerMap: {
@@ -158,6 +187,11 @@ Item {
     // Sources menu instead of a chip each; the one picked keeps its chip.
     readonly property bool foldSources: (App.settings.catalogComic || "comick") === "comick"
     function pickSource(key) {
+        // Each site has filters of its own.
+        if (key !== page.source) {
+            page.siteFilterDefaults = []
+            page.siteFilterStates = []
+        }
         page.source = key
         App.setSetting("comicSource", key)
         page.run(page.query)
@@ -220,18 +254,19 @@ Item {
                             onSubmitted: (text) => page.run(text)
                             onTextChanged: if (text.length === 0 && page.query.length > 0) page.run("")
                         }
-                        // Comick's filters: genres, tags and much more.
+                        // Comick's filters: genres, tags and much more; with
+                        // a site picked, that site's own (an extension's).
                         IconButton {
                             id: filterButton
-                            visible: page.comick
+                            visible: page.comick || (page.sitePicked && page.siteFilterDefaults.length > 0)
                             anchors.verticalCenter: field.verticalCenter
                             diameter: Math.max(40, field.height)
                             iconName: "funnel"
                             tip: qsTr("Search filters")
-                            active: page.filtering
-                            onClicked: filterSheet.start(page.catalogFilters)
+                            active: page.comick ? page.filtering : page.siteFiltering
+                            onClicked: page.comick ? filterSheet.start(page.catalogFilters) : siteSheet.start(page.siteFilterDefaults, page.siteFilterStates)
                             Rectangle {
-                                visible: page.filtering
+                                visible: page.comick ? page.filtering : page.siteFiltering
                                 anchors.right: parent.right
                                 anchors.top: parent.top
                                 anchors.margins: 2
@@ -242,7 +277,7 @@ Item {
                                 Text {
                                     id: countText
                                     anchors.centerIn: parent
-                                    text: page.filterCount
+                                    text: page.comick ? page.filterCount : page.siteFilterCount
                                     color: Theme.accentInk
                                     font.family: Theme.fontSans
                                     font.pixelSize: 11
@@ -253,17 +288,22 @@ Item {
                     }
                     // What the filters do now, and a way out.
                     Row {
-                        visible: page.filtering
+                        readonly property int count: page.comick ? page.filterCount : page.siteFilterCount
+                        visible: count > 0
                         spacing: 6
                         Chip {
-                            text: page.filterCount === 1 ? qsTr("1 filter on") : qsTr("%1 filters on").arg(page.filterCount)
+                            text: parent.count === 1 ? qsTr("1 filter on") : qsTr("%1 filters on").arg(parent.count)
                             iconName: "funnel"
-                            onClicked: filterSheet.start(page.catalogFilters)
+                            onClicked: filterButton.clicked()
                         }
                         Chip {
                             text: qsTr("Clear")
                             iconName: "funnel-x"
                             onClicked: {
+                                if (!page.comick) {
+                                    page.clearSiteFilters()
+                                    return
+                                }
                                 App.setSetting("comickFilters", ({}))
                                 page.run(field.text)
                             }
