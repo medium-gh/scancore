@@ -15,6 +15,17 @@ Item {
     property color tint: Theme.surface2
     readonly property bool ready: image.status === Image.Ready
     readonly property bool failed: image.status === Image.Error
+    // A cover still loading after a while (a request an extension's site
+    // never answered) asks again by itself, as leaving the page and coming
+    // back did: three times, waiting longer each time, as sources that
+    // limit their requests (two a second) are slow with a full library.
+    property int retries: 0
+    onSourceChanged: retries = 0
+    Timer {
+        running: image.status === Image.Loading && root.retries < 3
+        interval: 20000 * (root.retries + 1)
+        onTriggered: root.retries++
+    }
 
     Rectangle {
         id: placeholder
@@ -49,7 +60,10 @@ Item {
         visible: false
         // Nothing loads before the cover has its size, so each image is
         // decoded once, at the size it is shown.
-        source: root.source && root.width > 0 ? App.image(root.source, root.referer) : ""
+        // A retry is a new request (the image provider ignores the part
+        // after a third "~").
+        readonly property string address: root.source && root.width > 0 ? App.image(root.source, root.referer) : ""
+        source: root.retries > 0 && address.startsWith("image://remote/") ? address + "~" + root.retries : address
         sourceSize.width: Math.max(1, Math.ceil(root.width * Screen.devicePixelRatio * 1.15))
         asynchronous: true
         cache: true
