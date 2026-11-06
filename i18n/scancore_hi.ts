@@ -4506,6 +4506,10 @@
     <context>
         <name>HomePage</name>
         <message>
+            <source>Clear</source>
+            <translation>साफ़ करें</translation>
+        </message>
+        <message>
             <source>Up late</source>
             <translation>देर रात</translation>
         </message>
@@ -5541,6 +5545,10 @@
     </context>
     <context>
         <name>LibraryPage</name>
+        <message>
+            <source>Clear updates</source>
+            <translation>अपडेट हटाएँ</translation>
+        </message>
         <message>
             <source>Favourites</source>
             <translation>पसंदीदा</translation>

@@ -4506,6 +4506,10 @@
     <context>
         <name>HomePage</name>
         <message>
+            <source>Clear</source>
+            <translation>Burahin</translation>
+        </message>
+        <message>
             <source>Up late</source>
             <translation>Puyat pa</translation>
         </message>
@@ -5541,6 +5545,10 @@
     </context>
     <context>
         <name>LibraryPage</name>
+        <message>
+            <source>Clear updates</source>
+            <translation>I-clear ang mga update</translation>
+        </message>
         <message>
             <source>Favourites</source>
             <translation>Mga paborito</translation>

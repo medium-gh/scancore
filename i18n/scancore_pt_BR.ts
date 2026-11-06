@@ -4514,6 +4514,10 @@
     <context>
         <name>HomePage</name>
         <message>
+            <source>Clear</source>
+            <translation>Limpar</translation>
+        </message>
+        <message>
             <source>Up late</source>
             <translation>Acordado até tarde</translation>
         </message>
@@ -5549,6 +5553,10 @@
     </context>
     <context>
         <name>LibraryPage</name>
+        <message>
+            <source>Clear updates</source>
+            <translation>Limpar novidades</translation>
+        </message>
         <message>
             <source> new chapters found</source>
             <translation> capítulos novos encontrados</translation>

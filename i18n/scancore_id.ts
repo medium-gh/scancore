@@ -4514,6 +4514,10 @@
     <context>
         <name>HomePage</name>
         <message>
+            <source>Clear</source>
+            <translation>Hapus</translation>
+        </message>
+        <message>
             <source>Up late</source>
             <translation>Begadang</translation>
         </message>
@@ -5549,6 +5553,10 @@
     </context>
     <context>
         <name>LibraryPage</name>
+        <message>
+            <source>Clear updates</source>
+            <translation>Hapus pembaruan</translation>
+        </message>
         <message>
             <source> new chapters found</source>
             <translation> bab baru ditemukan</translation>

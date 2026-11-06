@@ -4514,6 +4514,10 @@
     <context>
         <name>HomePage</name>
         <message>
+            <source>Clear</source>
+            <translation>Xóa</translation>
+        </message>
+        <message>
             <source>Up late</source>
             <translation>Thức khuya thế</translation>
         </message>
@@ -5549,6 +5553,10 @@
     </context>
     <context>
         <name>LibraryPage</name>
+        <message>
+            <source>Clear updates</source>
+            <translation>Xóa cập nhật</translation>
+        </message>
         <message>
             <source>Favourites</source>
             <translation>Yêu thích</translation>

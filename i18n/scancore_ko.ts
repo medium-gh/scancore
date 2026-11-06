@@ -4514,6 +4514,10 @@
     <context>
         <name>HomePage</name>
         <message>
+            <source>Clear</source>
+            <translation>지우기</translation>
+        </message>
+        <message>
             <source>Up late</source>
             <translation>늦은 밤이네요</translation>
         </message>
@@ -5549,6 +5553,10 @@
     </context>
     <context>
         <name>LibraryPage</name>
+        <message>
+            <source>Clear updates</source>
+            <translation>업데이트 지우기</translation>
+        </message>
         <message>
             <source>Favourites</source>
             <translation>즐겨찾기</translation>

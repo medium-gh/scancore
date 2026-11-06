@@ -4514,6 +4514,10 @@
     <context>
         <name>HomePage</name>
         <message>
+            <source>Clear</source>
+            <translation>清除</translation>
+        </message>
+        <message>
             <source>Up late</source>
             <translation>夜深了</translation>
         </message>
@@ -5549,6 +5553,10 @@
     </context>
     <context>
         <name>LibraryPage</name>
+        <message>
+            <source>Clear updates</source>
+            <translation>清除更新</translation>
+        </message>
         <message>
             <source>Favourites</source>
             <translation>收藏</translation>

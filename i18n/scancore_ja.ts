@@ -4514,6 +4514,10 @@
     <context>
         <name>HomePage</name>
         <message>
+            <source>Clear</source>
+            <translation>消去</translation>
+        </message>
+        <message>
             <source>Up late</source>
             <translation>夜更かしですね</translation>
         </message>
@@ -5549,6 +5553,10 @@
     </context>
     <context>
         <name>LibraryPage</name>
+        <message>
+            <source>Clear updates</source>
+            <translation>更新通知をクリア</translation>
+        </message>
         <message>
             <source>Favourites</source>
             <translation>お気に入り</translation>

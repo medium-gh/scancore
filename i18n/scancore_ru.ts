@@ -4514,6 +4514,10 @@
     <context>
         <name>HomePage</name>
         <message>
+            <source>Clear</source>
+            <translation>Очистить</translation>
+        </message>
+        <message>
             <source>Up late</source>
             <translation>Не спится</translation>
         </message>
@@ -5549,6 +5553,10 @@
     </context>
     <context>
         <name>LibraryPage</name>
+        <message>
+            <source>Clear updates</source>
+            <translation>Сбросить обновления</translation>
+        </message>
         <message>
             <source>Favourites</source>
             <translation>Избранное</translation>

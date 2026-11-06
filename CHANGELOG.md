@@ -2,6 +2,13 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.23 — 2026-11-06
+
+New chapters can be cleared without reading them, and sites' own search filters are on the Comics page.
+
+- **Clear updates**: opening a series or show now clears its new chapters or episodes from the Library badge. **Clear updates** on the Library page (and **Clear** on Home's "New in your library") clears them all at once. Nothing is marked read or watched.
+- **A site's own filters**: with a site picked from the Sources menu, the filter button beside the search box opens that site's own search filters, as Mihon does (extension sites; SCANCORE's built-in sites have none). With Comick as the catalogue and All sources, it opens Comick's filters as before.
+
 ## 2.16.22 — 2026-11-06
 
 The Comics page keeps its sites in one menu.

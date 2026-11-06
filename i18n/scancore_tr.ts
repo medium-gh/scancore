@@ -4514,6 +4514,10 @@
     <context>
         <name>HomePage</name>
         <message>
+            <source>Clear</source>
+            <translation>Temizle</translation>
+        </message>
+        <message>
             <source>Up late</source>
             <translation>Geç saatte uyanıksın</translation>
         </message>
@@ -5549,6 +5553,10 @@
     </context>
     <context>
         <name>LibraryPage</name>
+        <message>
+            <source>Clear updates</source>
+            <translation>Güncellemeleri temizle</translation>
+        </message>
         <message>
             <source>Favourites</source>
             <translation>Favoriler</translation>

@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.16.23" date="2026-11-06">
+      <description>
+        <p>New chapters can be cleared without reading them, and sites' own search filters are on the Comics page.</p>
+      </description>
+    </release>
     <release version="2.16.22" date="2026-11-06">
       <description>
         <p>The Comics page keeps its sites in one Sources menu instead of a chip each.</p>
