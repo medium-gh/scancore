@@ -212,6 +212,10 @@ ApplicationWindow {
             if (App.settings.closeToTray === true) {
                 close.accepted = false
                 window.hide()
+            } else {
+                // Closing only hides a window (it is not destroyed), and the
+                // app does not quit with its last window (for the tray): quit.
+                Qt.quit()
             }
             return
         }
