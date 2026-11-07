@@ -4421,6 +4421,33 @@
         </message>
     </context>
     <context>
+        <name>GlassTabBar</name>
+        <message>
+            <source>Home</source>
+            <translation>होम</translation>
+        </message>
+        <message>
+            <source>Comics</source>
+            <translation>कॉमिक्स</translation>
+        </message>
+        <message>
+            <source>Novels</source>
+            <translation>उपन्यास</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>एनीमे</translation>
+        </message>
+        <message>
+            <source>Music</source>
+            <translation>संगीत</translation>
+        </message>
+        <message>
+            <source>Library</source>
+            <translation>लाइब्रेरी</translation>
+        </message>
+    </context>
+    <context>
         <name>HistoryPage</name>
         <message>
             <source>Today</source>
@@ -5078,6 +5105,18 @@
         <message>
             <source>Time of day</source>
             <translation>दिन का समय</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>क्लासिक</translation>
+        </message>
+        <message>
+            <source>Glass</source>
+            <translation>ग्लास</translation>
+        </message>
+        <message>
+            <source>Liquid glass over your art</source>
+            <translation>आपकी तस्वीरों पर लिक्विड ग्लास</translation>
         </message>
     </context>
     <context>
@@ -8050,6 +8089,10 @@
         <message>
             <source>Play music</source>
             <translation>संगीत चलाएँ</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>क्लासिक</translation>
         </message>
     </context>
     <context>

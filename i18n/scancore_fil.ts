@@ -4421,6 +4421,33 @@
         </message>
     </context>
     <context>
+        <name>GlassTabBar</name>
+        <message>
+            <source>Home</source>
+            <translation>Home</translation>
+        </message>
+        <message>
+            <source>Comics</source>
+            <translation>Komiks</translation>
+        </message>
+        <message>
+            <source>Novels</source>
+            <translation>Nobela</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>Anime</translation>
+        </message>
+        <message>
+            <source>Music</source>
+            <translation>Musika</translation>
+        </message>
+        <message>
+            <source>Library</source>
+            <translation>Library</translation>
+        </message>
+    </context>
+    <context>
         <name>HistoryPage</name>
         <message>
             <source>Today</source>
@@ -5078,6 +5105,18 @@
         <message>
             <source>Time of day</source>
             <translation>Oras ng araw</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>Klasiko</translation>
+        </message>
+        <message>
+            <source>Glass</source>
+            <translation>Salamin</translation>
+        </message>
+        <message>
+            <source>Liquid glass over your art</source>
+            <translation>Likidong salamin sa ibabaw ng iyong mga larawan</translation>
         </message>
     </context>
     <context>
@@ -8050,6 +8089,10 @@
         <message>
             <source>Play music</source>
             <translation>Magpatugtog ng musika</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>Klasiko</translation>
         </message>
     </context>
     <context>

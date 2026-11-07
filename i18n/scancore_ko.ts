@@ -4429,6 +4429,33 @@
         </message>
     </context>
     <context>
+        <name>GlassTabBar</name>
+        <message>
+            <source>Home</source>
+            <translation>홈</translation>
+        </message>
+        <message>
+            <source>Comics</source>
+            <translation>만화</translation>
+        </message>
+        <message>
+            <source>Novels</source>
+            <translation>소설</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>애니메이션</translation>
+        </message>
+        <message>
+            <source>Music</source>
+            <translation>음악</translation>
+        </message>
+        <message>
+            <source>Library</source>
+            <translation>라이브러리</translation>
+        </message>
+    </context>
+    <context>
         <name>HistoryPage</name>
         <message>
             <source>Today</source>
@@ -5086,6 +5113,18 @@
         <message>
             <source>Time of day</source>
             <translation>시간대</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>클래식</translation>
+        </message>
+        <message>
+            <source>Glass</source>
+            <translation>글래스</translation>
+        </message>
+        <message>
+            <source>Liquid glass over your art</source>
+            <translation>아트 위의 리퀴드 글래스</translation>
         </message>
     </context>
     <context>
@@ -8058,6 +8097,10 @@
         <message>
             <source>Play music</source>
             <translation>음악 듣기</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>클래식</translation>
         </message>
     </context>
     <context>

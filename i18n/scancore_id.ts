@@ -4429,6 +4429,33 @@
         </message>
     </context>
     <context>
+        <name>GlassTabBar</name>
+        <message>
+            <source>Home</source>
+            <translation>Beranda</translation>
+        </message>
+        <message>
+            <source>Comics</source>
+            <translation>Komik</translation>
+        </message>
+        <message>
+            <source>Novels</source>
+            <translation>Novel</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>Anime</translation>
+        </message>
+        <message>
+            <source>Music</source>
+            <translation>Musik</translation>
+        </message>
+        <message>
+            <source>Library</source>
+            <translation>Pustaka</translation>
+        </message>
+    </context>
+    <context>
         <name>HistoryPage</name>
         <message>
             <source>Today</source>
@@ -5086,6 +5113,18 @@
         <message>
             <source>Time of day</source>
             <translation>Waktu</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>Klasik</translation>
+        </message>
+        <message>
+            <source>Glass</source>
+            <translation>Kaca</translation>
+        </message>
+        <message>
+            <source>Liquid glass over your art</source>
+            <translation>Kaca cair di atas gambar Anda</translation>
         </message>
     </context>
     <context>
@@ -8058,6 +8097,10 @@
         <message>
             <source>Play music</source>
             <translation>Putar musik</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>Klasik</translation>
         </message>
     </context>
     <context>

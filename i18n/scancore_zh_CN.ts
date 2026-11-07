@@ -4429,6 +4429,33 @@
         </message>
     </context>
     <context>
+        <name>GlassTabBar</name>
+        <message>
+            <source>Home</source>
+            <translation>首页</translation>
+        </message>
+        <message>
+            <source>Comics</source>
+            <translation>漫画</translation>
+        </message>
+        <message>
+            <source>Novels</source>
+            <translation>小说</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>动画</translation>
+        </message>
+        <message>
+            <source>Music</source>
+            <translation>音乐</translation>
+        </message>
+        <message>
+            <source>Library</source>
+            <translation>书库</translation>
+        </message>
+    </context>
+    <context>
         <name>HistoryPage</name>
         <message>
             <source>Today</source>
@@ -5086,6 +5113,18 @@
         <message>
             <source>Time of day</source>
             <translation>时段问候</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>经典</translation>
+        </message>
+        <message>
+            <source>Glass</source>
+            <translation>玻璃</translation>
+        </message>
+        <message>
+            <source>Liquid glass over your art</source>
+            <translation>覆盖在封面之上的液态玻璃</translation>
         </message>
     </context>
     <context>
@@ -8058,6 +8097,10 @@
         <message>
             <source>Play music</source>
             <translation>播放音乐</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>经典</translation>
         </message>
     </context>
     <context>

@@ -4429,6 +4429,33 @@
         </message>
     </context>
     <context>
+        <name>GlassTabBar</name>
+        <message>
+            <source>Home</source>
+            <translation>Ana sayfa</translation>
+        </message>
+        <message>
+            <source>Comics</source>
+            <translation>Çizgi roman</translation>
+        </message>
+        <message>
+            <source>Novels</source>
+            <translation>Romanlar</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>Anime</translation>
+        </message>
+        <message>
+            <source>Music</source>
+            <translation>Müzik</translation>
+        </message>
+        <message>
+            <source>Library</source>
+            <translation>Kitaplık</translation>
+        </message>
+    </context>
+    <context>
         <name>HistoryPage</name>
         <message>
             <source>Today</source>
@@ -5086,6 +5113,18 @@
         <message>
             <source>Time of day</source>
             <translation>Günün saati</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>Klasik</translation>
+        </message>
+        <message>
+            <source>Glass</source>
+            <translation>Cam</translation>
+        </message>
+        <message>
+            <source>Liquid glass over your art</source>
+            <translation>Görsellerinin üzerinde sıvı cam</translation>
         </message>
     </context>
     <context>
@@ -8058,6 +8097,10 @@
         <message>
             <source>Play music</source>
             <translation>Müzik çal</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>Klasik</translation>
         </message>
     </context>
     <context>

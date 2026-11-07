@@ -4429,6 +4429,33 @@
         </message>
     </context>
     <context>
+        <name>GlassTabBar</name>
+        <message>
+            <source>Home</source>
+            <translation>Trang chủ</translation>
+        </message>
+        <message>
+            <source>Comics</source>
+            <translation>Truyện tranh</translation>
+        </message>
+        <message>
+            <source>Novels</source>
+            <translation>Tiểu thuyết</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>Anime</translation>
+        </message>
+        <message>
+            <source>Music</source>
+            <translation>Âm nhạc</translation>
+        </message>
+        <message>
+            <source>Library</source>
+            <translation>Thư viện</translation>
+        </message>
+    </context>
+    <context>
         <name>HistoryPage</name>
         <message>
             <source>Today</source>
@@ -5086,6 +5113,18 @@
         <message>
             <source>Time of day</source>
             <translation>Thời điểm trong ngày</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>Cổ điển</translation>
+        </message>
+        <message>
+            <source>Glass</source>
+            <translation>Kính</translation>
+        </message>
+        <message>
+            <source>Liquid glass over your art</source>
+            <translation>Kính lỏng phủ trên ảnh của bạn</translation>
         </message>
     </context>
     <context>
@@ -8058,6 +8097,10 @@
         <message>
             <source>Play music</source>
             <translation>Phát nhạc</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>Cổ điển</translation>
         </message>
     </context>
     <context>

@@ -4421,6 +4421,33 @@
         </message>
     </context>
     <context>
+        <name>GlassTabBar</name>
+        <message>
+            <source>Home</source>
+            <translation>Start</translation>
+        </message>
+        <message>
+            <source>Comics</source>
+            <translation>Komiksy</translation>
+        </message>
+        <message>
+            <source>Novels</source>
+            <translation>Powieści</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>Anime</translation>
+        </message>
+        <message>
+            <source>Music</source>
+            <translation>Muzyka</translation>
+        </message>
+        <message>
+            <source>Library</source>
+            <translation>Biblioteka</translation>
+        </message>
+    </context>
+    <context>
         <name>HistoryPage</name>
         <message>
             <source>Today</source>
@@ -5078,6 +5105,18 @@
         <message>
             <source>Time of day</source>
             <translation>Pora dnia</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>Klasyczny</translation>
+        </message>
+        <message>
+            <source>Glass</source>
+            <translation>Szkło</translation>
+        </message>
+        <message>
+            <source>Liquid glass over your art</source>
+            <translation>Płynne szkło na twoich okładkach</translation>
         </message>
     </context>
     <context>
@@ -8050,6 +8089,10 @@
         <message>
             <source>Play music</source>
             <translation>Słuchaj muzyki</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>Klasyczny</translation>
         </message>
     </context>
     <context>

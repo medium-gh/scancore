@@ -4421,6 +4421,33 @@
         </message>
     </context>
     <context>
+        <name>GlassTabBar</name>
+        <message>
+            <source>Home</source>
+            <translation>หน้าแรก</translation>
+        </message>
+        <message>
+            <source>Comics</source>
+            <translation>การ์ตูน</translation>
+        </message>
+        <message>
+            <source>Novels</source>
+            <translation>นิยาย</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>อนิเมะ</translation>
+        </message>
+        <message>
+            <source>Music</source>
+            <translation>เพลง</translation>
+        </message>
+        <message>
+            <source>Library</source>
+            <translation>คลัง</translation>
+        </message>
+    </context>
+    <context>
         <name>HistoryPage</name>
         <message>
             <source>Today</source>
@@ -5078,6 +5105,18 @@
         <message>
             <source>Time of day</source>
             <translation>ช่วงเวลา</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>คลาสสิก</translation>
+        </message>
+        <message>
+            <source>Glass</source>
+            <translation>กระจก</translation>
+        </message>
+        <message>
+            <source>Liquid glass over your art</source>
+            <translation>กระจกเหลวบนภาพของคุณ</translation>
         </message>
     </context>
     <context>
@@ -8050,6 +8089,10 @@
         <message>
             <source>Play music</source>
             <translation>เล่นเพลง</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>คลาสสิก</translation>
         </message>
     </context>
     <context>

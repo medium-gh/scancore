@@ -4429,6 +4429,33 @@
         </message>
     </context>
     <context>
+        <name>GlassTabBar</name>
+        <message>
+            <source>Home</source>
+            <translation>ホーム</translation>
+        </message>
+        <message>
+            <source>Comics</source>
+            <translation>コミック</translation>
+        </message>
+        <message>
+            <source>Novels</source>
+            <translation>小説</translation>
+        </message>
+        <message>
+            <source>Anime</source>
+            <translation>アニメ</translation>
+        </message>
+        <message>
+            <source>Music</source>
+            <translation>音楽</translation>
+        </message>
+        <message>
+            <source>Library</source>
+            <translation>ライブラリ</translation>
+        </message>
+    </context>
+    <context>
         <name>HistoryPage</name>
         <message>
             <source>Today</source>
@@ -5086,6 +5113,18 @@
         <message>
             <source>Time of day</source>
             <translation>時間帯</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>クラシック</translation>
+        </message>
+        <message>
+            <source>Glass</source>
+            <translation>ガラス</translation>
+        </message>
+        <message>
+            <source>Liquid glass over your art</source>
+            <translation>アートの上に流れるガラス</translation>
         </message>
     </context>
     <context>
@@ -8058,6 +8097,10 @@
         <message>
             <source>Play music</source>
             <translation>音楽を再生</translation>
+        </message>
+        <message>
+            <source>Classic</source>
+            <translation>クラシック</translation>
         </message>
     </context>
     <context>

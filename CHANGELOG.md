@@ -2,6 +2,18 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.17.0 — 2026-11-07
+
+A third look: Glass, liquid glass over your art.
+
+- **Glass** (Settings → Interface → Look, or the welcome screens, beside Classic and Retro tiles): the controls are liquid glass. You see what is behind them, lightly blurred, with a soft lens at the edges and text and icons that turn dark or light to stay readable. They move like liquid: a selection flows from one item to the next as a droplet, presses squash and menus pour out from where you opened them.
+- **Your art behind everything**: each section shows what you last opened of its kind (Comics your last comic, Novels your last novel, Anime your last anime, Home whatever was last), blurred, and it fades over as you move between them. Home opens with it as a hero, with a glass card to continue where you left off.
+- **On phones** the tab bar floats as a glass capsule with a search orb beside it, and what is playing sits just above it. Scrolling down draws the bar in to the current tab; scrolling up brings it back.
+- **On computers** the sidebar floats as a pane of glass.
+- **Readers and Now Playing**: in the comic and novel readers the controls float over the page as glass, and the comic reader's main buttons sit on a card at the bottom with its page bar (as set in Settings → Reading, or off). Now Playing has your cover blurred behind it and its controls on glass.
+- **Tray**: with "Keep running in the tray when the window closes" off, closing the window now quits SCANCORE. It kept running in the tray before.
+- **See-through windows**: over a background picture, the Anime page's banner and a series' header now fade out as they should.
+
 ## 2.16.24 — 2026-11-07
 
 Music in the Retro look is a hub of its own.
