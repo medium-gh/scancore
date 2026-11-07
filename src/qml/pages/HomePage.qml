@@ -88,7 +88,9 @@ Item {
             // Edit page, at the top right whatever comes first.
             Item {
                 width: parent.width
-                height: editButton.height
+                // Glass: the hero's orb has it.
+                visible: !Theme.glass
+                height: visible ? editButton.height : 0
                 IconButton {
                     id: editButton
                     anchors.right: parent.right
@@ -105,7 +107,15 @@ Item {
                 arranger: layout
                 key: "greeting"
                 label: qsTr("Greeting")
+                // Glass: what was read last is the hero, where to pick up on it.
+                GlassHero {
+                    visible: Theme.glass && page.history.length > 0
+                    height: visible ? implicitHeight : 0
+                    entry: page.history.length ? page.history[0] : ({})
+                    onEditPage: page.editing = !page.editing
+                }
                 Column {
+                    visible: !(Theme.glass && page.history.length > 0)
                     width: parent.width
                     spacing: 18
                     Item {
@@ -239,7 +249,7 @@ Item {
                 arranger: layout
                 key: "resume"
                 label: qsTr("Last read or watched")
-                shown: page.history.length > 0
+                shown: page.history.length > 0 && !Theme.glass
                 Loader {
                     width: parent.width
                     active: page.history.length > 0

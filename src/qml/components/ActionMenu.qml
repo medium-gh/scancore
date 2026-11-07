@@ -13,6 +13,7 @@ Popup {
     // A list too long for the room below that point scrolls there, unless
     // the room is small; then it moves up.
     property real room: 600
+    property point pourFrom: Qt.point(0, 0)
     function openAt(item, px, py, list) {
         items = list
         const p = item.mapToItem(Overlay.overlay, px, py)
@@ -20,6 +21,8 @@ Popup {
         room = h - p.y - 8 >= Math.min(h / 2, 240) ? h - p.y - 8 : h - 16
         x = Math.max(8, Math.min(p.x, w - implicitWidth - 8))
         y = Math.max(8, Math.min(p.y, h - implicitHeight - 8))
+        // Glass: it pours out from that point.
+        pourFrom = Qt.point(p.x - x, p.y - y)
         open()
     }
     // The list is laid out after openAt placed it.
@@ -42,6 +45,7 @@ Popup {
 
     background: SurfacePanel {
         radius: Theme.radiusLg
+        origin: menu.pourFrom
         fill: Theme.surface
         border.width: 1
         border.color: Theme.borderStrong

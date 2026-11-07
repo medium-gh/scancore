@@ -623,7 +623,7 @@ Rectangle {
         width: parent.width
         height: reader.insetTop
         visible: height > 0 && !reader.systemBarsHidden
-        color: reader.barsShown ? Theme.alpha(reader.look.chrome, 0.94) : reader.look.bg
+        color: reader.barsShown && !Theme.glass ? Theme.alpha(reader.look.chrome, 0.94) : reader.look.bg
         Behavior on color { ColorAnimation { duration: Motion.slow } }
     }
 
@@ -637,19 +637,52 @@ Rectangle {
         opacity: 0.8
     }
 
+    // Glass: what the bar's glass shows, a live copy of the page (a layer;
+    // made only while the bar is up).
+    Loader {
+        id: glassPage
+        anchors.fill: parent
+        active: Theme.glass && reader.barsShown
+        visible: false
+        sourceComponent: Item {
+            layer.enabled: true
+            layer.textureSize: Qt.size(Math.ceil(width * Screen.devicePixelRatio), Math.ceil(height * Screen.devicePixelRatio))
+            Rectangle { anchors.fill: parent; color: reader.look.bg }
+            ShaderEffectSource { anchors.fill: parent; sourceItem: flick; live: true }
+        }
+    }
+    readonly property Item glassBackdrop: glassPage.item
+
     Rectangle {
         id: topBar
         z: 1
         width: parent.width
+        // Glass: a back orb, a capsule round the title and one round the
+        // buttons over the page (as the comic reader), not a bar.
+        GlassSurface {
+            visible: Theme.glass && !!glassPage.item
+            anchors.fill: parent
+            backdrop: glassPage.item
+            merge: 0
+            tintColor: reader.look.chrome
+            tint: 0.3
+            readonly property real hgt: 48
+            shapes: [
+                { x: closeButton.x + closeButton.width / 2 - hgt / 2, y: topBar.rowY - hgt / 2, w: hgt, h: hgt, r: hgt / 2 },
+                { x: titleColumn.x - 14, y: titleColumn.y + titleColumn.height / 2 - hgt / 2,
+                  w: Math.max(novelTitleLine.width, novelUnitLine.width) > 0 ? Math.max(novelTitleLine.width, novelUnitLine.width) + 28 : 0, h: hgt, r: hgt / 2 },
+                { x: novelActions.x - 7, y: topBar.rowY - hgt / 2, w: novelActions.width + 14, h: hgt, r: hgt / 2 }
+            ]
+        }
         // Phones: the buttons leave the title no room, so it gets a row of
         // its own under them (as in the comic reader).
         readonly property bool twoRows: reader.width - novelActions.width - 110 < 140
         readonly property real rowY: reader.insetTop + 32
         height: 64 + (twoRows ? 46 : 0) + reader.insetTop
         y: reader.barsShown ? 0 : -height
-        color: Theme.alpha(reader.look.chrome, 0.94)
+        color: Theme.glass ? "transparent" : Theme.alpha(reader.look.chrome, 0.94)
         Behavior on y { NumberAnimation { duration: Motion.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Motion.emphasized } }
-        Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: 1; color: Theme.alpha(reader.look.text, 0.08) }
+        Rectangle { visible: !Theme.glass; anchors.bottom: parent.bottom; width: parent.width; height: 1; color: Theme.alpha(reader.look.text, 0.08) }
 
         IconButton {
             id: closeButton
@@ -661,10 +694,12 @@ Rectangle {
             onClicked: reader.exit()
         }
         Column {
-            x: topBar.twoRows ? 24 : closeButton.x + closeButton.width + 12
+            id: titleColumn
+            x: topBar.twoRows ? 24 : closeButton.x + closeButton.width + (Theme.glass ? 28 : 12)
             y: topBar.twoRows ? reader.insetTop + 60 : topBar.rowY - height / 2
             width: topBar.twoRows ? topBar.width - 48 : Math.max(0, reader.width - 90 - novelActions.width)
             Text {
+                id: novelTitleLine
                 text: reader.series.title || ""
                 color: reader.look.text
                 font.family: Theme.fontSans
@@ -674,6 +709,7 @@ Rectangle {
                 elide: Text.ElideRight
             }
             Text {
+                id: novelUnitLine
                 text: (reader.index + 1) + qsTr(" of ") + reader.chapters.length + " · " + (reader.unit.title || "")
                     + (reader.task && reader.task.ok && reader.task.result.offline ? qsTr(" · Downloaded") : "")
                     + (App.settings.incognito === true ? qsTr(" · Incognito") : "")

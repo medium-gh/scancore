@@ -4,6 +4,7 @@
 #include "core/ImageCache.h"
 
 #include <QBuffer>
+#include <QColor>
 #include <QCache>
 #include <QGuiApplication>
 #include <QFile>
@@ -316,7 +317,12 @@ QImage IconProvider::requestImage(const QString &id, QSize *size, const QSize &r
         }
         svg = sources.value(name);
     }
-    svg.replace("currentColor", (color.isEmpty() ? QStringLiteral("#ffffff") : color).toUtf8());
+    // A colour with alpha (#AARRGGBB, a see-through grey) is not one SVG
+    // reads (the icon came out blank): the icon is drawn in the colour
+    // itself, at its opacity, as a whole (strokes that cross do not darken).
+    const QColor parsed(color.isEmpty() ? QStringLiteral("#ffffff") : color);
+    const qreal opacity = parsed.isValid() ? parsed.alphaF() : 1.0;
+    svg.replace("currentColor", (parsed.isValid() ? parsed.name(QColor::HexRgb) : color).toUtf8());
     if (!stroke.isEmpty())
         svg.replace("stroke-width=\"2\"", QStringLiteral("stroke-width=\"%1\"").arg(stroke).toUtf8());
     const QSize target = requestedSize.isValid() && !requestedSize.isEmpty() ? requestedSize : QSize(48, 48);
@@ -325,7 +331,18 @@ QImage IconProvider::requestImage(const QString &id, QSize *size, const QSize &r
     QSvgRenderer renderer(svg);
     QPainter painter(&image);
     painter.setRenderHint(QPainter::Antialiasing);
-    renderer.render(&painter);
+    if (opacity < 1.0) {
+        QImage solid(target, QImage::Format_ARGB32_Premultiplied);
+        solid.fill(Qt::transparent);
+        QPainter inner(&solid);
+        inner.setRenderHint(QPainter::Antialiasing);
+        renderer.render(&inner);
+        inner.end();
+        painter.setOpacity(opacity);
+        painter.drawImage(0, 0, solid);
+    } else {
+        renderer.render(&painter);
+    }
     painter.end();
     if (size)
         *size = target;

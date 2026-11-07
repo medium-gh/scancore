@@ -19,17 +19,19 @@ Rectangle {
     implicitHeight: 36
     implicitWidth: row.implicitWidth + 8
     radius: Theme.pill(height)
-    color: Theme.surface2
-    border.width: 1
+    // Glass: a capsule of glass; the choice a soft white fill on it.
+    color: Theme.glass ? "transparent" : Theme.surface2
+    border.width: Theme.glass ? 0 : 1
     border.color: Theme.border
+    GlassCard { radius: root.radius; tint: 0.25 }
 
     Rectangle {
         id: pill
         y: 4
         height: parent.height - 8
         radius: Theme.pill(height)
-        color: Theme.surface
-        border.width: 1
+        color: Theme.glass ? Theme.alpha(Theme.text, 0.16) : Theme.surface
+        border.width: Theme.glass ? 0 : 1
         border.color: Theme.borderStrong
         readonly property Item target: repeater.count > root.currentIndex ? repeater.itemAt(root.currentIndex) : null
         x: target ? target.x + 4 : 4

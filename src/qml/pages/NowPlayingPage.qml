@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls.Basic
+import QtQuick.Effects
 import Scancore
 
 // The song playing, full screen: its cover over a wash of its colours,
@@ -9,6 +10,8 @@ import Scancore
 Rectangle {
     id: page
     property bool startWithVideo: false
+    // Glass on this page shows its blurred cover (GlassScene.backdropFor).
+    property Item glassBackdrop: null
     readonly property var song: MusicQueue.current
     readonly property bool wide: width >= 760 && width > height
     // Phones: one of the song, its lyrics or the queue at a time.
@@ -71,23 +74,47 @@ Rectangle {
         id: classicLook
         Item {
 
-            // The cover's colours, washed out: a tiny copy stretched over the page
-            // (no blur effect to run, it is just a 24-pixel picture made big).
-            Image {
+            Item {
+                id: backdrop
                 anchors.fill: parent
-                source: page.song ? page.song.cover || "" : ""
-                sourceSize.width: 24
-                fillMode: Image.PreserveAspectCrop
-                smooth: true
-                asynchronous: true
-                opacity: status === Image.Ready ? 0.55 : 0
-                Behavior on opacity { NumberAnimation { duration: Motion.slow } }
-            }
-            Rectangle {
-                anchors.fill: parent
-                gradient: Gradient {
-                    GradientStop { position: 0; color: Qt.rgba(0.04, 0.04, 0.05, 0.35) }
-                    GradientStop { position: 1; color: Qt.rgba(0.04, 0.04, 0.05, 0.9) }
+                Component.onCompleted: page.glassBackdrop = backdrop
+                Component.onDestruction: if (page.glassBackdrop === backdrop) page.glassBackdrop = null
+                // Glass: the controls' card shows this (a layer).
+                layer.enabled: Theme.glass
+                layer.textureSize: Qt.size(Math.ceil(width * Screen.devicePixelRatio), Math.ceil(height * Screen.devicePixelRatio))
+                // The cover's colours, washed out: a tiny copy stretched over the page
+                // (no blur effect to run, it is just a 24-pixel picture made big).
+                Image {
+                    id: wash
+                    anchors.fill: parent
+                    visible: !Theme.glass
+                    source: page.song ? page.song.cover || "" : ""
+                    sourceSize.width: Theme.glass ? 400 : 24
+                    fillMode: Image.PreserveAspectCrop
+                    smooth: true
+                    asynchronous: true
+                    opacity: status === Image.Ready ? 0.55 : 0
+                    Behavior on opacity { NumberAnimation { duration: Motion.slow } }
+                }
+                // Glass: the cover itself, blurred, as the draft (its shapes
+                // still show, a little darker).
+                MultiEffect {
+                    anchors.fill: parent
+                    visible: Theme.glass && wash.status === Image.Ready
+                    source: wash
+                    autoPaddingEnabled: false
+                    blurEnabled: true
+                    blur: 1
+                    blurMax: 64
+                    saturation: 0.3
+                    brightness: -0.12
+                }
+                Rectangle {
+                    anchors.fill: parent
+                    gradient: Gradient {
+                        GradientStop { position: 0; color: Qt.rgba(0.04, 0.04, 0.05, Theme.glass ? 0.1 : 0.35) }
+                        GradientStop { position: 1; color: Qt.rgba(0.04, 0.04, 0.05, Theme.glass ? 0.55 : 0.9) }
+                    }
                 }
             }
 
@@ -212,12 +239,24 @@ Rectangle {
                     onSeekRequested: (t) => page.seek(t)
                 }
 
+                // Glass: the position and the buttons on a card of glass over
+                // the blurred cover (as the draft); the play button keeps its
+                // own white.
+                GlassSurface {
+                    visible: Theme.glass
+                    anchors.fill: parent
+                    backdrop: backdrop
+                    readonly property real cardTop: controls.y + where.y - 22
+                    readonly property real cardBottom: controls.y + buttons.y + buttons.height + 20
+                    shapes: [{ x: 24, y: cardTop, w: parent.width - 48, h: Math.max(1, cardBottom - cardTop), r: 36 }]
+                }
                 Column {
                     id: controls
-                    x: 24
-                    width: parent.width - 48
-                    y: parent.height - height - 16
-                    spacing: 14
+                    // Glass: inside the card, with room around it.
+                    x: Theme.glass ? 46 : 24
+                    width: parent.width - 2 * x
+                    y: parent.height - height - (Theme.glass ? 36 : 16)
+                    spacing: Theme.glass ? 22 : 14
                     // Title and who sings it.
                     Column {
                         visible: page.tab !== "lyrics" || page.wide
@@ -241,8 +280,12 @@ Rectangle {
                             elide: Text.ElideRight
                         }
                     }
+                    // Glass: room between the title and the card (a positioner skips an
+                    // item of no height, so it has some).
+                    Item { visible: Theme.glass; width: 1; height: 6 }
                     // Where it is.
                     Column {
+                        id: where
                         width: parent.width
                         spacing: 2
                         ScSlider {
@@ -264,6 +307,7 @@ Rectangle {
                     }
                     // The buttons.
                     Row {
+                        id: buttons
                         anchors.horizontalCenter: parent.horizontalCenter
                         spacing: Theme.compact ? 14 : 22
                         IconButton {
@@ -337,6 +381,8 @@ Rectangle {
                             }
                         }
                     }
+                    // Glass: room between the card and the chips.
+                    Item { visible: Theme.glass && !page.wide; width: 1; height: 6 }
                     // Phones: what the space above shows.
                     Row {
                         visible: !page.wide

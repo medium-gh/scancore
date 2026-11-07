@@ -22,12 +22,15 @@ AbstractButton {
     font.weight: Font.Medium
     opacity: enabled ? 1 : 0.45
 
+    readonly property bool glassy: Theme.glass && !selected
     background: Rectangle {
         radius: Theme.pill(height)
-        color: chip.selected ? Theme.accent : chip.hovered ? Theme.surface3 : Theme.surface2
-        border.width: chip.selected ? 0 : 1
+        // Glass: chips are glass (the chosen one keeps the accent).
+        color: chip.glassy ? "transparent" : chip.selected ? Theme.accent : chip.hovered ? Theme.surface3 : Theme.surface2
+        border.width: chip.selected || chip.glassy ? 0 : 1
         border.color: Theme.border
-        scale: chip.pressed ? 0.96 : 1
+        scale: chip.pressed && !chip.glassy ? 0.96 : 1
+        GlassControl { visible: chip.glassy; radius: parent.radius; pressed: chip.pressed; hovered: chip.hovered }
         Behavior on color { ColorAnimation { duration: Motion.fast } }
         Behavior on scale { NumberAnimation { duration: Motion.fast } }
     }

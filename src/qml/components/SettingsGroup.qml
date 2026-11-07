@@ -28,9 +28,11 @@ Column {
         width: parent.width
         height: body.height
         radius: Theme.radiusLg
-        color: Theme.surface
-        border.width: 1
+        // Glass: a card of glass over the wallpaper.
+        color: Theme.glass ? "transparent" : Theme.surface
+        border.width: Theme.glass ? 0 : 1
         border.color: Theme.border
+        GlassCard { radius: parent.radius; tint: 0.5 }
         Column {
             id: body
             width: parent.width

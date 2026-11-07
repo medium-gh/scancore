@@ -38,10 +38,13 @@ Item {
         anchors.right: parent.right
         height: 420
         clip: true
-        layer.enabled: Theme.layered
+        layer.enabled: Theme.layered || Theme.glass
         layer.effect: MultiEffect {
             maskEnabled: true
             maskSource: backdropFade
+            // A soft mask (by default MultiEffect cuts a mask to a hard edge).
+            maskThresholdMin: 0.5
+            maskSpreadAtMin: 1
         }
         Image {
             id: backdropSource

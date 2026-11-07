@@ -77,8 +77,10 @@ Column {
         // nothing around the field is covered.
         background: Rectangle {
             radius: Theme.radiusMd
-            color: input.activeFocus ? Theme.surface : Theme.surface2
-            border.width: input.activeFocus ? 1.5 : 1
+            // Glass: a field of glass (its edge only while typing in it).
+            color: Theme.glass ? "transparent" : input.activeFocus ? Theme.surface : Theme.surface2
+            border.width: input.activeFocus ? 1.5 : Theme.glass && !field.problem ? 0 : 1
+            GlassCard { radius: parent.radius; tint: 0.3; hovered: input.hovered }
             border.color: field.problem ? Theme.danger
                 : input.activeFocus ? Theme.alpha(Theme.text, 0.6)
                 : input.hovered ? Theme.borderStrong : Theme.border

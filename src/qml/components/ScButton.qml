@@ -26,12 +26,15 @@ AbstractButton {
     font.pixelSize: compact ? Theme.textSm : Theme.textMd
     font.weight: Font.DemiBold
 
+    readonly property bool glassy: Theme.glass && (variant === "secondary" || variant === "ghost")
     background: Rectangle {
         radius: Theme.pill(height)
-        color: control.fill
-        border.width: control.variant === "ghost" ? 1 : 0
+        // Glass: secondary and ghost buttons are glass (primary keeps its fill).
+        color: control.glassy ? "transparent" : control.fill
+        border.width: control.variant === "ghost" && !control.glassy ? 1 : 0
         border.color: Theme.border
-        scale: control.pressed ? 0.97 : 1
+        scale: control.pressed && !control.glassy ? 0.97 : 1
+        GlassControl { visible: control.glassy; radius: parent.radius; pressed: control.pressed; hovered: control.hovered }
         Behavior on scale { NumberAnimation { duration: Motion.fast; easing.type: Easing.OutQuad } }
         Rectangle {
             anchors.fill: parent

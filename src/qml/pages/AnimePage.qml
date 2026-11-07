@@ -215,10 +215,15 @@ Item {
                 }
                 Item {
                     anchors.fill: parent
-                    layer.enabled: Theme.layered
+                    // Glass: over the wallpaper, so the same.
+                    layer.enabled: Theme.layered || Theme.glass
                     layer.effect: MultiEffect {
                         maskEnabled: true
                         maskSource: heroFade
+                        // A soft mask (by default MultiEffect cuts a mask to
+                        // a hard edge, and nothing faded).
+                        maskThresholdMin: 0.5
+                        maskSpreadAtMin: 1
                     }
                     // The pictures follow the finger under shades that stay
                     // put (moving the shades with them uncovered the slowly
@@ -266,6 +271,7 @@ Item {
                     }
                     Rectangle {
                         anchors.fill: parent
+                        visible: !Theme.glass
                         gradient: Gradient {
                             GradientStop { position: 0.55; color: "transparent" }
                             GradientStop { position: 1.0; color: Theme.bg }

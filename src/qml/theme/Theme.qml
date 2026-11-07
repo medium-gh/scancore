@@ -24,6 +24,11 @@ QtObject {
     // pivots in the Windows Phone manner, retro/*.qml) instead of the
     // standard pages and navigation.
     readonly property bool retro: App.settings.uiMode === "retro"
+    // The Glass mode: liquid glass navigation, controls, menus and sheets
+    // over the pages (glass/*.qml, resources/shaders/glass.frag). Not on
+    // e-ink, which cannot show it (GlassSurface also falls back to a plain
+    // fill where shaders cannot run).
+    readonly property bool glass: App.settings.uiMode === "glass" && !eink
 
     // Base colours per theme. Settings draws its theme previews from these.
     readonly property var palettes: ({
@@ -47,16 +52,22 @@ QtObject {
 
     // The window colour, always opaque; `bg` is the page, clear when layered.
     readonly property color base: palette.bg
-    readonly property color bg: layered ? alpha(palette.bg, 0) : palette.bg
+    // Glass: the pages are over the wallpaper (already blurred), so like a
+    // see-through window: the page is clear and cards are the surface
+    // colour, see-through (frosted glass, with no effect to run).
+    readonly property color bg: layered || glass ? alpha(palette.bg, 0) : palette.bg
     readonly property color sidebar: layered ? alpha(palette.sidebar, panelOpacity) : palette.sidebar
-    readonly property color surface: layered ? alpha(palette.surface, Math.max(0.55, panelOpacity)) : palette.surface
-    readonly property color surface2: palette.surface2
+    readonly property color surface: glass ? alpha(palette.surface, 0.55)
+        : layered ? alpha(palette.surface, Math.max(0.55, panelOpacity)) : palette.surface
+    readonly property color surface2: glass ? alpha(palette.surface2, 0.6) : palette.surface2
     readonly property color surface3: palette.surface3
     readonly property color border: palette.border
     readonly property color borderStrong: palette.borderStrong
     readonly property color text: palette.text
-    readonly property color textMuted: palette.textMuted
-    readonly property color textFaint: palette.textFaint
+    // Glass: secondary text is the text colour, see-through (as the drafts'
+    // 70% white): a grey mixed toward the base vanishes over coloured ground.
+    readonly property color textMuted: glass ? alpha(palette.text, 0.72) : palette.textMuted
+    readonly property color textFaint: glass ? alpha(palette.text, 0.5) : palette.textFaint
     readonly property color overlay: dark ? Qt.rgba(0, 0, 0, 0.6) : Qt.rgba(0.1, 0.1, 0.12, 0.35)
     readonly property color danger: dark ? "#f87171" : "#dc2626"
     readonly property color success: dark ? "#4ade80" : "#16a34a"

@@ -195,7 +195,7 @@ Column {
         // Desktop: the row fades out at an edge with more to scroll to (not over
         // a background picture, which has no single colour to fade into).
         Rectangle {
-            visible: list.visible && !Theme.compact && !Theme.layered
+            visible: list.visible && !Theme.compact && !Theme.layered && !Theme.glass
             anchors.left: parent.left
             width: Theme.gutter + 24
             height: parent.height
@@ -209,7 +209,7 @@ Column {
             }
         }
         Rectangle {
-            visible: list.visible && !Theme.compact && !Theme.layered
+            visible: list.visible && !Theme.compact && !Theme.layered && !Theme.glass
             anchors.right: parent.right
             width: Theme.gutter + 24
             height: parent.height

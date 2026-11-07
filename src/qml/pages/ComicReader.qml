@@ -269,6 +269,8 @@ Rectangle {
     onVolumeKeysChanged: App.setVolumeKeys(volumeKeys)
     property int currentPanel: 0
     property bool controlsShown: true
+    // Glass on the reader (its popups' controls) shows the pages.
+    readonly property Item glassBackdrop: glassPages.item
 
     // Auto-scroll (as in TachiyomiSY): the strip moves by itself, or the
     // pages turn every few seconds; speed 1–20. Holding the strip pauses it;
@@ -469,7 +471,7 @@ Rectangle {
         onTriggered: {
             // Stay up while the pointer rests on the controls, a popup is
             // open, or there are no pages yet (loading, or an error to act on).
-            if (settingsPopup.opened || chapterPopup.opened || comments.opened || reactPopup.opened || translatePopup.opened || topHover.hovered
+            if (settingsPopup.opened || chapterPopup.opened || comments.opened || reactPopup.opened || translatePopup.opened || topHover.hovered || dockHover.hovered
                 || reader.panels.length === 0)
                 restart()
             else
@@ -1399,6 +1401,8 @@ Rectangle {
         readonly property var mode: App.settings.readerProgressBar
         readonly property bool shown: mode !== false && reader.panels.length > 0
                                       && (mode !== "controls" && !fullScreen.fullScreen || reader.controlsShown)
+                                      // Glass: with the controls up it is on their card.
+                                      && !(Theme.glass && reader.controlsShown)
         readonly property int thickness: Number(App.settings.readerProgressWidth) || 3
         opacity: shown ? 1 : 0
         visible: opacity > 0
@@ -1424,6 +1428,130 @@ Rectangle {
                 if (i !== reader.currentPanel) reader.jumpTo(i)
                 // Shown controls (and with them the bar) stay while it is used.
                 if (reader.controlsShown) reader.showControls()
+            }
+        }
+    }
+
+    // ------------------------------------------------------------ glass
+    // Glass: what the controls' glass shows, a live copy of the pages (a
+    // layer: a ShaderEffectSource sampled directly comes out mirrored on
+    // Direct3D). Made only while the controls are up.
+    Loader {
+        id: glassPages
+        anchors.fill: parent
+        active: Theme.glass && reader.controlsShown
+        visible: false
+        sourceComponent: Item {
+            layer.enabled: true
+            layer.textureSize: Qt.size(Math.ceil(width * Screen.devicePixelRatio), Math.ceil(height * Screen.devicePixelRatio))
+            Rectangle { anchors.fill: parent; color: "black" }
+            ShaderEffectSource {
+                anchors.fill: parent
+                sourceItem: reader.mode === "strip" ? strip : pageView
+                live: true
+            }
+        }
+    }
+
+    // Glass: the page slider and the reader's main buttons on a card along
+    // the bottom (as the draft): chapter back, chapters, strip or pages,
+    // settings, chapter on.
+    Item {
+        id: glassDock
+        z: 60
+        visible: Theme.glass && opacity > 0
+        readonly property real cardW: Math.min(reader.width - 52, 560)
+        x: (reader.width - cardW) / 2
+        width: cardW
+        // The page bar is the reader's progress bar (Settings → Reading):
+        // without it, only the buttons.
+        readonly property bool barShown: App.settings.readerProgressBar !== false && reader.panels.length > 0
+        height: barShown ? 112 : 70
+        Behavior on height { NumberAnimation { duration: Motion.normal; easing.type: Easing.OutCubic } }
+        y: reader.controlsShown ? reader.height - reader.insetBottom - 24 - height : reader.height + 20
+        opacity: reader.controlsShown ? 1 : 0
+        Behavior on y { NumberAnimation { duration: Motion.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Motion.emphasized } }
+        Behavior on opacity { NumberAnimation { duration: Motion.normal } }
+        HoverHandler { id: dockHover; enabled: App.platform !== "android" }
+        // Taps on the card stay on it (they do not turn pages).
+        MouseArea { anchors.fill: parent; onPressed: (mouse) => { reader.showControls(); mouse.accepted = true } }
+
+        GlassSurface {
+            visible: !!glassPages.item
+            x: -10; y: -10
+            width: parent.width + 20
+            height: parent.height + 20
+            backdrop: glassPages.item
+            shapes: [{ x: 10, y: 10, w: glassDock.width, h: glassDock.height, r: 32 }]
+        }
+        GlassInk {
+            anchors.fill: parent
+            backdrop: glassPages.item
+            Column {
+                anchors.fill: parent
+                anchors.margins: 18
+                spacing: 12
+                // Room for the page bar, drawn below outside the ink (it
+                // keeps the colours chosen for it).
+                Item { visible: glassDock.barShown; width: parent.width; height: 24 }
+                Row {
+                    width: parent.width
+                    spacing: (width - 5 * 34) / 4
+                    IconButton {
+                        iconName: "skip-back"; iconColor: "white"; iconSize: 20
+                        enabled: reader.hasPrev
+                        tip: qsTr("Previous chapter") + reader.keyHint("reader.prev")
+                        onClicked: reader.load(reader.index - 1)
+                    }
+                    IconButton {
+                        iconName: "list"; iconColor: "white"; iconSize: 20
+                        tip: qsTr("Chapters")
+                        onClicked: chapterPopup.open()
+                    }
+                    IconButton {
+                        iconName: reader.mode === "strip" ? "move-vertical" : "layers"; iconColor: "white"; iconSize: 20
+                        tip: (reader.mode === "strip" ? qsTr("Switch to pages") : qsTr("Switch to vertical strip")) + reader.keyHint("reader.mode")
+                        onClicked: reader.setOpt("readerMode", reader.mode === "strip" ? "paged" : "strip")
+                    }
+                    IconButton {
+                        iconName: "sliders-horizontal"; iconColor: "white"; iconSize: 20
+                        tip: qsTr("Reader settings")
+                        onClicked: settingsPopup.open()
+                    }
+                    IconButton {
+                        iconName: "skip-forward"; iconColor: "white"; iconSize: 20
+                        enabled: reader.hasNext
+                        tip: qsTr("Next chapter") + reader.keyHint("reader.next")
+                        onClicked: reader.load(reader.index + 1)
+                    }
+                }
+            }
+        }
+        // The page bar: the reader's own progress bar, as Settings → Reading
+        // sets it (look, size, colours, strength, reaction marks), along the
+        // card. The floating look is a line here (the card floats already).
+        ReaderProgress {
+            visible: glassDock.barShown
+            x: 18
+            y: 18
+            width: parent.width - 36
+            height: 24
+            count: reader.panels.length
+            current: reader.currentPanel
+            finished: reader.finished
+            look: (App.settings.readerProgressLook || "segments") === "floating" ? "line" : (App.settings.readerProgressLook || "segments")
+            marks: reactions.marks
+            markColor: Theme.accent
+            edge: "bottom"
+            reversed: reader.direction === "rtl"
+            thickness: Math.max(3, rail.thickness)
+            unread: App.settings.readerRailUnread || "#e4e4e7"
+            read: App.settings.readerRailRead || "#8b8b94"
+            currentColor: App.settings.readerRailCurrent || "#000000"
+            strength: App.settings.readerProgressOpacity !== undefined ? Number(App.settings.readerProgressOpacity) : 0.85
+            onPicked: (i) => {
+                if (i !== reader.currentPanel) reader.jumpTo(i)
+                reader.showControls()
             }
         }
     }
@@ -1481,7 +1609,25 @@ Rectangle {
         Behavior on opacity { NumberAnimation { duration: Motion.normal } }
         HoverHandler { id: topHover; enabled: App.platform !== "android" }
 
+        // Glass: a back orb, a capsule round the title and one round the
+        // buttons, floating over the page (as the draft), not a shade.
+        GlassSurface {
+            visible: Theme.glass && !!glassPages.item
+            anchors.fill: parent
+            backdrop: glassPages.item
+            // Three pieces, apart (the draft's), not one flowing surface.
+            merge: 0
+            readonly property real hgt: 48
+            readonly property real cy: topBar.pad + reader.insetTop + 17
+            shapes: [
+                { x: 18 + 17 - hgt / 2, y: cy - hgt / 2, w: hgt, h: hgt, r: hgt / 2 },
+                { x: titleBeside.visible ? 18 + titleBeside.x - 14 : 0, y: cy - hgt / 2,
+                  w: titleBeside.visible ? Math.max(1, titleBeside.width + 28) : 0, h: hgt, r: hgt / 2 },
+                { x: rightInk.x + topActions.x - 7, y: cy - hgt / 2, w: topActions.width > 0 ? topActions.width + 14 : 0, h: hgt, r: hgt / 2 }
+            ]
+        }
         Rectangle {
+            visible: !Theme.glass
             anchors.fill: parent
             gradient: Gradient {
                 GradientStop { position: 0; color: Qt.rgba(0, 0, 0, 0.85) }
@@ -1491,205 +1637,227 @@ Rectangle {
                 GradientStop { position: 1; color: Qt.rgba(0, 0, 0, 0) }
             }
         }
-        Row {
-            x: 18
-            y: topBar.pad + reader.insetTop
-            spacing: 12
-            IconButton {
-                iconName: "arrow-left"
-                iconColor: "white"
-                tip: qsTr("Close reader (Esc)")
-                onClicked: reader.exit()
-            }
-            TitleLines {
-                visible: !topBar.twoRows
-                anchors.verticalCenter: parent.verticalCenter
-                maxWidth: reader.width - 100 - topActions.width
-            }
-        }
-        // Phones: the buttons take the first row, the title the second.
-        TitleLines {
-            visible: topBar.twoRows
-            x: 18
-            y: topBar.pad + reader.insetTop + 40
-            maxWidth: reader.width - 36
-        }
-        Row {
-            id: topActions
-            anchors.right: parent.right
-            anchors.rightMargin: 18
-            y: topBar.pad + reader.insetTop
-            // Phones: smaller buttons, no gaps, so all fit beside the close button.
-            readonly property int button: reader.width < 420 ? 32 : 34
-            spacing: reader.width < 420 ? 0 : 4
-            // What the row would hold; when that is wider than the room
-            // beside the close button, the occasional ones (reactions,
-            // comments, another device, full screen) go into a More menu.
-            readonly property bool online: !String(reader.series.sourceUrl || "").startsWith("file:")
-            readonly property bool canReact: reactions.available && online
-            readonly property bool canHandOff: Live.devices.length > 0 && !!reader.series.id && !App.settings.incognito
-            readonly property int spares: (canReact ? 1 : 0) + (online ? 1 : 0) + (canHandOff ? 1 : 0) + 1
-            readonly property int core: 6 + (translateTo.visible ? 1 : 0) + (newWindow.visible ? 1 : 0) + (splitButton.visible ? 1 : 0)
-            readonly property real room: reader.width - 36 - 34 - 12
-            readonly property bool crowded: (core + spares + (Theme.touch ? 1 : 0)) * (button + spacing) > room
-            // Pages are on the progress bar at the left edge; chapters here.
-            // Computers: on in a window of its own (where it left off).
-            IconButton {
-                id: newWindow
-                diameter: topActions.button
-                visible: Router.windows && !(Window.window && Window.window.isPageWindow === true)
-                iconName: "columns-2"
-                iconColor: "white"
-                tip: qsTr("Open in a new window")
-                onClicked: {
-                    reader.saveProgress(true)
-                    Router.openWindow("pages/ComicReader.qml", { series: reader.series, chapters: reader.chapters, index: reader.index })
-                    Router.leave(reader)
+        // Glass: what is on each piece is inked by what is behind that piece
+        // (dark over a light page, light over a dark one); otherwise plain.
+        GlassInk {
+            id: leftInk
+            width: rightInk.x
+            height: parent.height
+            backdrop: glassPages.item
+            Row {
+                x: 18
+                y: topBar.pad + reader.insetTop
+                spacing: Theme.glass ? 28 : 12
+                IconButton {
+                    iconName: "arrow-left"
+                    iconColor: "white"
+                    tip: qsTr("Close reader (Esc)")
+                    onClicked: reader.exit()
+                }
+                TitleLines {
+                    id: titleBeside
+                    visible: !topBar.twoRows
+                    anchors.verticalCenter: parent.verticalCenter
+                    maxWidth: reader.width - 100 - topActions.width
                 }
             }
-            IconButton {
-                diameter: topActions.button
-                iconName: "skip-back"
-                iconColor: "white"
-                enabled: reader.hasPrev
-                opacity: enabled ? 1 : 0.4
-                tip: qsTr("Previous chapter") + reader.keyHint("reader.prev")
-                onClicked: reader.load(reader.index - 1)
+            // Phones: the buttons take the first row, the title the second.
+            TitleLines {
+                visible: topBar.twoRows
+                x: 18
+                y: topBar.pad + reader.insetTop + 40
+                maxWidth: reader.width - 36
             }
-            IconButton {
-                diameter: topActions.button
-                iconName: "skip-forward"
-                iconColor: "white"
-                enabled: reader.hasNext
-                opacity: enabled ? 1 : 0.4
-                tip: qsTr("Next chapter") + reader.keyHint("reader.next")
-                onClicked: reader.load(reader.index + 1)
-            }
-            IconButton {
-                diameter: topActions.button
-                iconName: "list"
-                iconColor: "white"
-                tip: qsTr("Chapters")
-                onClicked: chapterPopup.open()
-            }
-            IconButton {
-                diameter: topActions.button
-                iconName: reader.mode === "strip" ? "move-vertical" : "layers"
-                iconColor: "white"
-                tip: (reader.mode === "strip" ? qsTr("Switch to pages") : qsTr("Switch to vertical strip")) + reader.keyHint("reader.mode")
-                onClicked: reader.setOpt("readerMode", reader.mode === "strip" ? "paged" : "strip")
-            }
-            // Wide windows: another comic or novel on the right half.
-            IconButton {
-                id: splitButton
-                diameter: topActions.button
-                visible: !!Router.shell && Router.shell.canSplit && Router.shell.splitItem !== reader
-                iconName: "panel-left"
-                iconColor: "white"
-                tip: qsTr("Read another beside this")
-                onClicked: splitPicker.start()
-            }
-            IconButton {
-                diameter: topActions.button
-                visible: topActions.canReact && !topActions.crowded
-                iconName: "heart"
-                iconColor: reactions.mineFor(reader.currentPanel) ? Theme.accent : "white"
-                tip: qsTr("React to this page")
-                onClicked: reactPopup.open()
-            }
-            IconButton {
-                diameter: topActions.button
-                visible: topActions.online && !topActions.crowded
-                iconName: "message-circle"
-                iconColor: "white"
-                tip: qsTr("Comments")
-                onClicked: comments.open()
-            }
-            IconButton {
-                diameter: topActions.button
-                iconName: "languages"
-                iconColor: reader.translating ? Theme.accent : "white"
-                tip: reader.translating ? (reader.narrowBar ? qsTr("Translate into %1").arg(reader.languageName(Translator.target)) : qsTr("Show the original"))
-                                        : qsTr("Translate the pages")
-                onClicked: {
-                    if (!reader.translating && !Translator.pagesReady) {
-                        Router.toast(Translator.hint, "info")
-                        return
+        }
+        GlassInk {
+            id: rightInk
+            x: parent.width - width
+            width: topActions.width + 36
+            height: parent.height
+            backdrop: glassPages.item
+            Row {
+                id: topActions
+                anchors.right: parent.right
+                anchors.rightMargin: 18
+                y: topBar.pad + reader.insetTop
+                // Phones: smaller buttons, no gaps, so all fit beside the close button.
+                readonly property int button: reader.width < 420 ? 32 : 34
+                spacing: reader.width < 420 ? 0 : 4
+                // What the row would hold; when that is wider than the room
+                // beside the close button, the occasional ones (reactions,
+                // comments, another device, full screen) go into a More menu.
+                readonly property bool online: !String(reader.series.sourceUrl || "").startsWith("file:")
+                readonly property bool canReact: reactions.available && online
+                readonly property bool canHandOff: Live.devices.length > 0 && !!reader.series.id && !App.settings.incognito
+                readonly property int spares: (canReact ? 1 : 0) + (online ? 1 : 0) + (canHandOff ? 1 : 0) + 1
+                readonly property int core: (Theme.glass ? 1 : 6) +(translateTo.visible ? 1 : 0) + (newWindow.visible ? 1 : 0) + (splitButton.visible ? 1 : 0)
+                readonly property real room: reader.width - 36 - 34 - 12
+                readonly property bool crowded: (core + spares + (Theme.touch ? 1 : 0)) * (button + spacing) > room
+                // Pages are on the progress bar at the left edge; chapters here.
+                // Computers: on in a window of its own (where it left off).
+                IconButton {
+                    id: newWindow
+                    diameter: topActions.button
+                    visible: Router.windows && !(Window.window && Window.window.isPageWindow === true)
+                    iconName: "columns-2"
+                    iconColor: "white"
+                    tip: qsTr("Open in a new window")
+                    onClicked: {
+                        reader.saveProgress(true)
+                        Router.openWindow("pages/ComicReader.qml", { series: reader.series, chapters: reader.chapters, index: reader.index })
+                        Router.leave(reader)
                     }
-                    // Phones have no room for the language button: this one
-                    // opens the languages, with "Show the original" first.
-                    if (reader.translating && reader.narrowBar) {
+                }
+                // Glass: these five are on the card at the bottom (as the draft).
+                IconButton {
+                    diameter: topActions.button
+                    visible: !Theme.glass
+                    iconName: "skip-back"
+                    iconColor: "white"
+                    enabled: reader.hasPrev
+                    opacity: enabled ? 1 : 0.4
+                    tip: qsTr("Previous chapter") + reader.keyHint("reader.prev")
+                    onClicked: reader.load(reader.index - 1)
+                }
+                IconButton {
+                    diameter: topActions.button
+                    visible: !Theme.glass
+                    iconName: "skip-forward"
+                    iconColor: "white"
+                    enabled: reader.hasNext
+                    opacity: enabled ? 1 : 0.4
+                    tip: qsTr("Next chapter") + reader.keyHint("reader.next")
+                    onClicked: reader.load(reader.index + 1)
+                }
+                IconButton {
+                    diameter: topActions.button
+                    visible: !Theme.glass
+                    iconName: "list"
+                    iconColor: "white"
+                    tip: qsTr("Chapters")
+                    onClicked: chapterPopup.open()
+                }
+                IconButton {
+                    diameter: topActions.button
+                    visible: !Theme.glass
+                    iconName: reader.mode === "strip" ? "move-vertical" : "layers"
+                    iconColor: "white"
+                    tip: (reader.mode === "strip" ? qsTr("Switch to pages") : qsTr("Switch to vertical strip")) + reader.keyHint("reader.mode")
+                    onClicked: reader.setOpt("readerMode", reader.mode === "strip" ? "paged" : "strip")
+                }
+                // Wide windows: another comic or novel on the right half.
+                IconButton {
+                    id: splitButton
+                    diameter: topActions.button
+                    visible: !!Router.shell && Router.shell.canSplit && Router.shell.splitItem !== reader
+                    iconName: "panel-left"
+                    iconColor: "white"
+                    tip: qsTr("Read another beside this")
+                    onClicked: splitPicker.start()
+                }
+                IconButton {
+                    diameter: topActions.button
+                    visible: topActions.canReact && !topActions.crowded
+                    iconName: "heart"
+                    iconColor: reactions.mineFor(reader.currentPanel) ? Theme.accent : "white"
+                    tip: qsTr("React to this page")
+                    onClicked: reactPopup.open()
+                }
+                IconButton {
+                    diameter: topActions.button
+                    visible: topActions.online && !topActions.crowded
+                    iconName: "message-circle"
+                    iconColor: "white"
+                    tip: qsTr("Comments")
+                    onClicked: comments.open()
+                }
+                IconButton {
+                    diameter: topActions.button
+                    iconName: "languages"
+                    iconColor: reader.translating ? Theme.accent : "white"
+                    tip: reader.translating ? (reader.narrowBar ? qsTr("Translate into %1").arg(reader.languageName(Translator.target)) : qsTr("Show the original"))
+                                            : qsTr("Translate the pages")
+                    onClicked: {
+                        if (!reader.translating && !Translator.pagesReady) {
+                            Router.toast(Translator.hint, "info")
+                            return
+                        }
+                        // Phones have no room for the language button: this one
+                        // opens the languages, with "Show the original" first.
+                        if (reader.translating && reader.narrowBar) {
+                            reader.showControls()
+                            translatePopup.open()
+                            return
+                        }
+                        reader.translating = !reader.translating
+                    }
+                }
+                IconButton {
+                    id: translateTo
+                    diameter: topActions.button
+                    visible: reader.translating && !reader.narrowBar
+                    iconName: "chevron-down"
+                    iconColor: "white"
+                    tip: qsTr("Translate into %1").arg(reader.languageName(Translator.target))
+                    onClicked: {
                         reader.showControls()
                         translatePopup.open()
-                        return
                     }
-                    reader.translating = !reader.translating
                 }
-            }
-            IconButton {
-                id: translateTo
-                diameter: topActions.button
-                visible: reader.translating && !reader.narrowBar
-                iconName: "chevron-down"
-                iconColor: "white"
-                tip: qsTr("Translate into %1").arg(reader.languageName(Translator.target))
-                onClicked: {
-                    reader.showControls()
-                    translatePopup.open()
+                ContinueOn {
+                    id: continueOn
+                    diameter: topActions.button
+                    visible: topActions.canHandOff && !topActions.crowded
+                    seriesId: reader.series.id || ""
+                    iconColor: "white"
+                    save: () => reader.saveProgress(true)
                 }
-            }
-            ContinueOn {
-                id: continueOn
-                diameter: topActions.button
-                visible: topActions.canHandOff && !topActions.crowded
-                seriesId: reader.series.id || ""
-                iconColor: "white"
-                save: () => reader.saveProgress(true)
-            }
-            IconButton {
-                diameter: topActions.button
-                iconName: "sliders-horizontal"
-                iconColor: "white"
-                tip: qsTr("Reader settings")
-                onClicked: settingsPopup.open()
-            }
-            IconButton {
-                diameter: topActions.button
-                visible: !topActions.crowded
-                iconName: fullScreen.fullScreen ? "minimize" : "maximize"
-                iconColor: "white"
-                tip: qsTr("Full screen") + reader.keyHint("reader.fullscreen")
-                onClicked: fullScreen.toggle()
-            }
-            // Narrow screens: the occasional buttons, as a menu.
-            IconButton {
-                id: moreActions
-                diameter: topActions.button
-                // Touch screens always have it: This page… is in it.
-                visible: topActions.crowded || Theme.touch
-                iconName: "ellipsis"
-                iconColor: "white"
-                tip: qsTr("More")
-                onClicked: {
-                    reader.showControls()
-                    const list = []
-                    const page = reader.pageInView()
-                    if (page) list.push({ text: qsTr("This page…"), icon: "image", run: () => reader.pageMenu(moreActions, moreActions.width, moreActions.height, page) })
-                    if (topActions.crowded) {
-                    if (topActions.canReact)
-                        list.push({ text: qsTr("React to this page"), icon: "heart", run: () => reactPopup.open() })
-                    if (topActions.online)
-                        list.push({ text: qsTr("Comments"), icon: "message-circle", run: () => comments.open() })
-                    if (topActions.canHandOff)
-                        for (const device of Live.devices)
-                            list.push({ text: qsTr("Continue on %1").arg(device.name), icon: device.platform === "android" ? "smartphone" : "monitor",
-                                        run: () => continueOn.send(device) })
-                    list.push({ text: fullScreen.fullScreen ? qsTr("Leave full screen") : qsTr("Full screen"),
-                                icon: fullScreen.fullScreen ? "minimize" : "maximize", run: () => fullScreen.toggle() })
+                IconButton {
+                    diameter: topActions.button
+                    visible: !Theme.glass
+                    iconName: "sliders-horizontal"
+                    iconColor: "white"
+                    tip: qsTr("Reader settings")
+                    onClicked: settingsPopup.open()
+                }
+                IconButton {
+                    diameter: topActions.button
+                    visible: !topActions.crowded
+                    iconName: fullScreen.fullScreen ? "minimize" : "maximize"
+                    iconColor: "white"
+                    tip: qsTr("Full screen") + reader.keyHint("reader.fullscreen")
+                    onClicked: fullScreen.toggle()
+                }
+                // Narrow screens: the occasional buttons, as a menu.
+                IconButton {
+                    id: moreActions
+                    diameter: topActions.button
+                    // Touch screens always have it: This page… is in it.
+                    visible: topActions.crowded || Theme.touch
+                    iconName: "ellipsis"
+                    iconColor: "white"
+                    tip: qsTr("More")
+                    onClicked: {
+                        reader.showControls()
+                        const list = []
+                        const page = reader.pageInView()
+                        if (page) list.push({ text: qsTr("This page…"), icon: "image", run: () => reader.pageMenu(moreActions, moreActions.width, moreActions.height, page) })
+                        if (topActions.crowded) {
+                        if (topActions.canReact)
+                            list.push({ text: qsTr("React to this page"), icon: "heart", run: () => reactPopup.open() })
+                        if (topActions.online)
+                            list.push({ text: qsTr("Comments"), icon: "message-circle", run: () => comments.open() })
+                        if (topActions.canHandOff)
+                            for (const device of Live.devices)
+                                list.push({ text: qsTr("Continue on %1").arg(device.name), icon: device.platform === "android" ? "smartphone" : "monitor",
+                                            run: () => continueOn.send(device) })
+                        list.push({ text: fullScreen.fullScreen ? qsTr("Leave full screen") : qsTr("Full screen"),
+                                    icon: fullScreen.fullScreen ? "minimize" : "maximize", run: () => fullScreen.toggle() })
+                        }
+                        moreMenu.openAt(moreActions, moreActions.width, moreActions.height, list)
                     }
-                    moreMenu.openAt(moreActions, moreActions.width, moreActions.height, list)
+                    ActionMenu { id: moreMenu }
                 }
-                ActionMenu { id: moreMenu }
             }
         }
     }

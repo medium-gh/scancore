@@ -106,12 +106,33 @@ SettingsPane {
     component LookPreview: Item {
         id: look
         property bool retro: false
+        property bool glass: false
         anchors.fill: parent
         Rectangle { anchors.fill: parent; color: look.retro ? "#101012" : Theme.surface2 }
+        // Glass: colour behind, a floating glass capsule over it.
+        Rectangle {
+            visible: look.glass
+            anchors.fill: parent
+            gradient: Gradient {
+                orientation: Gradient.Horizontal
+                GradientStop { position: 0; color: "#7a4cff" }
+                GradientStop { position: 0.55; color: "#ff6a8d" }
+                GradientStop { position: 1; color: "#ffb36b" }
+            }
+        }
+        Rectangle {
+            visible: look.glass
+            x: 10; width: parent.width - 20; height: 22; radius: 11
+            anchors.bottom: parent.bottom; anchors.bottomMargin: 10
+            color: "#38ffffff"
+            border.width: 1
+            border.color: "#a0ffffff"
+            Rectangle { x: 3; y: 3; width: (parent.width - 6) / 4; height: parent.height - 6; radius: height / 2; color: "#50ffffff" }
+        }
         // Standard: a sidebar and covers.
-        Rectangle { visible: !look.retro; width: 40; height: parent.height; color: Theme.surface3 }
+        Rectangle { visible: !look.retro && !look.glass; width: 40; height: parent.height; color: Theme.surface3 }
         Row {
-            visible: !look.retro
+            visible: !look.retro && !look.glass
             x: 52; y: 22; spacing: 5
             Repeater { model: 3; Rectangle { width: 18; height: 26; radius: 3; color: Theme.borderStrong } }
         }
@@ -145,16 +166,17 @@ SettingsPane {
             bottomPadding: 12
             spacing: 12
             Repeater {
-                model: [{ value: "standard", label: qsTr("Standard"), detail: qsTr("Pages and navigation") },
-                        { value: "retro", label: qsTr("Retro"), detail: qsTr("Tiles and panoramas") }]
+                model: [{ value: "standard", label: qsTr("Classic"), detail: qsTr("Pages and navigation") },
+                        { value: "retro", label: qsTr("Retro"), detail: qsTr("Tiles and panoramas") },
+                        { value: "glass", label: qsTr("Glass"), detail: qsTr("Liquid glass over your art") }]
                 ChoiceTile {
                     required property var modelData
                     width: pane.tileWidth
                     label: modelData.label
                     detail: modelData.detail
-                    selected: (Theme.retro ? "retro" : "standard") === modelData.value
+                    selected: (Theme.retro ? "retro" : Theme.glass ? "glass" : "standard") === modelData.value
                     onClicked: App.setSetting("uiMode", modelData.value)
-                    LookPreview { retro: modelData.value === "retro" }
+                    LookPreview { retro: modelData.value === "retro"; glass: modelData.value === "glass" }
                 }
             }
         }

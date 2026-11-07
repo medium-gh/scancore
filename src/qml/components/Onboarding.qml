@@ -860,12 +860,12 @@ Rectangle {
                     width: parent.width
                     spacing: 12
                     Repeater {
-                        model: [{ value: "standard", label: qsTr("Standard") }, { value: "retro", label: qsTr("Retro tiles") }]
+                        model: [{ value: "standard", label: qsTr("Classic") }, { value: "retro", label: qsTr("Retro tiles") }, { value: "glass", label: qsTr("Glass") }]
                         AbstractButton {
                             id: layoutChoice
                             required property var modelData
-                            readonly property bool on: (modelData.value === "retro") === Theme.retro
-                            width: (parent.width - 12) / 2
+                            readonly property bool on: (Theme.retro ? "retro" : Theme.glass ? "glass" : "standard") === modelData.value
+                            width: (parent.width - 24) / 3
                             height: picture.height + 28
                             focusPolicy: Qt.TabFocus
                             Accessible.name: modelData.label
@@ -884,6 +884,22 @@ Rectangle {
                                     border.width: layoutChoice.on ? 2 : 1
                                     border.color: layoutChoice.on ? (Theme.retro ? Theme.tile : Theme.accent) : Theme.border
                                     clip: true
+                                    // Glass: a cover's colours under a floating glass capsule.
+                                    WelcomeArt {
+                                        visible: layoutChoice.modelData.value === "glass"
+                                        anchors.fill: parent
+                                        seed: 4
+                                        source: coverSource.pick(4)
+                                    }
+                                    Rectangle {
+                                        visible: layoutChoice.modelData.value === "glass"
+                                        x: 8; width: parent.width - 16; height: root.wide ? 22 : 18; radius: height / 2
+                                        anchors.bottom: parent.bottom; anchors.bottomMargin: 8
+                                        color: "#38ffffff"
+                                        border.width: 1
+                                        border.color: "#b0ffffff"
+                                        Rectangle { x: 3; y: 3; width: (parent.width - 6) / 4; height: parent.height - 6; radius: height / 2; color: "#55ffffff" }
+                                    }
                                     Row {
                                         visible: layoutChoice.modelData.value === "standard"
                                         x: 10; y: 10
@@ -1269,7 +1285,7 @@ Rectangle {
                           value: root.importResult ? root.importSummary(root.importResult)
                                : root.from === "new" || !root.from ? qsTr("Starting fresh") : ({ mihon: "Mihon", tachiyomi: "Tachiyomi", komikku: "Komikku", aniyomi: "Aniyomi", lnreader: "LNReader" })[root.from] },
                         { step: 2, icon: "palette", label: qsTr("Look"),
-                          value: [Theme.retro ? qsTr("Retro tiles") : qsTr("Standard"),
+                          value: [Theme.retro ? qsTr("Retro tiles") : Theme.glass ? qsTr("Glass") : qsTr("Classic"),
                                   ({ system: qsTr("System"), light: qsTr("Light"), dark: qsTr("Dark"), black: qsTr("Black") })[App.settings.theme || "system"] || ""].filter(s => s).join(" · ") },
                         { step: 3, icon: "book-open", label: qsTr("Reader"),
                           value: [App.settings.readerMode === "paged" ? qsTr("Pages") : qsTr("Vertical strip"),

@@ -14,6 +14,9 @@ Rectangle {
     readonly property bool floating: style === "floating"
     readonly property bool rail: style === "rail"
     property bool collapsed: rail || App.settings.sidebarCollapsed === true
+    // Glass: the item under the pointer, and the one held down.
+    property string hoverKey: ""
+    property string pressedKey: ""
     signal navigate(string section)
     signal openPalette()
 
@@ -35,15 +38,52 @@ Rectangle {
 
     implicitWidth: collapsed ? 72 : 228
     width: implicitWidth
-    color: Theme.sidebar
+    color: Theme.glass ? "transparent" : Theme.sidebar
     radius: floating ? Theme.radiusXl : 0
-    border.width: floating ? 1 : 0
+    border.width: floating && !Theme.glass ? 1 : 0
     border.color: Theme.border
     Behavior on width { NumberAnimation { duration: Motion.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Motion.emphasized } }
 
+    // Glass mode: the panel is liquid glass. The selection is a droplet that
+    // flows from item to item (tall and thin while it travels, wobbling as it
+    // settles), a fainter one follows the pointer and melts away when it
+    // leaves, and a press squashes the droplet.
+    function itemY(key) {
+        if (key === "settings") return bottomColumn.y + settingsButton.y
+        for (let i = 0; i < repeater.count; ++i) {
+            const it = repeater.itemAt(i)
+            if (it && it.key === key) return navArea.y + it.y - navArea.contentY
+        }
+        return -1
+    }
+    readonly property bool hovering: hoverKey !== "" && hoverKey !== current
+    LiquidSpring { id: dropY; target: Math.max(0, sidebar.itemY(sidebar.current)) }
+    LiquidSpring { id: hoverY; stiffness: 300; damping: 19; target: sidebar.hovering ? Math.max(0, sidebar.itemY(sidebar.hoverKey)) : hoverY.target }
+    LiquidSpring { id: hoverSize; stiffness: 280; damping: 16; target: sidebar.hovering ? 1 : 0 }
+    LiquidSpring { id: press; stiffness: 520; damping: 15; target: sidebar.pressedKey !== "" ? 1 : 0 }
+    GlassSurface {
+        id: glassPanel
+        visible: Theme.glass
+        z: -1
+        anchors.fill: parent
+        readonly property real itemW: sidebar.width - 24
+        readonly property real stretch: Math.min(0.6, Math.abs(dropY.velocity) / 2400)
+        readonly property real dropH: 40 * (1 + stretch) * (1 - 0.1 * press.value)
+        readonly property real dropW: itemW / Math.sqrt(1 + stretch) * (1 + 0.05 * press.value)
+        readonly property real hoverW: itemW * hoverSize.value
+        readonly property real hoverH: 40 * (0.6 + 0.4 * hoverSize.value)
+        shapes: [
+            { x: 0, y: 0, w: width, h: height, r: Theme.radiusXl },
+            { x: (width - dropW) / 2, y: dropY.value + 20 - dropH / 2, w: dropW, h: dropH, r: Math.min(dropW, dropH) / 2,
+              lift: Math.min(1, stretch * 2 + press.value), inset: true },
+            { x: (width - hoverW) / 2, y: hoverY.value + 20 - hoverH / 2, w: hoverW, h: hoverH, r: Math.min(hoverW, hoverH) / 2,
+              lift: 0.3 * hoverSize.value, inset: true }
+        ]
+    }
+
     // The edge towards the content.
     Rectangle {
-        visible: !sidebar.floating
+        visible: !sidebar.floating && !Theme.glass
         x: sidebar.side === "right" ? 0 : parent.width - 1
         width: 1
         height: parent.height
@@ -93,10 +133,12 @@ Rectangle {
         hoverEnabled: true
         onClicked: sidebar.openPalette()
         background: Rectangle {
-            radius: Theme.radiusMd
-            color: searchButton.hovered ? Theme.surface3 : Theme.surface2
-            border.width: 1
+            radius: Theme.glass ? height / 2 : Theme.radiusMd
+            // Glass: a capsule of glass, like the search fields on the pages.
+            color: Theme.glass ? "transparent" : searchButton.hovered ? Theme.surface3 : Theme.surface2
+            border.width: Theme.glass ? 0 : 1
             border.color: Theme.border
+            GlassControl { hovered: searchButton.hovered; pressed: searchButton.pressed }
             Behavior on color { ColorAnimation { duration: Motion.fast } }
         }
         contentItem: Item {
@@ -105,7 +147,7 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 name: "search"
                 size: 16
-                color: Theme.textMuted
+                color: Theme.glass ? Theme.text : Theme.textMuted
                 Behavior on x { NumberAnimation { duration: Motion.slow; easing.type: Easing.OutCubic } }
             }
             Text {
@@ -114,7 +156,7 @@ Rectangle {
                 elide: Text.ElideRight
                 anchors.verticalCenter: parent.verticalCenter
                 text: qsTr("Search everything")
-                color: Theme.textFaint
+                color: Theme.glass ? Theme.textMuted : Theme.textFaint
                 font.family: Theme.fontSans
                 font.pixelSize: Theme.textSm
                 opacity: sidebar.collapsed ? 0 : 1
@@ -128,8 +170,11 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
                 width: kbd.implicitWidth + 10
                 height: 20
-                radius: 5
-                color: Theme.surface3
+                radius: Theme.glass ? 10 : 5
+                // Glass: a faint outline on the glass, not a dark chip.
+                color: Theme.glass ? "transparent" : Theme.surface3
+                border.width: Theme.glass ? 1 : 0
+                border.color: Theme.alpha(Theme.text, 0.3)
                 opacity: sidebar.collapsed ? 0 : 1
                 visible: opacity > 0 && kbd.text.length > 0
                 Text {
@@ -137,7 +182,7 @@ Rectangle {
                     anchors.centerIn: parent
                     // The first key for search, from Settings → Keyboard.
                     text: Keymap.labels("palette")[0] || ""
-                    color: Theme.textFaint
+                    color: Theme.glass ? Theme.textMuted : Theme.textFaint
                     font.family: Theme.fontSans
                     font.pixelSize: 11
                 }
@@ -184,7 +229,7 @@ Rectangle {
                 }
                 return null
             }
-            visible: target !== null
+            visible: target !== null && !Theme.glass
             onTargetChanged: Qt.callLater(navArea.reveal)
             x: 12
             width: parent.width - 24
@@ -215,10 +260,11 @@ Rectangle {
                     required property var modelData
                     readonly property string key: modelData.key
                     width: navColumn.width
-                    height: key === "divider" ? 22 : 40
+                    // Glass: one list, no rule between its groups (as the draft).
+                    height: key === "divider" ? (Theme.glass ? 10 : 22) : 40
 
                     Rectangle {
-                        visible: parent.key === "divider"
+                        visible: parent.key === "divider" && !Theme.glass
                         anchors.centerIn: parent
                         width: parent.width - 40
                         height: 1
@@ -233,9 +279,12 @@ Rectangle {
                         height: 40
                         hoverEnabled: true
                         onClicked: sidebar.navigate(modelData.key)
+                        // Glass: the hover and press droplets follow these.
+                        onHoveredChanged: if (hovered) sidebar.hoverKey = modelData.key; else if (sidebar.hoverKey === modelData.key) sidebar.hoverKey = ""
+                        onPressedChanged: sidebar.pressedKey = pressed ? modelData.key : ""
                         background: Rectangle {
                             radius: Theme.radiusMd
-                            color: navButton.hovered && sidebar.current !== modelData.key ? Theme.alpha(Theme.text, 0.05) : Theme.alpha(Theme.text, 0)
+                            color: navButton.hovered && sidebar.current !== modelData.key && !Theme.glass ? Theme.alpha(Theme.text, 0.05) : Theme.alpha(Theme.text, 0)
                             Behavior on color { ColorAnimation { duration: Motion.fast } }
                         }
                         contentItem: Item {
@@ -244,8 +293,9 @@ Rectangle {
                                 x: sidebar.collapsed ? (parent.width - width) / 2 : 12
                                 anchors.verticalCenter: parent.verticalCenter
                                 name: modelData.key === "notifications" && Notifications.unread > 0 ? "bell-dot" : (modelData.icon || "")
-                                size: 18
-                                color: sidebar.current === modelData.key ? Theme.text : Theme.textMuted
+                                size: Theme.glass ? 20 : 18
+                                // Glass: white on the glass, as the draft.
+                                color: sidebar.current === modelData.key || Theme.glass ? Theme.text : Theme.textMuted
                                 scale: navButton.pressed ? 0.88 : 1
                                 Behavior on x { NumberAnimation { duration: Motion.slow; easing.type: Easing.OutCubic } }
                                 Behavior on scale { NumberAnimation { duration: Motion.fast } }
@@ -254,10 +304,10 @@ Rectangle {
                                 x: 44
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: modelData.label || ""
-                                color: sidebar.current === modelData.key ? Theme.text : Theme.textMuted
+                                color: sidebar.current === modelData.key || Theme.glass ? Theme.text : Theme.textMuted
                                 font.family: Theme.fontSans
-                                font.pixelSize: Theme.textMd
-                                font.weight: sidebar.current === modelData.key ? Font.DemiBold : Font.Medium
+                                font.pixelSize: Theme.glass ? 15 : Theme.textMd
+                                font.weight: sidebar.current === modelData.key ? (Theme.glass ? Font.Bold : Font.DemiBold) : Font.Medium
                                 opacity: sidebar.collapsed ? 0 : 1
                                 visible: opacity > 0
                                 Behavior on opacity { NumberAnimation { duration: Motion.fast } }
@@ -309,7 +359,7 @@ Rectangle {
             onClicked: sidebar.navigate("settings")
             background: Rectangle {
                 radius: Theme.radiusMd
-                color: sidebar.current === "settings" ? Theme.alpha(Theme.text, 0.08)
+                color: Theme.glass ? "transparent" : sidebar.current === "settings" ? Theme.alpha(Theme.text, 0.08)
                      : settingsButton.hovered ? Theme.alpha(Theme.text, 0.04) : "transparent"
             }
             contentItem: Item {
@@ -357,14 +407,14 @@ Rectangle {
                     name: "panel-left"
                     size: 17
                     mirror: sidebar.side === "right"
-                    color: Theme.textFaint
+                    color: Theme.glass ? Theme.textMuted : Theme.textFaint
                     Behavior on x { NumberAnimation { duration: Motion.slow; easing.type: Easing.OutCubic } }
                 }
                 Text {
                     x: 44
                     anchors.verticalCenter: parent.verticalCenter
                     text: qsTr("Collapse")
-                    color: Theme.textFaint
+                    color: Theme.glass ? Theme.textMuted : Theme.textFaint
                     font.family: Theme.fontSans
                     font.pixelSize: Theme.textSm
                     opacity: sidebar.collapsed ? 0 : 1

@@ -26,6 +26,7 @@ Item {
         visible: header.showBack && !Theme.retro
         x: Theme.gutter - 8
         y: 26
+        glassOrb: true
         iconName: "arrow-left"
         tip: qsTr("Back")
         onClicked: Router.back()
@@ -73,6 +74,16 @@ Item {
         id: trailingRow
         x: header.stacked ? Theme.gutter : parent.width - width - Theme.gutter
         y: header.stacked ? column.y + column.height + 14 : 30
-        spacing: 8
+        spacing: Theme.glass ? 10 : 8
+        // Glass: icon buttons here are glass orbs as tall as the buttons
+        // beside them (the drafts' header and filter buttons).
+        onChildrenChanged: {
+            for (const child of children) {
+                if (child.glassOrb === undefined || child.headerOrb) continue
+                child.headerOrb = true
+                child.glassOrb = true
+                if (child.diameter === 34) child.diameter = Qt.binding(() => Theme.glass ? 38 : 34)
+            }
+        }
     }
 }

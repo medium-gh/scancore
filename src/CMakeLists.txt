@@ -126,7 +126,7 @@ endif()
 if(NOT SCANCORE_WITH_SYSTEM_WEBVIEW)
     list(REMOVE_ITEM SCANCORE_QML qml/components/WebPlayerSystem.qml)
 endif()
-set_source_files_properties(qml/theme/Theme.qml qml/theme/Motion.qml qml/retro/Retro.qml qml/Router.qml qml/Keymap.qml qml/PageLayout.qml qml/VideoPrefs.qml qml/PlayerPage.qml qml/MusicQueue.qml
+set_source_files_properties(qml/theme/Theme.qml qml/theme/Motion.qml qml/glass/GlassScene.qml qml/retro/Retro.qml qml/Router.qml qml/Keymap.qml qml/PageLayout.qml qml/VideoPrefs.qml qml/PlayerPage.qml qml/MusicQueue.qml
     PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 
 qt_add_qml_module(scancore
@@ -231,7 +231,9 @@ qt_add_resources(scancore assets
         ${PROJECT_SOURCE_DIR}/resources/shaders/cover.frag.qsb
         ${PROJECT_SOURCE_DIR}/resources/shaders/title.frag.qsb
         ${PROJECT_SOURCE_DIR}/resources/shaders/panel.vert.qsb
-        ${PROJECT_SOURCE_DIR}/resources/shaders/panel.frag.qsb)
+        ${PROJECT_SOURCE_DIR}/resources/shaders/panel.frag.qsb
+        ${PROJECT_SOURCE_DIR}/resources/shaders/glass.frag.qsb
+        ${PROJECT_SOURCE_DIR}/resources/shaders/ink.frag.qsb)
 foreach(icon ${SCANCORE_ICONS})
     list(APPEND SCANCORE_ICON_PATHS ${PROJECT_SOURCE_DIR}/${icon})
 endforeach()

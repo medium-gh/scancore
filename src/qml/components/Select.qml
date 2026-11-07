@@ -171,6 +171,8 @@ ComboBox {
         }
         background: SurfacePanel {
             radius: Theme.radiusMd
+            // Glass: a list pours down out of its field, a sheet up from the edge.
+            origin: control.sheet ? Qt.point(width / 2, height) : Qt.point(width / 2, 0)
             topLeftRadius: control.sheet ? Theme.radiusXl : Theme.radiusMd
             topRightRadius: control.sheet ? Theme.radiusXl : Theme.radiusMd
             bottomLeftRadius: control.sheet ? 0 : Theme.radiusMd

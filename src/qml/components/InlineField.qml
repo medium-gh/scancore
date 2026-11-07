@@ -16,8 +16,10 @@ TextField {
     verticalAlignment: TextInput.AlignVCenter
     background: Rectangle {
         radius: Theme.pill(height)
-        color: parent.activeFocus ? Theme.surface : Theme.surface2
-        border.width: 1
+        // Glass: a field of glass (its edge only while typing in it).
+        color: Theme.glass ? "transparent" : parent.activeFocus ? Theme.surface : Theme.surface2
+        border.width: Theme.glass && !parent.activeFocus ? 0 : 1
+        GlassCard { radius: parent.radius; tint: 0.3 }
         border.color: parent.activeFocus ? Theme.alpha(Theme.accent, 0.55) : Theme.border
     }
 }

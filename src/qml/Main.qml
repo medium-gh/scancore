@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls.Basic
+import QtQuick.Effects
 import QtQuick.Window
 import Scancore
 
@@ -44,7 +45,7 @@ ApplicationWindow {
 
     // Settings → Interface: how navigation sits on wide windows. Phones
     // always use the bottom tabs; the Retro mode has its app bar everywhere.
-    readonly property string navStyle: Theme.retro ? "retro" : Theme.compact ? "tabs"
+    readonly property string navStyle: Theme.retro ? "retro" : Theme.compact ? "tabs" : Theme.glass ? "floating"
         : ["sidebar", "floating", "rail", "dock"].indexOf(App.settings.navStyle) >= 0 ? App.settings.navStyle : "sidebar"
     readonly property string navSide: navStyle === "dock" ? (App.settings.dockSide === "top" ? "top" : "bottom")
         : App.settings.navSide === "right" ? "right" : "left"
@@ -416,7 +417,7 @@ ApplicationWindow {
 
         Shadow {
             target: sidebar
-            visible: sidebar.visible && sidebar.floating
+            visible: sidebar.visible && sidebar.floating && !Theme.glass
             lift: 0.5
         }
         Sidebar {
@@ -433,56 +434,102 @@ ApplicationWindow {
             onOpenPalette: commandPalette.open()
         }
 
+        // Glass: the stage below, well blurred, for menus, sheets and dialogs
+        // (rendered only while one is open).
+        MultiEffect {
+            id: glassFrost
+            anchors.fill: parent
+            visible: false
+            source: Theme.glass && GlassScene.frostUsers > 0 ? glassStage : null
+            layer.enabled: Theme.glass && GlassScene.frostUsers > 0
+            layer.textureSize: Qt.size(Math.ceil(width * Screen.devicePixelRatio / 2), Math.ceil(height * Screen.devicePixelRatio / 2))
+            autoPaddingEnabled: false
+            blurEnabled: true
+            blur: 1
+            blurMax: 48
+            blurMultiplier: 0.8
+            Component.onCompleted: GlassScene.frosted = glassFrost
+        }
+
+        // The pages over their background. In the Glass mode this stage is
+        // the backdrop every piece of glass shows (a layer), over a
+        // wallpaper: the art of what was read last, softened.
         Item {
-            id: content
-            anchors.left: window.sidebarShown && window.navSide === "left" ? sidebar.right : parent.left
-            anchors.right: window.sidebarShown && window.navSide === "right" ? sidebar.left : parent.right
-            anchors.top: dock.visible && window.navSide === "top" ? dock.bottom : parent.top
-            anchors.bottom: retroBar.visible ? retroBar.top : tabBar.visible ? tabBar.top : dock.visible && window.navSide === "bottom" ? dock.top : parent.bottom
-            anchors.topMargin: dock.visible && window.navSide === "top" ? 6 : 0
-            anchors.bottomMargin: (dock.visible && window.navSide === "bottom" ? 6 : 0) + readAloudBar.height
-            clip: true
+            id: glassStage
+            anchors.fill: parent
+            // Under the bars (the sidebar comes earlier in this scope).
+            z: -1
+            layer.enabled: Theme.glass
+            layer.textureSize: Qt.size(Math.ceil(width * Screen.devicePixelRatio), Math.ceil(height * Screen.devicePixelRatio))
+            Component.onCompleted: GlassScene.backdrop = glassStage
+            Rectangle { anchors.fill: parent; visible: Theme.glass; color: Theme.base }
+            GlassWallpaper {
+                id: glassWall
+                anchors.fill: parent
+                visible: Theme.glass
+                // Each section shows what was last opened of its kind.
+                section: shell.section
+                // Glass inside the pages shows this (it cannot show the stage it is in).
+                layer.enabled: Theme.glass
+                Component.onCompleted: GlassScene.wallpaper = glassWall
+            }
 
-            Repeater {
-                id: sectionRepeater
-                model: ["home", "comics", "novels", "anime", "music", "library", "history", "activity", "latest", "downloads", "settings"]
-                delegate: Loader {
-                    id: sectionLoader
-                    required property string modelData
-                    readonly property string key: modelData
-                    readonly property bool current: shell.section === key
-                    anchors.fill: parent
-                    active: shell.visited[key] === true
-                    asynchronous: shell.settled
-                    visible: opacity > 0.001
-                    opacity: current ? 1 : 0
-                    z: current ? 1 : 0
-                    transform: Translate { y: sectionLoader.current ? 0 : 14; Behavior on y { NumberAnimation { duration: Motion.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Motion.decelerate } } }
-                    Behavior on opacity { NumberAnimation { duration: sectionLoader.current ? Motion.slow : Motion.fast; easing.type: Easing.OutCubic } }
+            Item {
+                id: content
+                // Plain geometry, not anchors: the bars sit outside this stage.
+                // Glass on phones: the pages run on under the floating bar.
+                readonly property real leftEdge: window.sidebarShown && window.navSide === "left" ? sidebar.x + sidebar.width : 0
+                readonly property real rightEdge: window.sidebarShown && window.navSide === "right" ? sidebar.x : glassStage.width
+                readonly property real topEdge: dock.visible && window.navSide === "top" ? dock.y + dock.height + 6 : 0
+                readonly property real bottomEdge: (retroBar.visible ? retroBar.y : tabBar.visible ? (Theme.glass ? glassStage.height : tabBar.y)
+                    : dock.visible && window.navSide === "bottom" ? dock.y - 6 : glassStage.height) - readAloudBar.height
+                x: leftEdge
+                y: topEdge
+                width: Math.max(0, rightEdge - leftEdge)
+                height: Math.max(0, bottomEdge - topEdge)
+                clip: true
 
-                    // Retro: Home is the hub.
-                    sourceComponent: sectionLoader.key === "home" && Theme.retro ? retroHome : sectionStack
-                    Component {
-                        id: retroHome
-                        PageStack { initial: "retro/RetroHub.qml" }
-                    }
-                    Component {
-                        id: sectionStack
-                        PageStack {
-                            initial: {
-                                switch (sectionLoader.key) {
-                                case "home": return "pages/HomePage.qml"
-                                case "comics": return "pages/ComicsPage.qml"
-                                case "novels": return "pages/NovelsPage.qml"
-                                case "anime": return "pages/AnimePage.qml"
-                                // Retro: a hub like Windows Phone's music one.
-                                case "music": return Theme.retro ? "retro/RetroMusic.qml" : "pages/MusicPage.qml"
-                                case "library": return "pages/LibraryPage.qml"
-                                case "history": return "pages/HistoryPage.qml"
-                                case "activity": return "pages/ActivityPage.qml"
-                                case "latest": return "pages/LatestPage.qml"
-                                case "downloads": return "pages/DownloadsPage.qml"
-                                default: return "pages/SettingsPage.qml"
+                Repeater {
+                    id: sectionRepeater
+                    model: ["home", "comics", "novels", "anime", "music", "library", "history", "activity", "latest", "downloads", "settings"]
+                    delegate: Loader {
+                        id: sectionLoader
+                        required property string modelData
+                        readonly property string key: modelData
+                        readonly property bool current: shell.section === key
+                        anchors.fill: parent
+                        active: shell.visited[key] === true
+                        asynchronous: shell.settled
+                        visible: opacity > 0.001
+                        opacity: current ? 1 : 0
+                        z: current ? 1 : 0
+                        transform: Translate { y: sectionLoader.current ? 0 : 14; Behavior on y { NumberAnimation { duration: Motion.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Motion.decelerate } } }
+                        Behavior on opacity { NumberAnimation { duration: sectionLoader.current ? Motion.slow : Motion.fast; easing.type: Easing.OutCubic } }
+
+                        // Retro: Home is the hub.
+                        sourceComponent: sectionLoader.key === "home" && Theme.retro ? retroHome : sectionStack
+                        Component {
+                            id: retroHome
+                            PageStack { initial: "retro/RetroHub.qml" }
+                        }
+                        Component {
+                            id: sectionStack
+                            PageStack {
+                                initial: {
+                                    switch (sectionLoader.key) {
+                                    case "home": return "pages/HomePage.qml"
+                                    case "comics": return "pages/ComicsPage.qml"
+                                    case "novels": return "pages/NovelsPage.qml"
+                                    case "anime": return "pages/AnimePage.qml"
+                                    // Retro: a hub like Windows Phone's music one.
+                                    case "music": return Theme.retro ? "retro/RetroMusic.qml" : "pages/MusicPage.qml"
+                                    case "library": return "pages/LibraryPage.qml"
+                                    case "history": return "pages/HistoryPage.qml"
+                                    case "activity": return "pages/ActivityPage.qml"
+                                    case "latest": return "pages/LatestPage.qml"
+                                    case "downloads": return "pages/DownloadsPage.qml"
+                                    default: return "pages/SettingsPage.qml"
+                                    }
                                 }
                             }
                         }
@@ -525,7 +572,7 @@ ApplicationWindow {
         // into shellView too, and anchors to them could be resolved first.
         x: window.sidebarShown && window.navSide === "left" ? sidebar.x + sidebar.width : 0
         width: (parent ? parent.width : 0) - (window.sidebarShown ? sidebar.width + window.navInset : 0)
-        y: (parent ? parent.height : 0) - height - (retroBar.visible ? retroBar.height : tabBar.visible ? tabBar.height
+        y: (parent ? parent.height : 0) - height - (retroBar.visible ? retroBar.height : tabBar.visible ? tabBar.height : glassTabBar.visible ? GlassScene.clearance
             : dock.visible && window.navSide === "bottom" ? dock.height + 20 : 0)
     }
 
@@ -548,11 +595,27 @@ ApplicationWindow {
     TabBar {
         id: tabBar
         parent: shellView
-        visible: Theme.compact && !Theme.retro
+        visible: Theme.compact && !Theme.retro && !Theme.glass
         height: visible ? 62 : 0
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
+        current: shell.section
+        onNavigate: (name) => shell.goSection(name)
+        onOpenPalette: commandPalette.open()
+    }
+
+    // Glass on phones: the liquid tab bar, floating over the page (which
+    // runs on under it, GlassScene.clearance).
+    GlassTabBar {
+        id: glassTabBar
+        parent: shellView
+        visible: Theme.compact && !Theme.retro && Theme.glass
+        z: 3
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        height: 200
         current: shell.section
         onNavigate: (name) => shell.goSection(name)
         onOpenPalette: commandPalette.open()
@@ -648,7 +711,7 @@ ApplicationWindow {
         id: miniPlayer
         parent: shellView
         z: 4
-        visible: MusicQueue.active && immersive.depth === 0
+        visible: MusicQueue.active && immersive.depth === 0 && !glassTabBar.visible
         width: Math.min(parent.width - 24, 560)
         anchors.horizontalCenter: parent.horizontalCenter
         y: parent.height - height - 10 - (retroBar.visible ? retroBar.barHeight : tabBar.visible ? tabBar.height
