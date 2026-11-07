@@ -471,7 +471,8 @@ ApplicationWindow {
                                 case "comics": return "pages/ComicsPage.qml"
                                 case "novels": return "pages/NovelsPage.qml"
                                 case "anime": return "pages/AnimePage.qml"
-                                case "music": return "pages/MusicPage.qml"
+                                // Retro: a hub like Windows Phone's music one.
+                                case "music": return Theme.retro ? "retro/RetroMusic.qml" : "pages/MusicPage.qml"
                                 case "library": return "pages/LibraryPage.qml"
                                 case "history": return "pages/HistoryPage.qml"
                                 case "activity": return "pages/ActivityPage.qml"
