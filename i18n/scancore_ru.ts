@@ -13889,4 +13889,134 @@
             <translation>Убрать</translation>
         </message>
     </context>
+    <context>
+        <name>RetroMusic</name>
+        <message>
+            <source>Add your music folders on the full music page to see your artists, albums and songs here.</source>
+            <translation>Добавьте папки с музыкой на полной странице музыки, чтобы видеть здесь своих исполнителей, альбомы и песни.</translation>
+        </message>
+        <message>
+            <source>Loading…</source>
+            <translation>Загрузка…</translation>
+        </message>
+        <message>
+            <source>Nothing new this season yet.</source>
+            <translation>В этом сезоне пока ничего нового.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>альбомы</translation>
+        </message>
+        <message>
+            <source>all music</source>
+            <translation>вся музыка</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>исполнители</translation>
+        </message>
+        <message>
+            <source>collection</source>
+            <translation>коллекция</translation>
+        </message>
+        <message>
+            <source>music</source>
+            <translation>музыка</translation>
+        </message>
+        <message>
+            <source>new</source>
+            <translation>новое</translation>
+        </message>
+        <message>
+            <source>nothing playing</source>
+            <translation>ничего не играет</translation>
+        </message>
+        <message>
+            <source>now playing</source>
+            <translation>сейчас играет</translation>
+        </message>
+        <message>
+            <source>open now playing</source>
+            <translation>открыть плеер</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>опенинги и эндинги</translation>
+        </message>
+        <message>
+            <source>radio</source>
+            <translation>радио</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>сохранённые</translation>
+        </message>
+        <message>
+            <source>shuffle my music</source>
+            <translation>перемешать мою музыку</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>песни</translation>
+        </message>
+    </context>
+    <context>
+        <name>RetroMusicList</name>
+        <message>
+            <source>%1 songs</source>
+            <translation>Песен: %1</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 песня</translation>
+        </message>
+        <message>
+            <source>Add your music folders on the full music page to see your music here.</source>
+            <translation>Добавьте папки с музыкой на полной странице музыки, чтобы видеть здесь свою музыку.</translation>
+        </message>
+        <message>
+            <source>Nothing this season yet.</source>
+            <translation>В этом сезоне пока ничего.</translation>
+        </message>
+        <message>
+            <source>Shuffle</source>
+            <translation>Перемешать</translation>
+        </message>
+        <message>
+            <source>Songs you save show here.</source>
+            <translation>Сохранённые песни появятся здесь.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>альбомы</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>исполнители</translation>
+        </message>
+        <message>
+            <source>endings</source>
+            <translation>эндинги</translation>
+        </message>
+        <message>
+            <source>inserts</source>
+            <translation>вставки</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>опенинги и эндинги</translation>
+        </message>
+        <message>
+            <source>openings</source>
+            <translation>опенинги</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>сохранённые</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>песни</translation>
+        </message>
+    </context>
 </TS>

@@ -13881,4 +13881,134 @@
             <translation>हटाएँ</translation>
         </message>
     </context>
+    <context>
+        <name>RetroMusic</name>
+        <message>
+            <source>Add your music folders on the full music page to see your artists, albums and songs here.</source>
+            <translation>यहाँ अपने कलाकार, एल्बम और गाने देखने के लिए पूरे संगीत पेज पर अपने संगीत फ़ोल्डर जोड़ें।</translation>
+        </message>
+        <message>
+            <source>Loading…</source>
+            <translation>लोड हो रहा है…</translation>
+        </message>
+        <message>
+            <source>Nothing new this season yet.</source>
+            <translation>इस सीज़न में अभी कुछ नया नहीं है।</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>एल्बम</translation>
+        </message>
+        <message>
+            <source>all music</source>
+            <translation>सारा संगीत</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>कलाकार</translation>
+        </message>
+        <message>
+            <source>collection</source>
+            <translation>संग्रह</translation>
+        </message>
+        <message>
+            <source>music</source>
+            <translation>संगीत</translation>
+        </message>
+        <message>
+            <source>new</source>
+            <translation>नया</translation>
+        </message>
+        <message>
+            <source>nothing playing</source>
+            <translation>कुछ नहीं चल रहा</translation>
+        </message>
+        <message>
+            <source>now playing</source>
+            <translation>अभी चल रहा है</translation>
+        </message>
+        <message>
+            <source>open now playing</source>
+            <translation>अभी चल रहा खोलें</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>ओपनिंग और एंडिंग</translation>
+        </message>
+        <message>
+            <source>radio</source>
+            <translation>रेडियो</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>सहेजे गए</translation>
+        </message>
+        <message>
+            <source>shuffle my music</source>
+            <translation>मेरा संगीत शफ़ल करें</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>गाने</translation>
+        </message>
+    </context>
+    <context>
+        <name>RetroMusicList</name>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 गाने</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 गाना</translation>
+        </message>
+        <message>
+            <source>Add your music folders on the full music page to see your music here.</source>
+            <translation>यहाँ अपना संगीत देखने के लिए पूरे संगीत पेज पर अपने संगीत फ़ोल्डर जोड़ें।</translation>
+        </message>
+        <message>
+            <source>Nothing this season yet.</source>
+            <translation>इस सीज़न में अभी कुछ नहीं।</translation>
+        </message>
+        <message>
+            <source>Shuffle</source>
+            <translation>शफ़ल</translation>
+        </message>
+        <message>
+            <source>Songs you save show here.</source>
+            <translation>जो गाने आप सहेजेंगे, वे यहाँ दिखेंगे।</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>एल्बम</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>कलाकार</translation>
+        </message>
+        <message>
+            <source>endings</source>
+            <translation>एंडिंग</translation>
+        </message>
+        <message>
+            <source>inserts</source>
+            <translation>इंसर्ट</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>ओपनिंग और एंडिंग</translation>
+        </message>
+        <message>
+            <source>openings</source>
+            <translation>ओपनिंग</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>सहेजे गए</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>गाने</translation>
+        </message>
+    </context>
 </TS>

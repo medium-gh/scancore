@@ -13889,4 +13889,134 @@
             <translation>Xoá</translation>
         </message>
     </context>
+    <context>
+        <name>RetroMusic</name>
+        <message>
+            <source>Add your music folders on the full music page to see your artists, albums and songs here.</source>
+            <translation>Thêm thư mục nhạc của bạn ở trang nhạc đầy đủ để xem nghệ sĩ, album và bài hát của bạn tại đây.</translation>
+        </message>
+        <message>
+            <source>Loading…</source>
+            <translation>Đang tải…</translation>
+        </message>
+        <message>
+            <source>Nothing new this season yet.</source>
+            <translation>Mùa này chưa có gì mới.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>album</translation>
+        </message>
+        <message>
+            <source>all music</source>
+            <translation>tất cả nhạc</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>nghệ sĩ</translation>
+        </message>
+        <message>
+            <source>collection</source>
+            <translation>bộ sưu tập</translation>
+        </message>
+        <message>
+            <source>music</source>
+            <translation>nhạc</translation>
+        </message>
+        <message>
+            <source>new</source>
+            <translation>mới</translation>
+        </message>
+        <message>
+            <source>nothing playing</source>
+            <translation>không phát gì</translation>
+        </message>
+        <message>
+            <source>now playing</source>
+            <translation>đang phát</translation>
+        </message>
+        <message>
+            <source>open now playing</source>
+            <translation>mở đang phát</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>opening và ending</translation>
+        </message>
+        <message>
+            <source>radio</source>
+            <translation>radio</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>đã lưu</translation>
+        </message>
+        <message>
+            <source>shuffle my music</source>
+            <translation>phát ngẫu nhiên nhạc của tôi</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>bài hát</translation>
+        </message>
+    </context>
+    <context>
+        <name>RetroMusicList</name>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 bài hát</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 bài hát</translation>
+        </message>
+        <message>
+            <source>Add your music folders on the full music page to see your music here.</source>
+            <translation>Thêm thư mục nhạc của bạn ở trang nhạc đầy đủ để xem nhạc của bạn tại đây.</translation>
+        </message>
+        <message>
+            <source>Nothing this season yet.</source>
+            <translation>Mùa này chưa có gì.</translation>
+        </message>
+        <message>
+            <source>Shuffle</source>
+            <translation>Ngẫu nhiên</translation>
+        </message>
+        <message>
+            <source>Songs you save show here.</source>
+            <translation>Bài hát bạn lưu sẽ hiện ở đây.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>album</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>nghệ sĩ</translation>
+        </message>
+        <message>
+            <source>endings</source>
+            <translation>ending</translation>
+        </message>
+        <message>
+            <source>inserts</source>
+            <translation>nhạc chèn</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>opening và ending</translation>
+        </message>
+        <message>
+            <source>openings</source>
+            <translation>opening</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>đã lưu</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>bài hát</translation>
+        </message>
+    </context>
 </TS>

@@ -13889,4 +13889,134 @@
             <translation>削除</translation>
         </message>
     </context>
+    <context>
+        <name>RetroMusic</name>
+        <message>
+            <source>Add your music folders on the full music page to see your artists, albums and songs here.</source>
+            <translation>音楽ページ全体で音楽フォルダーを追加すると、ここにアーティスト、アルバム、曲が表示されます。</translation>
+        </message>
+        <message>
+            <source>Loading…</source>
+            <translation>読み込み中…</translation>
+        </message>
+        <message>
+            <source>Nothing new this season yet.</source>
+            <translation>今シーズンの新着はまだありません。</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>アルバム</translation>
+        </message>
+        <message>
+            <source>all music</source>
+            <translation>すべての音楽</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>アーティスト</translation>
+        </message>
+        <message>
+            <source>collection</source>
+            <translation>コレクション</translation>
+        </message>
+        <message>
+            <source>music</source>
+            <translation>ミュージック</translation>
+        </message>
+        <message>
+            <source>new</source>
+            <translation>新着</translation>
+        </message>
+        <message>
+            <source>nothing playing</source>
+            <translation>再生していません</translation>
+        </message>
+        <message>
+            <source>now playing</source>
+            <translation>再生中</translation>
+        </message>
+        <message>
+            <source>open now playing</source>
+            <translation>再生中を開く</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>OP・ED</translation>
+        </message>
+        <message>
+            <source>radio</source>
+            <translation>ラジオ</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>保存済み</translation>
+        </message>
+        <message>
+            <source>shuffle my music</source>
+            <translation>シャッフル再生</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>曲</translation>
+        </message>
+    </context>
+    <context>
+        <name>RetroMusicList</name>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 曲</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 曲</translation>
+        </message>
+        <message>
+            <source>Add your music folders on the full music page to see your music here.</source>
+            <translation>音楽ページ全体で音楽フォルダーを追加すると、ここに音楽が表示されます。</translation>
+        </message>
+        <message>
+            <source>Nothing this season yet.</source>
+            <translation>今シーズンはまだありません。</translation>
+        </message>
+        <message>
+            <source>Shuffle</source>
+            <translation>シャッフル</translation>
+        </message>
+        <message>
+            <source>Songs you save show here.</source>
+            <translation>保存した曲がここに表示されます。</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>アルバム</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>アーティスト</translation>
+        </message>
+        <message>
+            <source>endings</source>
+            <translation>ED</translation>
+        </message>
+        <message>
+            <source>inserts</source>
+            <translation>挿入歌</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>OP・ED</translation>
+        </message>
+        <message>
+            <source>openings</source>
+            <translation>OP</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>保存済み</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>曲</translation>
+        </message>
+    </context>
 </TS>

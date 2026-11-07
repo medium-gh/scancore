@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.16.24" date="2026-11-07">
+      <description>
+        <p>Music in the Retro look is a hub of its own, like Windows Phone's music hub.</p>
+      </description>
+    </release>
     <release version="2.16.23" date="2026-11-06">
       <description>
         <p>New chapters can be cleared without reading them, and sites' own search filters are on the Comics page.</p>

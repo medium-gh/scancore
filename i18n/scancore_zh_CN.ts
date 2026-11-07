@@ -13889,4 +13889,134 @@
             <translation>移除</translation>
         </message>
     </context>
+    <context>
+        <name>RetroMusic</name>
+        <message>
+            <source>Add your music folders on the full music page to see your artists, albums and songs here.</source>
+            <translation>在完整的音乐页面添加你的音乐文件夹，即可在这里看到你的艺人、专辑和歌曲。</translation>
+        </message>
+        <message>
+            <source>Loading…</source>
+            <translation>正在加载…</translation>
+        </message>
+        <message>
+            <source>Nothing new this season yet.</source>
+            <translation>本季暂时还没有新歌。</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>专辑</translation>
+        </message>
+        <message>
+            <source>all music</source>
+            <translation>全部音乐</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>艺人</translation>
+        </message>
+        <message>
+            <source>collection</source>
+            <translation>音乐库</translation>
+        </message>
+        <message>
+            <source>music</source>
+            <translation>音乐</translation>
+        </message>
+        <message>
+            <source>new</source>
+            <translation>新歌</translation>
+        </message>
+        <message>
+            <source>nothing playing</source>
+            <translation>未在播放</translation>
+        </message>
+        <message>
+            <source>now playing</source>
+            <translation>正在播放</translation>
+        </message>
+        <message>
+            <source>open now playing</source>
+            <translation>打开正在播放</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>片头曲和片尾曲</translation>
+        </message>
+        <message>
+            <source>radio</source>
+            <translation>电台</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>已保存</translation>
+        </message>
+        <message>
+            <source>shuffle my music</source>
+            <translation>随机播放我的音乐</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>歌曲</translation>
+        </message>
+    </context>
+    <context>
+        <name>RetroMusicList</name>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 首歌曲</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 首歌曲</translation>
+        </message>
+        <message>
+            <source>Add your music folders on the full music page to see your music here.</source>
+            <translation>在完整的音乐页面添加你的音乐文件夹，即可在这里看到你的音乐。</translation>
+        </message>
+        <message>
+            <source>Nothing this season yet.</source>
+            <translation>本季暂时还没有。</translation>
+        </message>
+        <message>
+            <source>Shuffle</source>
+            <translation>随机播放</translation>
+        </message>
+        <message>
+            <source>Songs you save show here.</source>
+            <translation>你保存的歌曲会显示在这里。</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>专辑</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>艺人</translation>
+        </message>
+        <message>
+            <source>endings</source>
+            <translation>片尾曲</translation>
+        </message>
+        <message>
+            <source>inserts</source>
+            <translation>插曲</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>片头曲和片尾曲</translation>
+        </message>
+        <message>
+            <source>openings</source>
+            <translation>片头曲</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>已保存</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>歌曲</translation>
+        </message>
+    </context>
 </TS>

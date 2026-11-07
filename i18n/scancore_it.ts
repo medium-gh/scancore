@@ -13889,4 +13889,134 @@
             <translation>Rimuovi</translation>
         </message>
     </context>
+    <context>
+        <name>RetroMusic</name>
+        <message>
+            <source>Add your music folders on the full music page to see your artists, albums and songs here.</source>
+            <translation>Aggiungi le tue cartelle musicali nella pagina musica completa per vedere qui artisti, album e brani.</translation>
+        </message>
+        <message>
+            <source>Loading…</source>
+            <translation>Caricamento…</translation>
+        </message>
+        <message>
+            <source>Nothing new this season yet.</source>
+            <translation>Ancora niente di nuovo questa stagione.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>album</translation>
+        </message>
+        <message>
+            <source>all music</source>
+            <translation>tutta la musica</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>artisti</translation>
+        </message>
+        <message>
+            <source>collection</source>
+            <translation>raccolta</translation>
+        </message>
+        <message>
+            <source>music</source>
+            <translation>musica</translation>
+        </message>
+        <message>
+            <source>new</source>
+            <translation>novità</translation>
+        </message>
+        <message>
+            <source>nothing playing</source>
+            <translation>niente in riproduzione</translation>
+        </message>
+        <message>
+            <source>now playing</source>
+            <translation>in riproduzione</translation>
+        </message>
+        <message>
+            <source>open now playing</source>
+            <translation>apri la riproduzione</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>opening ed ending</translation>
+        </message>
+        <message>
+            <source>radio</source>
+            <translation>radio</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>salvati</translation>
+        </message>
+        <message>
+            <source>shuffle my music</source>
+            <translation>riproduci a caso la mia musica</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>brani</translation>
+        </message>
+    </context>
+    <context>
+        <name>RetroMusicList</name>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 brani</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 brano</translation>
+        </message>
+        <message>
+            <source>Add your music folders on the full music page to see your music here.</source>
+            <translation>Aggiungi le tue cartelle musicali nella pagina musica completa per vedere qui la tua musica.</translation>
+        </message>
+        <message>
+            <source>Nothing this season yet.</source>
+            <translation>Ancora niente questa stagione.</translation>
+        </message>
+        <message>
+            <source>Shuffle</source>
+            <translation>Casuale</translation>
+        </message>
+        <message>
+            <source>Songs you save show here.</source>
+            <translation>I brani che salvi compaiono qui.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>album</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>artisti</translation>
+        </message>
+        <message>
+            <source>endings</source>
+            <translation>ending</translation>
+        </message>
+        <message>
+            <source>inserts</source>
+            <translation>insert</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>opening ed ending</translation>
+        </message>
+        <message>
+            <source>openings</source>
+            <translation>opening</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>salvati</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>brani</translation>
+        </message>
+    </context>
 </TS>

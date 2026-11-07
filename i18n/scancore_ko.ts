@@ -13889,4 +13889,134 @@
             <translation>제거</translation>
         </message>
     </context>
+    <context>
+        <name>RetroMusic</name>
+        <message>
+            <source>Add your music folders on the full music page to see your artists, albums and songs here.</source>
+            <translation>전체 음악 페이지에서 음악 폴더를 추가하면 여기에 아티스트, 앨범, 노래가 표시됩니다.</translation>
+        </message>
+        <message>
+            <source>Loading…</source>
+            <translation>불러오는 중…</translation>
+        </message>
+        <message>
+            <source>Nothing new this season yet.</source>
+            <translation>이번 시즌에는 아직 새 곡이 없습니다.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>앨범</translation>
+        </message>
+        <message>
+            <source>all music</source>
+            <translation>모든 음악</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>아티스트</translation>
+        </message>
+        <message>
+            <source>collection</source>
+            <translation>컬렉션</translation>
+        </message>
+        <message>
+            <source>music</source>
+            <translation>음악</translation>
+        </message>
+        <message>
+            <source>new</source>
+            <translation>신곡</translation>
+        </message>
+        <message>
+            <source>nothing playing</source>
+            <translation>재생 중인 곡 없음</translation>
+        </message>
+        <message>
+            <source>now playing</source>
+            <translation>지금 재생 중</translation>
+        </message>
+        <message>
+            <source>open now playing</source>
+            <translation>지금 재생 중 열기</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>오프닝 및 엔딩</translation>
+        </message>
+        <message>
+            <source>radio</source>
+            <translation>라디오</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>저장됨</translation>
+        </message>
+        <message>
+            <source>shuffle my music</source>
+            <translation>내 음악 셔플</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>노래</translation>
+        </message>
+    </context>
+    <context>
+        <name>RetroMusicList</name>
+        <message>
+            <source>%1 songs</source>
+            <translation>노래 %1곡</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>노래 1곡</translation>
+        </message>
+        <message>
+            <source>Add your music folders on the full music page to see your music here.</source>
+            <translation>전체 음악 페이지에서 음악 폴더를 추가하면 여기에 음악이 표시됩니다.</translation>
+        </message>
+        <message>
+            <source>Nothing this season yet.</source>
+            <translation>이번 시즌에는 아직 없습니다.</translation>
+        </message>
+        <message>
+            <source>Shuffle</source>
+            <translation>셔플</translation>
+        </message>
+        <message>
+            <source>Songs you save show here.</source>
+            <translation>저장한 노래가 여기에 표시됩니다.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>앨범</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>아티스트</translation>
+        </message>
+        <message>
+            <source>endings</source>
+            <translation>엔딩</translation>
+        </message>
+        <message>
+            <source>inserts</source>
+            <translation>삽입곡</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>오프닝 및 엔딩</translation>
+        </message>
+        <message>
+            <source>openings</source>
+            <translation>오프닝</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>저장됨</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>노래</translation>
+        </message>
+    </context>
 </TS>

@@ -2,6 +2,13 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.16.24 — 2026-11-07
+
+Music in the Retro look is a hub of its own.
+
+- **Retro music hub**: in the Retro look, Music opens a panorama like Windows Phone's music hub. **collection** lists your artists, albums and songs, the anime openings and endings, the songs you saved and your music extensions (radio). **new** shows this season's anime songs as tiles, and **now playing** shows what is playing (or shuffles your music). The full music page is still one tap away (all music).
+- **Glass menus removed**: the "Glass menus and sheets" option (Settings → Theme) blurred little and is gone; menus and sheets are solid again. A complete Glass look is planned.
+
 ## 2.16.23 — 2026-11-06
 
 New chapters can be cleared without reading them, and sites' own search filters are on the Comics page.

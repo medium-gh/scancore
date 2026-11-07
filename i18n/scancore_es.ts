@@ -13889,4 +13889,134 @@
             <translation>Quitar</translation>
         </message>
     </context>
+    <context>
+        <name>RetroMusic</name>
+        <message>
+            <source>Add your music folders on the full music page to see your artists, albums and songs here.</source>
+            <translation>Añade tus carpetas de música en la página completa de música para ver aquí tus artistas, álbumes y canciones.</translation>
+        </message>
+        <message>
+            <source>Loading…</source>
+            <translation>Cargando…</translation>
+        </message>
+        <message>
+            <source>Nothing new this season yet.</source>
+            <translation>Aún no hay nada nuevo esta temporada.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>álbumes</translation>
+        </message>
+        <message>
+            <source>all music</source>
+            <translation>toda la música</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>artistas</translation>
+        </message>
+        <message>
+            <source>collection</source>
+            <translation>colección</translation>
+        </message>
+        <message>
+            <source>music</source>
+            <translation>música</translation>
+        </message>
+        <message>
+            <source>new</source>
+            <translation>nuevo</translation>
+        </message>
+        <message>
+            <source>nothing playing</source>
+            <translation>nada sonando</translation>
+        </message>
+        <message>
+            <source>now playing</source>
+            <translation>sonando ahora</translation>
+        </message>
+        <message>
+            <source>open now playing</source>
+            <translation>abrir lo que suena</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>openings y endings</translation>
+        </message>
+        <message>
+            <source>radio</source>
+            <translation>radio</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>guardadas</translation>
+        </message>
+        <message>
+            <source>shuffle my music</source>
+            <translation>aleatorio de mi música</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>canciones</translation>
+        </message>
+    </context>
+    <context>
+        <name>RetroMusicList</name>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 canciones</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 canción</translation>
+        </message>
+        <message>
+            <source>Add your music folders on the full music page to see your music here.</source>
+            <translation>Añade tus carpetas de música en la página completa de música para ver aquí tu música.</translation>
+        </message>
+        <message>
+            <source>Nothing this season yet.</source>
+            <translation>Aún no hay nada esta temporada.</translation>
+        </message>
+        <message>
+            <source>Shuffle</source>
+            <translation>Aleatorio</translation>
+        </message>
+        <message>
+            <source>Songs you save show here.</source>
+            <translation>Las canciones que guardes aparecen aquí.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>álbumes</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>artistas</translation>
+        </message>
+        <message>
+            <source>endings</source>
+            <translation>endings</translation>
+        </message>
+        <message>
+            <source>inserts</source>
+            <translation>insertos</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>openings y endings</translation>
+        </message>
+        <message>
+            <source>openings</source>
+            <translation>openings</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>guardadas</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>canciones</translation>
+        </message>
+    </context>
 </TS>

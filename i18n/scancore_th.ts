@@ -13881,4 +13881,134 @@
             <translation>นำออก</translation>
         </message>
     </context>
+    <context>
+        <name>RetroMusic</name>
+        <message>
+            <source>Add your music folders on the full music page to see your artists, albums and songs here.</source>
+            <translation>เพิ่มโฟลเดอร์เพลงของคุณในหน้าเพลงแบบเต็ม เพื่อดูศิลปิน อัลบั้ม และเพลงของคุณที่นี่</translation>
+        </message>
+        <message>
+            <source>Loading…</source>
+            <translation>กำลังโหลด…</translation>
+        </message>
+        <message>
+            <source>Nothing new this season yet.</source>
+            <translation>ฤดูกาลนี้ยังไม่มีอะไรใหม่</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>อัลบั้ม</translation>
+        </message>
+        <message>
+            <source>all music</source>
+            <translation>เพลงทั้งหมด</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>ศิลปิน</translation>
+        </message>
+        <message>
+            <source>collection</source>
+            <translation>คอลเลกชัน</translation>
+        </message>
+        <message>
+            <source>music</source>
+            <translation>เพลง</translation>
+        </message>
+        <message>
+            <source>new</source>
+            <translation>ใหม่</translation>
+        </message>
+        <message>
+            <source>nothing playing</source>
+            <translation>ไม่มีเพลงที่เล่นอยู่</translation>
+        </message>
+        <message>
+            <source>now playing</source>
+            <translation>กำลังเล่น</translation>
+        </message>
+        <message>
+            <source>open now playing</source>
+            <translation>เปิดหน้ากำลังเล่น</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>เพลงเปิดและเพลงปิด</translation>
+        </message>
+        <message>
+            <source>radio</source>
+            <translation>วิทยุ</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>ที่บันทึกไว้</translation>
+        </message>
+        <message>
+            <source>shuffle my music</source>
+            <translation>สุ่มเล่นเพลงของฉัน</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>เพลง</translation>
+        </message>
+    </context>
+    <context>
+        <name>RetroMusicList</name>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 เพลง</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 เพลง</translation>
+        </message>
+        <message>
+            <source>Add your music folders on the full music page to see your music here.</source>
+            <translation>เพิ่มโฟลเดอร์เพลงของคุณในหน้าเพลงแบบเต็ม เพื่อดูเพลงของคุณที่นี่</translation>
+        </message>
+        <message>
+            <source>Nothing this season yet.</source>
+            <translation>ฤดูกาลนี้ยังไม่มี</translation>
+        </message>
+        <message>
+            <source>Shuffle</source>
+            <translation>สุ่มเล่น</translation>
+        </message>
+        <message>
+            <source>Songs you save show here.</source>
+            <translation>เพลงที่คุณบันทึกจะแสดงที่นี่</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>อัลบั้ม</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>ศิลปิน</translation>
+        </message>
+        <message>
+            <source>endings</source>
+            <translation>เพลงปิด</translation>
+        </message>
+        <message>
+            <source>inserts</source>
+            <translation>เพลงประกอบ</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>เพลงเปิดและเพลงปิด</translation>
+        </message>
+        <message>
+            <source>openings</source>
+            <translation>เพลงเปิด</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>ที่บันทึกไว้</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>เพลง</translation>
+        </message>
+    </context>
 </TS>

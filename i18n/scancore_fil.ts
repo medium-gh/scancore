@@ -13881,4 +13881,134 @@
             <translation>Alisin</translation>
         </message>
     </context>
+    <context>
+        <name>RetroMusic</name>
+        <message>
+            <source>Add your music folders on the full music page to see your artists, albums and songs here.</source>
+            <translation>Idagdag ang iyong mga music folder sa buong music page para makita rito ang iyong mga artist, album at kanta.</translation>
+        </message>
+        <message>
+            <source>Loading…</source>
+            <translation>Naglo-load…</translation>
+        </message>
+        <message>
+            <source>Nothing new this season yet.</source>
+            <translation>Wala pang bago ngayong season.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>mga album</translation>
+        </message>
+        <message>
+            <source>all music</source>
+            <translation>lahat ng musika</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>mga artist</translation>
+        </message>
+        <message>
+            <source>collection</source>
+            <translation>koleksyon</translation>
+        </message>
+        <message>
+            <source>music</source>
+            <translation>musika</translation>
+        </message>
+        <message>
+            <source>new</source>
+            <translation>bago</translation>
+        </message>
+        <message>
+            <source>nothing playing</source>
+            <translation>walang tumutugtog</translation>
+        </message>
+        <message>
+            <source>now playing</source>
+            <translation>tumutugtog ngayon</translation>
+        </message>
+        <message>
+            <source>open now playing</source>
+            <translation>buksan ang tumutugtog</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>openings at endings</translation>
+        </message>
+        <message>
+            <source>radio</source>
+            <translation>radyo</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>naka-save</translation>
+        </message>
+        <message>
+            <source>shuffle my music</source>
+            <translation>i-shuffle ang musika ko</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>mga kanta</translation>
+        </message>
+    </context>
+    <context>
+        <name>RetroMusicList</name>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 kanta</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 kanta</translation>
+        </message>
+        <message>
+            <source>Add your music folders on the full music page to see your music here.</source>
+            <translation>Idagdag ang iyong mga music folder sa buong music page para makita rito ang iyong musika.</translation>
+        </message>
+        <message>
+            <source>Nothing this season yet.</source>
+            <translation>Wala pa ngayong season.</translation>
+        </message>
+        <message>
+            <source>Shuffle</source>
+            <translation>I-shuffle</translation>
+        </message>
+        <message>
+            <source>Songs you save show here.</source>
+            <translation>Dito lalabas ang mga kantang ise-save mo.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>mga album</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>mga artist</translation>
+        </message>
+        <message>
+            <source>endings</source>
+            <translation>endings</translation>
+        </message>
+        <message>
+            <source>inserts</source>
+            <translation>inserts</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>openings at endings</translation>
+        </message>
+        <message>
+            <source>openings</source>
+            <translation>openings</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>naka-save</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>mga kanta</translation>
+        </message>
+    </context>
 </TS>

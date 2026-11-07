@@ -13889,4 +13889,134 @@
             <translation>Hapus</translation>
         </message>
     </context>
+    <context>
+        <name>RetroMusic</name>
+        <message>
+            <source>Add your music folders on the full music page to see your artists, albums and songs here.</source>
+            <translation>Tambahkan folder musikmu di halaman musik lengkap untuk melihat artis, album, dan lagumu di sini.</translation>
+        </message>
+        <message>
+            <source>Loading…</source>
+            <translation>Memuat…</translation>
+        </message>
+        <message>
+            <source>Nothing new this season yet.</source>
+            <translation>Belum ada yang baru musim ini.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>album</translation>
+        </message>
+        <message>
+            <source>all music</source>
+            <translation>semua musik</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>artis</translation>
+        </message>
+        <message>
+            <source>collection</source>
+            <translation>koleksi</translation>
+        </message>
+        <message>
+            <source>music</source>
+            <translation>musik</translation>
+        </message>
+        <message>
+            <source>new</source>
+            <translation>baru</translation>
+        </message>
+        <message>
+            <source>nothing playing</source>
+            <translation>tidak ada yang diputar</translation>
+        </message>
+        <message>
+            <source>now playing</source>
+            <translation>sedang diputar</translation>
+        </message>
+        <message>
+            <source>open now playing</source>
+            <translation>buka yang diputar</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>opening &amp; ending</translation>
+        </message>
+        <message>
+            <source>radio</source>
+            <translation>radio</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>disimpan</translation>
+        </message>
+        <message>
+            <source>shuffle my music</source>
+            <translation>acak musikku</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>lagu</translation>
+        </message>
+    </context>
+    <context>
+        <name>RetroMusicList</name>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 lagu</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 lagu</translation>
+        </message>
+        <message>
+            <source>Add your music folders on the full music page to see your music here.</source>
+            <translation>Tambahkan folder musikmu di halaman musik lengkap untuk melihat musikmu di sini.</translation>
+        </message>
+        <message>
+            <source>Nothing this season yet.</source>
+            <translation>Belum ada musim ini.</translation>
+        </message>
+        <message>
+            <source>Shuffle</source>
+            <translation>Acak</translation>
+        </message>
+        <message>
+            <source>Songs you save show here.</source>
+            <translation>Lagu yang kamu simpan muncul di sini.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>album</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>artis</translation>
+        </message>
+        <message>
+            <source>endings</source>
+            <translation>ending</translation>
+        </message>
+        <message>
+            <source>inserts</source>
+            <translation>insert</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>opening &amp; ending</translation>
+        </message>
+        <message>
+            <source>openings</source>
+            <translation>opening</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>disimpan</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>lagu</translation>
+        </message>
+    </context>
 </TS>

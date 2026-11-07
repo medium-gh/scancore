@@ -13889,4 +13889,134 @@
             <translation>Kaldır</translation>
         </message>
     </context>
+    <context>
+        <name>RetroMusic</name>
+        <message>
+            <source>Add your music folders on the full music page to see your artists, albums and songs here.</source>
+            <translation>Sanatçılarını, albümlerini ve şarkılarını burada görmek için tam müzik sayfasında müzik klasörlerini ekle.</translation>
+        </message>
+        <message>
+            <source>Loading…</source>
+            <translation>Yükleniyor…</translation>
+        </message>
+        <message>
+            <source>Nothing new this season yet.</source>
+            <translation>Bu sezon henüz yeni bir şey yok.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>albümler</translation>
+        </message>
+        <message>
+            <source>all music</source>
+            <translation>tüm müzikler</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>sanatçılar</translation>
+        </message>
+        <message>
+            <source>collection</source>
+            <translation>koleksiyon</translation>
+        </message>
+        <message>
+            <source>music</source>
+            <translation>müzik</translation>
+        </message>
+        <message>
+            <source>new</source>
+            <translation>yeni</translation>
+        </message>
+        <message>
+            <source>nothing playing</source>
+            <translation>çalan bir şey yok</translation>
+        </message>
+        <message>
+            <source>now playing</source>
+            <translation>şimdi çalıyor</translation>
+        </message>
+        <message>
+            <source>open now playing</source>
+            <translation>çalanı aç</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>açılış ve kapanışlar</translation>
+        </message>
+        <message>
+            <source>radio</source>
+            <translation>radyo</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>kaydedilenler</translation>
+        </message>
+        <message>
+            <source>shuffle my music</source>
+            <translation>müziğimi karıştır</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>şarkılar</translation>
+        </message>
+    </context>
+    <context>
+        <name>RetroMusicList</name>
+        <message>
+            <source>%1 songs</source>
+            <translation>%1 şarkı</translation>
+        </message>
+        <message>
+            <source>1 song</source>
+            <translation>1 şarkı</translation>
+        </message>
+        <message>
+            <source>Add your music folders on the full music page to see your music here.</source>
+            <translation>Müziğini burada görmek için tam müzik sayfasında müzik klasörlerini ekle.</translation>
+        </message>
+        <message>
+            <source>Nothing this season yet.</source>
+            <translation>Bu sezon henüz bir şey yok.</translation>
+        </message>
+        <message>
+            <source>Shuffle</source>
+            <translation>Karıştır</translation>
+        </message>
+        <message>
+            <source>Songs you save show here.</source>
+            <translation>Kaydettiğin şarkılar burada görünür.</translation>
+        </message>
+        <message>
+            <source>albums</source>
+            <translation>albümler</translation>
+        </message>
+        <message>
+            <source>artists</source>
+            <translation>sanatçılar</translation>
+        </message>
+        <message>
+            <source>endings</source>
+            <translation>kapanışlar</translation>
+        </message>
+        <message>
+            <source>inserts</source>
+            <translation>ara şarkılar</translation>
+        </message>
+        <message>
+            <source>openings &amp; endings</source>
+            <translation>açılış ve kapanışlar</translation>
+        </message>
+        <message>
+            <source>openings</source>
+            <translation>açılışlar</translation>
+        </message>
+        <message>
+            <source>saved</source>
+            <translation>kaydedilenler</translation>
+        </message>
+        <message>
+            <source>songs</source>
+            <translation>şarkılar</translation>
+        </message>
+    </context>
 </TS>
