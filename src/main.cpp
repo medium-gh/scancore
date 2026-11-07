@@ -564,6 +564,8 @@ int main(int argc, char *argv[]) {
 #if defined(Q_OS_ANDROID)
     g_exitCode = code;
 #endif
+    // If tearing down hangs, the hang watcher ends the process with it.
+    sc::crashlog::setExitCode(code);
     // Work still running (a site that never answers) would meet the
     // database and Qt torn down under it: end here, everything is saved.
     if (workLeft && !Task::waitAll(0)) {

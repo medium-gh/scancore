@@ -30,8 +30,12 @@ QString diagnostics();
 // for 8 s while the app is in use, a report ("…-hang.txt", offered like a
 // crash's) says so, with that thread's stack and the stacks of threads that
 // are Busy at the time. Call once from the interface's thread, after
-// install().
+// install(). Quitting that takes over 15 s leaves a report too (on Linux
+// with every thread's stack) and then ends the process: everything is saved
+// by then, and a SCANCORE that never ends blocks the next one starting.
 void watchHangs();
+// What the process ends with if quitting has to be cut short.
+void setExitCode(int code);
 
 // A thread about to wait on something that may never answer (mpv's
 // renderer): a hang report taken meanwhile names it and shows its stack.

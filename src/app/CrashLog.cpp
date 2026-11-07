@@ -15,6 +15,8 @@
 
 #include <algorithm>
 #include <atomic>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <exception>
 #include <string>
@@ -27,11 +29,17 @@
 #include <fcntl.h>
 #else
 #include <csignal>
+#include <cstdio>
+#include <cstdlib>
 #include <dlfcn.h>
 #include <fcntl.h>
 #include <pthread.h>
 #include <unistd.h>
 #include <unwind.h>
+#ifdef Q_OS_LINUX
+#include <dirent.h>
+#include <sys/syscall.h>
+#endif
 #endif
 
 namespace sc::crashlog {
@@ -435,6 +443,7 @@ std::atomic<qint64> g_beat{0};
 std::atomic_bool g_watching{false};
 std::atomic_bool g_quitting{false};
 std::atomic<qint64> g_quitSince{0};
+std::atomic<int> g_exitCode{0};
 // Kept from start-up: while quitting, the application object may be gone.
 const QString *g_hangFolder = nullptr;
 
@@ -488,6 +497,48 @@ void putStackOf(int fd, pthread_t thread) {
         put(fd, "(no answer)\n");
     g_hangFd = -1;
 }
+
+#ifdef Q_OS_LINUX
+// Every other thread's stack (quitting waits on one of them: the render
+// thread, a worker), each written by the thread itself through the same
+// signal, with its name.
+void putOtherThreads(int fd) {
+    const pid_t self = pid_t(::syscall(SYS_gettid));
+    const pid_t process = ::getpid();
+    DIR *dir = ::opendir("/proc/self/task");
+    if (!dir)
+        return;
+    while (const dirent *entry = ::readdir(dir)) {
+        const pid_t tid = pid_t(std::atoi(entry->d_name));
+        if (tid <= 0 || tid == self || tid == process)
+            continue;
+        char name[64] = "";
+        char path[64];
+        std::snprintf(path, sizeof path, "/proc/self/task/%d/comm", int(tid));
+        if (const int comm = ::open(path, O_RDONLY); comm >= 0) {
+            const auto n = ::read(comm, name, sizeof name - 1);
+            name[n > 0 ? n : 0] = '\0';
+            if (char *end = std::strchr(name, '\n'))
+                *end = '\0';
+            ::close(comm);
+        }
+        put(fd, "\nThread ");
+        putNumber(fd, long(tid));
+        put(fd, " (");
+        put(fd, name);
+        put(fd, "):\n");
+        g_stackDone = false;
+        g_hangFd = fd;
+        if (::syscall(SYS_tgkill, process, tid, kStackSignal) == 0)
+            for (int i = 0; i < 30 && !g_stackDone; ++i)
+                ::usleep(10000);
+        if (!g_stackDone)
+            put(fd, "(no answer)\n");
+        g_hangFd = -1;
+    }
+    ::closedir(dir);
+}
+#endif
 #endif
 
 void writeHangReport(qint64 stuckMs, bool quitting) {
@@ -519,6 +570,10 @@ void writeHangReport(qint64 stuckMs, bool quitting) {
             put(fd, "):\n");
             putStackOf(fd, slot.thread);
         }
+#ifdef Q_OS_LINUX
+    if (quitting)
+        putOtherThreads(fd);
+#endif
     putLog(fd);
 #else
     file.close();
@@ -621,6 +676,12 @@ void watchHangs() {
                 if (!quitReported && now - g_quitSince.load() > kQuitHang) {
                     quitReported = true;
                     writeHangReport(now - g_quitSince.load(), true);
+                    // Everything is saved by now (aboutToQuit ran long ago);
+                    // what is left is tearing down, which hangs (the window
+                    // waiting for its render thread): end here rather than
+                    // stay running with no window.
+                    std::fflush(nullptr);
+                    std::_Exit(g_exitCode.load());
                 }
                 continue;
             }
@@ -637,6 +698,8 @@ void watchHangs() {
         }
     }).detach();
 }
+
+void setExitCode(int code) { g_exitCode = code; }
 
 void install() {
     QDir().mkpath(folder());
