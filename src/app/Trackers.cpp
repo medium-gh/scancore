@@ -8,6 +8,8 @@
 #include "core/Database.h"
 #include "core/Text.h"
 
+#include <algorithm>
+
 #include <QCoreApplication>
 
 #include <QCryptographicHash>
@@ -280,6 +282,7 @@ QVariantList anilistSearch(const QString &media, const QString &title) {
         titles.removeAll(QString());
         out.append(QVariantMap{{"id", m.value("id").toInt()},
                                {"idMal", m.value("idMal").toInt()},
+                               {"oneShot", format == QLatin1String("ONE_SHOT")},
                                {"title", titles.value(0)},
                                {"titles", titles},
                                {"detail", QStringList{format, m.value("startDate").toObject().value("year").isNull()
@@ -313,6 +316,7 @@ QVariantList malSearch(const QString &media, const QString &title) {
             titles.append(s.toString());
         titles.removeAll(QString());
         out.append(QVariantMap{{"id", node.value("id").toInt()},
+                               {"oneShot", type == QLatin1String("one_shot")},
                                {"title", titles.value(0)},
                                {"titles", titles},
                                {"detail", QStringList{type.toUpper().replace(QLatin1Char('_'), QLatin1Char(' ')),
@@ -354,18 +358,26 @@ QVariantList comickSearch(const QString &media, const QString &title) {
     return out;
 }
 
-// The one candidate whose title is the series' title, or none.
+// The one candidate whose title is the series' title, or none. A one-shot
+// (often the pilot, named like the series: Komi's "Komi-san wa Komyushou
+// desu." beside "Komi-san wa, Komyushou desu.") only when no series has
+// the title.
 QVariantMap exactMatch(const QVariantList &candidates, const QString &title) {
     const auto wanted = titleKey(title);
     if (wanted.isEmpty())
         return {};
+    QVariantMap oneShot;
     for (const auto &value : candidates) {
         const auto candidate = value.toMap();
-        for (const auto &t : candidate.value("titles").toStringList())
-            if (titleKey(t) == wanted)
-                return candidate;
+        const auto titles = candidate.value("titles").toStringList();
+        if (std::none_of(titles.begin(), titles.end(), [&](const QString &t) { return titleKey(t) == wanted; }))
+            continue;
+        if (!candidate.value("oneShot").toBool())
+            return candidate;
+        if (oneShot.isEmpty())
+            oneShot = candidate;
     }
-    return {};
+    return oneShot;
 }
 
 // What the series' source stored about it: a Comick catalogue entry
