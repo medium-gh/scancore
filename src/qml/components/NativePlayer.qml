@@ -535,9 +535,11 @@ Item {
 
     // The keys from Settings → Keyboard (player).
     Shortcut { sequences: Keymap.sequences("player.pause"); enabled: root.visible && mpv.available; onActivated: root.togglePause() }
-    Shortcut { sequences: Keymap.sequences("player.forward"); enabled: root.visible && mpv.available; onActivated: root.seekBy(10) }
-    Shortcut { sequences: Keymap.sequences("player.backward"); enabled: root.visible && mpv.available; onActivated: root.seekBy(-10) }
-    Shortcut { sequences: Keymap.sequences("player.volumeUp"); enabled: root.visible && mpv.available; onActivated: root.changeVolume(5) }
-    Shortcut { sequences: Keymap.sequences("player.volumeDown"); enabled: root.visible && mpv.available; onActivated: root.changeVolume(-5) }
+    // A TV: the D-pad is WatchPage's (seeking, or moving to the controls),
+    // and the remote has its own volume.
+    Shortcut { sequences: Keymap.sequences("player.forward"); enabled: root.visible && mpv.available && !App.tv; onActivated: root.seekBy(10) }
+    Shortcut { sequences: Keymap.sequences("player.backward"); enabled: root.visible && mpv.available && !App.tv; onActivated: root.seekBy(-10) }
+    Shortcut { sequences: Keymap.sequences("player.volumeUp"); enabled: root.visible && mpv.available && !App.tv; onActivated: root.changeVolume(5) }
+    Shortcut { sequences: Keymap.sequences("player.volumeDown"); enabled: root.visible && mpv.available && !App.tv; onActivated: root.changeVolume(-5) }
     Shortcut { sequences: Keymap.sequences("player.mute"); enabled: root.visible && mpv.available; onActivated: mpv.muted = !mpv.muted }
 }

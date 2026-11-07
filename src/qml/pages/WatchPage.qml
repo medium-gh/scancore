@@ -209,6 +209,12 @@ Rectangle {
     Timer { id: webTick; interval: 5000; onTriggered: watch.webPlaying = false }
 
     Component.onCompleted: {
+        // A TV watches in full screen: the top bar hides while the video
+        // plays and comes back with the remote (Back leaves in one press).
+        if (App.tv) {
+            if (!fullScreen) Window.window.showFullScreen()
+            Qt.callLater(remoteToVideo)
+        }
         load(index)
         if (phone && landscape) Window.window.showFullScreen()
         wake()
@@ -615,6 +621,13 @@ Rectangle {
             Window.window.showNormal()
             return true
         }
+        // A TV: Back on a control returns to the video first; leaving ends
+        // the full screen it watched in.
+        if (remoteOnControl) {
+            remoteToVideo()
+            return true
+        }
+        if (App.tv && fullScreen) Window.window.showNormal()
         saveProgress(true)
         return false
     }
@@ -658,7 +671,7 @@ Rectangle {
     }
 
     function leave() {
-        if (fullScreen) Window.window.showNormal()
+        if (fullScreen && !App.tv) Window.window.showNormal()
         else exit()
     }
 
@@ -693,8 +706,70 @@ Rectangle {
         const keys = Keymap.labels(action)
         return keys.length ? " (" + keys[0] + ")" : ""
     }
+    // A TV's remote. On the video (no control focused): Select or the
+    // remote's play/pause button plays or pauses, left and right jump 10
+    // seconds, up and down move to the controls (up: the top bar; down: the
+    // player's bar, else the top). On a control the D-pad moves between
+    // them and Back returns to the video; so does the controls hiding.
+    readonly property bool remoteOnControl: App.tv && !!Window.activeFocusItem && !!Router.shell
+        && Window.activeFocusItem !== watch && Router.shell.isStop(Window.activeFocusItem)
+    readonly property bool remoteOnVideo: App.tv && watch.visible && !remoteOnControl && !panel.opened && !!player.item
+    function remoteToVideo() { watch.forceActiveFocus() }
+    function remotePause() { if (player.item && player.item.togglePause) player.item.togglePause(); wake() }
+    function remoteSeek(seconds) { if (player.item && player.item.seekBy) player.item.seekBy(seconds); wake() }
+    // Up or down off the video. A system web view on Windows (WebView2) can
+    // hold the keyboard (the window has no focused item then): the app
+    // window takes it back first, and the control gets the focus a moment
+    // later. (Android TV's web view never takes it: WebPlayer.java.)
+    function remoteFocusControls(down) {
+        if (!(down && watch.nativeStream && Router.shell.focusEdge(player, true))) Router.shell.focusEdge(watch, false)
+    }
+    function remoteControls(down) {
+        wake()
+        if (!Window.activeFocusItem) {
+            App.reclaimFocus(Window.window)
+            remoteRetry.down = down
+            remoteRetry.restart()
+            return
+        }
+        Qt.callLater(() => remoteFocusControls(down))
+    }
+    Timer {
+        id: remoteRetry
+        property bool down: false
+        interval: 120
+        onTriggered: watch.remoteFocusControls(down)
+    }
+    // On a control: the D-pad moves between the page's controls and Select
+    // presses (the page opens over the shell, whose own keys are off).
+    Keys.onPressed: (event) => {
+        if (!watch.remoteOnControl) return
+        const dirs = { [Qt.Key_Left]: "left", [Qt.Key_Right]: "right", [Qt.Key_Up]: "up", [Qt.Key_Down]: "down" }
+        if (dirs[event.key] !== undefined) {
+            Router.shell.moveFocus(dirs[event.key], watch)
+            event.accepted = true
+        } else if (event.key === Qt.Key_Select || event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
+            event.accepted = Router.shell.pressFocus()
+        }
+    }
+    onRemoteOnControlChanged: if (remoteOnControl) wake()
+    onIdleChanged: if (App.tv && idle && remoteOnControl) remoteToVideo()
+    Connections {
+        target: watch.Window.window
+        enabled: App.tv && watch.visible
+        function onActiveFocusItemChanged() { if (watch.remoteOnControl) watch.wake() }
+    }
+    Shortcut { sequences: ["Return", "Enter", "Select"]; enabled: watch.remoteOnVideo; onActivated: watch.remotePause() }
+    Shortcut { sequences: ["Media Play", "Media Pause", "Toggle Media Play/Pause"]; enabled: App.tv && watch.visible && !!player.item; onActivated: watch.remotePause() }
+    Shortcut { sequences: ["Right"]; enabled: watch.remoteOnVideo; onActivated: watch.remoteSeek(10) }
+    Shortcut { sequences: ["Left"]; enabled: watch.remoteOnVideo; onActivated: watch.remoteSeek(-10) }
+    Shortcut { sequences: ["Media Fast Forward"]; enabled: App.tv && watch.visible && !!player.item; onActivated: watch.remoteSeek(30) }
+    Shortcut { sequences: ["Media Rewind"]; enabled: App.tv && watch.visible && !!player.item; onActivated: watch.remoteSeek(-30) }
+    Shortcut { sequences: ["Up"]; enabled: watch.remoteOnVideo; onActivated: watch.remoteControls(false) }
+    Shortcut { sequences: ["Down"]; enabled: watch.remoteOnVideo; onActivated: watch.remoteControls(true) }
+
     // The keys come from Settings → Keyboard (see Keymap).
-    Shortcut { sequence: "Esc"; enabled: !watch.phone; onActivated: watch.leave() }
+    Shortcut { sequence: "Esc"; enabled: !watch.phone; onActivated: watch.remoteOnControl ? watch.remoteToVideo() : watch.leave() }
     Shortcut { sequences: Keymap.sequences("player.fullscreen"); enabled: !watch.phone; onActivated: watch.toggleFullScreen() }
     Shortcut { sequences: Keymap.sequences("player.next"); enabled: !watch.phone && watch.hasNext; onActivated: watch.load(watch.index + 1) }
     Shortcut { sequences: Keymap.sequences("player.prev"); enabled: !watch.phone && watch.hasPrev; onActivated: watch.load(watch.index - 1) }

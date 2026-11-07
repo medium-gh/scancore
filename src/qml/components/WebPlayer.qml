@@ -21,6 +21,9 @@ Item {
     function seek(seconds) {
         web.runJavaScript("window.scSeek && window.scSeek(" + Number(seconds) + ")")
     }
+    // A TV's remote (WatchPage): through the player's message API.
+    function togglePause() { web.runJavaScript("window.scToggle && window.scToggle()") }
+    function seekBy(seconds) { web.runJavaScript("window.scSeekBy && window.scSeekBy(" + Number(seconds) + ")") }
 
     function host(address) {
         return String(address).replace(/^[a-z]+:\/\//i, "").replace(/[\/?#].*$/, "").toLowerCase()
@@ -35,13 +38,18 @@ Item {
     }
 
     WebEngineView {
+        // Never a stop for a TV's remote (WatchPage works the player).
+        activeFocusOnTab: false
         id: web
         anchors.fill: parent
         backgroundColor: "black"
         settings.playbackRequiresUserGesture: false
         settings.fullScreenSupportEnabled: true
         settings.javascriptCanOpenWindows: false
-        settings.focusOnNavigationEnabled: true
+        // A TV keeps the keys in the app (the remote works the player
+        // through WatchPage); the page would take them all.
+        settings.focusOnNavigationEnabled: !App.tv
+        activeFocusOnPress: !App.tv
 
         onNewWindowRequested: (request) => { /* block pop-up ads */ }
         onNavigationRequested: (request) => {

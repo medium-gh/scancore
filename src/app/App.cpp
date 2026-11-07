@@ -49,6 +49,13 @@
 #include <QPointer>
 #include <QQuickItem>
 #include <QQuickWindow>
+#include <QKeyEvent>
+#ifdef Q_OS_WIN
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
 #include <QStandardPaths>
 #ifdef Q_OS_ANDROID
 #include <QJniObject>
@@ -301,6 +308,59 @@ App *App::instance() {
 QString App::version() const { return QCoreApplication::applicationVersion(); }
 
 bool App::tv() const { return platform::isTv(); }
+
+namespace {
+// Hands the remote's D-pad and Select to SpatialFocus.popupKey while a popup
+// is open; it says whether it took the key. Text fields keep their keys.
+class TvKeys : public QObject {
+public:
+    TvKeys(QQuickWindow *window, QObject *spatial) : QObject(window), m_window(window), m_spatial(spatial) {}
+
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override {
+        if (watched != m_window || event->type() != QEvent::KeyPress || !m_spatial)
+            return false;
+        const auto *key = static_cast<QKeyEvent *>(event);
+        switch (key->key()) {
+        case Qt::Key_Left: case Qt::Key_Right: case Qt::Key_Up: case Qt::Key_Down:
+        case Qt::Key_Select: case Qt::Key_Enter: case Qt::Key_Return:
+            break;
+        default:
+            return false;
+        }
+        if (key->modifiers() & ~(Qt::KeypadModifier))
+            return false;
+        if (const auto *focus = m_window->activeFocusItem();
+            focus && (focus->inherits("QQuickTextInput") || focus->inherits("QQuickTextEdit")))
+            return false;
+        QVariant taken;
+        QMetaObject::invokeMethod(m_spatial, "popupKey", Q_RETURN_ARG(QVariant, taken), Q_ARG(QVariant, key->key()));
+        return taken.toBool();
+    }
+
+private:
+    QQuickWindow *m_window;
+    QPointer<QObject> m_spatial;
+};
+} // namespace
+
+void App::reclaimFocus(QObject *window) {
+    auto *quickWindow = qobject_cast<QQuickWindow *>(window);
+    if (!quickWindow)
+        return;
+#ifdef Q_OS_WIN
+    ::SetFocus(reinterpret_cast<HWND>(quickWindow->winId()));
+#endif
+    quickWindow->requestActivate();
+}
+
+void App::routeTvKeys(QObject *window, QObject *spatialFocus) {
+    auto *quickWindow = qobject_cast<QQuickWindow *>(window);
+    if (!quickWindow || !spatialFocus || quickWindow->property("scTvKeys").toBool())
+        return;
+    quickWindow->setProperty("scTvKeys", true);
+    quickWindow->installEventFilter(new TvKeys(quickWindow, spatialFocus));
+}
 
 QString App::platform() const {
     // Development hook: SCANCORE_LOOK_AS=android lays the interface out as

@@ -302,7 +302,8 @@ Rectangle {
     // The keys come from Settings → Keyboard (see Keymap), as in the comic
     // reader; scrolling keys only while the reader has focus.
     Keys.onPressed: (event) => {
-        if (event.key === Qt.Key_Escape) exit()
+        if (Router.shell && Router.shell.readerKey(event, reader, () => reader.barsShown = true)) event.accepted = true
+        else if (event.key === Qt.Key_Escape) exit()
         else if (Keymap.matches("reader.down", event, keyProfile)) flick.scrollTo(flick.target + 90)
         else if (Keymap.matches("reader.up", event, keyProfile)) flick.scrollTo(flick.target - 90)
         else if (Keymap.matches("reader.pageDown", event, keyProfile)) flick.scrollTo(flick.contentY + flick.height * 0.85)

@@ -281,7 +281,34 @@ ApplicationWindow {
 
         // A TV's remote, for controls that take the D-pad's keys themselves
         // (Select): the focus moves on as from anywhere else.
-        function moveFocus(direction) { return spatialFocus.move(direction) }
+        function moveFocus(direction, within) { return spatialFocus.move(direction, within) }
+        // A reader on a TV: its controls by remote (see readerKey).
+        function focusFirst(within) { return spatialFocus.focusFirst(within) }
+        function onControl(within) { return spatialFocus.onControl(within) }
+        function pressFocus() { return spatialFocus.activate() }
+        function isStop(item) { return spatialFocus.isStop(item) }
+        function focusEdge(within, bottom) { return spatialFocus.focusEdge(within, bottom) }
+        // A reader's key on a TV: Select brings the controls up with the
+        // focus on the first; then the D-pad moves between them, Select
+        // presses, Escape goes back to the page. False: the reader's own
+        // keys (scrolling, turning pages, Back leaving).
+        function readerKey(event, reader, showControls) {
+            if (!App.tv) return false
+            const select = event.key === Qt.Key_Select || event.key === Qt.Key_Enter || event.key === Qt.Key_Return
+            const dirs = { [Qt.Key_Left]: "left", [Qt.Key_Right]: "right", [Qt.Key_Up]: "up", [Qt.Key_Down]: "down" }
+            if (spatialFocus.onControl(reader)) {
+                if (dirs[event.key] !== undefined) { spatialFocus.move(dirs[event.key], reader); return true }
+                if (select) return spatialFocus.activate()
+                if (event.key === Qt.Key_Escape) { reader.forceActiveFocus(); return true }
+                return false
+            }
+            if (select && !event.isAutoRepeat) {
+                showControls()
+                Qt.callLater(() => spatialFocus.focusFirst(reader))
+                return true
+            }
+            return false
+        }
 
         // Side by side: `path` with `props` beside the reader that is open.
         readonly property bool canSplit: window.width >= 1100 && immersive.depth > 0
@@ -766,6 +793,7 @@ ApplicationWindow {
     SpatialFocus {
         id: spatialFocus
         scope: shellView
+        Component.onCompleted: if (App.tv) App.routeTvKeys(window, spatialFocus)
     }
     // A TV opens with the focus on the first control.
     Timer {

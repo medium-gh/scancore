@@ -193,6 +193,9 @@ Item {
             // A series with several downloads: tap to see them.
             Item {
                 id: group
+                // A TV's remote: Select opens or closes the group.
+                activeFocusOnTab: App.tv && visible
+                function tvActivate() { page.toggle(group.g.seriesId) }
                 readonly property var g: entry.modelData.group || null
                 readonly property var first: g ? g.first : ({})
                 readonly property int active: g ? g.items.filter(i => i.status === "running" || i.status === "queued").length : 0

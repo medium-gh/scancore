@@ -12,6 +12,8 @@ Item {
     property var task: null
     property var trending: ({ comics: [], anime: [], novels: [] })
     property var activity: []
+    // The comments and reviews feed; closed from its heading, remembered.
+    readonly property bool feedShown: App.settings.latestFeed !== false
     property int refreshSeconds: 20
     // "loading", "ready", "error" or "unavailable".
     property string state: "loading"
@@ -117,6 +119,13 @@ Item {
                 keepBeside: true
                 title: qsTr("Latest")
                 subtitle: qsTr("What people on %1 read and watch this week").arg(page.siteName())
+                // The feed closed: this brings it back.
+                IconButton {
+                    visible: !page.feedShown && page.state === "ready" && page.activity.length > 0
+                    iconName: "message-circle"
+                    tip: qsTr("Show comments and reviews")
+                    onClicked: App.setSetting("latestFeed", true)
+                }
                 IconButton {
                     iconName: "refresh-cw"
                     tip: qsTr("Refresh")
@@ -179,18 +188,33 @@ Item {
 
                 Column {
                     id: feed
-                    visible: page.state === "ready" && page.activity.length > 0
+                    visible: page.feedShown && page.state === "ready" && page.activity.length > 0
                     x: content.wide ? trends.width : Theme.gutter
                     y: content.wide ? 0 : trends.height + (trends.height > 0 ? 26 : 0)
                     width: content.wide ? content.feedWidth : Math.min(parent.width - 2 * Theme.gutter, 820)
                     spacing: 12
 
-                    Text {
-                        text: qsTr("Comments and reviews")
-                        color: Theme.text
-                        font.family: Theme.fontDisplay
-                        font.pixelSize: Theme.textXl
-                        font.weight: Font.DemiBold
+                    Item {
+                        width: parent.width
+                        height: Math.max(feedTitle.implicitHeight, closeFeed.height)
+                        Text {
+                            id: feedTitle
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: qsTr("Comments and reviews")
+                            color: Theme.text
+                            font.family: Theme.fontDisplay
+                            font.pixelSize: Theme.textXl
+                            font.weight: Font.DemiBold
+                        }
+                        // Closes the feed (remembered); the header brings it back.
+                        IconButton {
+                            id: closeFeed
+                            anchors.right: parent.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            iconName: "x"
+                            tip: qsTr("Hide comments and reviews")
+                            onClicked: App.setSetting("latestFeed", false)
+                        }
                     }
 
                     Repeater {

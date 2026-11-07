@@ -120,10 +120,15 @@ ComboBox {
         }
         leftPadding: control.sheet ? 16 : 12
         rightPadding: control.sheet ? 16 : 12
+        // The choice the arrow keys or a TV's remote are on (the mouse
+        // moves it too), so a remote can see what Select will pick.
+        readonly property bool keyed: control.highlightedIndex === option.index
         background: Rectangle {
             radius: control.sheet ? Theme.radiusMd : Theme.radiusSm
-            color: option.pressed ? Theme.surface3 : option.chosen && control.sheet ? Theme.surface2
-                : option.hovered ? Theme.surface3 : "transparent"
+            color: option.pressed ? Theme.surface3 : option.keyed || option.hovered ? Theme.surface3
+                : option.chosen && control.sheet ? Theme.surface2 : "transparent"
+            border.width: option.keyed && App.tv ? 2 : 0
+            border.color: Theme.accentIsMono ? Theme.text : Theme.accent
         }
     }
     popup: Popup {
