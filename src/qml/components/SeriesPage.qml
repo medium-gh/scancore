@@ -306,7 +306,7 @@ Item {
         padding: 14
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
-        background: GlassPanel {
+        background: SurfacePanel {
             radius: Theme.radiusLg
             fill: Theme.surface
             border.width: 1

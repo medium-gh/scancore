@@ -21,7 +21,7 @@ AbstractButton {
     }
 
     // Retro: a flat strip like the app bar, with ring buttons.
-    background: GlassPanel {
+    background: SurfacePanel {
         radius: Theme.retro ? 0 : Theme.radiusLg
         fill: Theme.retro ? Theme.sidebar : Theme.surface
         border.width: Theme.retro ? 0 : 1

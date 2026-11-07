@@ -185,7 +185,7 @@ Dialog {
         NumberAnimation { property: "y"; to: dialog.parent ? dialog.parent.height : 800; duration: Motion.normal; easing.type: Easing.InCubic }
     }
 
-    background: GlassPanel {
+    background: SurfacePanel {
         radius: Theme.radiusXl
         bottomLeftRadius: dialog.sheet ? 0 : Theme.radiusXl
         bottomRightRadius: dialog.sheet ? 0 : Theme.radiusXl

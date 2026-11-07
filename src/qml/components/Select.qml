@@ -169,7 +169,7 @@ ComboBox {
             boundsBehavior: Flickable.StopAtBounds
             ScrollIndicator.vertical: ScrollIndicator {}
         }
-        background: GlassPanel {
+        background: SurfacePanel {
             radius: Theme.radiusMd
             topLeftRadius: control.sheet ? Theme.radiusXl : Theme.radiusMd
             topRightRadius: control.sheet ? Theme.radiusXl : Theme.radiusMd

@@ -834,7 +834,7 @@ Rectangle {
         width: sheet ? parent.width : Math.min(340, parent.width - 32)
         padding: 20
         bottomPadding: sheet ? 20 + reader.insetBottom : 20
-        background: GlassPanel {
+        background: SurfacePanel {
             radius: Theme.radiusLg
             fill: Theme.surface
             border.width: 1

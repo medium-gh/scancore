@@ -108,9 +108,9 @@ Rectangle {
             width: 130 * pv.u
             height: 86 * pv.u
             radius: 12 * pv.u
-            color: Theme.glass ? Theme.alpha(Theme.surface, 0.62) : Theme.surface
+            color: Theme.surface
             border.width: 1
-            border.color: Theme.glass ? Theme.alpha(Theme.text, 0.14) : Theme.borderStrong
+            border.color: Theme.borderStrong
             Column {
                 x: 12 * pv.u; y: 12 * pv.u
                 spacing: 9 * pv.u

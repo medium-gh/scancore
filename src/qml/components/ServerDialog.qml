@@ -51,7 +51,7 @@ Dialog {
     focus: true
     padding: 24
     Overlay.modal: Rectangle { color: Theme.overlay }
-    background: GlassPanel {
+    background: SurfacePanel {
         radius: Theme.radiusXl
         fill: Theme.surface
         border.width: 1

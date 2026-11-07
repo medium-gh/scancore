@@ -40,7 +40,7 @@ Popup {
     }
     exit: Transition { NumberAnimation { property: "opacity"; to: 0; duration: Motion.fast } }
 
-    background: GlassPanel {
+    background: SurfacePanel {
         radius: Theme.radiusLg
         fill: Theme.surface
         border.width: 1

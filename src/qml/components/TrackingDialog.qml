@@ -66,7 +66,7 @@ Dialog {
         }
     }
 
-    background: GlassPanel {
+    background: SurfacePanel {
         radius: Theme.radiusXl
         fill: Theme.surface
         border.width: 1

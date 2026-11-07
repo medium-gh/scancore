@@ -214,7 +214,7 @@ Item {
         // Kept inside the window (it moves up near the bottom edge).
         margins: 12
         modal: false
-        background: GlassPanel {
+        background: SurfacePanel {
             radius: Theme.radiusLg
             fill: Theme.surface
             border.width: 1

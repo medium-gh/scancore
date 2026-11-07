@@ -82,7 +82,7 @@ Dialog {
     closePolicy: dialog.busy ? Popup.NoAutoClose : Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
     Overlay.modal: Rectangle { color: Theme.overlay }
-    background: GlassPanel {
+    background: SurfacePanel {
         radius: Theme.radiusXl
         fill: Theme.surface
         border.width: 1

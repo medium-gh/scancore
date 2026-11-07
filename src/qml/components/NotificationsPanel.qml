@@ -72,7 +72,7 @@ Popup {
         NumberAnimation { property: "opacity"; to: 0; duration: Motion.fast }
     }
 
-    background: GlassPanel {
+    background: SurfacePanel {
         radius: Theme.radiusXl
         fill: Theme.surface
         border.width: 1

@@ -157,17 +157,6 @@ SettingsPane {
         }
     }
 
-    SettingsGroup {
-        visible: !Theme.eink
-        title: qsTr("Glass")
-        SettingRow {
-            iconName: "layers"
-            title: qsTr("Glass menus and sheets")
-            description: qsTr("Menus, sheets and dialogs show what is behind them, blurred.")
-            Toggle { checked: App.settings.glass === true; onToggled: App.setSetting("glass", checked) }
-        }
-    }
-
     // The phones' own twenty, square as their tiles.
     SettingsGroup {
         visible: Theme.retro

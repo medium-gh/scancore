@@ -1021,23 +1021,6 @@ Rectangle {
                 Row {
                     width: parent.width
                     spacing: 12
-                    Column {
-                        width: parent.width - glassToggle.width - 12
-                        anchors.verticalCenter: parent.verticalCenter
-                        Text { text: qsTr("Glass"); color: Theme.text; font.family: Theme.fontSans; font.pixelSize: Theme.textMd; font.weight: Font.DemiBold; font.capitalization: Theme.retro ? Font.AllLowercase : Font.MixedCase }
-                        Text { width: parent.width; text: qsTr("Menus and sheets show what is behind them"); color: Theme.textMuted; font.family: Theme.fontSans; font.pixelSize: Theme.textSm; wrapMode: Text.Wrap }
-                    }
-                    Toggle {
-                        id: glassToggle
-                        anchors.verticalCenter: parent.verticalCenter
-                        checked: App.settings.glass === true
-                        Accessible.name: qsTr("Glass")
-                        onToggled: App.setSetting("glass", checked)
-                    }
-                }
-                Row {
-                    width: parent.width
-                    spacing: 12
                     Text {
                         width: parent.width - motionToggle.width - 12
                         anchors.verticalCenter: parent.verticalCenter
@@ -1287,8 +1270,7 @@ Rectangle {
                                : root.from === "new" || !root.from ? qsTr("Starting fresh") : ({ mihon: "Mihon", tachiyomi: "Tachiyomi", komikku: "Komikku", aniyomi: "Aniyomi", lnreader: "LNReader" })[root.from] },
                         { step: 2, icon: "palette", label: qsTr("Look"),
                           value: [Theme.retro ? qsTr("Retro tiles") : qsTr("Standard"),
-                                  ({ system: qsTr("System"), light: qsTr("Light"), dark: qsTr("Dark"), black: qsTr("Black") })[App.settings.theme || "system"] || "",
-                                  App.settings.glass === true ? qsTr("Glass") : ""].filter(s => s).join(" · ") },
+                                  ({ system: qsTr("System"), light: qsTr("Light"), dark: qsTr("Dark"), black: qsTr("Black") })[App.settings.theme || "system"] || ""].filter(s => s).join(" · ") },
                         { step: 3, icon: "book-open", label: qsTr("Reader"),
                           value: [App.settings.readerMode === "paged" ? qsTr("Pages") : qsTr("Vertical strip"),
                                   App.settings.readerProgressBar === false ? qsTr("No progress bar")

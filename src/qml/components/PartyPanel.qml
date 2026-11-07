@@ -29,7 +29,7 @@ Drawer {
         target: Party
         function onChatChanged() { if (panel.opened) Party.markRead() }
     }
-    background: GlassPanel {
+    background: SurfacePanel {
         fill: Theme.surface
         radius: Theme.compact ? Theme.radiusXl : 0
         Rectangle {

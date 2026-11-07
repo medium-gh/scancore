@@ -15,7 +15,7 @@ Item {
         { key: "connections", file: "ConnectionsSettings.qml", title: qsTr("Connections"), subtitle: qsTr("AniList, MyAnimeList, Comick and imports"), icon: "link", tint: "emerald",
           keywords: "anilist myanimelist mal comick tracking tracker list discord rich presence status import mihon tachiyomi tachibk backup export xml bring library" },
         { key: "theme", file: "ThemeSettings.qml", title: qsTr("Theme"), subtitle: qsTr("Colours, background and transparency"), icon: "palette", tint: "violet",
-          keywords: "dark light black system custom colour color accent wheel background picture image gif wallpaper transparency transparent opacity panels export import sct share glass blur frosted see-through menus sheets" },
+          keywords: "dark light black system custom colour color accent wheel background picture image gif wallpaper transparency transparent opacity panels export import sct share" },
         { key: "interface", file: "InterfaceSettings.qml", title: qsTr("Interface"), subtitle: qsTr("Navigation, size and motion"), icon: "layout-grid", tint: "indigo",
           keywords: "language translation idioma langue bahasa idioma sidebar dock rail floating navigation left right top bottom text size font cover animation motion speed reduce start page" },
         { key: "keyboard", file: "KeyboardSettings.qml", title: qsTr("Keyboard"), subtitle: qsTr("Shortcuts"), icon: "keyboard", tint: "mono",

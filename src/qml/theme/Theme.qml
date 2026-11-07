@@ -24,9 +24,6 @@ QtObject {
     // pivots in the Windows Phone manner, retro/*.qml) instead of the
     // standard pages and navigation.
     readonly property bool retro: App.settings.uiMode === "retro"
-    // Menus, sheets and dialogs show what is behind them, blurred
-    // (GlassPanel). Not on e-ink, which cannot show it.
-    readonly property bool glass: App.settings.glass === true && !eink
 
     // Base colours per theme. Settings draws its theme previews from these.
     readonly property var palettes: ({
