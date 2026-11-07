@@ -253,7 +253,17 @@ Item {
             property bool expanded: false
             width: Math.min(parent.width, 820)
             visible: text.length > 0
-            text: header.series.description || ""
+            // Some sources write markdown (Atsumaru: "**Rating**: 8.53/10"):
+            // its bold and italics as styled text, which still clamps to
+            // four lines with an ellipsis. Anything else as it comes.
+            readonly property string raw: header.series.description || ""
+            readonly property bool markdown: raw.indexOf("<") < 0 && /(\*\*|__)\S/.test(raw)
+            text: markdown ? raw.replace(/&/g, "&amp;").replace(/>/g, "&gt;")
+                                .replace(/(\*\*|__)(?=\S)([\s\S]*?\S)\1/g, "<b>$2</b>")
+                                .replace(/(^|[^*\w])[*_](?=\S)([^*_\n]*?\S)[*_](?![*\w])/g, "$1<i>$2</i>")
+                                .replace(/\n/g, "<br>")
+                           : raw
+            textFormat: markdown ? Text.StyledText : Text.AutoText
             color: Theme.textMuted
             font.family: Theme.fontSans
             font.pixelSize: Theme.textMd

@@ -282,7 +282,7 @@ Item {
             id: searchTap
             width: topRow.searchW
             height: parent.height
-            onClicked: if (Router.shell) Router.shell.openPalette()
+            onClicked: if (Router.shell) Router.shell.openPalette(searchTap)
         }
         MouseArea {
             id: orbTap

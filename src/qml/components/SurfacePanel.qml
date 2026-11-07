@@ -24,8 +24,15 @@ Rectangle {
     // Glass draws its own edge: no border (whatever the panel asked for).
     Binding { target: panel.border; property: "width"; value: 0; when: Theme.glass }
 
+    // False when the owner moves the panel itself (the palette extending
+    // from a search bar): it shows at full shape at once.
+    property bool pours: true
     LiquidSpring { id: pour; stiffness: 260; damping: 19 }
-    function startPour() { if (Theme.glass && visible) { pour.snap(0); pour.target = 1 } }
+    function startPour() {
+        if (!Theme.glass || !visible) return
+        if (!pours) { pour.snap(1); return }
+        pour.snap(0); pour.target = 1
+    }
     onVisibleChanged: startPour()
     // The frosted backdrop is made while a panel shows.
     readonly property bool frosting: Theme.glass && visible

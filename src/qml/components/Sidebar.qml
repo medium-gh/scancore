@@ -18,7 +18,7 @@ Rectangle {
     property string hoverKey: ""
     property string pressedKey: ""
     signal navigate(string section)
-    signal openPalette()
+    signal openPalette(var from)
 
     readonly property var sections: [
         { key: "home", label: qsTr("Home"), icon: "house" },
@@ -131,7 +131,7 @@ Rectangle {
         width: parent.width - 24
         height: 38
         hoverEnabled: true
-        onClicked: sidebar.openPalette()
+        onClicked: sidebar.openPalette(searchButton)
         background: Rectangle {
             radius: Theme.glass ? height / 2 : Theme.radiusMd
             // Glass: a capsule of glass, like the search fields on the pages.

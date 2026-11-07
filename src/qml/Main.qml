@@ -377,7 +377,10 @@ ApplicationWindow {
 
         function seriesMenu(item, anchor, x, y) { seriesActions.show(item, anchor, x, y) }
 
-        function openPalette() { commandPalette.open() }
+        // `bar`: the search bar it was opened from (Glass extends it into
+        // the palette); none for Ctrl+K.
+        function openPalette(bar) { commandPalette.openFrom(bar || null) }
+        function closePalette() { commandPalette.close() }
 
         function openShortcuts() { shortcutsSheet.open() }
 
@@ -431,7 +434,7 @@ ApplicationWindow {
             height: parent.height - 2 * window.navInset
             current: shell.section
             onNavigate: (name) => shell.goSection(name)
-            onOpenPalette: commandPalette.open()
+            onOpenPalette: (from) => commandPalette.openFrom(from || null)
         }
 
         // Glass: the stage below, well blurred, for menus, sheets and dialogs
@@ -559,7 +562,7 @@ ApplicationWindow {
         height: implicitHeight
         current: shell.section
         onNavigate: (name) => shell.goSection(name)
-        onOpenPalette: commandPalette.open()
+        onOpenPalette: (from) => commandPalette.openFrom(from || null)
     }
 
     // Reading aloud with the reader closed: the mini player, above the
@@ -602,7 +605,7 @@ ApplicationWindow {
         anchors.bottom: parent.bottom
         current: shell.section
         onNavigate: (name) => shell.goSection(name)
-        onOpenPalette: commandPalette.open()
+        onOpenPalette: (from) => commandPalette.openFrom(from || null)
     }
 
     // Glass on phones: the liquid tab bar, floating over the page (which
@@ -618,7 +621,7 @@ ApplicationWindow {
         height: 200
         current: shell.section
         onNavigate: (name) => shell.goSection(name)
-        onOpenPalette: commandPalette.open()
+        onOpenPalette: (from) => commandPalette.openFrom(from || null)
     }
 
     // Readers and the player cover the whole window.
