@@ -96,11 +96,17 @@ Item {
     // Whether the focus is nowhere a key does anything: on no item, on the
     // window itself, or on one that has gone (hidden, disabled, a popup
     // that closed).
+    // Also on something in the shell that is no control: a page that took
+    // the focus itself, whose list then ate Up and Down (a series page
+    // before its buttons were built). Not a field being typed in, and not
+    // a reader or the player (outside the shell, with keys of their own).
     function lost() {
         const w = Window.window
         if (!current || !w || current === w.contentItem || !current.visible || !current.enabled) return true
         const ov = w.Overlay.overlay
-        return current === ov || (ov && inside(current, ov) && !popupScope())
+        if (current === ov || (ov && inside(current, ov) && !popupScope())) return true
+        if (current instanceof TextInput || current instanceof TextEdit) return false
+        return !!scope && current !== scope && inside(current, scope) && !isStop(current)
     }
     // Every D-pad and Select press (the window passes them here before
     // any item sees them). While a popup is open the D-pad moves inside
@@ -115,9 +121,9 @@ Item {
         if (!root) {
             if (!lost()) return false
             // From where the focus was (a section's Remove took its row
-            // along), else from the start.
+            // along), else from the start; Select brings it back too.
             if (dirs[key] !== undefined) return move(dirs[key], null, true) || focusStart()
-            return false
+            return focusStart()
         }
         // A dropdown steps through its own choices.
         if (current instanceof ComboBox) return false
