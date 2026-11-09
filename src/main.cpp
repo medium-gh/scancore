@@ -33,6 +33,7 @@
 #ifdef Q_OS_ANDROID
 #include <QFileOpenEvent>
 #include <QGuiApplication>
+#include <QJniObject>
 #include <QtCore/private/qandroidextras_p.h>
 #else
 #include <QApplication>
@@ -102,6 +103,29 @@ public:
         const auto target = open->file().isEmpty() ? open->url().toString() : open->file();
         QTimer::singleShot(0, App::instance(), [target] { emit App::instance()->openRequested(target); });
         return true;
+    }
+};
+#endif
+
+#ifdef Q_OS_ANDROID
+// An Android intent's link (its data), handed to the window as a FileOpen
+// event would be on macOS.
+class AndroidLinks : public QtAndroidPrivate::NewIntentListener {
+public:
+    static void open(const QJniObject &intent) {
+        if (!intent.isValid())
+            return;
+        const auto action = intent.callObjectMethod("getAction", "()Ljava/lang/String;").toString();
+        if (action != QLatin1String("android.intent.action.VIEW"))
+            return;
+        const auto data = intent.callObjectMethod("getDataString", "()Ljava/lang/String;").toString();
+        if (data.isEmpty())
+            return;
+        QTimer::singleShot(0, App::instance(), [data] { emit App::instance()->openRequested(data); });
+    }
+    bool handleNewIntent(JNIEnv *, jobject intent) override {
+        open(QJniObject(intent));
+        return false;
     }
 };
 #endif
@@ -541,6 +565,18 @@ int main(int argc, char *argv[]) {
     QTimer::singleShot(0, appState, [appState, openArguments] {
         for (const auto &argument : openArguments)
             emit appState->openRequested(argument);
+    });
+#else
+    // Links SCANCORE answers (a repository's one-tap aniyomi:// link,
+    // scancore://): Qt hands Android's VIEW intents to native listeners,
+    // never as a FileOpen event, so they were dropped. The one that
+    // started the app, and each one sent while it runs.
+    static AndroidLinks links;
+    QtAndroidPrivate::registerNewIntentListener(&links);
+    QTimer::singleShot(0, appState, [] {
+        const QJniObject activity = QNativeInterface::QAndroidApplication::context();
+        if (activity.isValid())
+            AndroidLinks::open(activity.callObjectMethod("getIntent", "()Landroid/content/Intent;"));
     });
 #endif
 
