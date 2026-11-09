@@ -386,6 +386,14 @@ ApplicationWindow {
             const page = immersive.currentItem
             if (immersive.depth > 0 && page && typeof page.handleBack === "function" && page.handleBack()) return
             if (back() || App.platform !== "android") return
+            // A TV (as its own apps do): Back first takes the focus to the
+            // sidebar's current section, and leaves only from there (Back
+            // was pressed to get out of a row and SCANCORE went away).
+            const remote = spatialFocus.owner
+            if (App.tv && remote.active && sidebar.visible && sidebar.currentButton && remote.current !== sidebar.currentButton) {
+                remote.focusOn(sidebar.currentButton)
+                return
+            }
             if (section !== "home") goSection("home")
             else App.moveToBackground()
         }
