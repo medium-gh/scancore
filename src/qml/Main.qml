@@ -693,7 +693,33 @@ ApplicationWindow {
         // Readers handle their own keys, so they need focus as soon as they open.
         onCurrentItemChanged: if (currentItem) currentItem.forceActiveFocus()
         // The reader beside goes with the last one here.
-        onDepthChanged: if (depth === 0) shell.closeSplit()
+        onDepthChanged: {
+            if (depth === 0) shell.closeSplit()
+            if (!App.tv) return
+            // A TV's remote: back on the control that opened the reader or
+            // player when the last one closes (Qt left the focus on it).
+            if (depth > 0 && tvDepth === 0) tvOpener = shell.lastControl()
+            if (depth === 0 && tvDepth > 0) tvBack.restart()
+            tvDepth = depth
+        }
+        property int tvDepth: 0
+        property Item tvOpener: null
+        Timer {
+            id: tvBack
+            interval: Motion.normal + 80
+            onTriggered: {
+                if (immersive.busy) { restart(); return }
+                const remote = spatialFocus.owner
+                if (!remote.active || (remote.current && remote.isStop(remote.current) && !remote.lost())) return
+                if (immersive.tvOpener && remote.isStop(immersive.tvOpener) && remote.onScreen(immersive.tvOpener)) remote.focusOn(immersive.tvOpener)
+                else {
+                    // Gone (the player went back to the series it opened
+                    // from Home): the page now shown, else the sidebar.
+                    const stack = shell.stackFor(shell.section)
+                    if (!(stack && stack.currentItem && remote.focusFirst(stack.currentItem))) remote.focusStart()
+                }
+            }
+        }
     }
 
     // Side by side (wide windows): a second reader on the right half, opened
