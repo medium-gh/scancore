@@ -82,6 +82,13 @@ Item {
         }
         return null
     }
+    // The remoteRegion around an item (the sidebar), or null (the page).
+    function regionOf(item) {
+        for (let p = item; p; p = p.parent) if (p.remoteRegion === true) return p
+        return null
+    }
+    // The control focused last inside a region.
+    property Item regionLeft: null
     function inside(item, root) {
         for (let p = item; p; p = p.parent) if (p === root) return true
         return false
@@ -142,6 +149,7 @@ Item {
         // Up and down with nothing in that cone: the nearest ahead anywhere
         // across (a page's header buttons over its first row). Left and
         // right stay put instead of jumping to another row.
+        let cross = null, crossScore = Infinity
         let loose = null, looseScore = Infinity, looseAlong = 0, looseFar = 0, looseOff = 0, bestAlong = 0, bestOff = 0
         // ...and only within the view it is in (the page, not the sidebar).
         const fromViews = []
@@ -150,10 +158,6 @@ Item {
         // the page.)
         // ...never into another region (the sidebar beside a page: Down
         // from a page's last row went to Collapse).
-        const regionOf = (item) => {
-            for (let p = item; p; p = p.parent) if (p.remoteRegion === true) return p
-            return null
-        }
         const fromRegion = current ? regionOf(current) : null
         const sameView = (item) => {
             if (regionOf(item) !== fromRegion) return false
@@ -193,6 +197,10 @@ Item {
             if (gap > 0 && gap > cone) {
                 const wide = Math.max(0, along) + off * 0.5
                 if (!horizontal && along >= 0 && wide < looseScore && sameView(item)) { looseScore = wide; loose = item; looseAlong = along; looseFar = along + r.height; looseOff = off }
+                // Left and right into another region (the sidebar to the
+                // page, its hero card lower than Home): the nearest across.
+                const side = off + Math.max(0, along) * 0.2
+                if (horizontal && along >= 0 && side < crossScore && regionOf(item) !== fromRegion) { crossScore = side; cross = item }
                 continue
             }
             // In line first, then the nearest; the centres break ties.
@@ -211,6 +219,11 @@ Item {
         // 13 * ahead² + across².
         const weigh = (a, o) => 13 * a * a + o * o
         if (!best || (loose && bestAlong > looseFar && weigh(looseAlong, looseOff) < weigh(bestAlong, bestOff))) best = loose
+        if (!best) best = cross
+        // Back into a region from outside it: where it was left (the
+        // sidebar's Home, not the section level with the page's card).
+        if (best && (direction === "left" || direction === "right") && regionLeft && regionLeft !== current && regionOf(best) && regionOf(best) !== fromRegion
+                && regionOf(best) === regionOf(regionLeft) && isStop(regionLeft) && onScreen(regionLeft)) best = regionLeft
         if (best) focusOn(best)
         return best !== null
     }
@@ -291,6 +304,7 @@ Item {
     property Item openPopup: null
     property Item opener: null
     onCurrentChanged: {
+        if (current && isStop(current) && regionOf(current)) regionLeft = current
         if (active && !openPopup && current && isStop(current) && !popupScope()) opener = current
     }
     function firstStop(root) {
