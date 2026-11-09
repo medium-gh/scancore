@@ -197,6 +197,9 @@ Item {
                 || (from.x >= r.x && from.y >= r.y && from.x + from.width <= r.x + r.width && from.y + from.height <= r.y + r.height)
             if (inside && ahead) { along = horizontal ? Math.abs(x - cx) : Math.abs(y - cy); gap = 0 }
             if (!ahead || (!inside && along < -Math.min(from.width, from.height) * 0.3)) continue
+            // Up and down stay in their region (a page's back arrow went
+            // down into the sidebar).
+            if (!horizontal && regionOf(item) !== fromRegion) continue
             // Left and right: level only, side by side (from the last of a
             // row Right went up to the header, or down to the next row; the
             // sidebar and the page cross below).
