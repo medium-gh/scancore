@@ -281,13 +281,28 @@ ApplicationWindow {
 
         // A TV's remote, for controls that take the D-pad's keys themselves
         // (Select): the focus moves on as from anywhere else.
-        function moveFocus(direction, within) { return spatialFocus.move(direction, within) }
+        function moveFocus(direction, within) { return spatialFocus.owner.move(direction, within) }
         // A reader on a TV: its controls by remote (see readerKey).
-        function focusFirst(within) { return spatialFocus.focusFirst(within) }
-        function onControl(within) { return spatialFocus.onControl(within) }
-        function pressFocus() { return spatialFocus.activate() }
-        function isStop(item) { return spatialFocus.isStop(item) }
-        function focusEdge(within, bottom) { return spatialFocus.focusEdge(within, bottom) }
+        function focusFirst(within) { return spatialFocus.owner.focusFirst(within) }
+        function onControl(within) { return spatialFocus.owner.onControl(within) }
+        function pressFocus() { return spatialFocus.owner.activate() }
+        function isStop(item) { return spatialFocus.owner.isStop(item) }
+        function focusEdge(within, bottom) { return spatialFocus.owner.focusEdge(within, bottom) }
+        // A page shown in `stack` (PageStack): the focus goes to it unless
+        // it is on a control there already or outside the stack (the
+        // sidebar); `back`, the control that opened the page after it,
+        // first.
+        function focusPage(stack, page, back) {
+            const remote = spatialFocus.owner
+            if (!remote.active) return
+            const now = remote.current
+            if (now && remote.isStop(now) && !remote.lost() && (!remote.inside(now, stack) || remote.inside(now, page))) return
+            if (back && remote.isStop(back) && remote.inside(back, page)) remote.focusOn(back)
+            else if (stack.depth > 1) remote.focusFirst(page)
+            else remote.focusStart()
+        }
+        // The control the remote was on last (it opens the next page).
+        function lastControl() { return spatialFocus.owner.opener }
         // A reader's key on a TV: Select brings the controls up with the
         // focus on the first; then the D-pad moves between them, Select
         // presses, Escape goes back to the page. False: the reader's own
@@ -793,13 +808,17 @@ ApplicationWindow {
     SpatialFocus {
         id: spatialFocus
         scope: shellView
+        // The welcome has its own: the shell behind it takes no focus.
+        handOff: onboarding.item ? onboarding.item.remote : null
+        startItem: sidebar.visible ? sidebar.currentButton : null
         Component.onCompleted: if (App.tv) App.routeTvKeys(window, spatialFocus)
     }
-    // A TV opens with the focus on the first control.
+    // A TV opens with the focus on the current section (or the first
+    // control).
     Timer {
-        running: App.tv
+        running: spatialFocus.active
         interval: 1500
-        onTriggered: if (!spatialFocus.current || !spatialFocus.isStop(spatialFocus.current)) spatialFocus.move("down")
+        onTriggered: if (!spatialFocus.current || !spatialFocus.isStop(spatialFocus.current)) spatialFocus.focusStart() || spatialFocus.move("down")
     }
 
     CommandPalette {

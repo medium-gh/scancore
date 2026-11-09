@@ -360,7 +360,9 @@ Rectangle {
                     required property int index
                     width: (index === root.step ? 30 : 14) + 8
                     height: 36
-                    focusPolicy: Qt.TabFocus
+                    // Not on a TV: the remote's Down from a step landed on
+                    // a dot and Select skipped steps; Back and Continue go.
+                    focusPolicy: App.tv ? Qt.NoFocus : Qt.TabFocus
                     Accessible.name: qsTr("Step %1 of %2").arg(index + 1).arg(root.steps)
                     onClicked: root.go(index)
                     Behavior on width { NumberAnimation { duration: Motion.slow; easing.type: Easing.OutCubic } }
@@ -459,15 +461,27 @@ Rectangle {
         else if (event.key === Qt.Key_Left) { root.go(root.step - 1); event.accepted = true }
         else if (event.key === Qt.Key_Escape && root.step > 0) { root.go(root.step - 1); event.accepted = true }
     }
+    // The shell hands its remote to this one while the welcome shows.
+    readonly property alias remote: spatial
     SpatialFocus {
         id: spatial
         scope: root
+        // The step's own controls first, not the language at the top.
+        start: stage
+    }
+    // A step's Continue gone (the last step has none): the focus goes to
+    // the new step, once it has slid in.
+    onStepChanged: if (App.tv) stepFocus.restart()
+    Timer {
+        id: stepFocus
+        interval: Motion.page + 50
+        onTriggered: if (spatial.lost()) spatial.focusStart()
     }
     Timer {
-        // A TV starts with the focus on the first control.
+        // A TV starts with the focus on the step's first control.
         running: App.tv && root.settled
         interval: 400
-        onTriggered: if (!spatial.current || !spatial.isStop(spatial.current)) spatial.move("down")
+        onTriggered: if (!spatial.current || !spatial.isStop(spatial.current)) spatial.focusFirst(stage) || spatial.move("down")
     }
 
     // ------------------------------------------------------------ pieces
@@ -1332,6 +1346,8 @@ Rectangle {
                     iconName: "chevron-right"
                     iconAfter: true
                     text: qsTr("Start exploring")
+                    // Where a TV's remote lands on this step.
+                    readonly property bool remoteFirst: true
                     onClicked: root.finish()
                 }
                 ScButton {

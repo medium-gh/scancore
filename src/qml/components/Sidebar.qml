@@ -57,6 +57,13 @@ Rectangle {
         return -1
     }
     readonly property bool hovering: hoverKey !== "" && hoverKey !== current
+    // The current section's button (a TV's remote starts there).
+    readonly property Item currentButton: {
+        const row = indicator.target
+        if (row) for (let i = 0; i < row.children.length; ++i)
+            if (row.children[i] instanceof AbstractButton) return row.children[i]
+        return null
+    }
     LiquidSpring { id: dropY; target: Math.max(0, sidebar.itemY(sidebar.current)) }
     LiquidSpring { id: hoverY; stiffness: 300; damping: 19; target: sidebar.hovering ? Math.max(0, sidebar.itemY(sidebar.hoverKey)) : hoverY.target }
     LiquidSpring { id: hoverSize; stiffness: 280; damping: 16; target: sidebar.hovering ? 1 : 0 }

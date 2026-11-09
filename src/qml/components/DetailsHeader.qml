@@ -214,6 +214,8 @@ Item {
                 text: header.primaryText
                 iconName: "play"
                 loading: header.busy
+                // A TV's remote lands here when the page opens.
+                readonly property bool remoteFirst: true
                 onClicked: header.primary()
             }
             ScButton {

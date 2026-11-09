@@ -12,6 +12,28 @@ StackView {
 
     Component.onCompleted: if (initial) push(Qt.resolvedUrl("../" + initial), {}, StackView.Immediate)
 
+    // A TV's remote: a page that opens takes the focus (its main action,
+    // else its first control), and going back gives it to the control
+    // that opened the page. Qt left it on the page that went, and the
+    // remote did nothing.
+    property int tvDepth: 0
+    property var tvOpeners: []
+    function tvShown() {
+        if (!App.tv) return
+        // (The page has taken the focus by now: the control it came from.)
+        if (depth > tvDepth && Router.shell) tvOpeners[depth - 2] = Router.shell.lastControl()
+        tvDepth = depth
+        tvFocus.restart()
+    }
+    Timer {
+        id: tvFocus
+        interval: Motion.normal + 80
+        onTriggered: {
+            if (stack.busy) { restart(); return }
+            if (Router.shell && stack.currentItem) Router.shell.focusPage(stack, stack.currentItem, stack.tvOpeners[stack.depth - 1] || null)
+        }
+    }
+
     // The turnstile's doors. A transition only animates its item's own
     // properties, so each page gets one as a transform while it turns. The
     // page comes from the transition itself (ViewTransition.item): StackView
@@ -37,7 +59,10 @@ StackView {
     }
     onBusyChanged: if (!busy) settle()
     // Immediate changes run no transition (and busy never changes).
-    onCurrentItemChanged: if (!busy) settle()
+    onCurrentItemChanged: {
+        if (!busy) settle()
+        tvShown()
+    }
 
     // Forward: the old page swings away into the screen, the new one comes
     // in from the other side. Back: the other way round.

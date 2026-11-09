@@ -557,6 +557,21 @@ void setUpTouch() {
 #endif
 }
 
+void scaleForTv() {
+#ifdef Q_OS_ANDROID
+    // Before the application exists (QT_SCALE_FACTOR is read as it starts);
+    // the activity's context is there already. Set by hand, it stays.
+    if (!qEnvironmentVariableIsEmpty("QT_SCALE_FACTOR"))
+        return;
+    const auto context = QNativeInterface::QAndroidApplication::context();
+    if (!context.isValid())
+        return;
+    const float scale = QJniObject::callStaticMethod<jfloat>(kScreenClass, "tvScale", "(Landroid/content/Context;)F", context.object());
+    if (scale > 0.4f && scale < 0.99f)
+        qputenv("QT_SCALE_FACTOR", QByteArray::number(scale, 'f', 3));
+#endif
+}
+
 bool isTv() {
 #ifdef Q_OS_ANDROID
     static const bool tv = QJniObject::callStaticMethod<jboolean>(kScreenClass, "isTv", "(Landroid/content/Context;)Z",

@@ -7,8 +7,8 @@ import Scancore
 // last novel, Anime: the last anime; Home and the rest: whatever was
 // last), as the desktop draft has it: blurred, darker and a little more
 // colourful (its shapes still show), with no veil; in a light theme
-// lighter instead. A new section's art fades in over the old one. Plain
-// base colour when there is no history yet.
+// lighter instead. A new section's art fades in over the old one. With
+// no history yet, a trending anime's banner.
 Item {
     id: wall
     property string section: "home"
@@ -35,8 +35,18 @@ Item {
 
     function first(t) { return t && t.ok && t.result.length ? t.result[0] : null }
     readonly property var entry: first(task) || first(anyTask)
-    readonly property string art: entry ? ((entry.extra && entry.extra.banner) || entry.cover || "") : ""
-    readonly property string url: art ? App.image(art, entry.referer || "") : ""
+    // Nothing opened yet (a new install, a TV): what is trending, so the
+    // glass has something to show and is not plain grey over black.
+    readonly property bool waiting: (!task || task.ok) && (!anyTask || anyTask.ok) && !entry
+    property var trending: waiting && visible ? Anime.home() : null
+    readonly property string trendingArt: {
+        if (!trending || !trending.ok) return ""
+        for (const it of trending.result.trending || [])
+            if (it && !it.isAdult && (it.banner || it.cover)) return it.banner || it.cover
+        return ""
+    }
+    readonly property string art: entry ? ((entry.extra && entry.extra.banner) || entry.cover || "") : trendingArt
+    readonly property string url: art ? App.image(art, entry ? entry.referer || "" : "") : ""
 
     // Two pictures: the one showing, and the next one loading behind it.
     property int front: 0

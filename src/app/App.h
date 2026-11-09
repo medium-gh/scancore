@@ -59,9 +59,10 @@ public:
     QVariantMap startAction() const;
 
     Q_INVOKABLE void setSetting(const QString &key, const QVariant &value);
-    // A TV's remote in menus, sheets and dialogs: keys pressed while one is
-    // open go first to spatialFocus.popupKey(key), which moves the focus
-    // inside it (a popup's keys never reach the shell's own handler).
+    // A TV's remote: every D-pad and Select press goes first to
+    // spatialFocus.windowKey(key), which moves the focus inside an open
+    // menu, sheet or dialog (a popup's keys never reach the shell's own
+    // handler) and brings a lost focus back.
     Q_INVOKABLE void routeTvKeys(QObject *window, QObject *spatialFocus);
     // Keyboard focus back to the app window from a native view inside it
     // (WebView2 keeps it once its page loads). Windows only; elsewhere a

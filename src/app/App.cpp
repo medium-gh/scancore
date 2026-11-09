@@ -310,8 +310,9 @@ QString App::version() const { return QCoreApplication::applicationVersion(); }
 bool App::tv() const { return platform::isTv(); }
 
 namespace {
-// Hands the remote's D-pad and Select to SpatialFocus.popupKey while a popup
-// is open; it says whether it took the key. Text fields keep their keys.
+// Hands the remote's D-pad and Select to SpatialFocus.windowKey first (a
+// popup open, or the focus lost); it says whether it took the key. Text
+// fields keep their keys.
 class TvKeys : public QObject {
 public:
     TvKeys(QQuickWindow *window, QObject *spatial) : QObject(window), m_window(window), m_spatial(spatial) {}
@@ -334,7 +335,7 @@ protected:
             focus && (focus->inherits("QQuickTextInput") || focus->inherits("QQuickTextEdit")))
             return false;
         QVariant taken;
-        QMetaObject::invokeMethod(m_spatial, "popupKey", Q_RETURN_ARG(QVariant, taken), Q_ARG(QVariant, key->key()));
+        QMetaObject::invokeMethod(m_spatial, "windowKey", Q_RETURN_ARG(QVariant, taken), Q_ARG(QVariant, key->key()));
         return taken.toBool();
     }
 

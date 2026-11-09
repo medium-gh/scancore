@@ -377,6 +377,7 @@ int main(int argc, char *argv[]) {
     QtWebView::initialize();
 #endif
 #ifdef Q_OS_ANDROID
+    sc::platform::scaleForTv();
     using Application = QGuiApplication;
 #else
     using Application = QApplication;

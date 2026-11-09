@@ -11,7 +11,17 @@ Item {
     id: spatial
     // Where to look for stops (the shell; readers keep their own keys).
     property Item scope
-    readonly property bool active: App.tv
+    // Where the focus goes first, and back to when it is lost (a closed
+    // dialog took it along): the first control on screen in it.
+    property Item start: scope
+    // ...or this one when it can take the focus (the current section).
+    property Item startItem: null
+    // Another SpatialFocus that has the remote meanwhile (the welcome over
+    // the shell): keys and moves asked of this one go to it.
+    property var handOff: null
+    readonly property bool active: App.tv && !handOff
+    // The one that has the remote now.
+    readonly property var owner: handOff || spatial
     readonly property Item current: active && Window.window ? Window.window.activeFocusItem : null
 
     function isStop(item) {
@@ -28,6 +38,20 @@ Item {
     function rectOf(item) {
         const p = item.mapToItem(null, 0, 0)
         return Qt.rect(p.x, p.y, item.width, item.height)
+    }
+    // The part of it that shows: cut by the views that clip it (a page's
+    // last row half under the footer). One scrolled out of sight keeps
+    // its whole rect (moving to it scrolls it in).
+    function shownRectOf(item) {
+        const r = rectOf(item)
+        let x1 = r.x, y1 = r.y, x2 = r.x + r.width, y2 = r.y + r.height
+        for (let p = item.parent; p; p = p.parent) {
+            if (!p.clip) continue
+            const c = rectOf(p)
+            x1 = Math.max(x1, c.x); y1 = Math.max(y1, c.y)
+            x2 = Math.min(x2, c.x + c.width); y2 = Math.min(y2, c.y + c.height)
+        }
+        return x2 - x1 >= 4 && y2 - y1 >= 4 ? Qt.rect(x1, y1, x2 - x1, y2 - y1) : r
     }
     // Inside the window (and inside the views clipping it).
     function onScreen(item) {
@@ -59,16 +83,34 @@ Item {
         for (let p = item; p; p = p.parent) if (p === root) return true
         return false
     }
-    // A key pressed while a popup is open (the window passes it here before
-    // the popup sees it): the D-pad moves inside the popup, Select presses.
-    // False leaves the key to the popup (a list or a field of its own).
-    function popupKey(key) {
+    // Whether the focus is nowhere a key does anything: on no item, on the
+    // window itself, or on one that has gone (hidden, disabled, a popup
+    // that closed).
+    function lost() {
+        const w = Window.window
+        if (!current || !w || current === w.contentItem || !current.visible || !current.enabled) return true
+        const ov = w.Overlay.overlay
+        return current === ov || (ov && inside(current, ov) && !popupScope())
+    }
+    // Every D-pad and Select press (the window passes them here before
+    // any item sees them). While a popup is open the D-pad moves inside
+    // it and Select presses; with the focus lost the D-pad brings it back.
+    // False leaves the key to the focused item (the shell's own keys, a
+    // reader, a list or a field).
+    function windowKey(key) {
+        if (handOff) return handOff.windowKey(key)
         if (!active) return false
+        const dirs = { [Qt.Key_Left]: "left", [Qt.Key_Right]: "right", [Qt.Key_Up]: "up", [Qt.Key_Down]: "down" }
         const root = popupScope()
-        if (!root) return false
+        if (!root) {
+            if (!lost()) return false
+            // From where the focus was (a section's Remove took its row
+            // along), else from the start.
+            if (dirs[key] !== undefined) return move(dirs[key], null, true) || focusStart()
+            return false
+        }
         // A dropdown steps through its own choices.
         if (current instanceof ComboBox) return false
-        const dirs = { [Qt.Key_Left]: "left", [Qt.Key_Right]: "right", [Qt.Key_Up]: "up", [Qt.Key_Down]: "down" }
         if (dirs[key] !== undefined) { move(dirs[key]); return true }
         if (current && inside(current, root)) return activate()
         return false
@@ -77,12 +119,15 @@ Item {
     // "left", "right", "up" or "down". Returns whether it moved.
     // `within`: another place to move in instead of the shell (a reader's
     // controls).
-    function move(direction, within) {
+    // `fromLast`: with the focus lost, from where it was last.
+    function move(direction, within, fromLast) {
         const stops = []
         const root = popupScope() || within || scope
         for (let i = 0; i < root.children.length; ++i) collect(root.children[i], stops)
         if (stops.length === 0) return false
-        const from = current && isStop(current) && inside(current, root) ? rectOf(current) : null
+        const from = current && isStop(current) && inside(current, root) ? shownRectOf(current)
+            : fromLast && lastRect ? lastRect : null
+        if (fromLast && !from) return false
         if (!from) {
             // Nothing focused yet: the first stop on screen, top left.
             const shown = stops.filter(onScreen).sort((a, b) => rectOf(a).y - rectOf(b).y || rectOf(a).x - rectOf(b).x)
@@ -94,17 +139,23 @@ Item {
         // Up and down with nothing in that cone: the nearest ahead anywhere
         // across (a page's header buttons over its first row). Left and
         // right stay put instead of jumping to another row.
-        let loose = null, looseScore = Infinity
+        let loose = null, looseScore = Infinity, looseAlong = 0, looseFar = 0, looseOff = 0, bestAlong = 0, bestOff = 0
         // ...and only within the view it is in (the page, not the sidebar).
         const fromViews = []
         for (let p = current ? current.parent : null; p; p = p.parent) if (p instanceof Flickable) fromViews.push(p)
+        // (or one that never scrolls: a footer's Back and Continue under
+        // the page.)
         const sameView = (item) => {
-            for (let p = item.parent; p; p = p.parent) if (p instanceof Flickable && fromViews.indexOf(p) >= 0) return true
-            return fromViews.length === 0
+            let views = 0
+            for (let p = item.parent; p; p = p.parent) if (p instanceof Flickable) {
+                if (fromViews.indexOf(p) >= 0) return true
+                ++views
+            }
+            return fromViews.length === 0 || views === 0
         }
         for (const item of stops) {
             if (item === current) continue
-            const r = rectOf(item)
+            const r = shownRectOf(item)
             const x = r.x + r.width / 2, y = r.y + r.height / 2
             // along: how far ahead; gap: how far off the line (0 when the two
             // overlap across the way); off: centre to centre across.
@@ -125,9 +176,12 @@ Item {
                 || (from.x >= r.x && from.y >= r.y && from.x + from.width <= r.x + r.width && from.y + from.height <= r.y + r.height)
             if (inside && ahead) { along = horizontal ? Math.abs(x - cx) : Math.abs(y - cy); gap = 0 }
             if (!ahead || (!inside && along < -Math.min(from.width, from.height) * 0.3)) continue
-            if (gap > 0 && gap > Math.max(0, along)) {
+            // Left and right: nearly level only (from the last of a row
+            // Right went up to the header).
+            const cone = horizontal ? Math.min(Math.max(0, along), from.height) * 0.5 : Math.max(0, along)
+            if (gap > 0 && gap > cone) {
                 const wide = Math.max(0, along) + off * 0.5
-                if (!horizontal && along >= 0 && wide < looseScore && sameView(item)) { looseScore = wide; loose = item }
+                if (!horizontal && along >= 0 && wide < looseScore && sameView(item)) { looseScore = wide; loose = item; looseAlong = along; looseFar = along + r.height; looseOff = off }
                 continue
             }
             // In line first, then the nearest; the centres break ties.
@@ -135,9 +189,17 @@ Item {
             if (score < bestScore) {
                 bestScore = score
                 best = item
+                bestAlong = Math.max(0, along)
+                bestOff = off
             }
         }
-        if (!best) best = loose
+        // ...or, up and down, when the one in line is beyond it (Continue
+        // under a picture: Up to the choices beside it, not to the header
+        // at the top). As Android's FocusFinder: the one in line wins when
+        // it is nearer than the other's far edge, else the nearer by
+        // 13 * ahead² + across².
+        const weigh = (a, o) => 13 * a * a + o * o
+        if (!best || (loose && bestAlong > looseFar && weigh(looseAlong, looseOff) < weigh(bestAlong, bestOff))) best = loose
         if (best) focusOn(best)
         return best !== null
     }
@@ -152,15 +214,20 @@ Item {
             if (!(p instanceof Flickable)) continue
             const r = item.mapToItem(p.contentItem, 0, 0)
             const margin = 40
-            if (p.contentHeight > p.height) {
-                if (r.y - margin < p.contentY) p.contentY = Math.max(p.originY, r.y - margin)
+            // The view's own margins are part of its range (a row of
+            // covers inset 32: the first cover went under the sidebar).
+            const top = p.originY - p.topMargin, left = p.originX - p.leftMargin
+            const bottom = p.originY + p.contentHeight + p.bottomMargin - p.height
+            const right = p.originX + p.contentWidth + p.rightMargin - p.width
+            if (bottom > top) {
+                if (r.y - margin < p.contentY) p.contentY = Math.max(top, r.y - margin)
                 else if (r.y + item.height + margin > p.contentY + p.height)
-                    p.contentY = Math.min(p.originY + p.contentHeight - p.height, r.y + item.height + margin - p.height)
+                    p.contentY = Math.min(bottom, r.y + item.height + margin - p.height)
             }
-            if (p.contentWidth > p.width) {
-                if (r.x - margin < p.contentX) p.contentX = Math.max(p.originX, r.x - margin)
+            if (right > left) {
+                if (r.x - margin < p.contentX) p.contentX = Math.max(left, r.x - margin)
                 else if (r.x + item.width + margin > p.contentX + p.width)
-                    p.contentX = Math.min(p.originX + p.contentWidth - p.width, r.x + item.width + margin - p.width)
+                    p.contentX = Math.min(right, r.x + item.width + margin - p.width)
             }
         }
     }
@@ -180,9 +247,17 @@ Item {
         focusOn(shown[0])
         return true
     }
+    // Where the focus starts: startItem, else the first control in start.
+    function focusStart() {
+        if (startItem && isStop(startItem) && onScreen(startItem)) {
+            focusOn(startItem)
+            return true
+        }
+        return focusFirst(start)
+    }
     // Its first control, top left (Select brings the controls up).
     function focusFirst(within) {
-        const first = firstStop(within)
+        const first = within ? firstStop(within) : null
         if (first) focusOn(first)
         return first !== null
     }
@@ -203,12 +278,16 @@ Item {
     // one would otherwise keep the last, often its Close button). Checked
     // a few times a second, on a TV only.
     property Item openPopup: null
+    property Item opener: null
+    onCurrentChanged: if (active && !openPopup && current && isStop(current) && !popupScope()) opener = current
     function firstStop(root) {
         const stops = []
         for (let i = 0; i < root.children.length; ++i) collect(root.children[i], stops)
         const shown = stops.filter(onScreen)
         shown.sort((a, b) => rectOf(a).y - rectOf(b).y || rectOf(a).x - rectOf(b).x)
-        return shown.length ? shown[0] : null
+        // A control can ask to be the first (a step's main action), also
+        // below the fold (focusing it scrolls it in).
+        return stops.find(item => item.remoteFirst === true) || shown[0] || null
     }
     Timer {
         running: spatial.active
@@ -216,7 +295,16 @@ Item {
         repeat: true
         onTriggered: {
             const p = spatial.popupScope()
+            // The last control focused with no popup open: the one that
+            // opens the next.
+            if (!p && !spatial.openPopup && spatial.current && spatial.isStop(spatial.current)) spatial.opener = spatial.current
             if (p === spatial.openPopup) return
+            // Closed: back to the control that opened it (Qt leaves the
+            // focus nowhere, and the remote did nothing until a restart).
+            if (!p && spatial.lost()) {
+                if (spatial.opener && spatial.isStop(spatial.opener) && spatial.onScreen(spatial.opener)) spatial.focusOn(spatial.opener)
+                else spatial.focusStart()
+            }
             spatial.openPopup = p
             // A dropdown's list: the dropdown keeps the focus and its keys.
             if (spatial.current instanceof ComboBox) return
@@ -224,6 +312,9 @@ Item {
             if (first) spatial.focusOn(first)
         }
     }
+
+    // Where the focus was last (the ring's place).
+    property var lastRect: null
 
     // The ring around what has the focus.
     Rectangle {
@@ -241,6 +332,7 @@ Item {
             running: ring.visible
             onTriggered: {
                 const r = spatial.rectOf(spatial.current)
+                spatial.lastRect = r
                 ring.x = r.x - 4
                 ring.y = r.y - 4
                 ring.width = r.width + 8

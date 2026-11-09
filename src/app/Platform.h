@@ -92,6 +92,9 @@ void setMediaVolume(double level);
 void setBarIcons(bool darkScreen);
 // A television (Android TV): a D-pad, no touch screen.
 bool isTv();
+// A TV's interface at about 1280 wide (Screen.tvScale): call before the
+// application is made.
+void scaleForTv();
 // Android: the status and navigation bars shown or hidden (readers).
 void setSystemBars(bool shown);
 // Android: the screen's fastest refresh rate for this window, or the system's choice.
