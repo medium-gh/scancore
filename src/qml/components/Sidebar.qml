@@ -57,6 +57,9 @@ Rectangle {
         return -1
     }
     readonly property bool hovering: hoverKey !== "" && hoverKey !== current
+    // A region of its own for a TV's remote: Up and Down from a page do
+    // not slip into it (Left and Right do).
+    readonly property bool remoteRegion: true
     // The current section's button (a TV's remote starts there).
     readonly property Item currentButton: {
         const row = indicator.target

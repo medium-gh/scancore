@@ -145,7 +145,15 @@ Item {
         for (let p = current ? current.parent : null; p; p = p.parent) if (p instanceof Flickable) fromViews.push(p)
         // (or one that never scrolls: a footer's Back and Continue under
         // the page.)
+        // ...never into another region (the sidebar beside a page: Down
+        // from a page's last row went to Collapse).
+        const regionOf = (item) => {
+            for (let p = item; p; p = p.parent) if (p.remoteRegion === true) return p
+            return null
+        }
+        const fromRegion = current ? regionOf(current) : null
         const sameView = (item) => {
+            if (regionOf(item) !== fromRegion) return false
             let views = 0
             for (let p = item.parent; p; p = p.parent) if (p instanceof Flickable) {
                 if (fromViews.indexOf(p) >= 0) return true
