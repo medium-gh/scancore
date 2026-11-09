@@ -26,6 +26,9 @@ Item {
 
     function isStop(item) {
         if (!item || !item.visible || !item.enabled || item.width <= 0 || item.height <= 0 || item.opacity <= 0.01) return false
+        // A web page's surface (Qt WebEngine's) takes focus like a control:
+        // the embedded player's whole picture became the "first control".
+        if (String(item).indexOf("QtWebEngineCore::") === 0) return false
         if (item instanceof AbstractButton) return (item.focusPolicy & Qt.TabFocus) !== 0
         return item.activeFocusOnTab === true
     }
@@ -287,7 +290,9 @@ Item {
     // a few times a second, on a TV only.
     property Item openPopup: null
     property Item opener: null
-    onCurrentChanged: if (active && !openPopup && current && isStop(current) && !popupScope()) opener = current
+    onCurrentChanged: {
+        if (active && !openPopup && current && isStop(current) && !popupScope()) opener = current
+    }
     function firstStop(root) {
         const stops = []
         for (let i = 0; i < root.children.length; ++i) collect(root.children[i], stops)
