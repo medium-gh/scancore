@@ -320,7 +320,10 @@ ApplicationWindow {
             }
             if (select && !event.isAutoRepeat) {
                 showControls()
-                Qt.callLater(() => spatialFocus.focusFirst(reader))
+                // The controls fade in: tried until one shows.
+                readerFocus.reader = reader
+                readerFocus.tries = 0
+                readerFocus.restart()
                 return true
             }
             return false
@@ -832,6 +835,13 @@ ApplicationWindow {
         }
     }
 
+    Timer {
+        id: readerFocus
+        property Item reader: null
+        property int tries: 0
+        interval: 60
+        onTriggered: if (reader && !spatialFocus.owner.focusFirst(reader) && ++tries < 10) restart()
+    }
     SpatialFocus {
         id: spatialFocus
         scope: shellView
