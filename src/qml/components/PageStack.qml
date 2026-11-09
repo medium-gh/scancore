@@ -28,15 +28,16 @@ StackView {
     }
     Timer {
         id: tvFocus
-        interval: Motion.normal + 80
-        // A page still being built (a TV builds its buttons a moment later)
-        // is tried again, for up to about three seconds.
+        interval: tries === 0 ? Motion.normal + 80 : 250
+        // Watched for about three seconds: a page still being built (a TV
+        // builds its buttons a moment later), or one that rebuilds them as
+        // its data comes (the series page's header took the focus along).
         property int tries: 0
         onTriggered: {
             if (stack.busy) { restart(); return }
             if (!Router.shell || !stack.currentItem) return
-            if (Router.shell.focusPage(stack, stack.currentItem, stack.tvOpeners[stack.depth - 1] || null) || ++tries > 12) { tries = 0; return }
-            restart()
+            Router.shell.focusPage(stack, stack.currentItem, tries === 0 ? stack.tvOpeners[stack.depth - 1] || null : null)
+            if (++tries < 12) restart()
         }
     }
 

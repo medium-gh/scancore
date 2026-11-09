@@ -116,6 +116,7 @@ Item {
     function windowKey(key) {
         if (handOff) return handOff.windowKey(key)
         if (!active) return false
+        freshPopup = 0
         const dirs = { [Qt.Key_Left]: "left", [Qt.Key_Right]: "right", [Qt.Key_Up]: "up", [Qt.Key_Down]: "down" }
         const root = popupScope()
         if (!root) {
@@ -313,6 +314,7 @@ Item {
     // a few times a second, on a TV only.
     property Item openPopup: null
     property Item opener: null
+    property int freshPopup: 0
     onCurrentChanged: {
         if (current && isStop(current) && regionOf(current)) regionLeft = current
         if (active && !openPopup && current && isStop(current) && !popupScope()) opener = current
@@ -335,7 +337,15 @@ Item {
             // The last control focused with no popup open: the one that
             // opens the next.
             if (!p && !spatial.openPopup && spatial.current && spatial.isStop(spatial.current)) spatial.opener = spatial.current
+            // A popup that fills in after it opens (Read it from's sources):
+            // its first control, until a key is pressed (two seconds at most).
+            if (p && p === spatial.openPopup && spatial.freshPopup > 0) {
+                --spatial.freshPopup
+                const first = spatial.current instanceof ComboBox ? null : spatial.firstStop(p)
+                if (first && first !== spatial.current) spatial.focusOn(first)
+            }
             if (p === spatial.openPopup) return
+            spatial.freshPopup = p ? 10 : 0
             // Closed: back to the control that opened it (Qt leaves the
             // focus nowhere, and the remote did nothing until a restart).
             if (!p && spatial.lost()) {
