@@ -292,14 +292,15 @@ ApplicationWindow {
         // it is on a control there already or outside the stack (the
         // sidebar); `back`, the control that opened the page after it,
         // first.
+        // True when the focus is settled (false: try again, nothing there yet).
         function focusPage(stack, page, back) {
             const remote = spatialFocus.owner
-            if (!remote.active) return
+            if (!remote.active) return true
             const now = remote.current
-            if (now && remote.isStop(now) && !remote.lost() && (!remote.inside(now, stack) || remote.inside(now, page))) return
-            if (back && remote.isStop(back) && remote.inside(back, page)) remote.focusOn(back)
-            else if (stack.depth > 1) remote.focusFirst(page)
-            else remote.focusStart()
+            if (now && remote.isStop(now) && !remote.lost() && (!remote.inside(now, stack) || remote.inside(now, page))) return true
+            if (back && remote.isStop(back) && remote.inside(back, page)) { remote.focusOn(back); return true }
+            if (stack.depth > 1) return remote.focusFirst(page)
+            return remote.focusStart()
         }
         // The control the remote was on last (it opens the next page).
         function lastControl() { return spatialFocus.owner.opener }

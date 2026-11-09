@@ -23,14 +23,20 @@ StackView {
         // (The page has taken the focus by now: the control it came from.)
         if (depth > tvDepth && Router.shell) tvOpeners[depth - 2] = Router.shell.lastControl()
         tvDepth = depth
+        tvFocus.tries = 0
         tvFocus.restart()
     }
     Timer {
         id: tvFocus
         interval: Motion.normal + 80
+        // A page still being built (a TV builds its buttons a moment later)
+        // is tried again, for up to about three seconds.
+        property int tries: 0
         onTriggered: {
             if (stack.busy) { restart(); return }
-            if (Router.shell && stack.currentItem) Router.shell.focusPage(stack, stack.currentItem, stack.tvOpeners[stack.depth - 1] || null)
+            if (!Router.shell || !stack.currentItem) return
+            if (Router.shell.focusPage(stack, stack.currentItem, stack.tvOpeners[stack.depth - 1] || null) || ++tries > 12) { tries = 0; return }
+            restart()
         }
     }
 
