@@ -191,9 +191,10 @@ Item {
                 || (from.x >= r.x && from.y >= r.y && from.x + from.width <= r.x + r.width && from.y + from.height <= r.y + r.height)
             if (inside && ahead) { along = horizontal ? Math.abs(x - cx) : Math.abs(y - cy); gap = 0 }
             if (!ahead || (!inside && along < -Math.min(from.width, from.height) * 0.3)) continue
-            // Left and right: nearly level only (from the last of a row
-            // Right went up to the header).
-            const cone = horizontal ? Math.min(Math.max(0, along), from.height) * 0.5 : Math.max(0, along)
+            // Left and right: level only, side by side (from the last of a
+            // row Right went up to the header, or down to the next row; the
+            // sidebar and the page cross below).
+            const cone = horizontal ? 6 : Math.max(0, along)
             if (gap > 0 && gap > cone) {
                 const wide = Math.max(0, along) + off * 0.5
                 if (!horizontal && along >= 0 && wide < looseScore && sameView(item)) { looseScore = wide; loose = item; looseAlong = along; looseFar = along + r.height; looseOff = off }
