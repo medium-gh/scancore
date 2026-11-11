@@ -43,7 +43,8 @@ Item {
     property var feedsTask: useCatalog ? Comics.catalogFeeds(App.settings.showNsfwSources === true) : null
     readonly property var feeds: feedsTask && feedsTask.ok ? feedsTask.result : ({ shelves: [] })
     // The catalogue's name, for messages.
-    readonly property string catalogLabel: feedsTask && feedsTask.ok && feedsTask.result.label ? feedsTask.result.label
+    readonly property string catalogLabel: viaComick ? qsTr("Comick")
+        : feedsTask && feedsTask.ok && feedsTask.result.label ? feedsTask.result.label
         : App.settings.catalogComic === "anilist" ? "AniList" : App.settings.catalogComic === "mal" ? "MyAnimeList" : qsTr("Comick")
     property var history: []
     Connections {
@@ -68,12 +69,18 @@ Item {
     // The catalogue could not be reached, so the sources were searched instead.
     property bool catalogFailed: false
     // Comick's own search filters (CatalogueFilters), kept between visits;
-    // with some set, an empty search box browses by them.
-    readonly property bool comick: useCatalog && (App.settings.catalogComic || "comick") === "comick"
+    // with some set, an empty search box browses by them. They are there on
+    // All sources whatever the catalogue: with AniList, MyAnimeList or none
+    // chosen, a filtered search goes through Comick's (the button was
+    // missing then).
+    readonly property bool comick: source === "all"
     readonly property var catalogFilters: comick ? filterSheet.normal(App.settings.comickFilters) : ({})
     readonly property int filterCount: comick ? filterSheet.count(catalogFilters) : 0
     readonly property bool filtering: filterCount > 0
-    readonly property bool catalogResults: !!searchTask && searchTask.ok && !catalogFailed && useCatalog && (query.length > 0 || filtering)
+    readonly property bool viaComick: filtering && !(useCatalog && (App.settings.catalogComic || "comick") === "comick")
+    // Searches go through a catalogue: the chosen one, or Comick's for its filters.
+    readonly property bool searchCatalog: useCatalog || viaComick
+    readonly property bool catalogResults: !!searchTask && searchTask.ok && !catalogFailed && searchCatalog && (query.length > 0 || filtering)
     readonly property bool browsingLocal: source === "local" && query.length === 0
     readonly property bool searching: !editing && (query.length > 0 || filtering || source === "local" || browsingSource)
     // Edit page: arrange the sections (PageLayout).
@@ -129,9 +136,9 @@ Item {
         browseHasNext = true
         if (query.length > 0) recent.remember(query)
         catalogFailed = false
-        searchTask = (query.length > 0 || filtering) && useCatalog ? Comics.catalog(query, catalogFilters)
+        searchTask = (query.length > 0 || filtering) && searchCatalog ? Comics.catalog(query, catalogFilters, viaComick ? "comick" : "")
             : (query.length > 0 && !browsingSource) || source === "local" ? Comics.search(query, source) : null
-        extensionTask = query.length > 0 && useCatalog && hasExtensions ? Comics.search(query, "extensions") : null
+        extensionTask = query.length > 0 && searchCatalog && hasExtensions ? Comics.search(query, "extensions") : null
         if (browsingSource) moreSource()
         flick.scrollTo(0)
     }
@@ -139,7 +146,7 @@ Item {
     Connections {
         target: page.searchTask
         function onFailed() {
-            if (!page.useCatalog || page.catalogFailed || page.query.length === 0) return
+            if (!page.searchCatalog || page.catalogFailed || page.query.length === 0) return
             page.catalogFailed = true
             // Every source now, extensions included.
             page.extensionTask = null

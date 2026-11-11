@@ -186,6 +186,29 @@ Item {
             Comics.calls[2].task.succeed({items:[{id:"b"}],hasNextPage:false})
             compare(page.found.comics.length, 2)
         }
+        // AniList, MyAnimeList or no catalogue chosen: All sources still
+        // offers Comick's filters, and a filtered search goes through Comick.
+        function test_comickFiltersWithOtherCatalogues_data() { return [{tag:"anilist", catalog:"anilist"}, {tag:"none", catalog:"none"}] }
+        function test_comickFiltersWithOtherCatalogues(data) {
+            page.destroy()
+            App.settings = {comicSource:"all",catalogComic:data.catalog,theme:"dark",reducedMotion:true}
+            page = createTemporaryObject(pageComponent, parent)
+            const button = descendants(page).find(item => item.iconName === "funnel" && item.diameter !== undefined)
+            verify(button !== undefined && button.visible, "the filter button shows")
+            // Without filters, words go where they did.
+            page.search("hero")
+            const plain = Comics.calls[Comics.calls.length - 1]
+            compare(plain.source, data.catalog === "none" ? "all" : "catalog")
+            compare(plain.catalogKey || "", "")
+            App.setSetting("comickFilters", {genres:{action:1}})
+            page.search("")
+            const last = Comics.calls[Comics.calls.length - 1]
+            compare(last.source, "catalog")
+            compare(last.catalogKey, "comick")
+            compare(page.catalogLabel, "Comick")
+            verify(page.searching)
+            App.setSetting("comickFilters", {})
+        }
         function test_selectSourceLoadsPopularInline() {
             pick("alpha")
             compare(App.settings.comicSource, "alpha")

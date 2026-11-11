@@ -347,8 +347,9 @@ QVariantMap Comics::catalogShelves(const QString &media, bool mature) {
     return result;
 }
 
-QVariantMap Comics::catalogSearch(const QString &media, const QString &query, bool mature, const QVariantMap &filters) {
-    auto catalogue = catalogue::forMedia(catalogue::chosen(media), media);
+QVariantMap Comics::catalogSearch(const QString &media, const QString &query, bool mature, const QVariantMap &filters,
+                                  const QString &catalogKey) {
+    auto catalogue = catalogue::forMedia(catalogKey.isEmpty() ? catalogue::chosen(media) : catalogKey, media);
     if (!catalogue)
         throw Error(QStringLiteral("No catalogue is chosen. Pick one in Settings → Connections."));
     const auto cacheKey = QStringLiteral("catalogue|%1|%2|%3|%4|%5")
@@ -438,11 +439,11 @@ QStringList Comics::catalogNames(const QVariantMap &item) {
     return names;
 }
 
-Task *Comics::catalog(const QString &query, const QVariantMap &filters) {
+Task *Comics::catalog(const QString &query, const QVariantMap &filters, const QString &catalogKey) {
     const auto q = query.simplified();
     const bool mature = App::instance()->settings().value(QStringLiteral("showNsfwSources")).toBool();
     const auto f = App::plain(filters).toMap();
-    return Task::run([q, mature, f]() -> QVariant { return catalogSearch(QStringLiteral("comic"), q, mature, f); });
+    return Task::run([q, mature, f, catalogKey]() -> QVariant { return catalogSearch(QStringLiteral("comic"), q, mature, f, catalogKey); });
 }
 
 namespace {

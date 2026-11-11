@@ -92,6 +92,18 @@ SettingsPane {
     SettingsGroup {
         title: qsTr("Lists")
         note: qsTr("Rename, reorder or hide any list, and add your own. A hidden list's series stay on it and under All. Reading, Plan to read, On hold, Completed and Dropped keep their meaning for trackers and backups whatever they are called. Mihon and LNReader backups bring their lists along.")
+        // Mihon's default category.
+        SettingRow {
+            iconName: "bookmark-plus"
+            title: qsTr("Add new series to")
+            description: qsTr("The list a comic, novel or anime goes on when you add it to your library. Its page can still move it to another.")
+            Select {
+                implicitWidth: 200
+                model: pane.allLists
+                value: App.settings.newSeriesList || "reading"
+                onPicked: (v) => App.setSetting("newSeriesList", v)
+            }
+        }
         Repeater {
             model: pane.allLists
             SettingRow {

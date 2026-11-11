@@ -159,11 +159,49 @@ QtObject {
             shell.push("pages/ComicDetails.qml", { url: item.sourceUrl || item.url, summary: item }, fromCover, item.cover)
     }
 
+    // The chapters a reader goes through from `index`: the series' group
+    // filters apply (one group picked, groups hidden), and of the copies of
+    // a chapter number by different groups only one is read: that of the
+    // group being read, else of the group with the most chapters (sites
+    // such as Atsumaru list each chapter once per group, and reading went
+    // 71 Alpha, 71 Delta, 72 Alpha). The chapter opened always stays.
+    // `positions` holds where each one is in `chapters`.
+    function readingOrder(seriesId, chapters, index) {
+        const list = chapters || []
+        if (!list[index]) return { chapters: list, index: index, positions: list.map((c, i) => i) }
+        const settings = seriesId ? Library.seriesSettings(seriesId) : {}
+        const picked = settings.scanlator || ""
+        const hidden = {}
+        for (const name of settings.hiddenScanlators || []) hidden[name] = true
+        const group = i => list[i].scanlator || ""
+        const kept = []
+        for (let i = 0; i < list.length; ++i)
+            if (i === index || ((!picked || group(i) === picked) && !hidden[group(i)])) kept.push(i)
+        const counts = {}
+        for (const i of kept) counts[group(i)] = (counts[group(i)] || 0) + 1
+        const copies = {}
+        for (const i of kept) {
+            const number = parseFloat(list[i].number)
+            if (isFinite(number)) (copies[number] = copies[number] || []).push(i)
+        }
+        const reading = group(index)
+        const skip = {}
+        for (const number in copies) {
+            const names = Array.from(new Set(copies[number].map(group)))
+            if (names.length < 2) continue
+            const own = names.indexOf(reading) >= 0 ? reading : names.sort((a, b) => counts[b] - counts[a])[0]
+            for (const i of copies[number]) if (group(i) !== own) skip[i] = true
+        }
+        const out = kept.filter(i => !skip[i])
+        return { chapters: out.map(i => list[i]), index: out.indexOf(index), positions: out }
+    }
+
     function openComicReader(series, chapters, index) { openReader("pages/ComicReader.qml", series, chapters, index) }
     function openNovelReader(series, chapters, index) { openReader("pages/NovelReader.qml", series, chapters, index) }
     function openReader(path, series, chapters, index) {
         if (!shell) return
-        const props = { series: series, chapters: chapters, index: index }
+        const order = readingOrder(series && series.id, chapters, index)
+        const props = { series: series, chapters: order.chapters, index: order.index }
         if (toSplit && shell.canSplit) {
             toSplit = false
             shell.openSplit(path, props)

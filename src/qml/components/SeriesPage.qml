@@ -143,8 +143,12 @@ Item {
         if (last && last.unitKey) {
             const i = chapters.findIndex(c => c.key === last.unitKey)
             if (i >= 0) {
-                if (last.completed && i + 1 < chapters.length)
-                    return { index: i + 1, label: qsTr("Continue"), detail: qsTr("Next: ") + chapters[i + 1].title }
+                // The next one as the reader goes (group filters, one copy
+                // of each chapter).
+                const order = Router.readingOrder(seriesId, chapters, i)
+                const next = order.positions[order.index + 1]
+                if (last.completed && next !== undefined)
+                    return { index: next, label: qsTr("Continue"), detail: qsTr("Next: ") + chapters[next].title }
                 if (last.completed)
                     return { index: i, label: qsTr("Read again"), detail: qsTr("You finished ") + chapters[i].title }
                 return { index: i, label: qsTr("Continue"), detail: chapters[i].title + (last.percent > 0.02 ? " · " + Math.round(last.percent * 100) + "%" : "") }
@@ -246,8 +250,9 @@ Item {
         // Computers: this chapter in a window of its own.
         if (Router.windows)
             items.unshift({ text: qsTr("Read in a new window"), icon: "external-link",
-                            run: () => { Library.markSeen(seriesId); Router.openWindow(media === "novel" ? "pages/NovelReader.qml" : "pages/ComicReader.qml",
-                                                                                      { series: series, chapters: chapters, index: index }) } }, null)
+                            run: () => { Library.markSeen(seriesId); const order = Router.readingOrder(seriesId, chapters, index)
+                                         Router.openWindow(media === "novel" ? "pages/NovelReader.qml" : "pages/ComicReader.qml",
+                                                           { series: series, chapters: order.chapters, index: order.index }) } }, null)
         if (!local) {
             items.push(null)
             items.push(dl && dl.status === "done"

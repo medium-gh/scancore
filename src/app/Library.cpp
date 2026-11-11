@@ -232,11 +232,28 @@ void Library::save(const QVariantMap &series, const QString &category) {
     try {
         upsertSeries(series);
         const auto known = Database::scalar(QStringLiteral("SELECT COUNT(*) FROM units WHERE series_id = ?"), {id}).toInt();
+        // No list given: the one it is on already, else the one new series
+        // go to (Settings → Library), if that list is still there.
+        auto list = category;
+        if (list.isEmpty()) {
+            const auto current = Database::scalar(QStringLiteral("SELECT COALESCE(category, '') FROM library WHERE series_id = ?"), {id});
+            if (current.isValid()) {
+                list = current.toString();
+            } else {
+                const auto chosen = App::instance()->settings().value(QStringLiteral("newSeriesList")).toString();
+                const auto custom = storedCategories();
+                if (builtinCategories().contains(chosen) ||
+                    std::any_of(custom.begin(), custom.end(), [&](const QVariant &c) { return c.toMap().value(QStringLiteral("id")).toString() == chosen; }))
+                    list = chosen;
+            }
+            if (list.isEmpty())
+                list = QStringLiteral("reading");
+        }
         Database::transaction([&] {
             Database::query(QStringLiteral("INSERT INTO library(series_id, category, added_at, known_units, changed_at) "
                                            "VALUES(?, ?, ?, ?, ?) ON CONFLICT(series_id) DO UPDATE SET "
                                            "category = excluded.category, changed_at = excluded.changed_at"),
-                            {id, category, Database::now(), known, Database::now()});
+                            {id, list, Database::now(), known, Database::now()});
             Database::query(QStringLiteral("DELETE FROM library_removed WHERE series_id = ?"), {id});
         });
     } catch (const Error &e) {
@@ -429,6 +446,8 @@ void Library::removeCategory(const QString &id) {
     }
     if (App::instance()->settings().value(QStringLiteral("libraryCategory")) == id)
         App::instance()->setSetting(QStringLiteral("libraryCategory"), QStringLiteral("all"));
+    if (App::instance()->settings().value(QStringLiteral("newSeriesList")) == id)
+        App::instance()->setSetting(QStringLiteral("newSeriesList"), QStringLiteral("reading"));
 }
 
 void Library::moveCategory(const QString &id, int by, bool skipHidden) {
@@ -1064,6 +1083,18 @@ Task *Library::checkUpdates(bool automatic) {
                                      Database::pref(QStringLiteral("setting.notifyUpdates"), true).toBool()});
             const auto category = row.value(QStringLiteral("category")).toString();
             if (!anime && autoDownload.contains(category.isEmpty() ? QStringLiteral("reading") : category)) {
+                // Not the copies by groups this series hides (or other than
+                // the one it is read in).
+                const auto chosen = seriesSettings(id);
+                const auto picked = chosen.value(QStringLiteral("scanlator")).toString();
+                const auto hidden = chosen.value(QStringLiteral("hiddenScanlators")).toStringList();
+                if (!picked.isEmpty() || !hidden.isEmpty())
+                    fresh.removeIf([&](const QVariant &u) {
+                        const auto group = u.toMap().value(QStringLiteral("scanlator")).toString();
+                        return (!picked.isEmpty() && group != picked) || hidden.contains(group);
+                    });
+                if (fresh.isEmpty())
+                    continue;
                 const QVariantMap series{{"id", id}, {"media", row.value(QStringLiteral("media"))}, {"title", title}};
                 if (App::windowless())
                     Downloads::queue(series, fresh);

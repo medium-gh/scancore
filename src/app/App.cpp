@@ -205,6 +205,8 @@ const QVariantMap kDefaults{
     // The screen stays on while a reader is open.
     {"readerKeepAwake", true},
     {"librarySort", "updates"},
+    // The list a series goes on when it is added to the library.
+    {"newSeriesList", "reading"},
     {"comickCatalog", true},
     // The tracker catalogue each page browses and searches: comick,
     // anilist, mal or none (novels: anilist, mal or none).

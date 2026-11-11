@@ -35,7 +35,8 @@ public:
 
     Q_INVOKABLE bool isSaved(const QString &seriesId) const;
     Q_INVOKABLE QString category(const QString &seriesId) const;
-    Q_INVOKABLE void save(const QVariantMap &series, const QString &category = QStringLiteral("reading"));
+    // Without a list: the one it is on, else the one chosen for new series.
+    Q_INVOKABLE void save(const QVariantMap &series, const QString &category = {});
     Q_INVOKABLE void remove(const QString &seriesId);
     // reading (watching, for anime), planned, paused (on hold), completed,
     // dropped.

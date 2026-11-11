@@ -24,7 +24,7 @@ QtObject {
     function reset() { calls = [] }
     function browse(source, kind, page) { const t = task(); calls = calls.concat([{source, kind, page, task:t}]); return t }
     function search(query, source) { const t = task(); calls = calls.concat([{query, source, task:t}]); return t }
-    function catalog(query) { return search(query, "catalog") }
+    function catalog(query, filters, catalogKey) { const t = task(); calls = calls.concat([{query, source:"catalog", catalogKey:catalogKey || "", task:t}]); return t }
     function latest(limit) { const t = task(); t.succeed({updates:[]}); return t }
     function catalogFeeds() { const t = task(); t.succeed({shelves:[]}); return t }
     function sources() { return [{key:"alpha",label:"Alpha",enabled:true,canBrowse:true},{key:"beta",label:"Beta",enabled:true,canBrowse:true},{key:"search-only",label:"Search only",enabled:true,canBrowse:false},{key:"local",label:"On this device",enabled:true}] }

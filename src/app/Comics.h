@@ -34,8 +34,9 @@ public:
     // names than any one source: {comics: [{catalog, catalogId, hid, title,
     // titles, cover, type, status, year, ids, ...}], catalog, label}.
     // `filters`: Comick's search filters (Catalogue.h, comickQuery); with
-    // them an empty query browses.
-    Q_INVOKABLE sc::Task *catalog(const QString &query, const QVariantMap &filters = {});
+    // them an empty query browses. `catalogKey`: a catalogue other than the
+    // chosen one ("comick" while Comick's filters are on).
+    Q_INVOKABLE sc::Task *catalog(const QString &query, const QVariantMap &filters = {}, const QString &catalogKey = {});
     // Comick's genres ([{slug, name, group, count}]) and tags ([{slug,
     // title, count}]: the 300 most used, or with `all` every one, about
     // 9,500), cached for a day.
@@ -97,7 +98,7 @@ public:
     // Catalogue helpers shared with Novels (blocking).
     static QVariantMap catalogShelves(const QString &media, bool mature);
     static QVariantMap catalogSearch(const QString &media, const QString &query, bool mature,
-                                     const QVariantMap &filters = {});
+                                     const QVariantMap &filters = {}, const QString &catalogKey = {});
     static QStringList catalogNames(const QVariantMap &item);
 
     // Chapter list as library units ({key, number, title, url, released}).
