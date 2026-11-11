@@ -6137,6 +6137,14 @@
             <translation>Okuma</translation>
         </message>
         <message>
+            <source>Add new series to</source>
+            <translation>Yeni serileri şuraya ekle</translation>
+        </message>
+        <message>
+            <source>The list a comic, novel or anime goes on when you add it to your library. Its page can still move it to another.</source>
+            <translation>Bir çizgi roman, roman veya anime kitaplığına eklendiğinde girdiği liste. Kendi sayfasından yine başka bir listeye taşınabilir.</translation>
+        </message>
+        <message>
             <source>Rename, reorder or hide any list, and add your own. A hidden list's series stay on it and under All. Reading, Plan to read, On hold, Completed and Dropped keep their meaning for trackers and backups whatever they are called. Mihon and LNReader backups bring their lists along.</source>
             <translation>Herhangi bir listeyi yeniden adlandır, sırala veya gizle, kendi listelerini ekle. Gizli bir listenin serileri üzerinde ve Tümü altında kalır. Okuma, Okuyacağım, Beklemede, Tamamlandı ve Bırakıldı adları ne olursa olsun takipçiler ve yedekler için anlamlarını korur. Mihon ve LNReader yedekleri listelerini de getirir.</translation>
         </message>

@@ -6129,6 +6129,14 @@
             <translation>Czytanie</translation>
         </message>
         <message>
+            <source>Add new series to</source>
+            <translation>Dodawaj nowe serie do</translation>
+        </message>
+        <message>
+            <source>The list a comic, novel or anime goes on when you add it to your library. Its page can still move it to another.</source>
+            <translation>Lista, na którą trafia komiks, powieść lub anime po dodaniu do biblioteki. Na jego stronie nadal można przenieść go na inną.</translation>
+        </message>
+        <message>
             <source>Rename, reorder or hide any list, and add your own. A hidden list's series stay on it and under All. Reading, Plan to read, On hold, Completed and Dropped keep their meaning for trackers and backups whatever they are called. Mihon and LNReader backups bring their lists along.</source>
             <translation>Zmieniaj nazwy, kolejność lub ukrywaj dowolne listy i dodawaj własne. Serie ukrytej listy zostają na niej i w Wszystko. Czytanie, Planowane do przeczytania, Wstrzymane, Ukończone i Porzucone zachowują znaczenie dla trackerów i kopii zapasowych, niezależnie od nazwy. Kopie Mihon i LNReader przynoszą swoje listy.</translation>
         </message>

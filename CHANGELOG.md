@@ -2,6 +2,18 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.17.1 — 2026-11-11
+
+Fixes for reading chapters several groups translated, extensions on computers and the Comics filters, plus a default list for new series and the TV remote everywhere.
+
+- **One copy of each chapter**: where a site lists a chapter once per group (Atsumaru's Alpha, Delta and so on), the reader goes from chapter 71 to 72 in the group you are reading, instead of reading 71 again in the next group. The group picked or hidden in a series' chapter filters now counts in the reader, for Continue and for new chapters that download by themselves.
+- **Extensions on computers**: extensions installed several at once could fail with errors such as "'void eu.kanade.tachiyomi.a.a.a…'" (MangaFire every time, others after a while), because their converted copies mixed up each other's code. Each extension is now prepared on its own, and every one is prepared again once (Extensions runtime 12).
+- **Comics filters with any catalogue**: with AniList, MyAnimeList or no catalogue chosen in Settings → Connections, All sources had no filter button. It is always there now, and filtered searches go through Comick's catalogue.
+- **Add new series to** (Settings → Library → Lists): pick the list that comics, novels and anime go on when you add them to your library, like Mihon's default category. Adding a series that is already there keeps its list.
+- **TV remote**: on Android TV (checked on a Sony Bravia) and in TV mode on computers, the remote reaches every control: menus, sheets and dialogs, the readers' controls (Select shows them), the anime player (Select plays or pauses, Left and Right jump 10 seconds), Glass's home hero, and Back steps out to the sidebar before leaving SCANCORE. A TV lays SCANCORE out at about 1280 wide instead of twice a computer's size.
+- **Repository links on Android**: one-tap aniyomi://, mihon:// and scancore:// links open in SCANCORE again (they were all dropped). The Add a repository dialog's buttons wrap on narrow phones.
+- **Story elsewhere** finds the main series instead of its one-shot of the same name, and Glass's search bar flows into the search palette. Bold and italics in descriptions show.
+
 ## 2.17.0 — 2026-11-07
 
 A third look: Glass, liquid glass over your art.

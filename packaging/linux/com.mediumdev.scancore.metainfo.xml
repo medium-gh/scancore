@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.17.1" date="2026-11-11">
+      <description>
+        <p>Reading stays with one group's copy of each chapter, extensions on computers work again after several installed at once, a default list for new series, and the TV remote reaches everything.</p>
+      </description>
+    </release>
     <release version="2.17.0" date="2026-11-07">
       <description>
         <p>A third look: Glass, liquid glass over your art, with your last comic, novel or anime behind each section.</p>

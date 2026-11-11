@@ -6137,6 +6137,14 @@
             <translation>읽기</translation>
         </message>
         <message>
+            <source>Add new series to</source>
+            <translation>새 시리즈를 추가할 목록</translation>
+        </message>
+        <message>
+            <source>The list a comic, novel or anime goes on when you add it to your library. Its page can still move it to another.</source>
+            <translation>만화, 소설, 애니메이션을 라이브러리에 추가할 때 들어가는 목록입니다. 작품 페이지에서 다른 목록으로 옮길 수도 있습니다.</translation>
+        </message>
+        <message>
             <source>Rename, reorder or hide any list, and add your own. A hidden list's series stay on it and under All. Reading, Plan to read, On hold, Completed and Dropped keep their meaning for trackers and backups whatever they are called. Mihon and LNReader backups bring their lists along.</source>
             <translation>모든 목록의 이름을 바꾸거나 순서를 바꾸거나 숨길 수 있고, 직접 목록을 추가할 수 있습니다. 숨긴 목록의 작품은 그 목록과 전체에 그대로 있습니다. 읽기, 읽을 예정, 보류, 완료, 중단은 이름이 무엇이든 트래커와 백업에서 같은 의미를 유지합니다. Mihon과 LNReader 백업은 목록도 함께 가져옵니다.</translation>
         </message>

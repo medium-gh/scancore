@@ -6137,6 +6137,14 @@
             <translation>Đọc</translation>
         </message>
         <message>
+            <source>Add new series to</source>
+            <translation>Thêm truyện mới vào</translation>
+        </message>
+        <message>
+            <source>The list a comic, novel or anime goes on when you add it to your library. Its page can still move it to another.</source>
+            <translation>Danh sách mà truyện tranh, tiểu thuyết hoặc anime được đưa vào khi bạn thêm vào thư viện. Bạn vẫn có thể chuyển sang danh sách khác từ trang của nó.</translation>
+        </message>
+        <message>
             <source>Rename, reorder or hide any list, and add your own. A hidden list's series stay on it and under All. Reading, Plan to read, On hold, Completed and Dropped keep their meaning for trackers and backups whatever they are called. Mihon and LNReader backups bring their lists along.</source>
             <translation>Đổi tên, sắp xếp lại hoặc ẩn bất kỳ danh sách nào, và thêm danh sách riêng. Truyện của danh sách ẩn vẫn ở đó và trong Tất cả. Đọc, Dự định đọc, Tạm hoãn, Hoàn thành và Bỏ dở giữ nguyên ý nghĩa với trình theo dõi và bản sao lưu dù đặt tên gì. Bản sao lưu Mihon và LNReader mang theo danh sách.</translation>
         </message>

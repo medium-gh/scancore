@@ -6129,6 +6129,14 @@
             <translation>การอ่าน</translation>
         </message>
         <message>
+            <source>Add new series to</source>
+            <translation>เพิ่มซีรีส์ใหม่ไปที่</translation>
+        </message>
+        <message>
+            <source>The list a comic, novel or anime goes on when you add it to your library. Its page can still move it to another.</source>
+            <translation>รายการที่คอมิก นิยาย หรืออนิเมะจะไปอยู่เมื่อคุณเพิ่มเข้าคลัง ยังย้ายไปรายการอื่นได้จากหน้าของเรื่องนั้น</translation>
+        </message>
+        <message>
             <source>Rename, reorder or hide any list, and add your own. A hidden list's series stay on it and under All. Reading, Plan to read, On hold, Completed and Dropped keep their meaning for trackers and backups whatever they are called. Mihon and LNReader backups bring their lists along.</source>
             <translation>เปลี่ยนชื่อ จัดลำดับ หรือซ่อนรายการใดก็ได้ และเพิ่มรายการของคุณเอง เรื่องในรายการที่ซ่อนยังอยู่ในรายการนั้นและใน ทั้งหมด การอ่าน วางแผนจะอ่าน พักไว้ จบแล้ว และเลิกแล้ว ยังมีความหมายเดิมสำหรับตัวติดตามและไฟล์สำรองไม่ว่าจะตั้งชื่ออะไร ไฟล์สำรองของ Mihon และ LNReader นำรายการมาด้วย</translation>
         </message>

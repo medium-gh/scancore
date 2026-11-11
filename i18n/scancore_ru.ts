@@ -6137,6 +6137,14 @@
             <translation>Чтение</translation>
         </message>
         <message>
+            <source>Add new series to</source>
+            <translation>Добавлять новые серии в</translation>
+        </message>
+        <message>
+            <source>The list a comic, novel or anime goes on when you add it to your library. Its page can still move it to another.</source>
+            <translation>Список, в который попадает комикс, роман или аниме, когда вы добавляете его в библиотеку. На его странице его можно перенести в другой.</translation>
+        </message>
+        <message>
             <source>Rename, reorder or hide any list, and add your own. A hidden list's series stay on it and under All. Reading, Plan to read, On hold, Completed and Dropped keep their meaning for trackers and backups whatever they are called. Mihon and LNReader backups bring their lists along.</source>
             <translation>Переименовывайте, переставляйте или скрывайте любые списки и добавляйте свои. Серии скрытого списка остаются в нём и во «Все». Чтение, Буду читать, Отложено, Завершено и Брошено сохраняют своё значение для трекеров и резервных копий, как бы они ни назывались. Копии Mihon и LNReader переносят свои списки.</translation>
         </message>

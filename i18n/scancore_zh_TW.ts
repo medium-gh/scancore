@@ -6137,6 +6137,14 @@
             <translation>閱讀</translation>
         </message>
         <message>
+            <source>Add new series to</source>
+            <translation>新作品加入到</translation>
+        </message>
+        <message>
+            <source>The list a comic, novel or anime goes on when you add it to your library. Its page can still move it to another.</source>
+            <translation>將漫畫、小說或動畫加入書庫時它所在的清單。之後仍可在其頁面中移到其他清單。</translation>
+        </message>
+        <message>
             <source>Rename, reorder or hide any list, and add your own. A hidden list's series stay on it and under All. Reading, Plan to read, On hold, Completed and Dropped keep their meaning for trackers and backups whatever they are called. Mihon and LNReader backups bring their lists along.</source>
             <translation>可重新命名、排序或隱藏任何清單，也可新增自己的清單。隱藏清單中的作品仍在該清單與「全部」中。閱讀、想讀、擱置、已完成和已棄無論叫什麼名字，對追蹤和備份的意義都不變。Mihon 和 LNReader 備份會帶上它們的清單。</translation>
         </message>

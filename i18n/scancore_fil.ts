@@ -6129,6 +6129,14 @@
             <translation>Pagbabasa</translation>
         </message>
         <message>
+            <source>Add new series to</source>
+            <translation>Idagdag ang mga bagong serye sa</translation>
+        </message>
+        <message>
+            <source>The list a comic, novel or anime goes on when you add it to your library. Its page can still move it to another.</source>
+            <translation>Ang listahang pupuntahan ng isang comic, nobela o anime kapag idinagdag mo ito sa iyong library. Maaari pa rin itong ilipat sa iba mula sa pahina nito.</translation>
+        </message>
+        <message>
             <source>Rename, reorder or hide any list, and add your own. A hidden list's series stay on it and under All. Reading, Plan to read, On hold, Completed and Dropped keep their meaning for trackers and backups whatever they are called. Mihon and LNReader backups bring their lists along.</source>
             <translation>Palitan ang pangalan, ayusin, o itago ang anumang listahan, at magdagdag ng sarili mo. Nananatili roon at sa Lahat ang mga serye ng nakatagong listahan. Pinapanatili ng Pagbabasa, Balak basahin, Naka-hold, Natapos at Itinigil ang kahulugan nila para sa mga tracker at backup, anuman ang pangalan nila. Dala ng mga backup ng Mihon at LNReader ang mga listahan nila.</translation>
         </message>
