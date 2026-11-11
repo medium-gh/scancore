@@ -218,34 +218,22 @@ Dialog {
             }
         }
 
-        Row {
-            anchors.right: parent.right
+        // Right-aligned, and onto a second line when they do not fit (on
+        // a phone "Cancel" went off the dialog's left edge).
+        Flow {
+            width: parent.width
+            layoutDirection: Qt.RightToLeft
             spacing: 8
-            ScButton {
-                text: qsTr("Cancel")
-                enabled: !dialog.adding
-                onClicked: dialog.close()
-            }
-            ScButton {
-                visible: dialog.queue.length > 0
-                text: qsTr("Skip")
-                enabled: !dialog.adding
-                onClicked: dialog.next()
-            }
-            ScButton {
-                visible: !dialog.task
-                text: qsTr("Continue")
-                variant: "primary"
-                enabled: field.text.trim().length > 0
-                onClicked: dialog.check()
-            }
-            ScButton {
-                visible: dialog.task !== null && !dialog.task.loading && !dialog.task.ok
-                text: qsTr("Try again")
-                onClicked: dialog.show(dialog.link, dialog.kind)
-            }
             // Adding is quick; any installs carry on in the background.
             readonly property int toInstall: dialog.preview && !dialog.preview.added ? dialog.preview.autoInstall.length : 0
+            ScButton {
+                visible: parent.toInstall > 0
+                text: qsTr("Add and install %1").arg(parent.toInstall)
+                variant: "primary"
+                loading: dialog.adding && dialog.withInstall
+                enabled: !dialog.adding
+                onClicked: { dialog.withInstall = true; dialog.addTask = Extensions.addRepository(dialog.preview.url, true) }
+            }
             ScButton {
                 visible: dialog.preview !== null
                 text: parent.toInstall > 0 ? qsTr("Add only") : qsTr("Add")
@@ -255,12 +243,27 @@ Dialog {
                 onClicked: { dialog.withInstall = false; dialog.addTask = Extensions.addRepository(dialog.preview.url, false) }
             }
             ScButton {
-                visible: parent.toInstall > 0
-                text: qsTr("Add and install %1").arg(parent.toInstall)
+                visible: dialog.task !== null && !dialog.task.loading && !dialog.task.ok
+                text: qsTr("Try again")
+                onClicked: dialog.show(dialog.link, dialog.kind)
+            }
+            ScButton {
+                visible: !dialog.task
+                text: qsTr("Continue")
                 variant: "primary"
-                loading: dialog.adding && dialog.withInstall
+                enabled: field.text.trim().length > 0
+                onClicked: dialog.check()
+            }
+            ScButton {
+                visible: dialog.queue.length > 0
+                text: qsTr("Skip")
                 enabled: !dialog.adding
-                onClicked: { dialog.withInstall = true; dialog.addTask = Extensions.addRepository(dialog.preview.url, true) }
+                onClicked: dialog.next()
+            }
+            ScButton {
+                text: qsTr("Cancel")
+                enabled: !dialog.adding
+                onClicked: dialog.close()
             }
         }
     }

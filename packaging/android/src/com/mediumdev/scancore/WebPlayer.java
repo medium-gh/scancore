@@ -139,6 +139,13 @@ public final class WebPlayer {
             web.setWebChromeClient(new Client(activity, web, client));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) web.setWebViewClient(new Guard(web.getWebViewClient()));
             watchMenus(web);
+            // A TV: the remote's keys stay with the app, which works the
+            // player through its message API (WatchPage.qml). A focused web
+            // view would take every key and the D-pad would move in the page.
+            if (Screen.isTv(activity)) {
+                web.setFocusable(false);
+                web.setFocusableInTouchMode(false);
+            }
             return 1;
         }
         int prepared = 0;

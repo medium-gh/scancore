@@ -400,7 +400,22 @@ Task *Story::forms(const QString &seriesId, const QString &media, const QString 
             id = matchedId(seriesId, media, title);
         if (id <= 0)
             return QVariantMap{{"anilistId", 0}, {"forms", QVariantList()}};
-        const auto self = relationsOf(id);
+        auto self = relationsOf(id);
+        // A one-shot (a match or tracker link made before 2.17.1 could land
+        // on the pilot) stands for the series it is a version of, whose
+        // relations hold the anime and novels.
+        if (self.value("format").toString() == QLatin1String("ONE_SHOT"))
+            for (const auto &edge : self.value("relations").toObject().value("edges").toArray()) {
+                const auto e = edge.toObject();
+                const auto node = e.value("node").toObject();
+                const auto type = e.value("relationType").toString();
+                if ((type == QLatin1String("ALTERNATIVE") || type == QLatin1String("PARENT")) && mediaOf(node) == mediaOf(self)
+                    && node.value("format").toString() != QLatin1String("ONE_SHOT") && node.value("id").toInt() > 0) {
+                    id = node.value("id").toInt();
+                    self = relationsOf(id);
+                    break;
+                }
+            }
         const auto mine = seriesByAniList();
         // Other forms: what this adapts or is adapted into, and (through its
         // source) the source's other adaptations, such as every season.

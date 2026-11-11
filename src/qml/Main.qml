@@ -281,7 +281,53 @@ ApplicationWindow {
 
         // A TV's remote, for controls that take the D-pad's keys themselves
         // (Select): the focus moves on as from anywhere else.
-        function moveFocus(direction) { return spatialFocus.move(direction) }
+        function moveFocus(direction, within) { return spatialFocus.owner.move(direction, within) }
+        // A reader on a TV: its controls by remote (see readerKey).
+        function focusFirst(within) { return spatialFocus.owner.focusFirst(within) }
+        function onControl(within) { return spatialFocus.owner.onControl(within) }
+        function pressFocus() { return spatialFocus.owner.activate() }
+        function isStop(item) { return spatialFocus.owner.isStop(item) }
+        function focusEdge(within, bottom) { return spatialFocus.owner.focusEdge(within, bottom) }
+        // A page shown in `stack` (PageStack): the focus goes to it unless
+        // it is on a control there already or outside the stack (the
+        // sidebar); `back`, the control that opened the page after it,
+        // first.
+        // True when the focus is settled (false: try again, nothing there yet).
+        function focusPage(stack, page, back) {
+            const remote = spatialFocus.owner
+            if (!remote.active) return true
+            const now = remote.current
+            if (now && remote.isStop(now) && !remote.lost() && (!remote.inside(now, stack) || remote.inside(now, page))) return true
+            if (back && remote.isStop(back) && remote.inside(back, page)) { remote.focusOn(back); return true }
+            if (stack.depth > 1) return remote.focusFirst(page)
+            return remote.focusStart()
+        }
+        // The control the remote was on last (it opens the next page).
+        function lastControl() { return spatialFocus.owner.opener }
+        // A reader's key on a TV: Select brings the controls up with the
+        // focus on the first; then the D-pad moves between them, Select
+        // presses, Escape goes back to the page. False: the reader's own
+        // keys (scrolling, turning pages, Back leaving).
+        function readerKey(event, reader, showControls) {
+            if (!App.tv) return false
+            const select = event.key === Qt.Key_Select || event.key === Qt.Key_Enter || event.key === Qt.Key_Return
+            const dirs = { [Qt.Key_Left]: "left", [Qt.Key_Right]: "right", [Qt.Key_Up]: "up", [Qt.Key_Down]: "down" }
+            if (spatialFocus.onControl(reader)) {
+                if (dirs[event.key] !== undefined) { spatialFocus.move(dirs[event.key], reader); return true }
+                if (select) return spatialFocus.activate()
+                if (event.key === Qt.Key_Escape) { reader.forceActiveFocus(); return true }
+                return false
+            }
+            if (select && !event.isAutoRepeat) {
+                showControls()
+                // The controls fade in: tried until one shows.
+                readerFocus.reader = reader
+                readerFocus.tries = 0
+                readerFocus.restart()
+                return true
+            }
+            return false
+        }
 
         // Side by side: `path` with `props` beside the reader that is open.
         readonly property bool canSplit: window.width >= 1100 && immersive.depth > 0
@@ -340,6 +386,14 @@ ApplicationWindow {
             const page = immersive.currentItem
             if (immersive.depth > 0 && page && typeof page.handleBack === "function" && page.handleBack()) return
             if (back() || App.platform !== "android") return
+            // A TV (as its own apps do): Back first takes the focus to the
+            // sidebar's current section, and leaves only from there (Back
+            // was pressed to get out of a row and SCANCORE went away).
+            const remote = spatialFocus.owner
+            if (App.tv && remote.active && sidebar.visible && sidebar.currentButton && remote.current !== sidebar.currentButton) {
+                remote.focusOn(sidebar.currentButton)
+                return
+            }
             if (section !== "home") goSection("home")
             else App.moveToBackground()
         }
@@ -377,7 +431,10 @@ ApplicationWindow {
 
         function seriesMenu(item, anchor, x, y) { seriesActions.show(item, anchor, x, y) }
 
-        function openPalette() { commandPalette.open() }
+        // `bar`: the search bar it was opened from (Glass extends it into
+        // the palette); none for Ctrl+K.
+        function openPalette(bar) { commandPalette.openFrom(bar || null) }
+        function closePalette() { commandPalette.close() }
 
         function openShortcuts() { shortcutsSheet.open() }
 
@@ -431,7 +488,7 @@ ApplicationWindow {
             height: parent.height - 2 * window.navInset
             current: shell.section
             onNavigate: (name) => shell.goSection(name)
-            onOpenPalette: commandPalette.open()
+            onOpenPalette: (from) => commandPalette.openFrom(from || null)
         }
 
         // Glass: the stage below, well blurred, for menus, sheets and dialogs
@@ -559,7 +616,7 @@ ApplicationWindow {
         height: implicitHeight
         current: shell.section
         onNavigate: (name) => shell.goSection(name)
-        onOpenPalette: commandPalette.open()
+        onOpenPalette: (from) => commandPalette.openFrom(from || null)
     }
 
     // Reading aloud with the reader closed: the mini player, above the
@@ -602,7 +659,7 @@ ApplicationWindow {
         anchors.bottom: parent.bottom
         current: shell.section
         onNavigate: (name) => shell.goSection(name)
-        onOpenPalette: commandPalette.open()
+        onOpenPalette: (from) => commandPalette.openFrom(from || null)
     }
 
     // Glass on phones: the liquid tab bar, floating over the page (which
@@ -618,7 +675,7 @@ ApplicationWindow {
         height: 200
         current: shell.section
         onNavigate: (name) => shell.goSection(name)
-        onOpenPalette: commandPalette.open()
+        onOpenPalette: (from) => commandPalette.openFrom(from || null)
     }
 
     // Readers and the player cover the whole window.
@@ -648,7 +705,33 @@ ApplicationWindow {
         // Readers handle their own keys, so they need focus as soon as they open.
         onCurrentItemChanged: if (currentItem) currentItem.forceActiveFocus()
         // The reader beside goes with the last one here.
-        onDepthChanged: if (depth === 0) shell.closeSplit()
+        onDepthChanged: {
+            if (depth === 0) shell.closeSplit()
+            if (!App.tv) return
+            // A TV's remote: back on the control that opened the reader or
+            // player when the last one closes (Qt left the focus on it).
+            if (depth > 0 && tvDepth === 0) tvOpener = shell.lastControl()
+            if (depth === 0 && tvDepth > 0) tvBack.restart()
+            tvDepth = depth
+        }
+        property int tvDepth: 0
+        property Item tvOpener: null
+        Timer {
+            id: tvBack
+            interval: Motion.normal + 80
+            onTriggered: {
+                if (immersive.busy) { restart(); return }
+                const remote = spatialFocus.owner
+                if (!remote.active || (remote.current && remote.isStop(remote.current) && !remote.lost())) return
+                if (immersive.tvOpener && remote.isStop(immersive.tvOpener) && remote.onScreen(immersive.tvOpener)) remote.focusOn(immersive.tvOpener)
+                else {
+                    // Gone (the player went back to the series it opened
+                    // from Home): the page now shown, else the sidebar.
+                    const stack = shell.stackFor(shell.section)
+                    if (!(stack && stack.currentItem && remote.focusFirst(stack.currentItem))) remote.focusStart()
+                }
+            }
+        }
     }
 
     // Side by side (wide windows): a second reader on the right half, opened
@@ -760,15 +843,27 @@ ApplicationWindow {
         }
     }
 
+    Timer {
+        id: readerFocus
+        property Item reader: null
+        property int tries: 0
+        interval: 60
+        onTriggered: if (reader && !spatialFocus.owner.focusFirst(reader) && ++tries < 10) restart()
+    }
     SpatialFocus {
         id: spatialFocus
         scope: shellView
+        // The welcome has its own: the shell behind it takes no focus.
+        handOff: onboarding.item ? onboarding.item.remote : null
+        startItem: sidebar.visible ? sidebar.currentButton : null
+        Component.onCompleted: if (App.tv) App.routeTvKeys(window, spatialFocus)
     }
-    // A TV opens with the focus on the first control.
+    // A TV opens with the focus on the current section (or the first
+    // control).
     Timer {
-        running: App.tv
+        running: spatialFocus.active
         interval: 1500
-        onTriggered: if (!spatialFocus.current || !spatialFocus.isStop(spatialFocus.current)) spatialFocus.move("down")
+        onTriggered: if (!spatialFocus.current || !spatialFocus.isStop(spatialFocus.current)) spatialFocus.focusStart() || spatialFocus.move("down")
     }
 
     CommandPalette {

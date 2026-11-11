@@ -472,7 +472,7 @@ Rectangle {
             // Stay up while the pointer rests on the controls, a popup is
             // open, or there are no pages yet (loading, or an error to act on).
             if (settingsPopup.opened || chapterPopup.opened || comments.opened || reactPopup.opened || translatePopup.opened || topHover.hovered || dockHover.hovered
-                || reader.panels.length === 0)
+                || reader.panels.length === 0 || (Router.shell && Router.shell.onControl(reader)))
                 restart()
             else
                 reader.controlsShown = false
@@ -561,7 +561,8 @@ Rectangle {
     // Scrolling keys come from Settings → Keyboard too, but only count
     // while the reader has focus (not in its chapter list, say).
     Keys.onPressed: (event) => {
-        if (event.key === Qt.Key_Escape) exit()
+        if (Router.shell && Router.shell.readerKey(event, reader, () => reader.showControls())) event.accepted = true
+        else if (event.key === Qt.Key_Escape) exit()
         else if (Keymap.matches("reader.down", event, keyProfile)) scrollBy(height * 0.18)
         else if (Keymap.matches("reader.up", event, keyProfile)) scrollBy(-height * 0.18)
         else if (Keymap.matches("reader.pageDown", event, keyProfile)) scrollBy(height * 0.85)

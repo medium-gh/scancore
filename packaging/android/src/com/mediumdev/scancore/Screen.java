@@ -174,6 +174,18 @@ public final class Screen {
             || context.getPackageManager().hasSystemFeature("android.software.leanback");
     }
 
+    // A TV lays SCANCORE out about 1280 wide, as a computer at 150 %: at
+    // Android TV's own 960 dp everything came out twice the size it has
+    // on a 1080p computer screen. The factor for QT_SCALE_FACTOR; 1 on
+    // anything that is not a TV or is already that wide.
+    public static float tvScale(Context context) {
+        if (!isTv(context)) return 1f;
+        android.util.DisplayMetrics m = context.getResources().getDisplayMetrics();
+        if (m.density <= 0) return 1f;
+        float wide = Math.max(m.widthPixels, m.heightPixels) / m.density;
+        return wide > 0 && wide < 1280f ? wide / 1280f : 1f;
+    }
+
     // Readers on full screen (as Mihon's): the status and navigation bars
     // hidden while the reader's own controls are, a swipe from the edge
     // shows them for a moment; shown again with the controls.

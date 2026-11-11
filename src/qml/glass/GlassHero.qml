@@ -187,6 +187,9 @@ Item {
         // The card opens the series (the button continues it).
         MouseArea {
             id: cardTap
+            // A TV's remote: a stop; Select clicks it.
+            activeFocusOnTab: App.tv && visible
+            function tvActivate() { clicked(null) }
             anchors.fill: parent
             onClicked: Router.openSeries(hero.entry, null)
             onPressAndHold: Router.seriesMenu(hero.entry, card, mouseX, mouseY)
@@ -219,6 +222,9 @@ Item {
             }
             MouseArea {
                 id: goTap
+                // A TV's remote: a stop; Select clicks it.
+                activeFocusOnTab: App.tv && visible
+                function tvActivate() { clicked(null) }
                 anchors.fill: parent
                 onClicked: Router.resume(hero.entry)
             }
@@ -280,12 +286,18 @@ Item {
         }
         MouseArea {
             id: searchTap
+            // A TV's remote: a stop; Select clicks it.
+            activeFocusOnTab: App.tv && visible
+            function tvActivate() { clicked(null) }
             width: topRow.searchW
             height: parent.height
-            onClicked: if (Router.shell) Router.shell.openPalette()
+            onClicked: if (Router.shell) Router.shell.openPalette(searchTap)
         }
         MouseArea {
             id: orbTap
+            // A TV's remote: a stop; Select clicks it.
+            activeFocusOnTab: App.tv && visible
+            function tvActivate() { clicked(null) }
             x: topRow.width - topRow.orbD
             width: topRow.orbD
             height: parent.height

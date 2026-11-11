@@ -50,6 +50,9 @@ Rectangle {
             delegate: Item {
                 required property var modelData
                 required property int index
+                // A TV's remote: each option is a stop; Select picks it.
+                activeFocusOnTab: App.tv
+                function tvActivate() { root.picked(modelData.value) }
                 // Icon-only options ({value, icon, tip}) are square-ish.
                 width: root.fill ? (root.width - 8) / Math.max(1, root.options.length)
                     : (label.visible ? label.implicitWidth + (glyph.visible ? 21 : 0) : glyph.width) + 26

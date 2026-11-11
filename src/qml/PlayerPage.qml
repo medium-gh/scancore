@@ -23,10 +23,14 @@ QtObject {
             + "function post(m){try{f.contentWindow.postMessage(m,'*')}catch(_){}}"
             + "addEventListener('message',function(e){if(e.source!==f.contentWindow)return;var x=e.data;"
             + "if(typeof x==='string'){try{x=JSON.parse(x)}catch(_){return}}if(!x)return;"
-            + "if(x.currentTime!==undefined){var t=+x.currentTime||0;if(last>=0&&t>last)started=true;last=t;S.t=t;S.d=+x.duration||0}"
+            + "if(x.currentTime!==undefined){var t=+x.currentTime||0;S.p=last>=0&&t>last;if(S.p)started=true;last=t;S.t=t;S.d=+x.duration||0}"
             + "if(x.playerStatus)S.s=String(x.playerStatus);pub()});"
             + "setInterval(function(){post({command:'getTime'})},1000);"
             + "window.scSeek=function(v){post({command:'seek',value:v})};"
+            // A TV's remote, through the player's own message API (play,
+            // pause, seek): play or pause, and a jump from where it is.
+            + "window.scToggle=function(){post({command:S.p?'pause':'play'});S.p=!S.p};"
+            + "window.scSeekBy=function(d){var v=Math.max(0,S.t+d);if(S.d>0)v=Math.min(S.d-1,v);S.t=v;last=-1;post({command:'seek',value:v})};"
             // The frame went somewhere else after playback started: back.
             + "f.addEventListener('load',function(){loads++;if(restoring){restoring=false;return}"
             + "if(loads>1&&started){var at=S.t;restoring=true;f.src=src;setTimeout(function(){window.scSeek(at)},2500)}});"

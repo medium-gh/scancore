@@ -38,6 +38,22 @@ Item {
             web.runJavaScript("window.scSeek && window.scSeek(" + Number(seconds) + ")") // no callback: see above
     }
 
+    // A TV's remote (WatchPage): play or pause, and a jump from where it
+    // is. Desktops reach the video element; phones and TVs go through the
+    // player's message API in our page (no callbacks: see above).
+    function togglePause() {
+        if (direct)
+            web.runJavaScript("(function(){var v=document.querySelector('video');if(v){if(v.paused)v.play();else v.pause()}})()")
+        else
+            web.runJavaScript("window.scToggle && window.scToggle()")
+    }
+    function seekBy(seconds) {
+        if (direct)
+            web.runJavaScript("(function(){var v=document.querySelector('video');if(v)v.currentTime=Math.max(0,v.currentTime+(" + Number(seconds) + "))})()")
+        else
+            web.runJavaScript("window.scSeekBy && window.scSeekBy(" + Number(seconds) + ")")
+    }
+
     // Desktop: the video's state, plus the keys pressed since the last call.
     readonly property string probe: "(function(){var w=window;if(!w.__sc){w.__sc={k:[]};"
         + "w.addEventListener('keydown',function(e){if(e.repeat||/^(Control|Shift|Alt|Meta)$/.test(e.key))return;"
@@ -68,6 +84,8 @@ Item {
     onUrlChanged: load()
 
     WebView {
+        // Never a stop for a TV's remote (WatchPage works the player).
+        activeFocusOnTab: false
         id: web
         anchors.fill: parent
         onTitleChanged: {

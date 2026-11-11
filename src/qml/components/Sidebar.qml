@@ -18,7 +18,7 @@ Rectangle {
     property string hoverKey: ""
     property string pressedKey: ""
     signal navigate(string section)
-    signal openPalette()
+    signal openPalette(var from)
 
     readonly property var sections: [
         { key: "home", label: qsTr("Home"), icon: "house" },
@@ -57,6 +57,16 @@ Rectangle {
         return -1
     }
     readonly property bool hovering: hoverKey !== "" && hoverKey !== current
+    // A region of its own for a TV's remote: Up and Down from a page do
+    // not slip into it (Left and Right do).
+    readonly property bool remoteRegion: true
+    // The current section's button (a TV's remote starts there).
+    readonly property Item currentButton: {
+        const row = indicator.target
+        if (row) for (let i = 0; i < row.children.length; ++i)
+            if (row.children[i] instanceof AbstractButton) return row.children[i]
+        return null
+    }
     LiquidSpring { id: dropY; target: Math.max(0, sidebar.itemY(sidebar.current)) }
     LiquidSpring { id: hoverY; stiffness: 300; damping: 19; target: sidebar.hovering ? Math.max(0, sidebar.itemY(sidebar.hoverKey)) : hoverY.target }
     LiquidSpring { id: hoverSize; stiffness: 280; damping: 16; target: sidebar.hovering ? 1 : 0 }
@@ -131,7 +141,7 @@ Rectangle {
         width: parent.width - 24
         height: 38
         hoverEnabled: true
-        onClicked: sidebar.openPalette()
+        onClicked: sidebar.openPalette(searchButton)
         background: Rectangle {
             radius: Theme.glass ? height / 2 : Theme.radiusMd
             // Glass: a capsule of glass, like the search fields on the pages.

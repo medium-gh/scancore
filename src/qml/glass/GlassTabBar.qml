@@ -13,7 +13,7 @@ Item {
     id: bar
     property string current: "home"
     signal navigate(string section)
-    signal openPalette()
+    signal openPalette(var from)
 
     readonly property var tabs: [
         { key: "home", label: qsTr("Home"), icon: "house" },
@@ -217,9 +217,10 @@ Item {
         onClicked: GlassScene.barMinimized = false
     }
     MouseArea {
+        id: orbTap
         x: bar.width - bar.side - bar.barH; y: bar.baseY - bar.barH; width: bar.barH; height: bar.barH
         onPressedChanged: orbPress.target = pressed ? 1 : 0
-        onClicked: bar.openPalette()
+        onClicked: bar.openPalette(orbTap)
     }
     MouseArea {
         visible: bar.accessory && accW.value > 110

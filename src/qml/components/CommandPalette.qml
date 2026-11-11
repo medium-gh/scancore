@@ -7,14 +7,41 @@ import Scancore
 Popup {
     id: root
     parent: Overlay.overlay
-    anchors.centerIn: parent
-    width: Math.min(640, parent.width - 80)
-    height: Math.min(520, parent.height - 120)
+    readonly property real fullW: Math.min(640, parent.width - 80)
+    readonly property real fullH: Math.min(520, parent.height - 120)
+    // Glass: opened from a search bar, the palette is that bar extending:
+    // it flows from the bar's place and shape into the centre on a liquid
+    // spring, and back into the bar when it closes. Ctrl+K opens it in place.
+    property rect from: Qt.rect(0, 0, 0, 0)
+    readonly property bool flowing: from.width > 0
+    LiquidSpring { id: grow; stiffness: 230; damping: 20 }
+    readonly property real g: flowing ? grow.value : 1
+    function mix(a, b) { return a + (b - a) * g }
+    x: flowing ? mix(from.x, (parent.width - fullW) / 2) : (parent.width - fullW) / 2
+    y: flowing ? mix(from.y, (parent.height - fullH) / 2) : (parent.height - fullH) / 2
+    width: flowing ? Math.max(from.height, mix(from.width, fullW)) : fullW
+    height: flowing ? Math.max(from.height, mix(from.height, fullH)) : fullH
     modal: true
     focus: true
     padding: 0
     property var recent: []
     property int selected: 0
+
+    // Opens from `bar` (the search field, capsule or orb that was pressed)
+    // in Glass, or in place otherwise.
+    function openFrom(bar) {
+        if (bar && Theme.glass && !Motion.reduced && root.parent) {
+            const p = bar.mapToItem(root.parent, 0, 0)
+            from = Qt.rect(p.x, p.y, bar.width, bar.height)
+            grow.snap(0)
+        } else {
+            from = Qt.rect(0, 0, 0, 0)
+        }
+        open()
+        if (flowing) grow.target = 1
+    }
+    onAboutToHide: if (flowing) grow.target = 0
+    onClosed: from = Qt.rect(0, 0, 0, 0)
 
     readonly property var actions: {
         const q = input.text.trim()
@@ -107,27 +134,48 @@ Popup {
         Behavior on opacity { NumberAnimation { duration: Motion.normal } }
     }
 
-    enter: Transition {
+    Transition {
+        id: popIn
         ParallelAnimation {
             NumberAnimation { property: "opacity"; from: 0; to: 1; duration: Motion.normal; easing.type: Easing.OutCubic }
             NumberAnimation { property: "scale"; from: 0.95; to: 1; duration: Motion.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Motion.spring }
         }
     }
-    exit: Transition {
+    Transition {
+        id: popOut
         ParallelAnimation {
             NumberAnimation { property: "opacity"; to: 0; duration: Motion.fast }
             NumberAnimation { property: "scale"; to: 0.97; duration: Motion.fast }
         }
     }
+    // Flowing: the spring moves it; the transitions only keep it on screen
+    // while it flows back, fading out as it reaches the bar.
+    Transition {
+        id: flowIn
+        NumberAnimation { property: "opacity"; from: 1; to: 1; duration: 0 }
+    }
+    Transition {
+        id: flowOut
+        SequentialAnimation {
+            PauseAnimation { duration: 200 }
+            NumberAnimation { property: "opacity"; to: 0; duration: 120 }
+        }
+    }
+    enter: flowing ? flowIn : popIn
+    exit: flowing ? flowOut : popOut
 
     background: SurfacePanel {
-        radius: Theme.radiusXl
+        // From the bar's capsule to the panel's rounding as it extends.
+        radius: root.flowing ? Math.min(root.height / 2, root.mix(root.from.height / 2, Theme.radiusXl)) : Theme.radiusXl
         fill: Theme.surface
         border.width: 1
         border.color: Theme.borderStrong
+        // It extends from the bar itself: no pour of its own.
+        pours: !root.flowing
     }
 
     contentItem: Column {
+        clip: root.flowing
         TextField {
             id: input
             width: parent.width
@@ -164,6 +212,8 @@ Popup {
         }
 
         ListView {
+            // The results come in once the bar has room for them.
+            opacity: root.flowing ? Math.max(0, Math.min(1, (root.g - 0.45) / 0.4)) : 1
             maximumFlickVelocity: Motion.flickVelocity
             flickDeceleration: Motion.flickDeceleration
             WheelScroll {}
