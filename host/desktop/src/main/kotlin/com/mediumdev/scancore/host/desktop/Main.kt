@@ -31,7 +31,7 @@ import java.io.PrintStream
 import java.util.concurrent.CountDownLatch
 import kotlin.system.exitProcess
 
-const val HOST_VERSION = "11"
+const val HOST_VERSION = "12"
 
 fun main(args: Array<String>) {
     val options = args.toList().zipWithNext().filter { it.first.startsWith("--") }.associate { it.first.removePrefix("--") to it.second }

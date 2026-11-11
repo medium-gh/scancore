@@ -60,8 +60,14 @@ object BytecodeEditor {
             // SCANCORE: dex2jar writes calls to interface methods (a default
             // method called through super, as getSourcePreferences() is) as
             // plain method references, which the JVM refuses. The interfaces
-            // are the jar's own and the host's.
-            jarInterfaces.clear()
+            // are the jar's own and the host's. Each jar has its own list:
+            // one shared by every conversion took another extension's when
+            // two converted at once, and Keiyoushi's minified extensions all
+            // name their classes eu/kanade/tachiyomi/a/a/a/b and so on, so
+            // calls to one's classes became interface calls ("Method 'void
+            // eu.kanade.tachiyomi.a.a.a.….<init>()' must be Methodref
+            // constant"), kept in the converted jar until the next update.
+            val interfaces = HashSet<String>()
             Files
                 .walk(it.getPath("/"))
                 .asSequence()
@@ -69,7 +75,7 @@ object BytecodeEditor {
                 .forEach { p ->
                     runCatching {
                         val reader = ClassReader(Files.readAllBytes(p))
-                        if (reader.access and Opcodes.ACC_INTERFACE != 0) jarInterfaces.add(reader.className)
+                        if (reader.access and Opcodes.ACC_INTERFACE != 0) interfaces.add(reader.className)
                     }
                 }
             Files
@@ -78,7 +84,7 @@ object BytecodeEditor {
                 .filterNotNull()
                 .filterNot(Files::isDirectory)
                 .mapNotNull(::getClassBytes)
-                .map(::transform)
+                .map { pair -> transform(pair, interfaces) }
                 .forEach(::write)
         }
     }
@@ -126,12 +132,14 @@ object BytecodeEditor {
      */
     private const val REPLACEMENT_PATH = "xyz/nulldev/androidcompat/replace"
 
-    private val jarInterfaces = java.util.Collections.synchronizedSet(HashSet<String>())
     private val hostInterfaces = java.util.concurrent.ConcurrentHashMap<String, Boolean>()
 
     private val pluginClasses = ThreadLocal<ClassLoader?>()
 
-    private fun isInterface(owner: String?): Boolean {
+    private fun isInterface(
+        owner: String?,
+        jarInterfaces: Set<String>,
+    ): Boolean {
         if (owner == null || owner.startsWith("[")) return false
         if (owner in jarInterfaces) return true
         pluginClasses.get()?.let { loader ->
@@ -186,7 +194,10 @@ object BytecodeEditor {
      *
      * @return [ByteArray] with modified bytecode
      */
-    private fun transform(pair: Pair<Path, ByteArray>): Pair<Path, ByteArray> {
+    private fun transform(
+        pair: Pair<Path, ByteArray>,
+        jarInterfaces: Set<String>,
+    ): Pair<Path, ByteArray> {
         // Read the class and prepare to modify it
         val cr = ClassReader(pair.second)
         val cw = ClassWriter(cr, 0)
@@ -280,7 +291,7 @@ object BytecodeEditor {
                             logger.trace {
                                 "Method" to "$opcode: ${owner.replaceDirectly()}: $name: ${desc.replaceIndirectly()}"
                             }
-                            val onInterface = itf || isInterface(owner)
+                            val onInterface = itf || isInterface(owner, jarInterfaces)
                             super.visitMethodInsn(
                                 if (onInterface && opcode == Opcodes.INVOKEVIRTUAL) Opcodes.INVOKEINTERFACE else opcode,
                                 owner.replaceDirectly(),
