@@ -133,9 +133,11 @@ class BytecodeEditorTest {
                     .forEach { it.get() }
                 for (file in withClass) {
                     assertEquals(0, interfaceCalls(file))
-                    // And it runs.
-                    val loader = URLClassLoader(arrayOf(file.toUri().toURL()), null)
-                    (loader.loadClass("eu.kanade.tachiyomi.a.a.a.c").getDeclaredConstructor().newInstance() as Runnable).run()
+                    // And it runs. Closed after, so the jar can go (Windows
+                    // keeps an open file from being deleted).
+                    URLClassLoader(arrayOf(file.toUri().toURL()), null).use { loader ->
+                        (loader.loadClass("eu.kanade.tachiyomi.a.a.a.c").getDeclaredConstructor().newInstance() as Runnable).run()
+                    }
                 }
                 (withInterface + withClass).forEach { Files.deleteIfExists(it) }
             }
