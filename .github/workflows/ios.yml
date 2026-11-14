@@ -87,8 +87,8 @@ jobs:
       # An IPA is a zip with the app in a folder named Payload.
       - name: Unsigned IPA
         run: |
-          APP=$(find build -type d -name "scancore.app" -path "*iphoneos*" | head -1)
-          if [ -z "$APP" ]; then
+          APP=build/bin/Release/scancore.app
+          if [ ! -d "$APP" ]; then
             echo "::error::No scancore.app was built for iPhone."
             exit 1
           fi
