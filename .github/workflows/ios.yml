@@ -94,6 +94,7 @@ jobs:
           fi
           # The phone's own processor only, and its start-up screen and icons.
           lipo -info "$APP/scancore"
+          xcrun vtool -show-build "$APP/scancore" | tee /dev/stderr | grep -qE "platform (IOS|2)$"
           ls "$APP" | head -40
           test -e "$APP/LaunchScreen.storyboardc"
           test -e "$APP/AppIcon60x60@2x.png"
