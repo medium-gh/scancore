@@ -33,8 +33,7 @@ jobs:
       - name: Build
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ninja-build nasm pkg-config python3-jinja2 libass-dev libfreetype-dev \
+          tools/ci/apt-install.sh ninja-build nasm pkg-config python3-jinja2 libass-dev libfreetype-dev \
             libfribidi-dev libharfbuzz-dev libfontconfig-dev libva-dev libdrm-dev libegl-dev libgl-dev \
             libpulse-dev libasound2-dev libx11-dev libxext-dev libxss-dev libxpresent-dev libxrandr-dev
           pipx install meson
