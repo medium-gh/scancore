@@ -751,8 +751,20 @@ jobs:
           path: dist/*.apk
           if-no-files-found: error
 
+  # iPhone and iPad: an unsigned IPA to sideload (ios.yml). A failure there
+  # holds nothing back: the release then has no IPA.
+  ios:
+    needs: version
+    if: needs.version.outputs.reuse == ''
+    uses: ./.github/workflows/ios.yml
+    with:
+      ref: ${{ github.event.inputs.tag || github.ref }}
+      version: ${{ needs.version.outputs.version }}
+      optional: true
+
   publish:
-    needs: [version, build, android]
+    # ios: waited for, so its IPA is among the packages; not required.
+    needs: [version, build, android, ios]
     # Publish the independent desktop and Android artifacts without waiting
     # for the hours-long Linux codec build.
     if: ${{ !cancelled() && needs.version.outputs.test != 'true' && (needs.version.outputs.reuse != '' || (needs.build.result == 'success' && needs.android.result == 'success')) }}
@@ -805,6 +817,9 @@ jobs:
           | Linux | \`linux-x86_64.AppImage\` or \`.flatpak\` |
           | Android 9+ | \`android-arm64.apk\` (32-bit phones: \`android-armv7.apk\`) |
           EOF
+          if ls artifacts/*.ipa > /dev/null 2>&1; then
+            echo '| iPhone and iPad | `ios-unsigned.ipa`: sign and install it with AltStore, SideStore or Sideloadly (no extensions there) |' >> notes.md
+          fi
           cat notes.md
       # Each package gets an Ed25519 signature (<file>.sig, base64), which
       # the app's updater checks before it installs anything: no key, no

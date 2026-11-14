@@ -361,7 +361,7 @@ Rectangle {
         // before anything behind it. E-ink: the sides turn a page at once
         // (no scrolling to redraw), the middle toggles the bar.
         TapHandler {
-            enabled: App.platform === "android" || Theme.eink
+            enabled: App.mobile || Theme.eink
             onSingleTapped: (point) => {
                 const x = point.position.x
                 if (Theme.eink && x < flick.width / 3) flick.scrollTo(flick.contentY - flick.height * 0.92, false)

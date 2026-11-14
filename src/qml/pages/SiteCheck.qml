@@ -83,13 +83,13 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        active: App.webEngine
+        active: App.embeddedBrowser
         source: "../components/WebCheckView.qml"
         onLoaded: item.startUrl = page.url
     }
     Text {
         anchors.centerIn: parent
-        visible: !App.webEngine
+        visible: !App.embeddedBrowser
         text: qsTr("This build has no embedded browser. Open ") + page.host + qsTr(" in your browser instead.")
         color: Theme.textMuted
         font.family: Theme.fontSans

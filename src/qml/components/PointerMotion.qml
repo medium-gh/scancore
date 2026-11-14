@@ -11,7 +11,7 @@ HoverHandler {
     signal moved(point position)
     property point last: Qt.point(-1e6, -1e6)
 
-    enabled: App.platform !== "android"
+    enabled: !App.mobile
     onPointChanged: {
         const p = point.scenePosition
         if (Math.abs(p.x - last.x) + Math.abs(p.y - last.y) < 3) return

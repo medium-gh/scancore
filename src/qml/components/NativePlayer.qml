@@ -23,7 +23,7 @@ Item {
     // The same server's other videos ([{id, label, height, current}]),
     // offered beside the stream's own variants under Quality.
     property var alternatives: []
-    readonly property bool phone: App.platform === "android"
+    readonly property bool phone: App.mobile
     readonly property alias player: mpv
     // Playing now (WatchPage keeps the screen on meanwhile).
     readonly property bool playing: mpv.loaded && !mpv.paused && !mpv.ended

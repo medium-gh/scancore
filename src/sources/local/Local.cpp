@@ -158,6 +158,7 @@ void unpackOther(const QString &archive, const QString &target) {
 #endif
     if (tools.isEmpty())
         throw Error(QStringLiteral("Opening %1 files needs 7-Zip, unrar or bsdtar installed.").arg(suffix(archive).toUpper()));
+#if QT_CONFIG(process)
     for (const auto &tool : tools) {
         QProcess process;
         process.start(tool.program, tool.arguments);
@@ -168,6 +169,7 @@ void unpackOther(const QString &archive, const QString &target) {
         QDir(target).removeRecursively();
         QDir().mkpath(target);
     }
+#endif
     throw Error(QStringLiteral("%1 could not be unpacked.").arg(QFileInfo(archive).fileName()));
 }
 

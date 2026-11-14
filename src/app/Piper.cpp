@@ -158,8 +158,10 @@ Piper::Piper(QObject *parent) : QObject(parent) {
 }
 
 Piper::~Piper() {
+#if QT_CONFIG(process)
     if (m_process)
         m_process->kill();
+#endif
 #ifdef SCANCORE_HAVE_MPV
     if (m_mpv)
         mpv_terminate_destroy(static_cast<mpv_handle *>(m_mpv));
@@ -294,10 +296,12 @@ Task *Piper::install(const QString &key) {
 void Piper::remove(const QString &key) {
     if (key.isEmpty() || key.contains(QLatin1Char('/')) || key.contains(QLatin1Char('\\')))
         return;
+#if QT_CONFIG(process)
     if (m_processVoice == key && m_process) {
         stop();
         m_process->kill();
     }
+#endif
     for (const auto &suffix : {".onnx", ".onnx.json", ".MODEL_CARD"})
         QFile::remove(voicesDir() + QLatin1Char('/') + key + QLatin1String(suffix));
     scanVoices();
@@ -324,6 +328,10 @@ void Piper::setRate(double rate) {
 }
 
 bool Piper::ensureProcess() {
+#if !QT_CONFIG(process)
+    // Piper is a program of its own, and there is none to start (iOS).
+    return false;
+#else
     if (m_process && m_process->state() != QProcess::NotRunning && m_processVoice == m_voice)
         return true;
     if (m_process) {
@@ -356,6 +364,7 @@ bool Piper::ensureProcess() {
     m_process->start(program(), {QStringLiteral("--model"), model, QStringLiteral("--json-input"), QStringLiteral("--quiet"),
                                  QStringLiteral("--espeak_data"), programDir() + QStringLiteral("/espeak-ng-data")});
     return true;
+#endif
 }
 
 bool Piper::ensurePlayer() {
@@ -412,11 +421,14 @@ void Piper::pump() {
         const auto file = speechDir() + QStringLiteral("/%1-%2.wav").arg(m_generation).arg(line.chunk);
         const auto json = QJsonDocument(QJsonObject{{"text", line.text}, {"output_file", QDir::toNativeSeparators(file)}}).toJson(QJsonDocument::Compact);
         m_synth.append(line.chunk);
+#if QT_CONFIG(process)
         m_process->write(json + '\n');
+#endif
     }
 }
 
 void Piper::readOutput() {
+#if QT_CONFIG(process)
     while (m_process && m_process->canReadLine()) {
         const auto path = QString::fromUtf8(m_process->readLine()).trimmed();
         if (path.isEmpty() || m_synth.isEmpty())
@@ -434,6 +446,7 @@ void Piper::readOutput() {
         m_entries.insert(-chunk, chunk); // placeholder until the playlist entry is known
 #endif
     }
+#endif
 }
 
 void Piper::drainPlayer() {
@@ -500,6 +513,7 @@ void Piper::stop() {
     m_startedEarly.clear();
     m_outstanding.clear();
     // Piper would go on with paragraphs nobody wants: it starts afresh.
+#if QT_CONFIG(process)
     if (!m_synth.isEmpty() && m_process) {
         m_synth.clear();
         m_process->disconnect(this);
@@ -507,6 +521,7 @@ void Piper::stop() {
         m_process->deleteLater();
         m_process = nullptr;
     }
+#endif
 #ifdef SCANCORE_HAVE_MPV
     if (m_mpv) {
         const char *args[] = {"stop", nullptr};

@@ -90,6 +90,16 @@ target_link_libraries(scancore_core
 set(SCANCORE_PLATFORM_SOURCES)
 if(WIN32)
     list(APPEND SCANCORE_PLATFORM_SOURCES ${PROJECT_SOURCE_DIR}/packaging/windows/scancore.rc)
+elseif(IOS)
+    # The home screen icons, drawn from the logo by tools/ios/icons.sh (the
+    # release workflow runs it); a build without them has a blank icon.
+    file(GLOB SCANCORE_IOS_ICONS ${PROJECT_SOURCE_DIR}/build/ios-icons/AppIcon*.png)
+    if(SCANCORE_IOS_ICONS)
+        set_source_files_properties(${SCANCORE_IOS_ICONS} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+        list(APPEND SCANCORE_PLATFORM_SOURCES ${SCANCORE_IOS_ICONS})
+    else()
+        message(WARNING "No iOS icons in build/ios-icons (run tools/ios/icons.sh); the app will have a blank icon")
+    endif()
 elseif(APPLE)
     set(SCANCORE_ICNS ${PROJECT_SOURCE_DIR}/packaging/macos/scancore.icns)
     set_source_files_properties(${SCANCORE_ICNS} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
@@ -106,6 +116,16 @@ set_target_properties(scancore PROPERTIES
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION}
     MACOSX_BUNDLE_ICON_FILE scancore.icns
     MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/packaging/macos/Info.plist.in)
+if(IOS)
+    set_target_properties(scancore PROPERTIES
+        MACOSX_BUNDLE_ICON_FILE ""
+        MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/packaging/ios/Info.plist.in
+        # A dark screen while the app starts, as its own first frame is.
+        QT_IOS_LAUNCH_SCREEN ${PROJECT_SOURCE_DIR}/packaging/ios/LaunchScreen.storyboard
+        XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER com.mediumdev.scancore
+        # iPhone and iPad.
+        XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
+endif()
 target_compile_definitions(scancore PRIVATE SCANCORE_VERSION="${SCANCORE_VERSION_FULL}"
     SCANCORE_DISCORD_APP_ID="${SCANCORE_DISCORD_APP_ID}"
     SCANCORE_ANILIST_CLIENT_ID="${SCANCORE_ANILIST_CLIENT_ID}"
@@ -120,8 +140,13 @@ if(NOT SCANCORE_WITH_NOVEL_PACK_INSTALLER)
 endif()
 
 file(GLOB_RECURSE SCANCORE_QML RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} CONFIGURE_DEPENDS qml/*.qml)
-if(ANDROID)
+if(ANDROID OR IOS)
     list(REMOVE_ITEM SCANCORE_QML qml/components/WebPlayer.qml qml/components/WebCheckView.qml)
+endif()
+if(IOS)
+    # Qt there is static: every import a QML file names is linked in, and
+    # there is no Qt WebEngine to link.
+    list(REMOVE_ITEM SCANCORE_QML qml/components/SignInWebView.qml)
 endif()
 if(NOT SCANCORE_WITH_SYSTEM_WEBVIEW)
     list(REMOVE_ITEM SCANCORE_QML qml/components/WebPlayerSystem.qml)
@@ -294,7 +319,7 @@ if(ANDROID)
         # The extension host's OkHttp needs 37. Named here because Qt
         # otherwise picks the longest platform name (android-36-ext19).
         QT_ANDROID_COMPILE_SDK_VERSION 37)
-else()
+elseif(NOT IOS)
     target_link_libraries(scancore PRIVATE Qt6::Widgets)
 endif()
 # Android: zlib (the NDK's) unpacks ONNX Runtime out of its package
@@ -315,9 +340,9 @@ elseif(APPLE AND NOT IOS)
     target_link_libraries(scancore PRIVATE "-framework MediaPlayer" "-framework AppKit")
 endif()
 # Keeping the screen on while a video plays (app/KeepAwake.cpp).
-if(APPLE)
+if(APPLE AND NOT IOS)
     target_link_libraries(scancore PRIVATE "-framework IOKit" "-framework CoreFoundation")
-elseif(UNIX AND NOT ANDROID)
+elseif(UNIX AND NOT ANDROID AND NOT IOS)
     find_package(Qt6 6.9 QUIET COMPONENTS DBus)
     if(Qt6DBus_FOUND)
         target_link_libraries(scancore PRIVATE Qt6::DBus)
@@ -394,7 +419,8 @@ if(SCANCORE_WITH_AVIF)
     endif()
     # pkg_check_modules keeps AVIF_FOUND in the cache, so only what was
     # linked above decides (a reconfigured build would skip it otherwise).
-    if(NOT SCANCORE_AVIF_LINKED AND NOT ANDROID)
+    # (Not for iOS: pkg-config there would find the Mac's own libavif.)
+    if(NOT SCANCORE_AVIF_LINKED AND NOT ANDROID AND NOT IOS)
         find_package(PkgConfig QUIET)
         if(PkgConfig_FOUND)
             pkg_check_modules(AVIF QUIET IMPORTED_TARGET libavif)

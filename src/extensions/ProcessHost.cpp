@@ -20,6 +20,7 @@
 
 namespace sc::ext {
 
+#if QT_CONFIG(process)
 namespace {
 
 constexpr auto kMainClass = "com.mediumdev.scancore.host.desktop.MainKt";
@@ -221,6 +222,24 @@ void ProcessHost::stop() {
     }
     state->failAll(QStringLiteral("The extension host was stopped."));
 }
+#else
+// No helper processes (iOS): there is no Java to run extensions with, and
+// they say so instead of starting.
+struct ProcessHost::State {
+    Launch launch;
+};
+
+ProcessHost::ProcessHost(Launch launch) : m_state(std::make_shared<State>()) { m_state->launch = std::move(launch); }
+ProcessHost::~ProcessHost() = default;
+bool ProcessHost::available() const { return false; }
+void ProcessHost::setLaunch(Launch launch) { m_state->launch = std::move(launch); }
+QString ProcessHost::unavailableReason() const {
+    return QStringLiteral("Extensions need a Java runtime, which this device cannot run. Built-in sources and your own files still work.");
+}
+void ProcessHost::setIdleTimeout(int) {}
+void ProcessHost::sendLine(const QByteArray &) {}
+void ProcessHost::stop() {}
+#endif
 
 ProcessHost::Launch ProcessHost::find(const QString &runtimeDir, const QString &developmentLibDir) {
     Launch launch;

@@ -156,13 +156,13 @@ SettingsPane {
         SettingRow {
             iconName: "sparkles"
             title: qsTr("Sharpen (Anime4K)")
-            description: App.platform === "android" ? qsTr("Cleaner lines and upscaling for lower-resolution episodes.")
+            description: App.mobile ? qsTr("Cleaner lines and upscaling for lower-resolution episodes.")
                 : qsTr("Cleaner lines and upscaling for lower-resolution episodes. Best needs a strong graphics card.")
             Segmented {
                 // Phones draw with OpenGL ES, where Best's networks garble.
                 options: [{ value: "off", label: qsTr("Off") }, { value: "fast", label: qsTr("Fast") }]
-                    .concat(App.platform === "android" ? [] : [{ value: "hq", label: qsTr("Best") }])
-                value: App.platform === "android" && App.settings.animeSharpen === "hq" ? "fast" : App.settings.animeSharpen || "off"
+                    .concat(App.mobile ? [] : [{ value: "hq", label: qsTr("Best") }])
+                value: App.mobile && App.settings.animeSharpen === "hq" ? "fast" : App.settings.animeSharpen || "off"
                 onPicked: (v) => App.setSetting("animeSharpen", v)
             }
         }

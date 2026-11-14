@@ -22,6 +22,16 @@
 
 #include <cmath>
 #endif
+#ifdef Q_OS_IOS
+#include <QCoreApplication>
+#include <QGuiApplication>
+#include <QQuickItem>
+#include <QQuickWindow>
+#include <QStyleHints>
+#include <QTouchEvent>
+
+#include <cmath>
+#endif
 
 namespace sc::platform {
 
@@ -491,7 +501,7 @@ void setFastestRefresh(bool on) {
 #endif
 }
 
-#ifdef Q_OS_ANDROID
+#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
 namespace {
 
 // The list (Flickable, ListView, GridView…) around `item` that scrolls
@@ -553,6 +563,8 @@ void setUpTouch() {
         if (const int distance = qRound(slop / screen->devicePixelRatio()); distance > 0)
             QGuiApplication::styleHints()->setStartDragDistance(distance);
     }
+#endif
+#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
     qApp->installEventFilter(new TouchScroll(qApp));
 #endif
 }

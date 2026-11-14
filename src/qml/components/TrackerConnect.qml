@@ -75,7 +75,7 @@ Column {
                 if (App.openSiteCheck(Trackers.anilistAuthorizeUrl(), qsTr("Sign in to AniList and allow SCANCORE; this closes by itself."), qsTr("Cancel")))
                     return
                 awaitingAniList = false
-            } else if (App.webEngine) {
+            } else if (App.embeddedBrowser) {
                 Router.openAniListSignIn()
                 return
             }

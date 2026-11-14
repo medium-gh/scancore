@@ -117,7 +117,7 @@ SettingsPane {
             }
         }
         SettingRow {
-            visible: App.platform !== "android"
+            visible: !App.mobile
             title: qsTr("Two pages side by side")
             description: qsTr("In the Pages layout, when the window is wider than it is tall. Covers and double-page spreads stay alone.")
             Toggle { checked: App.settings.readerSpread === "double"; onToggled: App.setSetting("readerSpread", checked ? "double" : "single") }
@@ -513,7 +513,7 @@ SettingsPane {
         SettingRow {
             visible: OnDevice.available
             iconName: "download"
-            title: App.platform === "android" ? qsTr("Translate on this device") : qsTr("Translate on this computer")
+            title: App.mobile ? qsTr("Translate on this device") : qsTr("Translate on this computer")
             description: {
                 App.dependOn(OnDevice.revision)
                 return OnDevice.any() ? qsTr("Pages and chapters translated with nothing sent anywhere. Add or remove languages.")

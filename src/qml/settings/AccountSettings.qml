@@ -20,7 +20,7 @@ SettingsPane {
         { value: "scancore", label: "scancore.onl", icon: Theme.compact ? "" : "cloud" },
         { value: "server", label: qsTr("Your server"), icon: Theme.compact ? "" : "server" },
         { value: "webdav", label: "WebDAV", icon: Theme.compact ? "" : "globe" }
-    ].concat(App.platform === "android" ? [] : [{ value: "folder", label: qsTr("Folder"), icon: Theme.compact ? "" : "folder-open" }])
+    ].concat(App.mobile ? [] : [{ value: "folder", label: qsTr("Folder"), icon: Theme.compact ? "" : "folder-open" }])
 
     readonly property string name: Account.user.username || Account.user.email || ""
     readonly property string avatarUrl: {
@@ -637,7 +637,7 @@ SettingsPane {
                 spacing: 10
                 Icon {
                     anchors.verticalCenter: parent.verticalCenter
-                    name: modelData.platform === "android" ? "smartphone" : "monitor"
+                    name: (modelData.platform === "android" || modelData.platform === "ios") ? "smartphone" : "monitor"
                     size: 16
                     color: Theme.textMuted
                 }

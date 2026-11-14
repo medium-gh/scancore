@@ -19,6 +19,9 @@ class App : public QObject {
     QML_SINGLETON
     Q_PROPERTY(QString version READ version CONSTANT)
     Q_PROPERTY(QString platform READ platform CONSTANT)
+    // A phone or tablet (Android, iOS): touch layouts, no windows of its
+    // own, no folders to show. `platform` stays for what only one system has.
+    Q_PROPERTY(bool mobile READ mobile CONSTANT)
     // On a television: driven by a remote's D-pad (spatial focus, a focus
     // ring, Select presses).
     Q_PROPERTY(bool tv READ tv CONSTANT)
@@ -26,6 +29,9 @@ class App : public QObject {
     Q_PROPERTY(QString dataFolder READ dataFolder CONSTANT)
     Q_PROPERTY(int manifestVersion READ manifestVersion NOTIFY manifestChanged)
     Q_PROPERTY(bool webEngine READ webEngine CONSTANT)
+    // Qt WebEngine is built in: browser checks and sign-ins open in a page
+    // inside SCANCORE (the system's web view only plays anime).
+    Q_PROPERTY(bool embeddedBrowser READ embeddedBrowser CONSTANT)
     // Android: battery optimisation is on for SCANCORE, so the system stops
     // it soon after it leaves the screen. Checked again on every return.
     Q_PROPERTY(bool batteryRestricted READ batteryRestricted NOTIFY batteryChanged)
@@ -44,6 +50,8 @@ public:
 
     QString version() const;
     QString platform() const;
+    bool mobile() const;
+    bool embeddedBrowser() const;
     QVariantMap settings() const { return m_settings; }
     // Sources the user pinned (setting pinnedSources: their keys) go first
     // in a list of sources, marked "pinned"; the rest keep their order.

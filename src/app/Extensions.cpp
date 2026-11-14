@@ -52,6 +52,13 @@ QString uvAsset() {
 }
 
 QString runTool(const QString &program, const QStringList &args, const QProcessEnvironment &env, int timeoutMs) {
+#if !QT_CONFIG(process)
+    // No other programs to start (iOS).
+    Q_UNUSED(args)
+    Q_UNUSED(env)
+    Q_UNUSED(timeoutMs)
+    throw Error(QStringLiteral("Could not start %1.").arg(QFileInfo(program).fileName()));
+#else
     QProcess process;
     process.setProcessEnvironment(env);
     process.setProcessChannelMode(QProcess::MergedChannels);
@@ -71,6 +78,7 @@ QString runTool(const QString &program, const QStringList &args, const QProcessE
     if (process.exitStatus() != QProcess::NormalExit || process.exitCode() != 0)
         throw Error(QStringLiteral("Installation step failed: %1").arg(output.section('\n', -1)));
     return output;
+#endif
 }
 
 QString findFile(const QString &dir, const QString &name) {

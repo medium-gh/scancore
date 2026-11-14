@@ -148,7 +148,7 @@ void Customize::setTranslucentWindow(bool on) { g_translucent = on; }
 bool Customize::translucentWindow() const { return g_translucent; }
 
 bool Customize::canRestart() const {
-#ifdef Q_OS_ANDROID
+#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
     return false;
 #else
     return !qEnvironmentVariableIsSet("FLATPAK_ID");
@@ -452,12 +452,14 @@ void Customize::setLanguage(const QString &code) {
 void Customize::restart() {
     if (!canRestart())
         return;
+#if QT_CONFIG(process)
     // An AppImage runs from a temporary mount; start the image itself.
     auto program = qEnvironmentVariable("APPIMAGE");
     if (program.isEmpty())
         program = QCoreApplication::applicationFilePath();
     if (QProcess::startDetached(program, QCoreApplication::arguments().mid(1)))
         QCoreApplication::quit();
+#endif
 }
 
 } // namespace sc

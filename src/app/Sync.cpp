@@ -32,6 +32,8 @@ QString platformName() {
     return QStringLiteral("windows");
 #elif defined(Q_OS_MACOS)
     return QStringLiteral("macos");
+#elif defined(Q_OS_IOS)
+    return QStringLiteral("ios");
 #else
     return QStringLiteral("linux");
 #endif

@@ -38,6 +38,11 @@ QJsonObject LnCrawlSource::run(QJsonObject request, int timeoutMs) {
     request.insert("source", m_entry);
     request.insert("origin", origin());
 
+#if !QT_CONFIG(process)
+    // No Python to start (iOS); the pack cannot be installed there either.
+    Q_UNUSED(timeoutMs)
+    throw Error(QStringLiteral("Could not start the novel source runtime."));
+#else
     QProcess process;
     auto env = QProcessEnvironment::systemEnvironment();
     env.insert(QStringLiteral("PYTHONPATH"), LnCrawlRuntime::vendor());
@@ -127,6 +132,7 @@ QJsonObject LnCrawlSource::run(QJsonObject request, int timeoutMs) {
     throw Error(QStringLiteral("%1 stopped unexpectedly%2")
                     .arg(label(), stderrText.isEmpty() ? QStringLiteral(".") : QStringLiteral(": ") + stderrText.section('\n', -1)),
                 502);
+#endif
 }
 
 QList<Book> LnCrawlSource::search(const QString &query) {

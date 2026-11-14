@@ -130,7 +130,7 @@ Item {
                     spacing: 8
                     ScButton { visible: page.failedCount > 0; text: qsTr("Retry failed"); iconName: "refresh-cw"; onClicked: Downloads.retryFailed() }
                     ScButton { visible: page.failedCount > 0; text: qsTr("Clear failed"); variant: "ghost"; onClicked: Downloads.clearFinished() }
-                    ScButton { visible: App.platform !== "android"; text: qsTr("Open folder"); iconName: "folder-open"; onClicked: App.openFolder(Downloads.folder()) }
+                    ScButton { visible: !App.mobile; text: qsTr("Open folder"); iconName: "folder-open"; onClicked: App.openFolder(Downloads.folder()) }
                 }
             }
             // Android pauses downloads soon after the app leaves the screen
