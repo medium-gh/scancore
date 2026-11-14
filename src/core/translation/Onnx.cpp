@@ -32,6 +32,13 @@ bool load(const QString &path, QString *error) {
     QMutexLocker lock(&g_mutex);
     if (g_api)
         return true;
+#if !QT_CONFIG(library)
+    // No libraries to load at run time (a Qt built without them).
+    Q_UNUSED(path)
+    if (error)
+        *error = QStringLiteral("On-device models are not available on this system.");
+    return false;
+#else
     // Kept loaded for the rest of the run.
     auto *library = new QLibrary(path);
     using GetApiBase = const OrtApiBase *(ORT_API_CALL *)();
@@ -53,6 +60,7 @@ bool load(const QString &path, QString *error) {
     g_env = env;
     g_api = api;
     return true;
+#endif
 }
 
 bool loaded() {

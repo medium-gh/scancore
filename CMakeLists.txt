@@ -59,6 +59,19 @@ if(ANDROID)
     set(SCANCORE_BUILD_TESTS OFF)
     find_package(Qt6 REQUIRED COMPONENTS WebView)
     set(SCANCORE_WITH_SYSTEM_WEBVIEW ON)
+elseif(IOS)
+    # iPhone and iPad: the system's web view (WKWebView) plays anime, and
+    # there is no tray or Widgets, as on Android. An app there cannot start
+    # other programs, so nothing that is one comes: the extension host
+    # (Java), the Python novel pack; libmpv has no iOS build yet. The app is
+    # built unsigned (packaging/ios), for the reader to sign and sideload.
+    set(SCANCORE_WITH_WEBENGINE OFF)
+    set(SCANCORE_BUILD_TESTS OFF)
+    set(SCANCORE_WITH_EXTENSION_HOST OFF)
+    set(SCANCORE_WITH_NOVEL_PACK_INSTALLER OFF)
+    set(SCANCORE_WITH_MPV OFF)
+    find_package(Qt6 REQUIRED COMPONENTS WebView)
+    set(SCANCORE_WITH_SYSTEM_WEBVIEW ON)
 else()
     find_package(Qt6 REQUIRED COMPONENTS Widgets)
 endif()
@@ -68,7 +81,7 @@ endif()
 # system's web view (Qt WebView), which has it. Linux has no system web view;
 # there the player needs a Qt WebEngine built with proprietary codecs, as
 # distribution and Flathub packages are.
-if(NOT ANDROID)
+if(NOT ANDROID AND NOT IOS)
     if(SCANCORE_WITH_SYSTEM_WEBVIEW AND (WIN32 OR APPLE))
         find_package(Qt6 6.9 QUIET COMPONENTS WebView)
         if(NOT Qt6WebView_FOUND)

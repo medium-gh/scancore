@@ -177,7 +177,7 @@ QtObject {
 
     // Set by Main.qml: true on phones and very narrow windows.
     property bool compact: false
-    readonly property bool touch: App.platform === "android"
+    readonly property bool touch: App.mobile
     readonly property int gutter: compact ? 16 : 32
 
     // A pill's corner for its height: square in the Retro mode.

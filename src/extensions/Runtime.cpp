@@ -57,7 +57,8 @@ void Runtime::setDownloadBase(const QString &base) {
 }
 
 QString Runtime::platform() {
-#if defined(Q_OS_ANDROID)
+    // Android carries its host in the APK; iOS cannot run one.
+#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
     return {};
 #else
     const auto cpu = QSysInfo::currentCpuArchitecture();

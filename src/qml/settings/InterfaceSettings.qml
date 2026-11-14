@@ -324,7 +324,7 @@ SettingsPane {
     }
 
     SettingsGroup {
-        visible: App.platform !== "android" && !Theme.retro
+        visible: !App.mobile && !Theme.retro
         title: qsTr("Navigation")
         note: qsTr("Narrow windows and phones always use tabs along the bottom.")
         Flow {
@@ -468,7 +468,7 @@ SettingsPane {
             }
         }
         SettingRow {
-            visible: App.platform !== "android"
+            visible: !App.mobile
             iconName: "move-vertical"
             title: qsTr("Scroll speed")
             description: qsTr("How far the mouse wheel and touchpad move pages.")
@@ -489,7 +489,7 @@ SettingsPane {
         SettingRow {
             iconName: "hand"
             title: qsTr("Fling glide")
-            description: App.platform === "android" ? qsTr("How long lists keep moving after a swipe.")
+            description: App.mobile ? qsTr("How long lists keep moving after a swipe.")
                                                     : qsTr("How long lists keep moving after a touchpad or touch screen swipe.")
             Segmented {
                 options: [{ value: "short", label: qsTr("Short") }, { value: "default", label: qsTr("Default") }, { value: "long", label: qsTr("Long") }]

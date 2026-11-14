@@ -255,7 +255,7 @@ Rectangle {
         property var file: null
         fileMode: FileDialog.SaveFile
         // Computers: the Pictures folder to start with.
-        currentFolder: App.platform === "android" ? "" : StandardPaths.writableLocation(StandardPaths.PicturesLocation)
+        currentFolder: App.mobile ? "" : StandardPaths.writableLocation(StandardPaths.PicturesLocation)
         onAccepted: {
             const ok = App.saveFileTo(file.path, selectedFile)
             Router.toast(ok ? qsTr("Page saved") : qsTr("The page could not be saved"), ok ? "success" : "error")
@@ -597,7 +597,7 @@ Rectangle {
     Shortcut { sequences: Keymap.sequences("reader.narrower", reader.keyProfile); enabled: reader.keysHere; onActivated: reader.setOpt("readerWidth", Math.max(360, reader.stripWidth - 80)) }
 
     Shortcut { sequences: Keymap.sequences("reader.auto", reader.keyProfile); enabled: reader.keysHere; onActivated: reader.autoScrolling = !reader.autoScrolling }
-    Shortcut { sequences: Keymap.sequences("reader.lens", reader.keyProfile); enabled: reader.keysHere && App.platform !== "android"; onActivated: reader.lensOn = !reader.lensOn }
+    Shortcut { sequences: Keymap.sequences("reader.lens", reader.keyProfile); enabled: reader.keysHere && !App.mobile; onActivated: reader.lensOn = !reader.lensOn }
 
     // Computers: a lens under the mouse (L, or the reader's settings),
     // twice as large, for small lettering and margin notes.
@@ -605,7 +605,7 @@ Rectangle {
     onLensOnChanged: App.setSetting("readerLens", lensOn)
     HoverHandler {
         id: lensHover
-        enabled: reader.lensOn && App.platform !== "android"
+        enabled: reader.lensOn && !App.mobile
     }
     Rectangle {
         id: lens
@@ -706,11 +706,11 @@ Rectangle {
                 if (reader.stripTaps) {
                     const p = reader.mapFromItem(null, point.scenePosition.x, point.scenePosition.y)
                     reader.act(reader.tapZone(p.x, p.y, reader.width, reader.height))
-                } else if (App.platform === "android") {
+                } else if (App.mobile) {
                     reader.toggleControls()
                 }
             }
-            onDoubleTapped: if (App.platform !== "android") reader.toggleControls()
+            onDoubleTapped: if (!App.mobile) reader.toggleControls()
             onLongPressed: {
                 if (reader.longPressZoom) reader.startMagnifier(strip, point.position.x, point.position.y)
                 else reader.pageMenu(strip, point.position.x, point.position.y, reader.pageUnder(strip, point.position.x, point.position.y))
@@ -1473,7 +1473,7 @@ Rectangle {
         opacity: reader.controlsShown ? 1 : 0
         Behavior on y { NumberAnimation { duration: Motion.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Motion.emphasized } }
         Behavior on opacity { NumberAnimation { duration: Motion.normal } }
-        HoverHandler { id: dockHover; enabled: App.platform !== "android" }
+        HoverHandler { id: dockHover; enabled: !App.mobile }
         // Taps on the card stay on it (they do not turn pages).
         MouseArea { anchors.fill: parent; onPressed: (mouse) => { reader.showControls(); mouse.accepted = true } }
 
@@ -1608,7 +1608,7 @@ Rectangle {
         opacity: reader.controlsShown ? 1 : 0
         Behavior on y { NumberAnimation { duration: Motion.slow; easing.type: Easing.BezierSpline; easing.bezierCurve: Motion.emphasized } }
         Behavior on opacity { NumberAnimation { duration: Motion.normal } }
-        HoverHandler { id: topHover; enabled: App.platform !== "android" }
+        HoverHandler { id: topHover; enabled: !App.mobile }
 
         // Glass: a back orb, a capsule round the title and one round the
         // buttons, floating over the page (as the draft), not a shade.
@@ -1850,7 +1850,7 @@ Rectangle {
                             list.push({ text: qsTr("Comments"), icon: "message-circle", run: () => comments.open() })
                         if (topActions.canHandOff)
                             for (const device of Live.devices)
-                                list.push({ text: qsTr("Continue on %1").arg(device.name), icon: device.platform === "android" ? "smartphone" : "monitor",
+                                list.push({ text: qsTr("Continue on %1").arg(device.name), icon: (device.platform === "android" || device.platform === "ios") ? "smartphone" : "monitor",
                                             run: () => continueOn.send(device) })
                         list.push({ text: fullScreen.fullScreen ? qsTr("Leave full screen") : qsTr("Full screen"),
                                     icon: fullScreen.fullScreen ? "minimize" : "maximize", run: () => fullScreen.toggle() })
@@ -2108,7 +2108,7 @@ Rectangle {
                 Segmented {
                     width: parent.width
                     fill: true
-                    visible: reader.mode === "paged" && App.platform !== "android"
+                    visible: reader.mode === "paged" && !App.mobile
                     options: [{ value: "single", label: qsTr("One page") }, { value: "double", label: qsTr("Two pages") }]
                     value: reader.opt("readerSpread", "single")
                     onPicked: (v) => reader.setOpt("readerSpread", v)
@@ -2132,7 +2132,7 @@ Rectangle {
                     Label { text: qsTr("Split wide pages in two") }
                 }
                 Row {
-                    visible: App.platform !== "android"
+                    visible: !App.mobile
                     spacing: 10
                     Toggle {
                         checked: reader.lensOn

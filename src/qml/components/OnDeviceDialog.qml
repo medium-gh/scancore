@@ -29,7 +29,7 @@ Dialog {
         target: dialog.installTask
         function onProgressed(partial) { if (partial && partial.status) dialog.status = partial.status }
         function onFinished() {
-            Router.toast(App.platform === "android" ? qsTr("Ready: pages in this language can be translated on this device.")
+            Router.toast(App.mobile ? qsTr("Ready: pages in this language can be translated on this device.")
                                                     : qsTr("Ready: pages in this language can be translated on this computer."), "success")
             dialog.installing = ""
         }
@@ -77,7 +77,7 @@ Dialog {
             x: 24
             y: 22
             width: parent.width - x - 64
-            text: App.platform === "android" ? qsTr("Translate on this device") : qsTr("Translate on this computer")
+            text: App.mobile ? qsTr("Translate on this device") : qsTr("Translate on this computer")
             color: Theme.text
             font.family: Theme.fontDisplay
             font.pixelSize: Theme.textLg

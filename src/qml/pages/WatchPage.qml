@@ -67,7 +67,7 @@ Rectangle {
     property bool sideOpen: false
     property bool ended: false
 
-    readonly property bool phone: App.platform === "android"
+    readonly property bool phone: App.mobile
     readonly property bool landscape: width > height
     readonly property bool fullScreen: Window.window !== null && Window.window.visibility === Window.FullScreen
     readonly property bool systemView: !nativeStream && Anime.playerEngine === "system"
@@ -450,7 +450,7 @@ Rectangle {
         const items = []
         if (!App.settings.incognito)
             for (const d of Live.devices)
-                items.push({ text: qsTr("Continue on %1").arg(d.name), icon: d.platform === "android" ? "smartphone" : "monitor", run: () => {
+                items.push({ text: qsTr("Continue on %1").arg(d.name), icon: (d.platform === "android" || d.platform === "ios") ? "smartphone" : "monitor", run: () => {
                     saveProgress(true)
                     if (Live.handoff(d.id, series.id || "")) Router.toast(qsTr("Sent to %1").arg(d.name), "success")
                     else Router.toast(qsTr("Nothing to send yet: read or watch a little first."), "info")

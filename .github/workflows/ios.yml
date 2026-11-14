@@ -1,0 +1,109 @@
+name: iOS
+
+# SCANCORE for iPhone and iPad as an unsigned IPA (the artifact
+# scancore-iOS): Apple only lets signed apps run, so the reader signs it
+# with their own Apple ID through a sideloading tool (AltStore, SideStore,
+# Sideloadly) and installs it that way. What a phone there cannot have is
+# left out by CMakeLists.txt's iOS branch: extensions (they need Java), the
+# Python novel pack, libmpv; anime plays in the system's web view.
+# The release workflow calls it; a push that changes the iOS packaging runs
+# it too, and it can be run by hand.
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: Branch, tag or commit to build
+        type: string
+        default: ""
+      version:
+        description: The version the IPA is named with
+        type: string
+        default: ""
+      # A release is not held back by it: without an IPA it is still one.
+      optional:
+        description: Let the run pass when the build fails
+        type: boolean
+        default: false
+  workflow_dispatch:
+  push:
+    branches: ["**"]
+    paths:
+      - packaging/ios/**
+      - tools/ios/**
+      - .github/workflows/ios.yml
+
+env:
+  QT_VERSION: 6.11.3
+
+jobs:
+  ios:
+    name: iOS (unsigned IPA)
+    runs-on: macos-15
+    continue-on-error: ${{ inputs.optional == true }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+
+      - name: Version
+        run: |
+          VERSION="${{ inputs.version }}"
+          if [ -z "$VERSION" ]; then
+            VERSION=$(sed -nE '/^project\(/,/\)/ s/^[[:space:]]*VERSION[[:space:]]+([0-9]+\.[0-9]+\.[0-9]+).*/\1/p' CMakeLists.txt | head -1)
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      # rsvg-convert draws the icons from the logo (tools/ios/icons.sh).
+      - name: Tools
+        run: brew install librsvg
+
+      # Qt's tools (moc, the QML compiler) run on the Mac: the iOS Qt has
+      # only libraries.
+      - name: Qt (host)
+        uses: jurplel/install-qt-action@b344308e4483fc892e0d27b3cd1b173ebdd95f06 # v4.5.0
+        with:
+          version: ${{ env.QT_VERSION }}
+          cache: true
+
+      - name: Qt (iOS)
+        uses: jurplel/install-qt-action@b344308e4483fc892e0d27b3cd1b173ebdd95f06 # v4.5.0
+        with:
+          version: ${{ env.QT_VERSION }}
+          target: ios
+          modules: qtwebview qtimageformats qtwebchannel qtpositioning
+          cache: true
+
+      # Qt builds iOS apps through Xcode. Nothing is signed: no certificate
+      # is needed here, and the sideloading tool signs the whole app anyway.
+      - name: Build
+        run: |
+          tools/ios/icons.sh
+          HOST_QT=$(dirname "$QT_ROOT_DIR")/macos
+          "$QT_ROOT_DIR/bin/qt-cmake" -S . -B build -G Xcode -DQT_HOST_PATH="$HOST_QT" -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release --target scancore -- -sdk iphoneos \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
+
+      # An IPA is a zip with the app in a folder named Payload.
+      - name: Unsigned IPA
+        run: |
+          APP=$(find build -type d -name "scancore.app" -path "*iphoneos*" | head -1)
+          if [ -z "$APP" ]; then
+            echo "::error::No scancore.app was built for iPhone."
+            exit 1
+          fi
+          # The phone's own processor only, and its start-up screen and icons.
+          lipo -info "$APP/scancore"
+          ls "$APP" | head -40
+          test -e "$APP/LaunchScreen.storyboardc"
+          test -e "$APP/AppIcon60x60@2x.png"
+          mkdir -p dist/Payload
+          cp -R "$APP" dist/Payload/SCANCORE.app
+          (cd dist && zip -qry "SCANCORE-$VERSION-ios-unsigned.ipa" Payload && rm -rf Payload)
+          ls -lh dist
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: scancore-iOS
+          path: dist/*.ipa
+          if-no-files-found: error

@@ -30,14 +30,20 @@
 #ifdef SCANCORE_HAVE_WEBVIEW
 #include <QtWebView/QtWebView>
 #endif
-#ifdef Q_OS_ANDROID
+// Phones have no Widgets: no tray, and one copy of the app at a time.
+#if defined(Q_OS_ANDROID) || defined(Q_OS_IOS)
+#define SCANCORE_PHONE
+#endif
+#ifdef SCANCORE_PHONE
 #include <QFileOpenEvent>
 #include <QGuiApplication>
-#include <QtCore/private/qandroidextras_p.h>
 #else
 #include <QApplication>
 #include <QMenu>
 #include <QSystemTrayIcon>
+#endif
+#ifdef Q_OS_ANDROID
+#include <QtCore/private/qandroidextras_p.h>
 #endif
 #include <QCryptographicHash>
 #if defined(Q_OS_ANDROID)
@@ -88,10 +94,10 @@ void loadFonts() {
     QGuiApplication::setFont(font);
 }
 
-#if defined(Q_OS_MACOS) || defined(Q_OS_ANDROID)
+#if defined(Q_OS_MACOS) || defined(SCANCORE_PHONE)
 // Finder opens files (a .sct theme, a comic) with an event, not arguments;
 // links SCANCORE answers (scancore://, a repository's one-tap link) come the
-// same way on macOS and Android.
+// same way on macOS, Android and iOS.
 class FileOpenFilter : public QObject {
 public:
     using QObject::QObject;
@@ -376,7 +382,7 @@ int main(int argc, char *argv[]) {
 #endif
     QtWebView::initialize();
 #endif
-#ifdef Q_OS_ANDROID
+#ifdef SCANCORE_PHONE
     using Application = QGuiApplication;
 #else
     using Application = QApplication;
@@ -384,7 +390,7 @@ int main(int argc, char *argv[]) {
     Application app(argc, argv);
     startStep("application");
     sc::platform::setUpTouch();
-#if defined(Q_OS_MACOS) || defined(Q_OS_ANDROID)
+#if defined(Q_OS_MACOS) || defined(SCANCORE_PHONE)
     app.installEventFilter(new FileOpenFilter(&app));
 #endif
     Application::setOrganizationName(QStringLiteral("Medium Dev"));
@@ -417,11 +423,11 @@ int main(int argc, char *argv[]) {
             *nowhere = 1;
         });
     Application::setWindowIcon(QIcon(QStringLiteral(":/branding/scancore.svg")));
-#ifndef Q_OS_ANDROID
+#ifndef SCANCORE_PHONE
     QApplication::setQuitOnLastWindowClosed(false);
 #endif
 
-#ifndef Q_OS_ANDROID
+#ifndef SCANCORE_PHONE
     // Files and links given on the command line (a theme, for example).
     QStringList openArguments;
     for (const auto &argument : QCoreApplication::arguments().mid(1))
@@ -451,7 +457,7 @@ int main(int argc, char *argv[]) {
 
     chooseGraphicsApi();
 
-#ifndef Q_OS_ANDROID
+#ifndef SCANCORE_PHONE
     // A see-through window needs an alpha channel from the start.
     if (Customize::savedThemeIsTranslucent()) {
         Customize::setTranslucentWindow(true);
@@ -491,7 +497,7 @@ int main(int argc, char *argv[]) {
         appState->setSetting(QStringLiteral("uiMode"), QStringLiteral("retro"));
     if (const auto accent = appState->settings().value(QStringLiteral("accent")).toString(); accent.startsWith(QLatin1String("metro-")))
         appState->setSetting(QStringLiteral("accent"), QStringLiteral("retro-") + accent.mid(6));
-#ifndef Q_OS_ANDROID
+#ifndef SCANCORE_PHONE
     QSystemTrayIcon tray(QApplication::windowIcon());
     QMenu trayMenu;
     trayMenu.addAction(QStringLiteral("Open SCANCORE"), appState, &App::activateRequested);
@@ -531,7 +537,7 @@ int main(int argc, char *argv[]) {
     // there is nothing left to show.
     QObject::connect(engine.rootObjects().first(), &QObject::destroyed, &app, &Application::quit);
 
-#ifndef Q_OS_ANDROID
+#ifndef SCANCORE_PHONE
     QObject::connect(&instance, &SingleInstance::activated, appState, [appState](const QStringList &arguments) {
         emit appState->activateRequested();
         for (const auto &argument : arguments)

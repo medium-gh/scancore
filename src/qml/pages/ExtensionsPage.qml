@@ -63,7 +63,7 @@ Item {
     }
     onRowsWantedChanged: Qt.callLater(showRows)
     Component.onCompleted: showRows()
-    readonly property bool needsRuntime: App.platform !== "android" && Extensions.runtimeAvailable && !Extensions.runtimeInstalled
+    readonly property bool needsRuntime: !App.mobile && Extensions.runtimeAvailable && !Extensions.runtimeInstalled
 
     function installing(id) { return Extensions.installing.indexOf(id) >= 0 }
     function toggle(id) {

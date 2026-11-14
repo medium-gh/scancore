@@ -1359,7 +1359,12 @@ bool Anime::openExternally(const QString &id, const QVariantMap &video, const QS
             if (options.contains(QLatin1String(name)))
                 args << prefix + QLatin1String(name) + QLatin1Char('=') + options.value(QLatin1String(name)).toString();
     }
+#if QT_CONFIG(process)
     return QProcess::startDetached(it->program, args);
+#else
+    // No other programs to start (iOS).
+    return false;
+#endif
 #endif
 }
 

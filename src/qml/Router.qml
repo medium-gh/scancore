@@ -59,7 +59,7 @@ QtObject {
     // Side by side), not over it.
     property bool toSplit: false
     // Computers: `path` (a reader, the player, a page) in a window of its own.
-    readonly property bool windows: App.platform !== "android"
+    readonly property bool windows: !App.mobile
     function openWindow(path, props) {
         const component = Qt.createComponent(Qt.resolvedUrl("components/PageWindow.qml"))
         if (component.status !== Component.Ready) {

@@ -35,7 +35,7 @@ Item {
         { key: "about", file: "AboutSettings.qml", title: qsTr("About"), subtitle: qsTr("Version, updates and help"), icon: "info", tint: "mono",
           keywords: "version updates help licence discord welcome" }
     ]
-    readonly property var sections: allSections.filter(s => !s.desktop || App.platform !== "android")
+    readonly property var sections: allSections.filter(s => !s.desktop || !App.mobile)
 
     function sectionFor(key) {
         for (const s of sections)

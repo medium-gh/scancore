@@ -91,7 +91,7 @@ public:
     // or empty when there is none; and one such merged here when newer.
     static QJsonObject unitPayload(const QString &seriesId, const QString &unitKey);
     static bool mergeUnit(const QJsonObject &payload);
-    // "android", "windows", "macos" or "linux".
+    // "android", "ios", "windows", "macos" or "linux".
     static QString platform();
 
 signals:

@@ -216,7 +216,7 @@ SettingsPane {
     }
 
     SettingsGroup {
-        visible: App.platform !== "android"
+        visible: !App.mobile
         title: qsTr("Background")
         SettingRow {
             iconName: "minimize"

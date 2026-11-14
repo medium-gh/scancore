@@ -76,16 +76,16 @@ SettingsPane {
         SettingRow {
             iconName: "download"
             title: qsTr("Downloaded chapters")
-            description: Downloads.sizeOnDisk() + (App.platform !== "android" ? " · " + Downloads.folder() : "")
+            description: Downloads.sizeOnDisk() + (!App.mobile ? " · " + Downloads.folder() : "")
             ScButton {
-                visible: App.platform !== "android"
+                visible: !App.mobile
                 text: qsTr("Open folder")
                 iconName: "folder-open"
                 onClicked: App.openFolder(Downloads.folder())
             }
         }
         SettingRow {
-            visible: App.platform !== "android"
+            visible: !App.mobile
             iconName: "hard-drive"
             title: qsTr("App data")
             description: App.dataFolder

@@ -59,7 +59,7 @@
 #include <QStandardPaths>
 #ifdef Q_OS_ANDROID
 #include <QJniObject>
-#else
+#elif !defined(Q_OS_IOS)
 #include <QSystemTrayIcon>
 #endif
 #include <QVersionNumber>
@@ -375,8 +375,23 @@ QString App::platform() const {
     return QStringLiteral("windows");
 #elif defined(Q_OS_MACOS)
     return QStringLiteral("macos");
+#elif defined(Q_OS_IOS)
+    return QStringLiteral("ios");
 #else
     return QStringLiteral("linux");
+#endif
+}
+
+bool App::mobile() const {
+    const auto name = platform();
+    return name == QLatin1String("android") || name == QLatin1String("ios");
+}
+
+bool App::embeddedBrowser() const {
+#ifdef SCANCORE_HAVE_WEBENGINE
+    return true;
+#else
+    return false;
 #endif
 }
 
@@ -608,7 +623,7 @@ void App::setMediaVolume(double level) const { platform::setMediaVolume(level); 
 void App::copy(const QString &text) const { QGuiApplication::clipboard()->setText(text); }
 
 void App::notify(const QString &title, const QString &body) {
-#ifndef Q_OS_ANDROID
+#if !defined(Q_OS_ANDROID) && !defined(Q_OS_IOS)
     if (m_tray && QSystemTrayIcon::supportsMessages())
         m_tray->showMessage(title, body, QSystemTrayIcon::Information, 6000);
 #else

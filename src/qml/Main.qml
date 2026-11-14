@@ -209,7 +209,7 @@ ApplicationWindow {
 
     // On Android a Back that nothing else took can arrive as a close request.
     onClosing: (close) => {
-        if (App.platform !== "android") {
+        if (!App.mobile) {
             if (App.settings.closeToTray === true) {
                 close.accepted = false
                 window.hide()
@@ -918,7 +918,7 @@ ApplicationWindow {
 
     // The keys come from Settings → Keyboard (see Keymap).
     Shortcut { sequences: Keymap.sequences("palette"); onActivated: commandPalette.open() }
-    Shortcut { sequences: Keymap.sequences("shortcuts"); enabled: App.platform !== "android"; onActivated: shortcutsSheet.open() }
+    Shortcut { sequences: Keymap.sequences("shortcuts"); enabled: !App.mobile; onActivated: shortcutsSheet.open() }
     // StandardKey.Back is also Android's Back key.
     Shortcut { sequences: Keymap.sequences("back").concat([StandardKey.Back]); onActivated: shell.systemBack() }
     // The back button on mice.

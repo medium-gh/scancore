@@ -78,7 +78,7 @@ Popup {
             commands.push({ icon: "lock", label: qsTr("Lock SCANCORE"), run: () => Lock.lockNow() })
         if (Account.signedIn)
             commands.push({ icon: "cloud", label: qsTr("Sync with scancore.onl"), run: () => Account.sync() })
-        if (App.platform !== "android")
+        if (!App.mobile)
             commands.push({ icon: "keyboard", label: qsTr("Keyboard shortcuts"), detail: "?", run: () => Router.shell.openShortcuts() })
         for (const c of commands)
             if (!lower || c.label.toLowerCase().includes(lower))

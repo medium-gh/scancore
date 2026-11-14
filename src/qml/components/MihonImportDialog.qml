@@ -22,7 +22,7 @@ Dialog {
     readonly property var extensions: preview ? preview.extensions.filter(e => e.series > 0) : []
     readonly property var otherExtensions: preview ? preview.extensions.filter(e => e.series === 0) : []
     readonly property int extensionSeries: extensions.reduce((n, e) => n + e.series, 0)
-    readonly property bool needsRuntime: App.platform !== "android" && Extensions.runtimeAvailable && !Extensions.runtimeInstalled
+    readonly property bool needsRuntime: !App.mobile && Extensions.runtimeAvailable && !Extensions.runtimeInstalled
     readonly property bool busy: runtimeTask !== null && runtimeTask.loading
     // Called with the import task once it starts.
     signal importStarted(var importTask)

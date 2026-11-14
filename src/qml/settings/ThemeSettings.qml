@@ -363,7 +363,7 @@ SettingsPane {
             }
         }
         SettingRow {
-            visible: App.platform !== "android"
+            visible: !App.mobile
             iconName: "monitor"
             title: qsTr("Window transparency")
             description: Customize.translucentWindow ? qsTr("See your desktop through the window.")
@@ -544,7 +544,7 @@ SettingsPane {
     SettingsGroup {
         title: qsTr("Share")
         note: qsTr("A .sct file holds the colours, transparency and background picture in one file that works on every system.")
-            + (App.platform !== "android" ? qsTr(" You can also drop one on the window.") : "")
+            + (!App.mobile ? qsTr(" You can also drop one on the window.") : "")
         SettingRow {
             visible: pane.custom
             iconName: "type"

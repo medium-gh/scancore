@@ -62,6 +62,9 @@ QString Updater::assetSuffix() const {
     return QStringLiteral("-windows-x64-setup.exe");
 #elif defined(Q_OS_MACOS)
     return QStringLiteral("-macos-universal.dmg");
+#elif defined(Q_OS_IOS)
+    // Unsigned: signed and installed by the user's own sideloading tool.
+    return QStringLiteral("-ios-unsigned.ipa");
 #else
     return QStringLiteral("-linux-x86_64.AppImage");
 #endif
@@ -78,6 +81,9 @@ bool Updater::canInstall() const {
     return QFileInfo::exists(QCoreApplication::applicationDirPath() + QStringLiteral("/unins000.exe"));
 #elif defined(Q_OS_MACOS)
     return QCoreApplication::applicationDirPath().endsWith(QLatin1String(".app/Contents/MacOS"));
+#elif defined(Q_OS_IOS)
+    // An app cannot replace itself there: the new IPA is sideloaded.
+    return false;
 #else
     return true;
 #endif
@@ -278,6 +284,8 @@ void Updater::install() {
         QCoreApplication::quit();
     else
         setState(QStringLiteral("error"), QStringLiteral("Could not start the update."));
+#elif defined(Q_OS_IOS)
+    setState(QStringLiteral("error"), QStringLiteral("Sideload the new IPA to update."));
 #else
     // AppImage: swap the file in place (the running copy stays mounted) and restart.
     const auto target = qEnvironmentVariable("APPIMAGE");

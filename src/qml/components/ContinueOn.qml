@@ -15,7 +15,7 @@ IconButton {
     tip: qsTr("Continue on another device")
     onClicked: menu.openAt(root, 0, root.height, Live.devices.map(device => ({
         text: device.name,
-        icon: device.platform === "android" ? "smartphone" : "monitor",
+        icon: (device.platform === "android" || device.platform === "ios") ? "smartphone" : "monitor",
         run: () => root.send(device)
     })))
 

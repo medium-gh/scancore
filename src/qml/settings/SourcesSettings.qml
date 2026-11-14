@@ -102,7 +102,7 @@ SettingsPane {
             }
             // Files on this device have no site to check or open.
             IconButton {
-                visible: App.platform !== "android" && modelData.key !== "local"
+                visible: !App.mobile && modelData.key !== "local"
                 iconName: "shield-check"
                 tip: qsTr("Pass a browser check for this site")
                 onClicked: Router.openSiteCheck(modelData.base + "/")
@@ -182,7 +182,7 @@ SettingsPane {
         }
         // For bug reports: what extensions reported (computers).
         SettingRow {
-            visible: App.platform !== "android" && pane.hostLog !== ""
+            visible: !App.mobile && pane.hostLog !== ""
             iconName: "file-text"
             title: qsTr("Extension log")
             description: qsTr("What the extensions reported since they last started, errors included. Attach it to a bug report.")
@@ -314,7 +314,7 @@ SettingsPane {
     // The Java runtime extensions run in on a computer (phones run them
     // themselves).
     SettingsGroup {
-        visible: App.platform !== "android" && Extensions.runtimeAvailable
+        visible: !App.mobile && Extensions.runtimeAvailable
         title: qsTr("Extensions")
         SettingRow {
             iconName: "download"
@@ -349,7 +349,7 @@ SettingsPane {
     }
 
     SettingsGroup {
-        visible: App.platform !== "android"
+        visible: !App.mobile
         title: qsTr("Extended novel sources")
         SettingRow {
             iconName: "book-text"
@@ -422,7 +422,7 @@ SettingsPane {
         readonly property var visibleSources: pane.shown(pane.comicSources, pane.allComics)
         visible: visibleSources.length > 0
         title: qsTr("Comics")
-        note: App.platform !== "android" ? "If a site asks for a browser check, the shield opens it inside SCANCORE once; the app then reuses the clearance." : ""
+        note: !App.mobile ? "If a site asks for a browser check, the shield opens it inside SCANCORE once; the app then reuses the clearance." : ""
         Repeater {
             model: comicGroup.visibleSources
             SourceRow {}

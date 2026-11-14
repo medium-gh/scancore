@@ -13,7 +13,7 @@ Item {
     id: panel
     property var sections: []
     property var actions: []
-    property bool sheet: App.platform === "android"
+    property bool sheet: App.mobile
     // The section whose choices show ("" for the main list).
     property string page: ""
     readonly property bool opened: visible
