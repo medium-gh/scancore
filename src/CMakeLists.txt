@@ -123,6 +123,9 @@ if(IOS)
         # A dark screen while the app starts, as its own first frame is.
         QT_IOS_LAUNCH_SCREEN ${PROJECT_SOURCE_DIR}/packaging/ios/LaunchScreen.storyboard
         XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER com.mediumdev.scancore
+        # The icons stay the PNGs they are: Xcode would fold @2x and @3x
+        # into one TIFF (a Mac habit), which iOS does not take as an icon.
+        XCODE_ATTRIBUTE_COMBINE_HIDPI_IMAGES NO
         # iPhone and iPad.
         XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
 endif()
