@@ -2,6 +2,16 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.19.0 — 2026-11-19
+
+Library checks are faster and gentler on sites, searching while one runs no longer stalls, and your library's covers stay put.
+
+- **Searching during a library check**: a check of a large library used the same workers as search, so a search started meanwhile could wait behind hundreds of series and report sources as too slow. Library checks now run on their own.
+- **Each site at its own pace**: a library check asked a site about many series at once, which sites answered with "too many requests" and browser checks. Each site is now asked about one series at a time, more (up to three) while it answers quickly, and paused, then asked again, when it pushes back. A site showing a browser check SCANCORE cannot pass is not asked about the rest of its series in that check, so it no longer waits on the same check for each one.
+- **Only series that are due**: checks by themselves skip series not due a chapter yet, going by how often each one releases, and keep looking every check while a chapter is late. Series on a break are looked at less often, and every series at least every four weeks. Checking by hand looks at them all. Turn it off in Settings → Library ("Skip series not due a chapter yet").
+- **Checks cut short keep what they found**: each series is saved as soon as it is checked, longest unchecked first, so a check Android stops after its ten minutes keeps its new chapters, and the next one picks up where it ended. The one-notification-for-all summary carries over too.
+- **Library covers stay**: covers of your saved series and of the 200 you read last are kept apart from the image cache, so filling it with chapter pages or pressing Clear no longer removes them, and they show without asking the site again.
+
 ## 2.18.1 — 2026-11-19
 
 Downloading novel chapters no longer trips the sites' limits.

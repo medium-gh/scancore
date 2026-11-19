@@ -1,0 +1,3 @@
+• Library checks run on their own, so searching during one no longer stalls
+• Each site is asked at its own pace; series not due a chapter are skipped, and a check Android stops keeps what it found
+• Covers of your library stay when the image cache fills up or is cleared
