@@ -1,0 +1,2 @@
+• Novel chapters download one at a time with a short pause, so sites stop turning some away
+• A chapter a site refuses is tried again after a longer wait instead of failing

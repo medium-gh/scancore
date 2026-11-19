@@ -52,6 +52,11 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="2.18.1" date="2026-11-19">
+      <description>
+        <p>Novel chapter downloads are spaced out so sites no longer turn some away</p>
+      </description>
+    </release>
     <release version="2.18.0" date="2026-11-19">
       <description>
         <p>The Comics page browses like Comick, with See all on every list that loads more as you scroll, iPhone and iPad builds, and no more freezes on the Downloads page.</p>

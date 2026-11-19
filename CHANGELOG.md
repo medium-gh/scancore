@@ -2,6 +2,12 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
+## 2.18.1 — 2026-11-19
+
+Downloading novel chapters no longer trips the sites' limits.
+
+- **Novel downloads, spaced out**: downloading many chapters of a novel at once went so fast that sites answered some of them with errors. Chapters now download one at a time with a short random pause between them, and a chapter the site turns away (too many requests, or a server error) is tried again after a longer wait instead of being marked failed. Chapters you have already read save without waiting. Comics and anime download as before.
+
 ## 2.18.0 — 2026-11-19
 
 The Comics page browses like Comick, every list goes on as far as you scroll, iPhone and iPad builds, and no more freezes on the Downloads page.
