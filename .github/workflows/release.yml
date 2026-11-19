@@ -24,6 +24,13 @@ permissions:
   # Reading a pre-release test build's artifacts.
   actions: read
 
+# A newer push to pre-release makes the test build still running for the
+# last one pointless: it is cancelled (each spent an hour of runners on
+# every system). A tag or a rebuild by hand always runs to the end.
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'push' && github.ref_type == 'branch' }}
+
 env:
   QT_VERSION: 6.11.3
   # The AppImage's Qt. Its Qt WebEngine is rebuilt with H.264 from Qt's
@@ -750,6 +757,17 @@ jobs:
           name: ${{ matrix.artifact }}
           path: dist/*.apk
           if-no-files-found: error
+
+      # The app's library before the APK strips it (kept, not shipped), to
+      # read SCANCORE's frames in Android crash and hang reports: the APK's
+      # copy names only exported functions (issue #40).
+      - name: Android symbols
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: scancore-android-${{ matrix.name }}-symbols
+          path: build/src/libscancore_*.so
+          retention-days: 90
+          if-no-files-found: warn
 
   # iPhone and iPad: an unsigned IPA to sideload (ios.yml). A failure there
   # holds nothing back: the release then has no IPA.

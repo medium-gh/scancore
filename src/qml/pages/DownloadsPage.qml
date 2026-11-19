@@ -6,7 +6,14 @@ import Scancore
 Item {
     id: page
     property var task: Downloads.items()
-    property var sizeText: Downloads.sizeOnDisk()
+    // Measured in the background (a big folder takes seconds); the last
+    // size stays while it is measured again.
+    property string sizeText: ""
+    property var sizeTask: Downloads.sizeOnDisk()
+    Connections {
+        target: page.sizeTask
+        function onFinished(result) { page.sizeText = result }
+    }
 
     Connections {
         target: Downloads
@@ -41,7 +48,7 @@ Item {
     // changes, not on every page of a running download.
     // Chapters read from Mihon's folder come as one row per series.
     readonly property int savedCount: items.reduce((n, i) => n + (i.status === "done" ? (i.linked || 1) : 0), 0)
-    onSavedCountChanged: sizeText = Downloads.sizeOnDisk()
+    onSavedCountChanged: sizeTask = Downloads.sizeOnDisk()
     readonly property int linkedCount: items.reduce((n, i) => n + (i.linked || 0), 0)
     readonly property int failedCount: items.filter(i => i.status === "failed").length
 

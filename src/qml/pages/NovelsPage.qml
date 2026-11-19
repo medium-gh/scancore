@@ -306,6 +306,10 @@ Item {
                             subtitleFor: (it) => [it.type, it.status].filter(s => s).join(" · ")
                             badgeFor: (it) => it.rating ? "★ " + it.rating : ""
                             onOpened: (it, cover) => readFrom.start(it)
+                            // The whole list, page after page.
+                            actionText: feed.modelData.more ? qsTr("See all") : ""
+                            moreTile: feed.modelData.more === true
+                            onAction: Router.openCatalogList("novel", feed.modelData.key, feed.modelData.periods)
                         }
                     }
                 }

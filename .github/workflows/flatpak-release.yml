@@ -49,7 +49,8 @@ jobs:
                   -q '.workflow_runs[0].id // empty')
           [ -n "$RUN" ] || exit 0
           HAVE=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN/artifacts?per_page=100" -q '[.artifacts[] | select(.expired | not) | .name] | join(" ")')
-          for NAME in scancore-Windows scancore-macOS scancore-AppImage scancore-Android scancore-Flatpak; do
+          # The same packages release.yml requires to publish a test build.
+          for NAME in scancore-Windows scancore-macOS scancore-AppImage scancore-Android scancore-Android-armv7 scancore-Flatpak; do
             case " $HAVE " in *" $NAME "*) ;; *) exit 0 ;; esac
           done
           echo "The Release workflow publishes test build $RUN's Flatpak."

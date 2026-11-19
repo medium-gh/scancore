@@ -28,6 +28,10 @@
 #include "sources/novels/Registry.h"
 
 #include <QJSValue>
+#include <QRegularExpression>
+#include <QSet>
+
+#include <algorithm>
 #include <QUrlQuery>
 #include <QNetworkInformation>
 #include <QClipboard>
@@ -1000,15 +1004,58 @@ bool App::shareFile(const QString &path, const QString &mime, const QString &sub
     return platform::shareFile(path, mime, subject);
 }
 
+QString App::compactReport(const QString &text) {
+    // "(?callInternal@QObjectMethod@QV4@@QEBAX…@Z 0x27e)" -> "(QV4::QObjectMethod::callInternal 0x27e)"
+    static const QRegularExpression mangled(QStringLiteral(R"(\(\?(\w+)@((?:\w+@)*?\w+)@@[^\s)]*( 0x[0-9a-fA-F]+)?\))"));
+    const auto shorten = [](const QString &line) {
+        QString out;
+        qsizetype at = 0;
+        auto it = mangled.globalMatch(line);
+        while (it.hasNext()) {
+            const auto m = it.next();
+            auto scopes = m.captured(2).split(QLatin1Char('@'));
+            std::reverse(scopes.begin(), scopes.end());
+            out += line.mid(at, m.capturedStart() - at) + QLatin1Char('(') + scopes.join(QStringLiteral("::")) +
+                   QStringLiteral("::") + m.captured(1) + m.captured(3) + QLatin1Char(')');
+            at = m.capturedEnd();
+        }
+        return out + line.mid(at);
+    };
+    static const QRegularExpression stamp(QStringLiteral(R"(^\d\d:\d\d:\d\d\.\d{3} )"));
+    QStringList out;
+    QSet<QString> seen;
+    int repeated = 0;
+    bool inLog = false;
+    for (auto line : text.split(QLatin1Char('\n'))) {
+        line = shorten(line);
+        if (line.startsWith(QLatin1String("Recent log:"))) {
+            inLog = true;
+        } else if (inLog && !line.trimmed().isEmpty()) {
+            // The same warning many times over (one a frame) fills the
+            // link before anything else can show.
+            const auto key = QString(line).remove(stamp);
+            if (seen.contains(key)) {
+                ++repeated;
+                continue;
+            }
+            seen.insert(key);
+        }
+        out.append(line);
+    }
+    if (repeated)
+        out.append(QStringLiteral("(%1 repeated log lines left out)").arg(repeated));
+    return out.join(QLatin1Char('\n'));
+}
+
 QString App::reportIssueUrl(const QString &text) const {
     // GitHub takes links of about 8 KB: the report's start (what happened
-    // and the backtrace); the rest is pasted.
+    // and the backtrace), shortened; the rest is pasted.
     const auto first = text.section(QLatin1Char('\n'), 0, 0);
     const auto what = text.section(QStringLiteral("What: "), 1).section(QLatin1Char('\n'), 0, 0);
     const auto title = first.contains(QLatin1String("crash"))  ? QStringLiteral("Crash: ") + what
                        : first.contains(QLatin1String("hang")) ? QStringLiteral("Hang: ") + what
                                                                 : QStringLiteral("Problem report");
-    auto body = QStringLiteral("What I was doing:\n\n\n```\n%1\n```").arg(text.left(5000));
+    auto body = QStringLiteral("What I was doing:\n\n\n```\n%1\n```").arg(compactReport(text).left(5000));
     QUrl url(QStringLiteral("https://github.com/medium-gh/scancore/issues/new"));
     url.setQuery(QUrlQuery{{QStringLiteral("title"), title}, {QStringLiteral("body"), body}});
     return url.toString(QUrl::FullyEncoded);

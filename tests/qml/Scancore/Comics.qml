@@ -27,6 +27,7 @@ QtObject {
     function catalog(query, filters, catalogKey) { const t = task(); calls = calls.concat([{query, source:"catalog", catalogKey:catalogKey || "", task:t}]); return t }
     function latest(limit) { const t = task(); t.succeed({updates:[]}); return t }
     function catalogFeeds() { const t = task(); t.succeed({shelves:[]}); return t }
+    function catalogList(key, page, period) { const t = task(); t.succeed({items:[], hasNext:false}); return t }
     function sources() { return [{key:"alpha",label:"Alpha",enabled:true,canBrowse:true},{key:"beta",label:"Beta",enabled:true,canBrowse:true},{key:"search-only",label:"Search only",enabled:true,canBrowse:false},{key:"local",label:"On this device",enabled:true}] }
     function sourceForUrl(url) { return "" }
     function imageReferer(url) { return "" }

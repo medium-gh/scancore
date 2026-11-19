@@ -521,14 +521,16 @@ void Downloads::clearFinished() {
 
 QString Downloads::folder() const { return root(); }
 
-QString Downloads::sizeOnDisk() const {
-    qint64 total = 0;
-    QDirIterator it(root(), QDir::Files, QDirIterator::Subdirectories);
-    while (it.hasNext()) {
-        it.next();
-        total += it.fileInfo().size();
-    }
-    return QLocale().formattedDataSize(total);
+Task *Downloads::sizeOnDisk() const {
+    return Task::run([dir = root()]() -> QVariant {
+        qint64 total = 0;
+        QDirIterator it(dir, QDir::Files, QDirIterator::Subdirectories);
+        while (it.hasNext()) {
+            it.next();
+            total += it.fileInfo().size();
+        }
+        return QLocale().formattedDataSize(total);
+    });
 }
 
 bool Downloads::isExternal(const QString &path) {

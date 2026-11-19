@@ -327,7 +327,8 @@ QVariantMap Comics::catalogShelves(const QString &media, bool mature) {
     auto catalogue = catalogue::forMedia(catalogue::chosen(media), media);
     if (!catalogue)
         return QVariantMap{{"catalog", QString()}, {"shelves", QVariantList()}};
-    const auto cacheKey = QStringLiteral("catalogue:%1:%2:%3").arg(catalogue->key(), media, mature ? "all" : "sfw");
+    // v2: shelves with "See all" (2.18).
+    const auto cacheKey = QStringLiteral("catalogue2:%1:%2:%3").arg(catalogue->key(), media, mature ? "all" : "sfw");
     if (auto cached = Database::cacheGet(cacheKey))
         return QJsonDocument::fromJson(*cached).toVariant().toMap();
     QList<catalogue::Shelf> shelves;
@@ -341,8 +342,28 @@ QVariantMap Comics::catalogShelves(const QString &media, bool mature) {
     QVariantList list;
     for (const auto &shelf : shelves)
         if (!shelf.entries.isEmpty())
-            list.append(QVariantMap{{"key", shelf.key}, {"items", entryMaps(shelf.entries)}});
+            list.append(QVariantMap{{"key", shelf.key}, {"items", entryMaps(shelf.entries)},
+                                    {"more", shelf.more}, {"periods", shelf.periods}});
     const QVariantMap result{{"catalog", catalogue->key()}, {"label", catalogue->label()}, {"shelves", list}};
+    Database::cachePut(cacheKey, QJsonDocument::fromVariant(result).toJson(QJsonDocument::Compact), 1800);
+    return result;
+}
+
+QVariantMap Comics::catalogListing(const QString &media, const QString &key, int page, bool mature, const QString &period) {
+    auto catalogue = catalogue::forMedia(catalogue::chosen(media), media);
+    if (!catalogue)
+        throw Error(QStringLiteral("No catalogue is chosen. Pick one in Settings → Connections."));
+    page = std::max(1, page);
+    const auto cacheKey = QStringLiteral("catalogue-list:%1:%2:%3:%4:%5:%6")
+                              .arg(catalogue->key(), media, key, period, mature ? "all" : "sfw")
+                              .arg(page);
+    if (auto cached = Database::cacheGet(cacheKey))
+        return QJsonDocument::fromJson(*cached).toVariant().toMap();
+    const auto found = catalogue->list(media, key, page, mature, period);
+    const QVariantMap result{{"items", entryMaps(found.entries)},
+                             {"hasNext", found.hasNext},
+                             {"catalog", catalogue->key()},
+                             {"label", catalogue->label()}};
     Database::cachePut(cacheKey, QJsonDocument::fromVariant(result).toJson(QJsonDocument::Compact), 1800);
     return result;
 }
@@ -498,6 +519,13 @@ Task *Comics::comickTags(bool all) {
 
 Task *Comics::catalogFeeds(bool mature) {
     return Task::run([mature]() -> QVariant { return catalogShelves(QStringLiteral("comic"), mature); });
+}
+
+Task *Comics::catalogList(const QString &key, int page, const QString &period) {
+    const bool mature = App::instance()->settings().value(QStringLiteral("showNsfwSources")).toBool();
+    return Task::run([key, page, period, mature]() -> QVariant {
+        return catalogListing(QStringLiteral("comic"), key, page, mature, period);
+    });
 }
 
 QVariantList Comics::otherLanguages() const {

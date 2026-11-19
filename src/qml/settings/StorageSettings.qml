@@ -9,6 +9,8 @@ SettingsPane {
     iconName: "hard-drive"
 
     property var cacheTask: App.cacheSize()
+    // Downloads' size, measured in the background too.
+    property var downloadsTask: Downloads.sizeOnDisk()
     readonly property real cacheBytes: cacheTask && cacheTask.ok ? Number(cacheTask.result) : 0
     readonly property real cacheLimit: (App.settings.imageCacheMB || 1024) * 1024 * 1024
 
@@ -76,7 +78,8 @@ SettingsPane {
         SettingRow {
             iconName: "download"
             title: qsTr("Downloaded chapters")
-            description: Downloads.sizeOnDisk() + (!App.mobile ? " · " + Downloads.folder() : "")
+            description: (pane.downloadsTask && pane.downloadsTask.ok ? pane.downloadsTask.result : qsTr("Measuring…"))
+                + (!App.mobile ? " · " + Downloads.folder() : "")
             ScButton {
                 visible: !App.mobile
                 text: qsTr("Open folder")

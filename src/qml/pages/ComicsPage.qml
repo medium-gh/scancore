@@ -15,6 +15,10 @@ Item {
     property int browseGeneration: 0
     // One site picked (not All sources, not this device) that can be browsed.
     readonly property bool sitePicked: source !== "all" && source !== "local" && sources.some(s => s.key === source && s.canBrowse)
+    // That site's own lists, as on its page (SourcePage): popular, or its
+    // latest updates when it has them; it goes on as the page scrolls.
+    property string siteListing: "popular"
+    readonly property bool siteHasLatest: sitePicked && (sources.find(s => s.key === source) || {}).browseLatest === true
     // That site's own search filters (an extension's, as in Mihon), when
     // Comick's are not in use: [] for sites without any.
     property var siteFilterDefaults: []
@@ -91,7 +95,12 @@ Item {
         page: "comics"
         column: idle
         editing: page.editing
-        defaults: ["recent", "continue", "trending", "popular", "newest", "completed", "top", "manhwa", "manhua", "latest"]
+        // Comick's shelves in the order readers look for them: what is hot
+        // now, what is still coming out, the best of all time, what is new,
+        // by kind, then what can be read to the end. A catalogue without
+        // some (AniList, MyAnimeList) shows the ones it has.
+        defaults: ["recent", "continue", "trending", "ongoing", "newfollow", "popular", "top", "newest",
+                   "manhwa", "manga", "manhua", "season", "finished", "completed", "latest"]
     }
     Component.onCompleted: if (source === "local" || browsingSource || filtering) run("")
 
@@ -99,7 +108,8 @@ Item {
         if (!browsingSource || (browseTask && browseTask.loading) || !browseHasNext) return
         const generation = browseGeneration
         const next = browsePage + 1
-        browseTask = siteFiltering ? Comics.browse(source, "search", next, query, siteFilterStates) : Comics.browse(source, "popular", next)
+        browseTask = siteFiltering ? Comics.browse(source, "search", next, query, siteFilterStates)
+            : Comics.browse(source, siteHasLatest ? siteListing : "popular", next)
         browseTask.finished.connect((result) => {
             if (generation !== page.browseGeneration) return
             const seen = new Set(page.browseItems.map(item => item.id))
@@ -110,7 +120,8 @@ Item {
             })
             page.browseItems = page.browseItems.concat(fresh)
             page.browsePage = next
-            page.browseHasNext = result.hasNextPage
+            // A page with nothing new ends the list (some sites repeat theirs).
+            page.browseHasNext = result.hasNextPage && fresh.length > 0
         })
     }
 
@@ -198,6 +209,7 @@ Item {
         if (key !== page.source) {
             page.siteFilterDefaults = []
             page.siteFilterStates = []
+            page.siteListing = "popular"
         }
         page.source = key
         App.setSetting("comicSource", key)
@@ -209,6 +221,9 @@ Item {
         id: flick
         anchors.fill: parent
         contentHeight: column.height + 60
+        // A site's list loads its next page before the end comes into view.
+        onContentYChanged: if (page.browsingSource && page.browseItems.length && contentY + height > contentHeight - 1200
+                               && page.browseTask && page.browseTask.ok) page.moreSource()
 
         Column {
             id: column
@@ -383,6 +398,24 @@ Item {
                     }
                 }
 
+                // The site's popular list or its latest updates.
+                Item {
+                    visible: page.browsingSource && !page.siteFiltering && page.siteHasLatest
+                    x: Theme.gutter
+                    width: parent.width - 2 * Theme.gutter
+                    height: listingSwitch.height
+                    Segmented {
+                        id: listingSwitch
+                        options: [{ value: "popular", label: qsTr("Popular") }, { value: "latest", label: qsTr("Latest") }]
+                        value: page.siteListing
+                        onPicked: (v) => {
+                            if (v === page.siteListing) return
+                            page.siteListing = v
+                            page.run(field.text)
+                        }
+                    }
+                }
+
                 Flow {
                     x: Theme.gutter
                     width: parent.width - 2 * Theme.gutter
@@ -529,6 +562,10 @@ Item {
                             items: feed.modelData.items
                             subtitleFor: (it) => [it.type, it.lastChapter ? qsTr("Ch. ") + it.lastChapter : ""].filter(s => s).join(" · ")
                             onOpened: (it, cover) => readFrom.start(it)
+                            // The whole list, page after page.
+                            actionText: feed.modelData.more ? qsTr("See all") : ""
+                            moreTile: feed.modelData.more === true
+                            onAction: Router.openCatalogList("comic", feed.modelData.key, feed.modelData.periods)
                         }
                     }
                 }
@@ -560,7 +597,7 @@ Item {
                     }
                     ScButton {
                         anchors.horizontalCenter: parent.horizontalCenter
-                        visible: page.latestTask && page.latestTask.ok && page.latestLimit < 120
+                        visible: page.latestTask && page.latestTask.ok && page.latestLimit < 360
                         text: qsTr("Show more")
                         onClicked: {
                             page.latestLimit += 36

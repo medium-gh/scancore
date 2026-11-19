@@ -52,9 +52,9 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="2.17.1" date="2026-11-11">
+    <release version="2.18.0" date="2026-11-19">
       <description>
-        <p>Reading stays with one group's copy of each chapter, extensions on computers work again after several installed at once, a default list for new series, and the TV remote reaches everything.</p>
+        <p>The Comics page browses like Comick, with See all on every list that loads more as you scroll, iPhone and iPad builds, and no more freezes on the Downloads page.</p>
       </description>
     </release>
     <release version="2.17.0" date="2026-11-07">

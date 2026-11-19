@@ -48,7 +48,9 @@ public:
     // computer's Downloads folder ({path}), or on Android shared through the
     // share sheet ({shared: true}). Fails when nothing is downloaded.
     Q_INVOKABLE sc::Task *exportEpub(const QString &seriesId);
-    Q_INVOKABLE QString sizeOnDisk() const;
+    // What the downloads folder holds ("1.2 GB"). Walking a big folder takes
+    // seconds, so it runs in the background (it froze the window, issue #39).
+    Q_INVOKABLE sc::Task *sizeOnDisk() const;
 
     // A downloaded episode as the player takes a video ({url, subtitles,
     // audio, skips, mpvArgs}), or an empty map.

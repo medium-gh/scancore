@@ -21,6 +21,9 @@ Column {
     property int cardWidth: Math.round((Theme.compact ? 118 : 156) * Theme.coverScale * lookScale)
     property real coverRatio: 1.5
     property string actionText: ""
+    // A last card that runs action() too ("See all" at the row's end, as
+    // Comick's "See more"; a button under the grid).
+    property bool moreTile: false
     property var subtitleFor: (item) => ""
     property var badgeFor: (item) => ""
     property var progressFor: (item) => -1
@@ -119,6 +122,14 @@ Column {
             }
         }
     }
+    ScButton {
+        visible: shelf.grid && shelf.moreTile && shelf.items.length > 0 && !shelf.loading && shelf.error.length === 0
+        x: Theme.gutter
+        text: shelf.actionText
+        iconName: "chevron-right"
+        variant: "secondary"
+        onClicked: shelf.action()
+    }
 
     Item {
         width: parent.width
@@ -174,6 +185,55 @@ Column {
                 acceptedDevices: PointerDevice.Mouse
                 acceptedModifiers: Qt.ShiftModifier
                 onWheel: (event) => list.scrollBy(-(event.angleDelta.y || event.angleDelta.x) * 1.4)
+            }
+
+            footer: Item {
+                visible: shelf.moreTile && shelf.items.length > 0
+                width: visible ? shelf.cardWidth + list.spacing : 0
+                height: list.height
+                Rectangle {
+                    id: moreCard
+                    x: list.spacing
+                    width: shelf.cardWidth
+                    height: shelf.cardWidth * shelf.coverRatio
+                    radius: Theme.radiusMd
+                    color: moreArea.containsMouse || moreCard.activeFocus ? Theme.surface3 : Theme.surface2
+                    border.color: moreArea.containsMouse ? Theme.borderStrong : Theme.border
+                    activeFocusOnTab: true
+                    Keys.onReturnPressed: shelf.action()
+                    Keys.onEnterPressed: shelf.action()
+                    Keys.onSpacePressed: shelf.action()
+                    Accessible.role: Accessible.Button
+                    Accessible.name: shelf.actionText
+                    Behavior on color { ColorAnimation { duration: Motion.fast } }
+                    Column {
+                        anchors.centerIn: parent
+                        spacing: 10
+                        Rectangle {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            width: 44
+                            height: 44
+                            radius: 22
+                            color: Theme.alpha(Theme.accent, moreArea.containsMouse ? 0.24 : 0.14)
+                            Icon { anchors.centerIn: parent; name: "chevron-right"; size: 22; color: Theme.accent }
+                        }
+                        Text {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            text: shelf.actionText
+                            color: Theme.text
+                            font.family: Theme.fontSans
+                            font.pixelSize: Theme.textMd
+                            font.weight: Font.DemiBold
+                        }
+                    }
+                    MouseArea {
+                        id: moreArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: shelf.action()
+                    }
+                }
             }
 
             delegate: CoverCard {

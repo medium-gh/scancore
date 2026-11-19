@@ -306,15 +306,33 @@ QtObject {
     function shelfTitle(key) {
         switch (key) {
         case "trending": return qsTr("Trending this week")
+        case "ongoing": return qsTr("Popular ongoing")
+        case "newfollow": return qsTr("Most followed new comics")
         case "popular": return qsTr("Most popular")
         case "top": return qsTr("Top rated")
-        case "newest": return qsTr("New in the catalogue")
-        case "completed": return qsTr("Recently completed")
+        case "newest": return qsTr("Recently added")
         case "manhwa": return qsTr("Top manhwa")
+        case "manga": return qsTr("Top manga")
         case "manhua": return qsTr("Top manhua")
+        case "season": return qsTr("Anime adaptations this season")
+        case "finished": return qsTr("Completed series")
+        case "completed": return qsTr("Recently completed")
         case "lightnovels": return qsTr("Top light novels")
         }
         return key
+    }
+    // The same list on its own page, where a list by period can be any of them.
+    function listTitle(key) {
+        switch (key) {
+        case "trending": return qsTr("Trending")
+        case "newfollow": return qsTr("Most followed new comics")
+        }
+        return shelfTitle(key)
+    }
+    // A catalogue shelf's whole list, a page at a time as it scrolls
+    // (Comics.catalogList). `media`: "comic" or "novel".
+    function openCatalogList(media, key, periods) {
+        if (shell) shell.push("pages/CatalogueList.qml", { media: media || "comic", listKey: key, periods: !!periods })
     }
 
     // Incognito: nothing read or watched is recorded (Library, Activity,

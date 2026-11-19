@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QHash>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QUrlQuery>
@@ -39,10 +40,21 @@ struct Entry {
 };
 
 struct Shelf {
-    // Shown under a translated title chosen by key: trending, popular, top,
-    // newest, completed, manhwa, manhua.
+    // Shown under a translated title chosen by key (Router.shelfTitle):
+    // trending, ongoing, newfollow, popular, top, newest, manhwa, manga,
+    // manhua, season, finished, completed, lightnovels.
     QString key;
     QList<Entry> entries;
+    // The whole list is there a page at a time (Catalogue::list, "See all").
+    bool more = false;
+    // That list is by period ("7", "30" or "90" days; the shelf is the week's).
+    bool periods = false;
+};
+
+// One page of a shelf's whole list.
+struct ListPage {
+    QList<Entry> entries;
+    bool hasNext = false;
 };
 
 // Browsing and "search everything" through a tracker's catalogue, chosen per
@@ -56,6 +68,10 @@ public:
     // "comic" or "novel".
     virtual bool supports(const QString &media) const = 0;
     virtual QList<Shelf> shelves(const QString &media, bool mature) = 0;
+    // A shelf's whole list (`key` as in Shelf), `page` from 1. `period`:
+    // "7", "30" or "90" for a shelf with periods, else ignored. Throws for a
+    // shelf without one (Shelf::more false).
+    virtual ListPage list(const QString &media, const QString &key, int page, bool mature, const QString &period);
     // `filters`: the catalogue's own search filters (Comick's, see
     // comickQuery); the others take none. An empty query browses by them.
     virtual QList<Entry> search(const QString &media, const QString &query, bool mature,
@@ -93,7 +109,18 @@ QUrlQuery comickQuery(const QString &query, const QVariantMap &filters);
 Entry comickEntry(const QJsonObject &comic);
 Entry anilistEntry(const QJsonObject &media);
 Entry malEntry(const QJsonObject &node);
-// Comick's /top answer split into shelves, without erotica unless mature.
-QList<Shelf> comickShelves(const QJsonObject &top, bool mature);
+// The lists in Comick's /top answer by shelf key, the lists by period as
+// "key|7", "key|30" and "key|90" (the key alone is the week's); without
+// erotica unless mature.
+QHash<QString, QList<Entry>> comickTopLists(const QJsonObject &top, bool mature);
+// Comick's shelves in the order they show, `size` titles each: lists from
+// /top (`top`, as comickTopLists gives them) and searches (`searched`, by
+// key). Keys with nothing are left out.
+QList<Shelf> comickShelves(const QHash<QString, QList<Entry>> &top, const QHash<QString, QList<Entry>> &searched, int size = 24);
+// The search behind one of Comick's searched shelves ("ongoing": the most
+// followed of those still coming out, …); empty for a key that is not one.
+QUrlQuery comickListQuery(const QString &key, int page, int limit, bool mature);
+// Comick's shelf keys whose lists are searches, in order.
+QStringList comickSearchedKeys();
 
 } // namespace sc::catalogue

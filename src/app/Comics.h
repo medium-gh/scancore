@@ -42,8 +42,13 @@ public:
     // 9,500), cached for a day.
     Q_INVOKABLE sc::Task *comickGenres();
     Q_INVOKABLE sc::Task *comickTags(bool all = false);
-    // That catalogue's shelves: {catalog, label, shelves: [{key, items}]}.
+    // That catalogue's shelves: {catalog, label, shelves: [{key, items,
+    // more, periods}]}; `more`: catalogList has the whole list.
     Q_INVOKABLE sc::Task *catalogFeeds(bool mature = false);
+    // A shelf's whole list a page at a time ("See all"): {items, hasNext,
+    // catalog, label}. `period`: "7", "30" or "90" days for a shelf with
+    // periods.
+    Q_INVOKABLE sc::Task *catalogList(const QString &key, int page, const QString &period = {});
     // Where a catalogue title can be read: the series on SCANCORE's sources
     // listed under any of its names, content language first, without
     // taken-down ones. {matches: [{source, sourceLabel, language, preferred,
@@ -97,6 +102,7 @@ public:
 
     // Catalogue helpers shared with Novels (blocking).
     static QVariantMap catalogShelves(const QString &media, bool mature);
+    static QVariantMap catalogListing(const QString &media, const QString &key, int page, bool mature, const QString &period);
     static QVariantMap catalogSearch(const QString &media, const QString &query, bool mature,
                                      const QVariantMap &filters = {}, const QString &catalogKey = {});
     static QStringList catalogNames(const QVariantMap &item);

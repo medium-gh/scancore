@@ -34,6 +34,9 @@
 #include <dlfcn.h>
 #include <fcntl.h>
 #include <pthread.h>
+#if defined(__aarch64__) && defined(__linux__)
+#include <ucontext.h>
+#endif
 #include <unistd.h>
 #include <unwind.h>
 #ifdef Q_OS_LINUX
@@ -191,11 +194,8 @@ struct Walk {
     int frame;
 };
 
-_Unwind_Reason_Code onFrame(_Unwind_Context *context, void *argument) {
-    auto *walk = static_cast<Walk *>(argument);
-    const auto pc = uintptr_t(_Unwind_GetIP(context));
-    if (!pc || walk->frame > 64)
-        return _URC_END_OF_STACK;
+// One line of a backtrace: "#3 0x… libscancore.so+0x… symbol".
+void putFrame(Walk *walk, uintptr_t pc) {
     put(walk->fd, "#");
     putNumber(walk->fd, walk->frame++);
     put(walk->fd, " ");
@@ -213,6 +213,14 @@ _Unwind_Reason_Code onFrame(_Unwind_Context *context, void *argument) {
         }
     }
     put(walk->fd, "\n");
+}
+
+_Unwind_Reason_Code onFrame(_Unwind_Context *context, void *argument) {
+    auto *walk = static_cast<Walk *>(argument);
+    const auto pc = uintptr_t(_Unwind_GetIP(context));
+    if (!pc || walk->frame > 64)
+        return _URC_END_OF_STACK;
+    putFrame(walk, pc);
     return _URC_NO_REASON;
 }
 
@@ -476,11 +484,46 @@ const int kStackSignal = SIGRTMIN + 5;
 const int kStackSignal = SIGUSR2;
 #endif
 
-void onStackSignal(int) {
+void onStackSignal(int, siginfo_t *, void *context) {
     const int fd = g_hangFd.load();
     if (fd >= 0) {
         Walk walk{fd, 0};
+#if defined(__aarch64__) && defined(__linux__)
+        // From where the signal stopped the thread: its registers, then the
+        // chain of frame records (x29) that arm64 builds keep. The unwinder
+        // cannot step out of a signal handler there, so Android's hang
+        // reports had the handler's frame alone (issue #40).
+        const auto &regs = static_cast<const ucontext_t *>(context)->uc_mcontext;
+        putFrame(&walk, uintptr_t(regs.pc));
+        const auto lr = uintptr_t(regs.regs[30]);
+        if (lr)
+            putFrame(&walk, lr);
+        auto fp = uintptr_t(regs.regs[29]);
+        const auto sp = uintptr_t(regs.sp);
+        // Only frame records on this stack, each above the last.
+        // An interrupted library may use x29 for something else. Read
+        // through the kernel so an unmapped address just ends the trace.
+        const int memory = ::open("/proc/self/mem", O_RDONLY | O_CLOEXEC);
+        while (memory >= 0 && walk.frame < 64 && fp >= sp && fp - sp < 8 * 1024 * 1024 && fp % 16 == 0) {
+            uintptr_t record[2];
+            if (::pread(memory, record, sizeof record, off_t(fp)) != sizeof record)
+                break;
+            const auto next = record[0];
+            const auto ret = record[1];
+            if (!ret)
+                break;
+            if (!(walk.frame == 2 && ret == lr))
+                putFrame(&walk, ret);
+            if (next <= fp)
+                break;
+            fp = next;
+        }
+        if (memory >= 0)
+            ::close(memory);
+#else
+        Q_UNUSED(context)
         _Unwind_Backtrace(onFrame, &walk);
+#endif
     }
     g_stackDone = true;
 }
@@ -627,8 +670,8 @@ void watchHangs() {
 #ifndef Q_OS_WIN
     g_guiThread = pthread_self();
     struct sigaction action{};
-    action.sa_handler = onStackSignal;
-    action.sa_flags = SA_RESTART | SA_ONSTACK;
+    action.sa_sigaction = onStackSignal;
+    action.sa_flags = SA_RESTART | SA_ONSTACK | SA_SIGINFO;
     sigemptyset(&action.sa_mask);
     sigaction(kStackSignal, &action, nullptr);
 #else

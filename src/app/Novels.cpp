@@ -164,6 +164,13 @@ Task *Novels::catalogFeeds(bool mature) {
     return Task::run([mature]() -> QVariant { return Comics::catalogShelves(QStringLiteral("novel"), mature); });
 }
 
+Task *Novels::catalogList(const QString &key, int page, const QString &period) {
+    const bool mature = App::instance()->settings().value(QStringLiteral("showNsfwSources")).toBool();
+    return Task::run([key, page, period, mature]() -> QVariant {
+        return Comics::catalogListing(QStringLiteral("novel"), key, page, mature, period);
+    });
+}
+
 bool Novels::hasExtensions() const {
     for (const auto &s : Registry::all())
         if (s->config().enabled && s->config().engine == QLatin1String("lnreader"))

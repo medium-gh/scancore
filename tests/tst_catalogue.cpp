@@ -219,12 +219,12 @@ private slots:
 
     void comickShelves() {
         const auto top = QJsonDocument::fromJson(fixture("catalogue-comick-top.json")).object();
-        const auto shelves = catalogue::comickShelves(top, false);
-        QCOMPARE(shelves.size(), 4);
-        QCOMPARE(shelves[0].key, QStringLiteral("trending"));
+        const auto lists = catalogue::comickTopLists(top, false);
         // The week's feed, without erotica.
-        QCOMPARE(shelves[0].entries.size(), 1);
-        const auto &first = shelves[0].entries[0];
+        QCOMPARE(lists.value("trending").size(), 1);
+        QCOMPARE(lists.value("trending|7").size(), 1);
+        QVERIFY(lists.value("trending|30").isEmpty());
+        const auto &first = lists.value("trending")[0];
         QCOMPARE(first.catalog, QStringLiteral("comick"));
         QCOMPARE(first.id, QStringLiteral("aa11"));
         QCOMPARE(first.type, QStringLiteral("Manhwa"));
@@ -233,10 +233,44 @@ private slots:
         QCOMPARE(first.titles, (QStringList{QStringLiteral("First Title"), QString::fromUtf8("Primer Título")}));
         QCOMPARE(first.cover, QStringLiteral("https://meo.comick.pictures/cover-one-m.jpg"));
         QCOMPARE(first.ids.value("comick").toString(), QStringLiteral("aa11"));
-        QCOMPARE(catalogue::comickShelves(top, true)[0].entries.size(), 2);
-        QCOMPARE(shelves[1].entries[0].lastChapter, QStringLiteral("12.5"));
-        QCOMPARE(shelves[1].entries[0].status, QStringLiteral("Hiatus"));
-        QVERIFY(shelves[2].entries.isEmpty());
+        QCOMPARE(catalogue::comickTopLists(top, true).value("trending").size(), 2);
+        // Only a month's list: the shelf is that one.
+        QCOMPARE(lists.value("newfollow").size(), 1);
+        QCOMPARE(lists.value("newfollow")[0].id, QStringLiteral("ff66"));
+        // This season's anime adaptations come inside {year, season, data}.
+        QCOMPARE(lists.value("season").size(), 1);
+        QCOMPARE(lists.value("season")[0].lastChapter, QStringLiteral("88"));
+        QCOMPARE(lists.value("completed")[0].status, QStringLiteral("Completed"));
+        QVERIFY(lists.value("newest").isEmpty());
+        const auto ranked = catalogue::comickEntry(top.value("rank").toArray()[0].toObject());
+        QCOMPARE(ranked.lastChapter, QStringLiteral("12.5"));
+        QCOMPARE(ranked.status, QStringLiteral("Hiatus"));
+
+        // The shelves in their order, searched ones among /top's; empty
+        // ones are left out, and each has its whole list.
+        const QHash<QString, QList<catalogue::Entry>> searched{{QStringLiteral("ongoing"), {ranked, first}},
+                                                              {QStringLiteral("manga"), {ranked}}};
+        const auto shelves = catalogue::comickShelves(lists, searched, 1);
+        QStringList keys;
+        for (const auto &s : shelves)
+            keys.append(s.key);
+        QCOMPARE(keys, (QStringList{"trending", "ongoing", "newfollow", "manga", "season", "completed"}));
+        QCOMPARE(shelves[1].entries.size(), 1);
+        QVERIFY(shelves[0].more && shelves[0].periods);
+        QVERIFY(shelves[1].more && !shelves[1].periods);
+
+        // Searched shelves page on and on; /top's are not searches.
+        QCOMPARE(catalogue::comickSearchedKeys().first(), QStringLiteral("ongoing"));
+        QVERIFY(!catalogue::comickSearchedKeys().contains("trending"));
+        const auto q = catalogue::comickListQuery(QStringLiteral("ongoing"), 3, 30, false);
+        QCOMPARE(q.queryItemValue("sort"), QStringLiteral("follow"));
+        QCOMPARE(q.queryItemValue("status"), QStringLiteral("1"));
+        QCOMPARE(q.queryItemValue("page"), QStringLiteral("3"));
+        QCOMPARE(q.queryItemValue("limit"), QStringLiteral("30"));
+        QCOMPARE(q.queryItemValue("excluded_content_rating"), QStringLiteral("erotica"));
+        QVERIFY(!catalogue::comickListQuery(QStringLiteral("ongoing"), 1, 30, true).hasQueryItem("excluded_content_rating"));
+        QCOMPARE(catalogue::comickListQuery(QStringLiteral("manhwa"), 1, 30, false).queryItemValue("country"), QStringLiteral("kr"));
+        QVERIFY(catalogue::comickListQuery(QStringLiteral("trending"), 1, 30, false).isEmpty());
     }
 
     void anilistEntries() {

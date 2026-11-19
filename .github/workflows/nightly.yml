@@ -113,6 +113,9 @@ jobs:
             echo "| macOS 13+ | \`macos-universal.dmg\` |"
             echo "| Linux | \`linux-x86_64.AppImage\` or \`.flatpak\` |"
             echo "| Android 9+ | \`android-arm64.apk\` (32-bit phones: \`android-armv7.apk\`) |"
+            if ls dist/*.ipa > /dev/null 2>&1; then
+              echo "| iPhone and iPad | \`ios-unsigned.ipa\`: sign and install it with AltStore, SideStore or Sideloadly |"
+            fi
           } > notes.md
           cat notes.md
       - name: Publish

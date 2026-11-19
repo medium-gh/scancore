@@ -166,6 +166,9 @@ public:
     Q_INVOKABLE bool shareFile(const QString &path, const QString &mime, const QString &subject) const;
     // A new GitHub issue for a report, its first part filled in.
     Q_INVOKABLE QString reportIssueUrl(const QString &text) const;
+    // A report shortened for that link: Windows' mangled names read as
+    // Class::function, and log lines already there once are left out.
+    static QString compactReport(const QString &text);
     Q_INVOKABLE void notify(const QString &title, const QString &body);
     Q_INVOKABLE QString relativeTime(const QVariant &when) const;
     static QString relativeText(const QDateTime &time, qint64 now);

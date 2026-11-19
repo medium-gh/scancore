@@ -4,6 +4,8 @@
 #include "core/Http.h"
 #include "core/Parallel.h"
 
+#include <algorithm>
+
 #include <QHash>
 #include <QJsonDocument>
 #include <QMutex>
@@ -71,9 +73,67 @@ QStringList cleanTitles(QStringList titles) {
     return titles;
 }
 
+// A page of a shelf's whole list ("See all").
+constexpr int kListPage = 30;
+
 // ---------------------------------------------------------------- Comick
 
 const Headers kComickHeaders{{"Accept", "application/json"}, {"Referer", "https://comick.dev/"}};
+
+// Comick's shelves in the order they show, and where each one's titles come
+// from: a list on its home page (/top, some by period) or a search, which
+// goes on page after page.
+struct ComickShelf {
+    const char *key;
+    const char *top;     // the list in /top, or null
+    bool periods;        // that list is by period: {"7": [...], "30": [...], "90": [...]}
+    const char *search;  // the search, or null
+};
+const ComickShelf kComickShelves[] = {
+    {"trending", "trending", true, nullptr},
+    {"ongoing", nullptr, false, "sort=follow&status=1"},
+    {"newfollow", "topFollowNewComics", true, nullptr},
+    {"popular", nullptr, false, "sort=view"},
+    {"top", nullptr, false, "sort=rating"},
+    {"newest", "news", false, nullptr},
+    {"manhwa", nullptr, false, "sort=follow&country=kr"},
+    {"manga", nullptr, false, "sort=follow&country=jp"},
+    {"manhua", nullptr, false, "sort=follow&country=cn"},
+    {"season", "comicsByCurrentSeason", false, nullptr},
+    {"finished", nullptr, false, "sort=follow&status=2"},
+    {"completed", "completions", false, nullptr},
+};
+const char *const kPeriods[] = {"7", "30", "90"};
+
+const ComickShelf *comickShelf(const QString &key) {
+    for (const auto &shelf : kComickShelves)
+        if (key == QLatin1String(shelf.key))
+            return &shelf;
+    return nullptr;
+}
+
+QByteArray encodeLists(const QHash<QString, QList<Entry>> &lists) {
+    QVariantMap map;
+    for (auto it = lists.cbegin(); it != lists.cend(); ++it) {
+        QVariantList entries;
+        for (const auto &e : it.value())
+            entries.append(e.toMap());
+        map.insert(it.key(), entries);
+    }
+    return QJsonDocument::fromVariant(map).toJson(QJsonDocument::Compact);
+}
+
+QHash<QString, QList<Entry>> decodeLists(const QByteArray &bytes) {
+    QHash<QString, QList<Entry>> out;
+    const auto map = QJsonDocument::fromJson(bytes).toVariant().toMap();
+    for (auto it = map.cbegin(); it != map.cend(); ++it) {
+        QList<Entry> entries;
+        for (const auto &e : it.value().toList())
+            entries.append(Entry::fromMap(e.toMap()));
+        out.insert(it.key(), entries);
+    }
+    return out;
+}
 
 class Comick : public Catalogue {
 public:
@@ -81,13 +141,45 @@ public:
     QString label() const override { return QStringLiteral("Comick"); }
     bool supports(const QString &media) const override { return media == QLatin1String("comic"); }
 
+    // /top and the first page of every searched shelf, side by side; a
+    // shelf whose search fails is left out.
     QList<Shelf> shelves(const QString &, bool mature) override {
-        const auto response = Http::get(QUrl(QStringLiteral("https://api.comick.dev/top?accept_mature_content=%1")
-                                                 .arg(mature ? "true" : "false")),
-                                        kComickHeaders);
-        if (!response.ok())
-            throw Error(QStringLiteral("Comick's catalogue is unavailable right now (%1).").arg(response.status), response.status);
-        return comickShelves(response.json().object(), mature);
+        using Lists = QHash<QString, QList<Entry>>;
+        QList<std::function<Lists()>> jobs{[mature] { return topLists(mature); }};
+        for (const auto &key : comickSearchedKeys())
+            jobs.append([key, mature] { return Lists{{key, searched(key, 1, 24, mature).entries}}; });
+        const auto results = parallel(jobs);
+        Lists top, found;
+        QString error;
+        int status = 0;
+        for (int i = 0; i < results.size(); ++i) {
+            if (!results[i].ok()) {
+                error = results[i].error;
+                status = results[i].status;
+            } else if (i == 0) {
+                top = *results[i].value;
+            } else {
+                found.insert(*results[i].value);
+            }
+        }
+        if (top.isEmpty() && found.isEmpty())
+            throw Error(error, status);
+        return comickShelves(top, found);
+    }
+
+    ListPage list(const QString &media, const QString &key, int page, bool mature, const QString &period) override {
+        const auto *shelf = comickShelf(key);
+        if (!shelf)
+            return Catalogue::list(media, key, page, mature, period);
+        if (shelf->search)
+            return searched(key, page, kListPage, mature);
+        const auto lists = topLists(mature);
+        const auto byPeriod = key + QLatin1Char('|') + period;
+        const auto all = lists.value(shelf->periods && lists.contains(byPeriod) ? byPeriod : key);
+        ListPage out;
+        out.entries = all.mid((page - 1) * kListPage, kListPage);
+        out.hasNext = all.size() > page * kListPage;
+        return out;
     }
 
     QList<Entry> search(const QString &, const QString &query, bool, const QVariantMap &filters) override {
@@ -115,6 +207,45 @@ public:
         for (const auto &t : comic.value("md_titles").toArray())
             titles.append(t.toObject().value("title").toString());
         return cleanTitles(titles);
+    }
+
+private:
+    // The lists in /top (3.7 MB of JSON), read at most once each half hour;
+    // the last copy when Comick is unreachable.
+    static QHash<QString, QList<Entry>> topLists(bool mature) {
+        const auto cacheKey = QStringLiteral("comick-top:%1").arg(mature ? "all" : "sfw");
+        if (const auto hit = Database::cacheGet(cacheKey))
+            return decodeLists(*hit);
+        const auto response = Http::get(QUrl(QStringLiteral("https://api.comick.dev/top?accept_mature_content=%1")
+                                                 .arg(mature ? "true" : "false")),
+                                        kComickHeaders);
+        if (!response.ok()) {
+            if (const auto stale = Database::cacheGet(cacheKey, true))
+                return decodeLists(*stale);
+            throw Error(QStringLiteral("Comick's catalogue is unavailable right now (%1).").arg(response.status), response.status);
+        }
+        const auto lists = comickTopLists(response.json().object(), mature);
+        Database::cachePut(cacheKey, encodeLists(lists), 1800);
+        return lists;
+    }
+
+    static ListPage searched(const QString &key, int page, int limit, bool mature) {
+        QUrl url(QStringLiteral("https://api.comick.dev/v1.0/search/"));
+        url.setQuery(comickListQuery(key, page, limit, mature));
+        const auto response = Http::get(url, kComickHeaders);
+        if (!response.ok())
+            throw Error(QStringLiteral("Comick's catalogue is unavailable right now (%1).").arg(response.status), response.status);
+        const auto array = response.json().array();
+        ListPage out;
+        for (const auto &value : array) {
+            if (value.toObject().value("media_type").toString() == QLatin1String("anime"))
+                continue;
+            auto e = comickEntry(value.toObject());
+            if (!e.adult || mature)
+                out.entries.append(e);
+        }
+        out.hasNext = array.size() >= limit;
+        return out;
     }
 };
 
@@ -155,10 +286,6 @@ public:
 
     // Every shelf in one request.
     QList<Shelf> shelves(const QString &media, bool mature) override {
-        static const QList<QPair<QString, QString>> kShelves{{"trending", "sort: TRENDING_DESC"},
-                                                             {"popular", "sort: POPULARITY_DESC"},
-                                                             {"top", "sort: SCORE_DESC"},
-                                                             {"newest", "sort: START_DATE_DESC, status: RELEASING, popularity_greater: 1500"}};
         QString pages;
         for (const auto &[key, args] : kShelves)
             pages += QStringLiteral("%1: Page(perPage: 24) { media(type: MANGA, %2, %3, isAdult: $adult) { ...f } }\n")
@@ -168,11 +295,30 @@ public:
                                   adultVariable(mature));
         QList<Shelf> out;
         for (const auto &shelf : kShelves) {
-            Shelf s{shelf.first, {}};
+            Shelf s{shelf.first, {}, true};
             for (const auto &m : data.value(shelf.first).toObject().value("media").toArray())
                 s.entries.append(entry(m.toObject(), media));
             out.append(s);
         }
+        return out;
+    }
+
+    ListPage list(const QString &media, const QString &key, int page, bool mature, const QString &period) override {
+        const auto it = std::find_if(kShelves.cbegin(), kShelves.cend(), [&key](const auto &s) { return s.first == key; });
+        if (it == kShelves.cend())
+            return Catalogue::list(media, key, page, mature, period);
+        auto variables = adultVariable(mature);
+        variables.insert("page", page);
+        const auto data = anilist(QStringLiteral("query ($adult: Boolean, $page: Int) { Page(page: $page, perPage: %1) { pageInfo { hasNextPage } "
+                                                 "media(type: MANGA, %2, %3, isAdult: $adult) { %4 } } }")
+                                      .arg(kListPage)
+                                      .arg(it->second, formatFilter(media), QString::fromLatin1(kAniListCardFields)),
+                                  variables);
+        const auto p = data.value("Page").toObject();
+        ListPage out;
+        for (const auto &m : p.value("media").toArray())
+            out.entries.append(entry(m.toObject(), media));
+        out.hasNext = p.value("pageInfo").toObject().value("hasNextPage").toBool();
         return out;
     }
 
@@ -190,6 +336,11 @@ public:
     }
 
 private:
+    static inline const QList<QPair<QString, QString>> kShelves{
+        {"trending", "sort: TRENDING_DESC"},
+        {"popular", "sort: POPULARITY_DESC"},
+        {"top", "sort: SCORE_DESC"},
+        {"newest", "sort: START_DATE_DESC, status: RELEASING, popularity_greater: 1500"}};
     // Novels are AniList "manga" in the NOVEL format; comics are the rest.
     static QString formatFilter(const QString &media) {
         return media == QLatin1String("novel") ? QStringLiteral("format: NOVEL") : QStringLiteral("format_not_in: [NOVEL]");
@@ -220,10 +371,7 @@ public:
     }
 
     QList<Shelf> shelves(const QString &media, bool mature) override {
-        const bool novel = media == QLatin1String("novel");
-        const QList<QPair<QString, QString>> wanted =
-            novel ? QList<QPair<QString, QString>>{{"top", "novels"}, {"lightnovels", "lightnovels"}}
-                  : QList<QPair<QString, QString>>{{"top", "manga"}, {"popular", "bypopularity"}, {"manhwa", "manhwa"}, {"manhua", "manhua"}};
+        const auto wanted = rankings(media);
         QList<std::function<QList<Entry>()>> jobs;
         for (const auto &[key, ranking] : wanted)
             jobs.append([this, ranking, media, mature] {
@@ -236,12 +384,26 @@ public:
         QString error;
         for (int i = 0; i < results.size(); ++i) {
             if (results[i].ok())
-                out.append({wanted[i].first, results[i].value->mid(0, 24)});
+                out.append({wanted[i].first, results[i].value->mid(0, 24), true});
             else
                 error = results[i].error;
         }
         if (out.isEmpty())
             throw Error(error);
+        return out;
+    }
+
+    ListPage list(const QString &media, const QString &key, int page, bool mature, const QString &period) override {
+        const auto wanted = rankings(media);
+        const auto it = std::find_if(wanted.cbegin(), wanted.cend(), [&key](const auto &r) { return r.first == key; });
+        if (it == wanted.cend())
+            return Catalogue::list(media, key, page, mature, period);
+        ListPage out;
+        out.entries = entries(call(QStringLiteral("/manga/ranking"),
+                                   {{"ranking_type", it->second}, {"limit", QString::number(kListPage)},
+                                    {"offset", QString::number((page - 1) * kListPage)}, {"fields", kMalFields}},
+                                   mature, &out.hasNext),
+                              media);
         return out;
     }
 
@@ -253,7 +415,15 @@ public:
     }
 
 private:
-    static QJsonArray call(const QString &path, QList<QPair<QString, QString>> params, bool mature) {
+    // Its shelves, and the rankings they are.
+    static QList<QPair<QString, QString>> rankings(const QString &media) {
+        if (media == QLatin1String("novel"))
+            return {{"top", "novels"}, {"lightnovels", "lightnovels"}};
+        return {{"top", "manga"}, {"popular", "bypopularity"}, {"manhwa", "manhwa"}, {"manhua", "manhua"}};
+    }
+
+    // `more`, when given, is set to whether a next page follows.
+    static QJsonArray call(const QString &path, QList<QPair<QString, QString>> params, bool mature, bool *more = nullptr) {
         QString id;
         {
             QMutexLocker lock(&g_malMutex);
@@ -269,7 +439,10 @@ private:
         const auto response = Http::get(url, {{"X-MAL-CLIENT-ID", id.toUtf8()}, {"Accept", "application/json"}});
         if (!response.ok())
             throw Error(QStringLiteral("MyAnimeList's catalogue is unavailable right now (%1).").arg(response.status), response.status);
-        return response.json().object().value("data").toArray();
+        const auto body = response.json().object();
+        if (more)
+            *more = body.value("paging").toObject().contains("next");
+        return body.value("data").toArray();
     }
 
     // Rankings and search mix comics and novels; keep the asked media.
@@ -286,6 +459,10 @@ private:
 };
 
 } // namespace
+
+ListPage Catalogue::list(const QString &, const QString &, int, bool, const QString &) {
+    throw Error(QStringLiteral("%1 has no more of this list.").arg(label()));
+}
 
 QUrlQuery comickQuery(const QString &query, const QVariantMap &f) {
     QUrlQuery q;
@@ -368,29 +545,72 @@ Entry comickEntry(const QJsonObject &c) {
     return e;
 }
 
-QList<Shelf> comickShelves(const QJsonObject &top, bool mature) {
-    const auto list = [mature](const QJsonValue &value) {
-        // Some feeds are by period ("7", "30", "90" days): the week's.
-        auto array = value.toArray();
-        if (value.isObject()) {
-            const auto byDays = value.toObject();
-            array = (byDays.contains("7") ? byDays.value("7") : byDays.value("30")).toArray();
-        }
+QHash<QString, QList<Entry>> comickTopLists(const QJsonObject &top, bool mature) {
+    const auto entries = [mature](const QJsonArray &array) {
         QList<Entry> out;
         for (const auto &item : array) {
             auto e = comickEntry(item.toObject());
-            if (e.adult && !mature)
-                continue;
-            out.append(e);
-            if (out.size() >= 24)
-                break;
+            if (!e.id.isEmpty() && (!e.adult || mature))
+                out.append(e);
         }
         return out;
     };
-    return {{QStringLiteral("trending"), list(top.value("trending"))},
-            {QStringLiteral("popular"), list(top.value("rank"))},
-            {QStringLiteral("newest"), list(top.value("news"))},
-            {QStringLiteral("completed"), list(top.value("completions"))}};
+    QHash<QString, QList<Entry>> out;
+    for (const auto &shelf : kComickShelves) {
+        if (!shelf.top)
+            continue;
+        const QString key = QLatin1String(shelf.key);
+        const auto value = top.value(QLatin1String(shelf.top));
+        if (!shelf.periods) {
+            // This season's anime adaptations come as {year, season, data: [...]}.
+            out.insert(key, entries(value.isObject() ? value.toObject().value("data").toArray() : value.toArray()));
+            continue;
+        }
+        const auto byDays = value.toObject();
+        for (const char *days : kPeriods)
+            if (byDays.contains(QLatin1String(days)))
+                out.insert(key + QLatin1Char('|') + QLatin1String(days), entries(byDays.value(QLatin1String(days)).toArray()));
+        // The shelf: the week's, or the first period there is.
+        for (const char *days : kPeriods) {
+            const auto list = out.value(key + QLatin1Char('|') + QLatin1String(days));
+            if (!list.isEmpty()) {
+                out.insert(key, list);
+                break;
+            }
+        }
+    }
+    return out;
+}
+
+QList<Shelf> comickShelves(const QHash<QString, QList<Entry>> &top, const QHash<QString, QList<Entry>> &searched, int size) {
+    QList<Shelf> out;
+    for (const auto &shelf : kComickShelves) {
+        const auto entries = (shelf.top ? top : searched).value(QLatin1String(shelf.key));
+        if (!entries.isEmpty())
+            out.append({QLatin1String(shelf.key), entries.mid(0, size), true, shelf.periods});
+    }
+    return out;
+}
+
+QUrlQuery comickListQuery(const QString &key, int page, int limit, bool mature) {
+    const auto *shelf = comickShelf(key);
+    if (!shelf || !shelf->search)
+        return {};
+    QUrlQuery q(QString::fromLatin1(shelf->search));
+    q.addQueryItem(QStringLiteral("page"), QString::number(page));
+    q.addQueryItem(QStringLiteral("limit"), QString::number(limit));
+    q.addQueryItem(QStringLiteral("showall"), QStringLiteral("false"));
+    if (!mature)
+        q.addQueryItem(QStringLiteral("excluded_content_rating"), QStringLiteral("erotica"));
+    return q;
+}
+
+QStringList comickSearchedKeys() {
+    QStringList out;
+    for (const auto &shelf : kComickShelves)
+        if (shelf.search)
+            out.append(QLatin1String(shelf.key));
+    return out;
 }
 
 Entry anilistEntry(const QJsonObject &m) {

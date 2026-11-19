@@ -14,6 +14,17 @@
     {"hid": "cc33", "slug": "ranked", "title": "Ranked", "country": "cn", "status": 4, "last_chapter": 12.5,
      "md_covers": [{"b2key": "ranked.webp"}]}
   ],
+  "topFollowNewComics": {
+    "30": [
+      {"hid": "ff66", "slug": "new-follow", "title": "New Follow", "country": "kr", "status": 1}
+    ]
+  },
+  "comicsByCurrentSeason": {
+    "year": 2026, "season": "fall",
+    "data": [
+      {"hid": "ee55", "slug": "adapted", "title": "Adapted", "country": "jp", "status": 1, "last_chapter": 88}
+    ]
+  },
   "news": [],
   "completions": [
     {"hid": "dd44", "slug": "done", "title": "Done", "country": "jp", "status": 2}

@@ -59,7 +59,7 @@ host/         the extension host (Kotlin) for Mihon and Aniyomi extensions
 tests/        offline tests and the live source probe
 ```
 
-Network requests run on worker pools and are cancelled when you leave a page; chapter pages decode off the interface thread. Everything you keep lives in one SQLite database in the app data folder. Pushing a tag such as `v2.11.0` runs [the release workflow](.github/workflows/release.yml).
+Network requests run on worker pools and are cancelled when you leave a page; chapter pages decode off the interface thread. Everything you keep lives in one SQLite database in the app data folder. Releases are cut with `tools/release.sh` (see [Releasing](#releasing)).
 
 ## Test
 
@@ -102,6 +102,17 @@ Optional manifest fields for comic and novel entries:
 Every string in the interface is wrapped in `qsTr()` and translated in each `i18n/scancore_*.ts`. After changing strings, fill in the new entries in every language; a new string should not ship untranslated. A new licence goes into `resources/licenses/` and `components.json` there.
 
 For a source change, include the URL of a series that shows the problem and what you expected to see.
+
+## Releasing
+
+Everything lands on `main`. A release goes out in two steps:
+
+1. Write the `CHANGELOG.md` entry (`## 2.18.0 — 2026-11-19`, a one-line summary under it, then the changes) and the Android stores' notes, `fastlane/metadata/android/en-US/changelogs/<version code>.txt` (major × 10000 + minor × 100 + patch + 105). Then `tools/release.sh prepare 2.18.0 "One line for Linux software centres"` sets the version in `CMakeLists.txt`, the Flatpak manifest's tag and the AppStream notes, and checks the rest, the extension host included. Commit it as `Release SCANCORE 2.18.0: …`.
+2. `tools/release.sh publish 2.18.0` pushes that commit to `pre-release`, where [release.yml](.github/workflows/release.yml) builds and starts every package as a test (CI runs the tests beside it). Once it passed, it pushes `main` and the tag `v2.18.0`, and the tag publishes those same packages, signed. Nothing is built twice: CI skips the commit on `main`, and the Flatpak comes from the test build too.
+
+A test build that fails stops it there: fix it on `main`, commit, publish again (a newer push to `pre-release` cancels the test build still running). Every night, the newest passing test build on `pre-release` that is not a release becomes the `nightly` pre-release ([nightly.yml](.github/workflows/nightly.yml)). Each release keeps its Windows and Android symbols as artifacts for 90 days, for reading crash and hang reports.
+
+The extension host ships on its own: raise its version (`Runtime.h`, `Main.kt`, `build.gradle.kts`) and push the tag `extensions-runtime-<version>` before the app release that needs it.
 
 ## Pull requests
 

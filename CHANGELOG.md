@@ -2,9 +2,19 @@
 
 Downloads for the current version are listed on the [releases page](https://github.com/medium-gh/scancore/releases).
 
-## 2.17.1 — 2026-11-11
+## 2.18.0 — 2026-11-19
 
-Fixes for reading chapters several groups translated, extensions on computers and the Comics filters, plus a default list for new series and the TV remote everywhere.
+The Comics page browses like Comick, every list goes on as far as you scroll, iPhone and iPad builds, and no more freezes on the Downloads page.
+
+- **Comics, as Comick lays it out**: with Comick as the catalogue, the Comics page now has the lists readers look for, in this order: Trending this week, Popular ongoing, Most followed new comics, Most popular, Top rated, Recently added, Top manhwa, Top manga, Top manhua, Anime adaptations this season, Completed series and Recently completed. Edit page (the layout button) still moves or hides any of them.
+- **See all**: every list ends in a **See all** card (and a See all button by its title) that opens the whole list, loading more as you scroll, much like Comick's own "See more". Lists ordered by rank show each title's place. Trending and Most followed new comics can be switched between this week, this month and the last 3 months. AniList's and MyAnimeList's shelves have See all too, on Comics and on Novels.
+- **Sites and extensions**: with one site picked from the Sources menu, its list loads more as you scroll instead of stopping at a button, and sites with latest updates have **Popular** and **Latest** to switch between, as on the site's own page. Latest chapters goes up to 360.
+- **Downloads no longer freezes SCANCORE**: opening Downloads, or Settings → Storage, added up the size of every downloaded file while the window waited, which took seconds with a big library. It is measured in the background now (issue #39, #38).
+- **Better hang reports**: on Android, hang reports now show where SCANCORE was stuck (they had a single line, issue #40), and reports sent to GitHub fit more of the stack and leave out repeated log lines.
+- **iPhone and iPad**: each release has an unsigned IPA to sign and install with AltStore, SideStore or Sideloadly. Extensions, the novel pack and the libmpv player are not there; anime plays in the system's web view.
+- **Comments and reviews in Latest** can be closed from their heading, and brought back from the top of the page.
+
+2.17.1 was tagged but never published (its Linux, Android and Flatpak builds failed when a package mirror went away), so its changes come with 2.18.0:
 
 - **One copy of each chapter**: where a site lists a chapter once per group (Atsumaru's Alpha, Delta and so on), the reader goes from chapter 71 to 72 in the group you are reading, instead of reading 71 again in the next group. The group picked or hidden in a series' chapter filters now counts in the reader, for Continue and for new chapters that download by themselves.
 - **Extensions on computers**: extensions installed several at once could fail with errors such as "'void eu.kanade.tachiyomi.a.a.a…'" (MangaFire every time, others after a while), because their converted copies mixed up each other's code. Each extension is now prepared on its own, and every one is prepared again once (Extensions runtime 12).
