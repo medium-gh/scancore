@@ -84,18 +84,19 @@ publish)
     # pre-release only ever holds what is being tested: it follows main.
     git push --force-with-lease origin "HEAD:refs/heads/pre-release"
     echo "Waiting for the test build of ${sha:0:7}…"
-    run=""
-    for _ in $(seq 1 60); do
-        run=$(gh run list --workflow release.yml --branch pre-release --event push --commit "$sha" --json databaseId -q '.[0].databaseId // empty')
-        [ -n "$run" ] && break
-        sleep 10
+    for workflow in ci.yml release.yml; do
+        run=""
+        for _ in $(seq 1 60); do
+            run=$(gh run list --workflow "$workflow" --branch pre-release --event push --commit "$sha" --json databaseId -q '.[0].databaseId // empty')
+            [ -n "$run" ] && break
+            sleep 10
+        done
+        [ -n "$run" ] || die "no $workflow run started for $sha"
+        gh run watch "$run" --exit-status --interval 60 > /dev/null || die "$workflow run $run failed: gh run view $run --log-failed"
+        echo "$workflow run $run passed."
     done
-    [ -n "$run" ] || die "no test build started for $sha"
-    gh run watch "$run" --exit-status --interval 60 > /dev/null || die "test build $run failed: gh run view $run --log-failed"
-    echo "Test build $run passed."
-    git push origin HEAD:refs/heads/main
     git tag -a "v$version" -m "SCANCORE $version"
-    git push origin "v$version"
+    git push --atomic origin HEAD:refs/heads/main "refs/tags/v$version"
     echo "Tagged v$version: release.yml publishes test build $run's packages."
     ;;
 *)

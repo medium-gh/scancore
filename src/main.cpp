@@ -577,7 +577,7 @@ int main(int argc, char *argv[]) {
         for (const auto &argument : openArguments)
             emit appState->openRequested(argument);
     });
-#else
+#elif defined(Q_OS_ANDROID)
     // Links SCANCORE answers (a repository's one-tap aniyomi:// link,
     // scancore://): Qt hands Android's VIEW intents to native listeners,
     // never as a FileOpen event, so they were dropped. The one that
