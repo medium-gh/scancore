@@ -345,8 +345,18 @@ Task *Novels::book(const QString &url, const QVariantMap &summary) {
     });
 }
 
+namespace {
+QString chapterCacheKey(const QString &chapterUrl) {
+    return QStringLiteral("novel-chapter:") + chapterUrl;
+}
+} // namespace
+
+bool Novels::hasCachedChapter(const QString &chapterUrl) {
+    return Database::cacheGet(chapterCacheKey(chapterUrl)).has_value();
+}
+
 QVariantMap Novels::fetchChapter(const QString &chapterUrl) {
-    const auto cacheKey = QStringLiteral("novel-chapter:") + chapterUrl;
+    const auto cacheKey = chapterCacheKey(chapterUrl);
     if (auto cached = Database::cacheGet(cacheKey))
         return QJsonDocument::fromJson(*cached).toVariant().toMap();
     QString title;

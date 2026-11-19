@@ -30,10 +30,13 @@
 #include <QLocale>
 #include <QMimeDatabase>
 #include <QMutex>
+#include <QRandomGenerator>
 #include <QRegularExpression>
 #include <QSaveFile>
 #include <QStandardPaths>
+#include <QThread>
 
+#include <algorithm>
 #include <functional>
 
 namespace sc {
@@ -41,6 +44,40 @@ namespace sc {
 namespace {
 
 constexpr int kConcurrent = 2;
+
+// Waits, waking often enough to notice a cancel. False when cancelled.
+bool pause(int ms) {
+    QElapsedTimer timer;
+    timer.start();
+    while (timer.elapsed() < ms) {
+        if (CancelScope::cancelled())
+            return false;
+        QThread::msleep(std::min<qint64>(50, ms - timer.elapsed()));
+    }
+    return !CancelScope::cancelled();
+}
+
+// Novel sites answer a quick run of chapters with 429s and empty pages, so
+// chapters go one at a time with a random gap, and a refusal is retried
+// after a growing wait.
+QVariantMap fetchNovelChapterPaced(const QString &url) {
+    if (Novels::hasCachedChapter(url))
+        return Novels::fetchChapter(url);
+    auto *random = QRandomGenerator::global();
+    if (!pause(random->bounded(300, 2501)))
+        throw Error(QStringLiteral("Cancelled"), 499);
+    for (int attempt = 0;; ++attempt) {
+        try {
+            return Novels::fetchChapter(url);
+        } catch (const Error &e) {
+            const bool refused = e.status() == 429 || (e.status() >= 500 && e.status() != 501);
+            if (!refused || attempt == 3)
+                throw;
+            if (!pause((3000 << attempt) + random->bounded(0, 1500)))
+                throw Error(QStringLiteral("Cancelled"), 499);
+        }
+    }
+}
 
 QString hashed(const QString &value) {
     return QString::fromLatin1(QCryptographicHash::hash(value.toUtf8(), QCryptographicHash::Sha1).toHex().left(16));
@@ -217,10 +254,15 @@ void Downloads::pump() {
             exclude.append(id);
             marks.append(QStringLiteral("?"));
         }
+        // One novel chapter at a time: the other slot is left to comics and anime.
+        const bool novelRunning = Database::scalar(QStringLiteral("SELECT COUNT(*) FROM downloads "
+                                                                  "WHERE status = 'running' AND series_id LIKE 'novel:%'"))
+                                      .toInt() > 0;
         const auto sql = QStringLiteral("SELECT d.*, s.title AS series_title FROM downloads d "
-                                        "LEFT JOIN series s ON s.id = d.series_id WHERE d.status = 'queued'%1 "
+                                        "LEFT JOIN series s ON s.id = d.series_id WHERE d.status = 'queued'%1%2 "
                                         "ORDER BY d.created_at, d.id LIMIT 1")
-                             .arg(marks.isEmpty() ? QString() : QStringLiteral(" AND d.id NOT IN (%1)").arg(marks.join(',')));
+                             .arg(marks.isEmpty() ? QString() : QStringLiteral(" AND d.id NOT IN (%1)").arg(marks.join(',')),
+                                  novelRunning ? QStringLiteral(" AND d.series_id NOT LIKE 'novel:%'") : QString());
         const auto row = Database::one(sql, exclude);
         if (row.isEmpty())
             return;
@@ -245,7 +287,7 @@ void Downloads::runJob(const QVariantMap &row, const CancelFlag &flag) {
     try {
         QDir().mkpath(folder);
         if (seriesId.startsWith(QLatin1String("novel:"))) {
-            const auto chapter = Novels::fetchChapter(unitUrl);
+            const auto chapter = fetchNovelChapterPaced(unitUrl);
             writeJson(folder + QStringLiteral("/chapter.json"), QJsonDocument::fromVariant(chapter));
             Database::exec(QStringLiteral("UPDATE downloads SET done = 1, total = 1 WHERE id = ?"), {id});
         } else if (seriesId.startsWith(QLatin1String("comic:"))) {

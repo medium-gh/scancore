@@ -47,6 +47,8 @@ public:
 
     static QVariantList fetchUnits(const QString &url);
     static QVariantMap fetchChapter(const QString &chapterUrl);
+    // True when fetchChapter would answer from the cache, without the network.
+    static bool hasCachedChapter(const QString &chapterUrl);
 };
 
 } // namespace sc
