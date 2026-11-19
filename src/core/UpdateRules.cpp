@@ -84,6 +84,54 @@ Rhythm rhythm(const QList<qint64> &releases, qint64 now) {
     return r;
 }
 
+bool due(const QList<qint64> &releases, qint64 lastChecked, qint64 now) {
+    constexpr qint64 day = 86400;
+    constexpr qint64 most = 28 * day;
+    // A day either way: sites date chapters in their own time zone.
+    constexpr qint64 grace = day;
+    if (lastChecked <= 0 || now - lastChecked >= most)
+        return true;
+    // Releases, newest first, chapters out the same day as one; none dated
+    // ahead of time (some sites list chapters before they are out).
+    auto sorted = releases;
+    std::sort(sorted.begin(), sorted.end(), std::greater<>());
+    QList<qint64> days;
+    for (const auto at : std::as_const(sorted))
+        if (at <= now + grace && (days.isEmpty() || days.last() - at >= day / 2))
+            days.append(at);
+    if (days.size() > 10)
+        days.resize(10);
+    if (days.size() < 3)
+        return true;
+    QList<qint64> gaps;
+    for (int i = 1; i < days.size(); ++i)
+        gaps.append(days[i - 1] - days[i]);
+    std::sort(gaps.begin(), gaps.end());
+    const qint64 gap = std::min(gaps.at((gaps.size() - 1) / 2), most);
+    if (gap < day)
+        return true;
+    const qint64 last = days.first();
+    const qint64 sinceRelease = now - last;
+    // Slack seen lately: how much later than the gap releases have come.
+    const qint64 lateness = std::clamp<qint64>(gaps.last() - gap, 0, gap / 2);
+
+    // On a break: looked at every gap, doubled while the break outlasts
+    // four of them.
+    if (sinceRelease > 4 * gap) {
+        qint64 step = gap;
+        while (step < most && sinceRelease > 4 * step)
+            step *= 2;
+        return now - lastChecked >= std::min(step, most) - day / 4;
+    }
+    // The latest release expected by now; none since the last one: not due.
+    const qint64 expected = last + ((now + grace - last) / gap) * gap;
+    if (expected <= last)
+        return false;
+    // Not looked at since it was expected, or still within how late
+    // releases have come.
+    return lastChecked < expected - grace || now <= expected + lateness + grace;
+}
+
 QList<QList<int>> groupsSharingKeys(const QList<QStringList> &keys) {
     QList<int> parent(keys.size());
     std::iota(parent.begin(), parent.end(), 0);

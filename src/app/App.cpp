@@ -159,6 +159,8 @@ const QVariantMap kDefaults{
     {"updateSkipFinished", true},
     {"updateSkipUnread", false},
     {"updateSkipNotStarted", false},
+    // Checks by themselves skip series not due a chapter yet (as Mihon).
+    {"updateSkipNotDue", true},
     {"updateOnlyUnmetered", false},
     {"updateOnlyCharging", false},
     // New chapters of series on these lists download by themselves.

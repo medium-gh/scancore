@@ -49,6 +49,16 @@ struct Rhythm {
 };
 Rhythm rhythm(const QList<qint64> &releases, qint64 now);
 
+// Whether a check by itself should look at a series now, or it is not due
+// a chapter yet (as Mihon skips series "outside the release period").
+// `releases` are its recent chapters' dates, `lastChecked` when it was last
+// looked at (0: never), all in seconds. From its rhythm (the median gap):
+// looked at once a release is due, then at every check while it is late; on
+// a break (four gaps without one) less and less often. Never more than four
+// weeks between looks, and without a rhythm to go by (under three dated
+// releases, or one a day) at every check.
+bool due(const QList<qint64> &releases, qint64 lastChecked, qint64 now);
+
 // Items sharing any key end up in one group (transitively); only groups of
 // two or more are returned, as indexes into `keys`.
 QList<QList<int>> groupsSharingKeys(const QList<QStringList> &keys);

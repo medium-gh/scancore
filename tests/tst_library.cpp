@@ -150,6 +150,46 @@ private slots:
         QVERIFY(!updates::rhythm({now - day, now - 61 * day, now - 121 * day}, now).known);
     }
 
+    // Checks by themselves look at a series once a chapter is due, keep
+    // looking while it is late, and space out looks at one on a break.
+    void releaseDue() {
+        constexpr qint64 day = 86400;
+        const qint64 now = 1'800'000'000;
+        const auto weeklyFrom = [&](qint64 lastAgo) {
+            QList<qint64> out;
+            for (int i = 0; i < 8; ++i)
+                out.append(now - lastAgo - i * 7 * day);
+            return out;
+        };
+        // Out two days ago, looked at an hour ago: not due for five days.
+        QVERIFY(!updates::due(weeklyFrom(2 * day), now - 3600, now));
+        // Never looked at, or not for four weeks: due whatever the rhythm.
+        QVERIFY(updates::due(weeklyFrom(2 * day), 0, now));
+        QVERIFY(updates::due(weeklyFrom(2 * day), now - 28 * day, now));
+        // The next one is due within a day: looked at, and at every check
+        // until it comes (or a day past due).
+        QVERIFY(updates::due(weeklyFrom(6 * day + day / 2), now - day, now));
+        QVERIFY(updates::due(weeklyFrom(6 * day + day / 2), now - 3600, now));
+        QVERIFY(updates::due(weeklyFrom(8 * day), now - 3600, now));
+        // Three days late and looked at since it was due: wait for the next.
+        QVERIFY(!updates::due(weeklyFrom(10 * day), now - 3600, now));
+        // Not looked at since it was due: due.
+        QVERIFY(updates::due(weeklyFrom(10 * day), now - 5 * day, now));
+        // Chapters dated ahead of their release do not count.
+        auto ahead = weeklyFrom(2 * day);
+        ahead.prepend(now + 5 * day);
+        QVERIFY(!updates::due(ahead, now - 3600, now));
+        // No rhythm to go by: too few dated releases, or several a day.
+        QVERIFY(updates::due({now - day, now - 8 * day}, now - 3600, now));
+        QVERIFY(updates::due({}, now - 3600, now));
+        QVERIFY(updates::due({now - day / 2, now - day, now - 2 * day, now - 3 * day}, now - 3600, now));
+        // On a break (40 days since a weekly release): every two weeks;
+        // longer (60 days): every four.
+        QVERIFY(!updates::due(weeklyFrom(40 * day), now - 10 * day, now));
+        QVERIFY(updates::due(weeklyFrom(40 * day), now - 14 * day, now));
+        QVERIFY(!updates::due(weeklyFrom(60 * day), now - 20 * day, now));
+    }
+
     // Library health: series saved twice share a title or tracker entry.
     void duplicateGroups() {
         const auto groups = updates::groupsSharingKeys({{"c:t:solo"}, {"c:t:other"}, {"c:t:sololeveling", "c:a:1"},

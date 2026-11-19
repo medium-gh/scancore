@@ -195,6 +195,12 @@ SettingsPane {
             Toggle { checked: App.settings.updateSkipNotStarted === true; onToggled: App.setSetting("updateSkipNotStarted", checked) }
         }
         SettingRow {
+            iconName: "calendar"
+            title: qsTr("Skip series not due a chapter yet")
+            description: qsTr("Automatic checks go by how often each series releases, and look at every series at least every four weeks. Checking by hand looks at them all.")
+            Toggle { checked: App.settings.updateSkipNotDue !== false; onToggled: App.setSetting("updateSkipNotDue", checked) }
+        }
+        SettingRow {
             iconName: "wifi-off"
             title: qsTr("Check by itself only on Wi-Fi")
             description: qsTr("Not on mobile data or a metered connection. Checking by hand always works.")

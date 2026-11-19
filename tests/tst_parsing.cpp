@@ -33,6 +33,19 @@ static QByteArray fixture(const char *name) {
     return file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray();
 }
 
+// parallelByKeyEach's outcomes by job, and the order they came in.
+template <typename T>
+static QList<Outcome<T>> byKey(const QList<std::function<T()>> &jobs, const QStringList &keys, int perKey,
+                               QList<int> *order = nullptr) {
+    QList<Outcome<T>> out(jobs.size());
+    parallelByKeyEach<T>(jobs, keys, perKey, [&](int i, const Outcome<T> &r) {
+        out[i] = r;
+        if (order)
+            order->append(i);
+    });
+    return out;
+}
+
 class Parsing : public QObject {
     Q_OBJECT
 
@@ -590,6 +603,109 @@ private slots:
         QVERIFY2(firstAt < 100, qPrintable(QStringLiteral("first answer after %1 ms").arg(firstAt)));
         QCOMPARE(statuses, (QList<int>{200, 200, 504}));
         QTRY_VERIFY_WITH_TIMEOUT(stuck->load(), 1000);
+    }
+
+    // Library updates: one request at a time per site, sites side by side,
+    // each outcome as it comes, and the fan-out pool left to searches.
+    void batchesOneAtATimePerSite() {
+        QMutex mutex;
+        QHash<QString, int> running;
+        QHash<QString, int> most;
+        int sitesAtOnce = 0;
+        int mostSitesAtOnce = 0;
+        const QStringList keys{"a", "b", "a", "c", "a", "b"};
+        QList<std::function<int()>> jobs;
+        for (int i = 0; i < keys.size(); ++i)
+            jobs.append([&, i, key = keys[i]] {
+                {
+                    QMutexLocker lock(&mutex);
+                    if (running[key]++ == 0)
+                        mostSitesAtOnce = std::max(mostSitesAtOnce, ++sitesAtOnce);
+                    most[key] = std::max(most[key], running[key]);
+                }
+                QThread::msleep(30);
+                {
+                    QMutexLocker lock(&mutex);
+                    if (--running[key] == 0)
+                        --sitesAtOnce;
+                }
+                if (i == 3)
+                    throw Error(QStringLiteral("gone"), 404);
+                return i * 10;
+            });
+        QElapsedTimer timer;
+        timer.start();
+        QList<int> order;
+        const auto results = byKey(jobs, keys, 1, &order);
+        for (int i = 0; i < 6; ++i)
+            if (i != 3)
+                QCOMPARE(*results[i].value, i * 10);
+        QCOMPARE(results[3].status, 404);
+        QCOMPARE(order.size(), 6);
+        // Site a's last job comes after b's and c's, not with the others.
+        QCOMPARE(order.last(), 4);
+        QCOMPARE(most.value("a"), 1);
+        QCOMPARE(most.value("b"), 1);
+        QVERIFY(mostSitesAtOnce > 1);
+        // Three of site a in a row, the others beside them.
+        QVERIFY2(timer.elapsed() < 250, qPrintable(QString::number(timer.elapsed())));
+        QCOMPARE(fanoutPool().activeThreadCount(), 0);
+
+        // Cancelled: what has not begun is not run.
+        const auto cancel = std::make_shared<std::atomic_bool>(true);
+        CancelScope scope(cancel);
+        for (const auto &r : byKey(jobs, keys, 1))
+            QCOMPARE(r.status, 499);
+    }
+
+    // A site answering quickly is asked a little more at once, never more
+    // than allowed; one that pushes back is paused and asked again; one
+    // whose browser check could not be passed is not asked for the rest.
+    void batchesFollowEachSitesPace() {
+        QMutex mutex;
+        QHash<QString, int> running;
+        QHash<QString, int> most;
+        QHash<QString, int> asked;
+        int limited = 0;
+        QStringList keys;
+        for (int i = 0; i < 12; ++i)
+            keys.append(QStringLiteral("quick"));
+        keys << "busy" << "busy" << "checked" << "checked" << "checked";
+        QList<std::function<int()>> jobs;
+        for (int i = 0; i < keys.size(); ++i)
+            jobs.append([&, i, key = keys[i]]() -> int {
+                {
+                    QMutexLocker lock(&mutex);
+                    ++asked[key];
+                    most[key] = std::max(most[key], ++running[key]);
+                }
+                QThread::msleep(40);
+                QMutexLocker lock(&mutex);
+                --running[key];
+                // The busy site's first answer is "too many requests".
+                if (key == QLatin1String("busy") && limited++ == 0)
+                    throw Error(QStringLiteral("Too many requests"), 429);
+                if (key == QLatin1String("checked"))
+                    throw Error(QStringLiteral("Browser check"), 403, QStringLiteral("https://checked.test/"));
+                return i;
+            });
+        QElapsedTimer timer;
+        timer.start();
+        const auto results = byKey(jobs, keys, 3);
+        QCOMPARE(most.value("quick"), 3);
+        for (int i = 0; i < 12; ++i)
+            QCOMPARE(*results[i].value, i);
+        // Asked again after its pause, and both answered.
+        QCOMPARE(asked.value("busy"), 3);
+        QCOMPARE(*results[12].value, 12);
+        QCOMPARE(*results[13].value, 13);
+        QVERIFY(timer.elapsed() >= 4900);
+        QCOMPARE(most.value("busy"), 1);
+        // Only the first met the check; the rest were skipped.
+        QCOMPARE(asked.value("checked"), 1);
+        QCOMPARE(results[14].verifyUrl, QStringLiteral("https://checked.test/"));
+        QCOMPARE(results[15].status, 499);
+        QCOMPARE(results[16].status, 499);
     }
 
     void gunzip() {

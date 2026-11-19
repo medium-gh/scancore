@@ -19,6 +19,8 @@
 #include "core/UpdateRules.h"
 #include "sources/comics/Registry.h"
 
+#include <QElapsedTimer>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <algorithm>
 #include <QMutex>
@@ -948,6 +950,8 @@ Task *Library::checkUpdates(bool automatic) {
     rules.skipUnread = settings.value(QStringLiteral("updateSkipUnread")).toBool();
     rules.skipNotStarted = settings.value(QStringLiteral("updateSkipNotStarted")).toBool();
     const auto autoDownload = settings.value(QStringLiteral("autoDownloadLists")).toStringList();
+    // Checking by hand looks at every series the rules allow.
+    const bool skipNotDue = automatic && settings.value(QStringLiteral("updateSkipNotDue"), true).toBool();
     // Read here, on the thread QNetworkInformation lives on.
     QString waitFor;
     if (automatic) {
@@ -958,7 +962,7 @@ Task *Library::checkUpdates(bool automatic) {
         else if (settings.value(QStringLiteral("updateOnlyCharging")).toBool() && !platform::charging())
             waitFor = QStringLiteral("charging");
     }
-    return Task::run([this, rules, autoDownload, waitFor, automatic]() -> QVariant {
+    return Task::run([this, rules, autoDownload, waitFor, automatic, skipNotDue]() -> QVariant {
         if (!waitFor.isEmpty())
             return QVariantMap{{"checked", 0}, {"newUnits", 0}, {"waiting", waitFor}};
         // When the last check by itself began: Android's job skips one so
@@ -969,15 +973,37 @@ Task *Library::checkUpdates(bool automatic) {
             "SELECT s.id, s.media, s.source, s.source_url, s.title, s.status, l.category, l.known_units, l.last_checked, "
             "(SELECT COUNT(*) FROM progress p WHERE p.series_id = s.id) AS touched, "
             "(SELECT COUNT(*) FROM progress p WHERE p.series_id = s.id AND p.completed = 1) AS read_units "
-            "FROM library l JOIN series s ON s.id = l.series_id WHERE s.media IN ('comic', 'novel', 'anime') AND s.source != 'local'"));
+            "FROM library l JOIN series s ON s.id = l.series_id WHERE s.media IN ('comic', 'novel', 'anime') AND s.source != 'local' "
+            // Longest unchecked first: a check cut short (Android stops its
+            // job after about ten minutes) is taken up where it ended.
+            "ORDER BY l.last_checked IS NOT NULL, l.last_checked"));
+        // Recent chapters' release dates, for when each series is due.
+        QHash<QString, QList<qint64>> released;
+        if (skipNotDue)
+            for (const auto &value : Database::query(QStringLiteral(
+                     "SELECT series_id, released_at FROM (SELECT u.series_id, u.released_at, "
+                     "ROW_NUMBER() OVER (PARTITION BY u.series_id ORDER BY u.idx DESC) AS n FROM units u "
+                     "JOIN library l ON l.series_id = u.series_id) WHERE n <= 24"))) {
+                const auto row = value.toMap();
+                if (const auto at = updates::releaseDate(row.value(QStringLiteral("released_at")).toString()))
+                    released[row.value(QStringLiteral("series_id")).toString()].append(*at);
+            }
+        const qint64 startedAt = Database::now();
         QVariantList rows;
+        int notDue = 0;
         for (const auto &value : all) {
             const auto row = value.toMap();
             const updates::Entry entry{row.value(QStringLiteral("category")).toString(), row.value(QStringLiteral("status")).toString(),
                                        row.value(QStringLiteral("known_units")).toInt(), row.value(QStringLiteral("read_units")).toInt(),
                                        row.value(QStringLiteral("touched")).toInt() > 0};
-            if (updates::shouldCheck(entry, rules))
-                rows.append(row);
+            if (!updates::shouldCheck(entry, rules))
+                continue;
+            if (skipNotDue && !updates::due(released.value(row.value(QStringLiteral("id")).toString()),
+                                            row.value(QStringLiteral("last_checked")).toLongLong(), startedAt)) {
+                ++notDue;
+                continue;
+            }
+            rows.append(row);
         }
         // Anime kept from AniList: the episodes aired so far, for all of
         // them in a request or two.
@@ -1017,26 +1043,36 @@ Task *Library::checkUpdates(bool automatic) {
                 return {{"id", row.value(QStringLiteral("id"))}, {"units", units}};
             });
         }
-        QStringList updated;
-        int total = 0;
-        bool withEpisodes = false;
         const bool digest = Database::pref(QStringLiteral("setting.notifyDigest"), false).toBool();
-        const auto results = parallel(jobs);
-        const qint64 now = Database::now();
-        for (int i = 0; i < results.size(); ++i) {
+        // The digest's count so far, kept as it grows: a check stopped
+        // before the end leaves it for the next one to post.
+        const auto pending = QJsonDocument::fromJson(Database::pref(QStringLiteral("library.pendingDigest")).toString().toUtf8()).object();
+        QStringList updated;
+        for (const auto &title : pending.value(QStringLiteral("titles")).toArray())
+            updated.append(title.toString());
+        int total = pending.value(QStringLiteral("total")).toInt();
+        bool withEpisodes = pending.value(QStringLiteral("episodes")).toBool();
+        int found = 0;
+        QElapsedTimer sinceShown;
+        sinceShown.start();
+        bool unshown = false;
+        // Each series is stored as soon as it is checked, so nothing found
+        // is lost to a check cut short.
+        const auto handle = [&](int i, const Outcome<QVariantMap> &result) {
+            const qint64 now = Database::now();
             const auto row = rows.at(i).toMap();
             const auto id = row.value(QStringLiteral("id")).toString();
-            const auto units = results[i].ok() ? results[i].value->value(QStringLiteral("units")).toList() : QVariantList();
+            const auto units = result.ok() ? result.value->value(QStringLiteral("units")).toList() : QVariantList();
             // Source health: when it last answered, and since when it fails.
             if (units.isEmpty()) {
-                // Cancelled, or an anime that has not aired yet.
-                if (results[i].status == 499 || (results[i].ok() && results[i].value->value(QStringLiteral("quiet")).toBool()))
-                    continue;
+                // Cancelled or skipped, or an anime that has not aired yet.
+                if (result.status == 499 || (result.ok() && result.value->value(QStringLiteral("quiet")).toBool()))
+                    return;
                 Database::exec(QStringLiteral("INSERT INTO series_health(series_id, failing_since, failures, problem) VALUES(?, ?, 1, ?) "
                                               "ON CONFLICT(series_id) DO UPDATE SET failing_since = COALESCE(failing_since, excluded.failing_since), "
                                               "failures = failures + 1, problem = excluded.problem"),
-                               {id, now, results[i].ok() ? QStringLiteral("No chapters listed") : results[i].error.left(300)});
-                continue;
+                               {id, now, result.ok() ? QStringLiteral("No chapters listed") : result.error.left(300)});
+                return;
             }
             Database::exec(QStringLiteral("INSERT INTO series_health(series_id, last_ok, failures) VALUES(?, ?, 0) "
                                           "ON CONFLICT(series_id) DO UPDATE SET last_ok = excluded.last_ok, failing_since = NULL, "
@@ -1064,17 +1100,25 @@ Task *Library::checkUpdates(bool automatic) {
             storeUnits(id, units);
             Database::exec(QStringLiteral("UPDATE library SET last_checked = ?, new_units = new_units + ?, "
                                           "known_units = ?, latest_title = ? WHERE series_id = ?"),
-                           {Database::now(), fresh.size(), units.size(), units.last().toMap().value(QStringLiteral("title")), id});
+                           {now, fresh.size(), units.size(), units.last().toMap().value(QStringLiteral("title")), id});
+            unshown = true;
             if (fresh.isEmpty())
-                continue;
+                return;
             Database::exec(QStringLiteral("UPDATE series_health SET last_new = ? WHERE series_id = ?"), {now, id});
             total += int(fresh.size());
+            found += int(fresh.size());
             withEpisodes = withEpisodes || anime;
             const auto title = row.value(QStringLiteral("title")).toString();
             updated.append(title);
             // One per series; more chapters later replace it.
             const auto latest = fresh.last().toMap().value(QStringLiteral("title")).toString();
-            if (!digest)
+            if (digest)
+                Database::setPref(QStringLiteral("library.pendingDigest"),
+                                  QString::fromUtf8(QJsonDocument(QJsonObject{{"total", total},
+                                                                              {"episodes", withEpisodes},
+                                                                              {"titles", QJsonArray::fromStringList(updated)}})
+                                                        .toJson(QJsonDocument::Compact)));
+            else
                 Notifications::post({QStringLiteral("chapters"), QStringLiteral("chapters:") + id, title,
                                      (anime ? (fresh.size() == 1 ? tr("1 new episode") : tr("%1 new episodes").arg(fresh.size()))
                                             : (fresh.size() == 1 ? tr("1 new chapter") : tr("%1 new chapters").arg(fresh.size())))
@@ -1094,15 +1138,31 @@ Task *Library::checkUpdates(bool automatic) {
                         return (!picked.isEmpty() && group != picked) || hidden.contains(group);
                     });
                 if (fresh.isEmpty())
-                    continue;
+                    return;
                 const QVariantMap series{{"id", id}, {"media", row.value(QStringLiteral("media"))}, {"title", title}};
                 if (App::windowless())
                     Downloads::queue(series, fresh);
                 else
                     QMetaObject::invokeMethod(Downloads::instance(), [series, fresh] { Downloads::instance()->enqueue(series, fresh); });
             }
-        }
-        // One notification for the whole check, when chosen.
+        };
+        // A source's series a few at a time at most, as fast as it answers
+        // without pushing back; sources side by side, on threads of their
+        // own (searches meanwhile are not held up). The library shows what
+        // is found every few seconds.
+        QStringList sites;
+        for (const auto &value : rows)
+            sites.append(value.toMap().value(QStringLiteral("source")).toString());
+        parallelByKeyEach<QVariantMap>(jobs, sites, 3, [&](int i, const Outcome<QVariantMap> &result) {
+            handle(i, result);
+            if (unshown && sinceShown.elapsed() > 3000) {
+                unshown = false;
+                sinceShown.restart();
+                QMetaObject::invokeMethod(this, [this] { notifyChanged(); });
+            }
+        });
+        // One notification for the whole check (and any cut short before
+        // it), when chosen.
         if (digest && total > 0)
             Notifications::post({QStringLiteral("chapters"), QStringLiteral("chapters:digest"),
                                  withEpisodes ? tr("%1 new chapters and episodes in your library").arg(total)
@@ -1110,13 +1170,14 @@ Task *Library::checkUpdates(bool automatic) {
                                  QLocale().createSeparatedList(updated.mid(0, 4)) + (updated.size() > 4 ? QStringLiteral(" …") : QString()),
                                  QVariantMap{{"section", "library"}},
                                  Database::pref(QStringLiteral("setting.notifyUpdates"), true).toBool()});
-        QMetaObject::invokeMethod(this, [this, total, updated] {
+        Database::setPref(QStringLiteral("library.pendingDigest"), QString());
+        QMetaObject::invokeMethod(this, [this, found, updated] {
             notifyChanged();
             Upkeep::instance()->recount();
-            if (total > 0)
-                emit updatesFound(total, updated);
+            if (found > 0)
+                emit updatesFound(found, updated);
         });
-        return QVariantMap{{"checked", rows.size()}, {"newUnits", total}, {"titles", updated}};
+        return QVariantMap{{"checked", rows.size()}, {"notDue", notDue}, {"newUnits", found}, {"titles", updated}};
     });
 }
 
