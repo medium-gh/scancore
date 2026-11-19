@@ -11,6 +11,7 @@ import Scancore
 //
 // Inside a Flickable or ListView (vertical or horizontal), or with `flick`.
 Connections {
+    id: glide
     property Flickable flick
     target: flick
     // A plain Flickable has no orientation (or its signal).
@@ -24,7 +25,10 @@ Connections {
         horizontal = !!flick && (flick.orientation !== undefined ? flick.orientation === Qt.Horizontal
                                                                  : flick.flickableDirection === Flickable.HorizontalFlick)
     }
-    onFlickChanged: readDirection()
+    property Connections directionUpdates: Connections {
+        target: glide
+        function onFlickChanged() { glide.readDirection() }
+    }
     Component.onCompleted: readDirection()
     function onOrientationChanged() { readDirection() }
     function onFlickableDirectionChanged() { readDirection() }
