@@ -24,7 +24,7 @@ SettingsPane {
         SettingRow {
             iconName: "layers"
             title: qsTr("Image cache")
-            description: qsTr("Covers and pages you have viewed, kept so they load instantly next time. The oldest are removed first when it is full.")
+            description: qsTr("Covers and pages you have viewed, kept so they load instantly next time. The oldest are removed first when it is full. Covers of your library and of what you read lately are kept apart and stay.")
             Row {
                 spacing: 8
                 Select {

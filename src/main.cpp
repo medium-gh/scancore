@@ -217,6 +217,19 @@ void openStorage() {
     // The size chosen in Settings → Storage (it was always 1 GB before).
     const qint64 cacheMb = std::max<qint64>(128, Database::pref(QStringLiteral("setting.imageCacheMB"), 1024).toLongLong());
     ImageCache::init(cache + QStringLiteral("/images"), cacheMb * 1024 * 1024);
+    // Covers kept apart from the cache: the library's and those of the
+    // series read lately (Continue reading, History).
+    ImageCache::setKeptCovers([] {
+        QStringList urls;
+        const auto rows = Database::query(QStringLiteral(R"(
+            SELECT cover FROM series WHERE cover <> '' AND cover NOT LIKE 'file:%' AND cover NOT LIKE 'content:%' AND
+                cover NOT LIKE '/%' AND (
+                id IN (SELECT series_id FROM library) OR
+                id IN (SELECT series_id FROM progress GROUP BY series_id ORDER BY MAX(updated_at) DESC LIMIT 200)))"));
+        for (const auto &row : rows)
+            urls.append(row.toMap().value(QStringLiteral("cover")).toString());
+        return urls;
+    });
     registerPdf();
 #ifdef SCANCORE_MAL_CLIENT_ID
     catalogue::setMalClientId(QStringLiteral(SCANCORE_MAL_CLIENT_ID));

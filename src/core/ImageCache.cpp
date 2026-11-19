@@ -14,6 +14,7 @@
 #include <QMutex>
 #include <QSaveFile>
 #include <QScopeGuard>
+#include <QSet>
 #include <QWaitCondition>
 
 #include <algorithm>
@@ -24,7 +25,11 @@ namespace sc {
 namespace {
 
 QString g_dir;
+QString g_coversDir;
 std::atomic<qint64> g_budget = 1024LL * 1024 * 1024;
+
+QMutex g_keptMutex;
+std::function<QStringList()> g_keptCovers;
 
 // Concurrent requests for the same image share one download.
 QMutex g_inflightMutex;
@@ -51,9 +56,53 @@ ImageCache::Writer writerFor(const QString &url) {
     return g_writers.value(url.left(colon));
 }
 
-QString pathFor(const QString &url) {
+// Where `url` is cached, under `dir` (the cache or the kept covers): the same
+// name in both, so a cover moves between them as it is.
+QString pathIn(const QString &dir, const QString &url) {
     const auto hash = QCryptographicHash::hash(url.toUtf8(), QCryptographicHash::Sha1).toHex();
-    return QStringLiteral("%1/%2/%3").arg(g_dir, QString::fromLatin1(hash.left(2)), QString::fromLatin1(hash));
+    return QStringLiteral("%1/%2/%3").arg(dir, QString::fromLatin1(hash.left(2)), QString::fromLatin1(hash));
+}
+
+QString pathFor(const QString &url) { return pathIn(g_dir, url); }
+
+QString keptPathFor(const QString &url) { return pathIn(g_coversDir, url); }
+
+void moveFile(const QString &from, const QString &to) {
+    QDir().mkpath(QFileInfo(to).absolutePath());
+    QFile::remove(to);
+    if (!QFile::rename(from, to) && QFile::copy(from, to))
+        QFile::remove(from);
+}
+
+// Puts the covers to keep in the covers folder and the rest back in the
+// cache, where trimming can reach them. Images being downloaded are left
+// for next time.
+void sortKeptCovers() {
+    std::function<QStringList()> listed;
+    {
+        QMutexLocker lock(&g_keptMutex);
+        listed = g_keptCovers;
+    }
+    if (!listed || g_coversDir.isEmpty())
+        return;
+    QSet<QString> kept;
+    for (const auto &url : listed()) {
+        if (url.isEmpty())
+            continue;
+        const auto path = keptPathFor(url);
+        kept.insert(QFileInfo(path).fileName());
+        const auto cached = pathFor(url);
+        QMutexLocker lock(&g_inflightMutex);
+        if (!g_inflight.contains(cached) && QFileInfo::exists(cached))
+            moveFile(cached, path);
+    }
+    QDirIterator it(g_coversDir, QDir::Files, QDirIterator::Subdirectories);
+    while (it.hasNext()) {
+        it.next();
+        const auto name = it.fileName();
+        if (!kept.contains(name))
+            moveFile(it.filePath(), QStringLiteral("%1/%2/%3").arg(g_dir, name.left(2), name));
+    }
 }
 
 QByteArray readFile(const QString &path) {
@@ -74,8 +123,14 @@ QByteArray readFile(const QString &path) {
 
 void ImageCache::init(const QString &dir, qint64 budgetBytes) {
     g_dir = dir;
+    g_coversDir = QFileInfo(dir).absolutePath() + QStringLiteral("/covers");
     g_budget = budgetBytes;
     QDir().mkpath(dir);
+}
+
+void ImageCache::setKeptCovers(std::function<QStringList()> urls) {
+    QMutexLocker lock(&g_keptMutex);
+    g_keptCovers = std::move(urls);
 }
 
 void ImageCache::setBudget(qint64 bytes) { g_budget = bytes; }
@@ -95,6 +150,7 @@ void ImageCache::forget(const QString &url) {
         url.startsWith(QLatin1String("pdfpage:")))
         return;
     QFile::remove(pathFor(url));
+    QFile::remove(keptPathFor(url));
 }
 
 namespace {
@@ -118,6 +174,9 @@ QByteArray ImageCache::fetch(const QString &url, const QString &referer) {
         QFile file(url.startsWith(QLatin1String("file:")) ? QUrl(url).toLocalFile() : url);
         return file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray();
     }
+    if (const auto kept = keptPathFor(url); QFileInfo::exists(kept))
+        if (auto data = readFile(kept); !data.isEmpty())
+            return data;
     const auto path = pathFor(url);
     {
         QMutexLocker lock(&g_inflightMutex);
@@ -205,11 +264,13 @@ qint64 ImageCache::sizeOnDisk() {
 }
 
 void ImageCache::clear() {
+    sortKeptCovers();
     QDir(g_dir).removeRecursively();
     QDir().mkpath(g_dir);
 }
 
 void ImageCache::trim() {
+    sortKeptCovers();
     struct Entry {
         QString path;
         qint64 size;

@@ -604,6 +604,44 @@ private slots:
         QCOMPARE(calls, 3);
     }
 
+    // Library covers stay when the cache is trimmed or cleared, so they show
+    // without asking the site again; one no longer kept ages out as before.
+    void imageCacheKeepsLibraryCovers() {
+        QTemporaryDir cache;
+        ImageCache::init(cache.filePath(QStringLiteral("images")), 64 * 1024 * 1024);
+        const QByteArray png = QByteArray("\x89PNG\r\n\x1a\n", 8) + "cover";
+        int calls = 0;
+        ImageCache::setRefererWriter(QStringLiteral("testsource"), [&](const QString &, const QString &, const QString &path) {
+            ++calls;
+            QFile file(path);
+            QVERIFY(file.open(QIODevice::WriteOnly));
+            file.write(png);
+        });
+        const auto kept = QStringLiteral("https://example.test/kept.png");
+        const auto other = QStringLiteral("https://example.test/other.png");
+        QStringList keep{kept};
+        ImageCache::setKeptCovers([&] { return keep; });
+        ImageCache::fetch(kept, QStringLiteral("testsource:x"));
+        ImageCache::fetch(other, QStringLiteral("testsource:x"));
+        QCOMPARE(calls, 2);
+
+        ImageCache::clear();
+        QCOMPARE(ImageCache::sizeOnDisk(), 0);
+        QCOMPARE(ImageCache::fetch(kept, QStringLiteral("testsource:x")), png);
+        QCOMPARE(calls, 2);
+        QCOMPARE(ImageCache::fetch(other, QStringLiteral("testsource:x")), png);
+        QCOMPARE(calls, 3);
+
+        // Out of the library: back in the cache, which Clear empties.
+        keep.clear();
+        ImageCache::trim();
+        QVERIFY(ImageCache::sizeOnDisk() > 0);
+        ImageCache::clear();
+        ImageCache::fetch(kept, QStringLiteral("testsource:x"));
+        QCOMPARE(calls, 4);
+        ImageCache::setKeptCovers({});
+    }
+
     void refusesNothingToMoveTo() {
         QVERIFY_THROWS_EXCEPTION(Error, migration::move(QStringLiteral("comic:a:1"), QStringLiteral("comic:a:1")));
         QVERIFY_THROWS_EXCEPTION(Error, migration::move(QStringLiteral("comic:a:1"), QStringLiteral("comic:empty:1")));
