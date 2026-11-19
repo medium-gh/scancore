@@ -224,7 +224,7 @@ private slots:
         QCOMPARE(lists.value("trending").size(), 1);
         QCOMPARE(lists.value("trending|7").size(), 1);
         QVERIFY(lists.value("trending|30").isEmpty());
-        const auto &first = lists.value("trending")[0];
+        const auto first = lists.value("trending").constFirst();
         QCOMPARE(first.catalog, QStringLiteral("comick"));
         QCOMPARE(first.id, QStringLiteral("aa11"));
         QCOMPARE(first.type, QStringLiteral("Manhwa"));
