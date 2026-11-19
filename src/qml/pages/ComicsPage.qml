@@ -120,8 +120,7 @@ Item {
             })
             page.browseItems = page.browseItems.concat(fresh)
             page.browsePage = next
-            // A page with nothing new ends the list (some sites repeat theirs).
-            page.browseHasNext = result.hasNextPage && fresh.length > 0
+            page.browseHasNext = result.hasNextPage
         })
     }
 

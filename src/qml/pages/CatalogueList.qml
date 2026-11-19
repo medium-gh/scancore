@@ -52,8 +52,13 @@ Item {
             // A title that moved up a place between two pages comes once.
             const seen = {}
             for (const it of page.items) seen[it.catalogId || it.hid || it.title] = true
-            const fresh = r.items.filter(it => !seen[it.catalogId || it.hid || it.title])
-            page.hasNext = r.hasNext && fresh.length > 0
+            const fresh = r.items.filter(it => {
+                const key = it.catalogId || it.hid || it.title
+                if (seen[key]) return false
+                seen[key] = true
+                return true
+            })
+            page.hasNext = r.hasNext
             if (fresh.length) page.items = page.items.concat(fresh)
         })
     }
@@ -121,12 +126,12 @@ Item {
             Item {
                 width: parent.width
                 height: 60
-                visible: page.items.length > 0 && (page.hasNext || (page.task && !page.task.ok && !page.task.loading))
+                visible: page.hasNext && page.task && (page.items.length > 0 || (page.task.ok && page.pageNumber > 0))
                 Spinner { anchors.centerIn: parent; size: 20; visible: page.task !== null && page.task.loading }
                 ScButton {
                     anchors.centerIn: parent
-                    visible: page.task !== null && !page.task.loading && !page.task.ok
-                    text: qsTr("Try again")
+                    visible: page.task !== null && !page.task.loading
+                    text: page.task && page.task.ok ? qsTr("Show more") : qsTr("Try again")
                     onClicked: page.more(true)
                 }
             }

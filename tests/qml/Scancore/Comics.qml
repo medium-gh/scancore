@@ -21,6 +21,7 @@ QtObject {
         }
     }
     function task() { return factory.createObject(service) }
+    function filters(source) { const t = task(); t.succeed([]); return t }
     function reset() { calls = [] }
     function browse(source, kind, page) { const t = task(); calls = calls.concat([{source, kind, page, task:t}]); return t }
     function search(query, source) { const t = task(); calls = calls.concat([{query, source, task:t}]); return t }

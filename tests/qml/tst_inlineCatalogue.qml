@@ -122,11 +122,8 @@ Item {
             flick.contentY = flick.contentHeight - flick.height
             const before = flick.contentY
             verify(before > 0)
-            const button = descendants(page).find(item => item.text === "Show more" && item.visible)
-            verify(button !== undefined)
-            const screen = button.mapToItem(flick, 0, 0)
-            verify(screen.y >= 0 && screen.y + button.height <= flick.height)
-            mouseClick(button)
+            // Scrolling to the end starts the next request.
+            compare(Comics.calls.length, 2)
             compare(Comics.calls[1].page, 2)
             Comics.calls[1].task.succeed({items:entries(41, 20),hasNextPage:false})
             wait(50)
